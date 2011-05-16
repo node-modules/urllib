@@ -1,0 +1,18 @@
+{
+  "author": "fengmk2 <fengmk2@gmail.com> (http://fengmk2.cnblogs.com)",
+  "name": "urllib",
+  "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more. Like python's _urllib_ module.",
+  "version": "0.0.1",
+  "homepage": "http://github.com/fengmk2/urllib",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/fengmk2/urllib.git"
+  },
+  "engines": {
+    "node": "~v0.4.7"
+  },
+  "dependencies": {
+    "iconv": "*"
+  },
+  "devDependencies": {}
+}
