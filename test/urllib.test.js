@@ -59,7 +59,10 @@ module.exports = {
 		
 	},
 	
-	'urlget': function() {
-		
-	}
+//	'urlpost': function() {
+//		urllib.urlpost('http://www.postyourtest.com/tests', {kw: 'cnodejs'}, function(err, data, res) {
+//			console.log(res.headers);
+//			console.log(data.slice(0, 512).toString())
+//		});
+//	}
 };
