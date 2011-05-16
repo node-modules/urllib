@@ -32,3 +32,14 @@ http post juet use 'urlpost' replace 'urlget'
         console.log(res.headers);
     };
     
+### Change User Agent header
+    
+    var chrome_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_7) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.53 Safari/534.30';
+    urllib.urlget('http://www.baidu.com/', 
+            {wd: 'cnodejs'}, 
+            {headers: {'user-agent': chrome_agent}}, 
+            function(err, data, res) {
+        console.log(res.statusCode);
+        console.log(res.headers);
+        console.log(data.toString());
+    });
