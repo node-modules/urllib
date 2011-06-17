@@ -59,6 +59,30 @@ module.exports = {
 		
 	},
 	
+	'urlgets': function() {
+		var cases = [
+  		    //['http://baidu.com', 'http://www.baidu.com/'], // <meta http-equiv="refresh" content="0;url=http://www.baidu.com/">
+  		    ['http://www.baidu.com/s?kw=cnodejs', 'http://www.baidu.com/s?kw=cnodejs'],
+  		    ['http://cnodejs.org/', 'http://cnodejs.org/blog/'],
+  		    ['http://taobao.com', 'http://www.taobao.com/'],
+  		    ['http://t.cn/heVleY', 'http://user.qzone.qq.com/309389312/blog/1305512153']
+  		];
+		var urls = [];
+		for(var i = 0; i < cases.length; i++) {
+			urls.push(cases[i][0]);
+		}
+		urllib.urlgets(urls, function(results) {
+			for(var i = 0; i < cases.length; i++) {
+				var c = cases[i];
+				var result = results[c[0]];
+				var res = result[2];
+				assert.equal(result[0], null);
+				assert.ok(result[1].length > 0);
+				assert.equal(c[1], res.realurl);
+			}
+		});
+	}
+	
 //	'urlpost': function() {
 //		urllib.urlpost('http://www.postyourtest.com/tests', {kw: 'cnodejs'}, function(err, data, res) {
 //			console.log(res.headers);
