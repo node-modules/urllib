@@ -41,7 +41,7 @@ var SINAURL_RE = /http:\/\/(?:t|sinaurl)\.cn\/(\w+)/i;
 function expand_url(res, short_url) {
 	var info = urlutil.parse(short_url);
 	if(info.protocol != 'http:') { // 无法请求https的url?
-		util.write_to_response(res, short_url);
+		write_to_response(res, short_url);
 		return;
 	}
 	var sinaurl_m = SINAURL_RE.exec(short_url);
