@@ -112,4 +112,13 @@ var server = http.createServer(function(req, res) {
 	}
 });
 
-server.listen(9090);
+process.on('uncaughtException', function(err) {
+	console.error(err.stack);
+});
+
+var port = 9090;
+if(process.argv.length > 2) {
+	port = parseInt(process.argv[2]);
+}
+console.log('listen on ' + port);
+server.listen(port);
