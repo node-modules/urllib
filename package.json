@@ -1,18 +1,27 @@
 {
-  "author": "fengmk2 <fengmk2@gmail.com> (http://github.com/fengmk2)",
   "name": "urllib",
+  "version": "0.2.0",
   "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more. Like python's _urllib_ module.",
-  "version": "0.1.0",
-  "homepage": "http://github.com/fengmk2/urllib",
+  "keywords": ["urllib", "http", "urlopen"],
+  "author": "fengmk2 <fengmk2@gmail.com> (http://github.com/fengmk2)",
+  "homepage": "http://github.com/TBEDP/urllib",
+  "main": "./lib/urllib.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/fengmk2/urllib.git"
+    "url": "git://github.com/TBEDP/urllib.git"
   },
-  "engines": {
-    "node": ">=v0.4.0"
+  "scripts": {
+    "test": "make test"
   },
   "dependencies": {
-    "iconv": "*"
+    "iconv": ">=1.1.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "should": ">=0.4.2",
+    "mocha": ">=0.7.1"
+  },
+  "engines": {
+    "node": ">=v0.6.10"
+  },
+  "license": "MIT"
 }

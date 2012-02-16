@@ -1,5 +1,7 @@
 # urllib
 
+[![Build Status](https://secure.travis-ci.org/fengmk2/urllib.png)](http://travis-ci.org/fengmk2/urllib)
+
 Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more. Like python  _urllib_ module.
 
 ## Install
