@@ -4,26 +4,40 @@
 
 var urllib = require('../');
 var should = require('should');
+var http = require('http');
+
+http.createServer(function(req, res) {
+	req.on('end', function() {
+		if (req.url === '/timeout') {
+			setTimeout(function() {
+				res.writeHeader(200);
+				res.end('timeout 500ms');
+			}, 500);
+		} else if (req.url === '/error') {
+			res.destroy();
+		}
+	});
+}).listen(43624);
 
 describe('urllib', function() {
 
 	describe('#get_charset()', function() {
 		it('should return the correct charset', function(done) {
 			var cases = [
-		    ['http://baidu.com', null], // <meta http-equiv="refresh" content="0;url=http://www.baidu.com/">
-		    ['http://www.baidu.com', 'gb2312'],
-		    ['http://www.baidu.com/s?kw=cnodejs', 'gbk'],
-		    ['http://club.cnodejs.org/', 'utf-8'],
-		    ['http://cnodejs.org/log', null],
-		    ['http://www.taobao.com', 'gb2312'],
-		    ['http://weibo.com', 'utf-8']
+		    ['http://baidu.com', null, 200], // <meta http-equiv="refresh" content="0;url=http://www.baidu.com/">
+		    ['http://www.baidu.com', 'gb2312', 200],
+		    ['http://www.baidu.com/s?kw=cnodejs', 'gbk', 200],
+		    ['http://club.cnodejs.org/', 'utf-8', 200],
+		    ['http://cnodejs.org/log', null, 404],
+		    ['http://www.taobao.com', 'gb2312', 200],
+		    ['http://weibo.com', 'utf-8', 200]
 			];
 			var count = 0;
 			cases.forEach(function(c) {
 				urllib.request(c[0], function(err, data, res) {
 					should.ok(!err);
 					data.should.be.an.instanceof(Buffer);
-					res.statusCode.should.below(400);
+					res.should.status(c[2]);
 					count++;
 					var end = data.length;
 					if (end > 512) {
@@ -47,69 +61,35 @@ describe('urllib', function() {
 	});
 
 	describe('#request()', function() {
-		it('should 302', function(done) {
-			urllib.request('http://cnodejs.org', function(err, data, res) {
+		it('should 301', function(done) {
+			urllib.request('http://google.com', function(err, data, res) {
 				res.should.status(301);
+				done();
+			});
+		});
+		it('should 302', function(done) {
+			urllib.request('http://t.cn/zOJdq1R', function(err, data, res) {
+				res.should.status(302);
+				done();
+			});
+		});
+		it('should 500ms timeout', function(done) {
+			urllib.request('http://127.0.0.1:43624/timeout', { timeout: 450 }, function(err, data, res) {
+				should.exist(err);
+				err.name.should.equal('RequestTimeoutError');
+				err.stack.should.match(/^RequestTimeoutError: socket hang up, request timeout for 450ms\./);
+				should.not.exist(data);
+				should.not.exist(res);
+				done();
+			});
+		});
+		it('should error', function(done) {
+			urllib.request('http://127.0.0.1:43624/error', function(err, data, res) {
+				console.log(err)
+				res.should.status(302);
 				done();
 			});
 		});
 	});
 
 });
-
-// module.exports = {
-	
-// 	'redirect': function(){
-// 		var cases = [
-//  		    // ['http://baidu.com', 'http://www.baidu.com/'], // <meta http-equiv="refresh" content="0;url=http://www.baidu.com/">
-//  		    ['http://www.baidu.com/s?kw=cnodejs', 'http://www.baidu.com/s?kw=cnodejs'],
-//  		    ['http://cnodejs.org/', 'http://cnodejs.org/blog/'],
-//  		    ['http://taobao.com', 'http://www.taobao.com/'],
-//  		    ['http://t.cn/heVleY', 'http://user.qzone.qq.com/309389312/blog/1305512153']
-//  		];
-// 		cases.forEach(function(c){
-// 			urllib.urlget(c[0], null, {handle_data: false}, function(err, data, res) {
-// 				var log = '\nurl: ' + c[0];
-// 				log += '\nrealurl: ' + res.realurl;
-// 				log += '\nerror: ' + err;
-// 				log += '\nstatus: ' + res.statusCode;
-// 				log += '\nheaders: ' + JSON.stringify(res.headers);
-// 				assert.equal(res.realurl, c[1], log);
-// 			});
-// 		});
-// 	},
-	
-// 	'get_request_options': function() {
-		
-// 	},
-	
-// 	'urlgets': function() {
-// 		var cases = [
-//   		    //['http://baidu.com', 'http://www.baidu.com/'], // <meta http-equiv="refresh" content="0;url=http://www.baidu.com/">
-//   		    ['http://www.baidu.com/s?kw=cnodejs', 'http://www.baidu.com/s?kw=cnodejs'],
-//   		    ['http://cnodejs.org/', 'http://cnodejs.org/blog/'],
-//   		    ['http://taobao.com', 'http://www.taobao.com/'],
-//   		    ['http://t.cn/heVleY', 'http://user.qzone.qq.com/309389312/blog/1305512153']
-//   		];
-// 		var urls = [];
-// 		for(var i = 0; i < cases.length; i++) {
-// 			urls.push(cases[i][0]);
-// 		}
-// 		urllib.urlgets(urls, function(results) {
-// 			for(var i = 0; i < cases.length; i++) {
-// 				var c = cases[i];
-// 				var result = results[c[0]];
-// 				var res = result[2];
-// 				assert.equal(result[0], null);
-// 				assert.ok(result[1].length > 0);
-// 				assert.equal(c[1], res.realurl);
-// 			}
-// 		});
-// 	}
-	
-//	'urlpost': function() {
-//		urllib.urlpost('http://www.postyourtest.com/tests', {kw: 'cnodejs'}, function(err, data, res) {
-//			console.log(res.headers);
-//			console.log(data.slice(0, 512).toString())
-//		});
-//	}
