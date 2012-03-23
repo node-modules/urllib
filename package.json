@@ -18,7 +18,8 @@
   },
   "devDependencies": {
     "should": ">=0.4.2",
-    "mocha": ">=0.7.1"
+    "mocha": ">=0.14.1",
+    "jscoverage" : "0.1.0"
   },
   "engines": {
     "node": ">=v0.6.10"
