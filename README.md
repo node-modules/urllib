@@ -28,3 +28,16 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function(err, data, res)
 
 * Auto redirect handle.
 * Bash auth support.
+
+# Authors
+
+Below is the output from `git-summary`.
+
+```
+ project: urllib
+ commits: 13
+ files  : 12
+ authors: 
+    12  fengmk2                 92.3%
+     1  aleafs                  7.7%
+```
