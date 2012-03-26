@@ -35,9 +35,10 @@ Below is the output from `git-summary`.
 
 ```
  project: urllib
- commits: 13
- files  : 12
+ commits: 17
+ files  : 9
  authors: 
-    12  fengmk2                 92.3%
-     1  aleafs                  7.7%
+    13	fengmk2                 76.5%
+     3	Jackson Tian            17.6%
+     1	aleafs                  5.9%
 ```
