@@ -1,6 +1,6 @@
 {
   "name": "urllib",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more. Like python's _urllib_ module.",
   "keywords": ["urllib", "http", "urlopen"],
   "author": "fengmk2 <fengmk2@gmail.com> (http://github.com/fengmk2)",
