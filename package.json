@@ -1,11 +1,11 @@
 {
   "name": "urllib",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more. Like python's _urllib_ module.",
-  "keywords": ["urllib", "http", "urlopen"],
+  "keywords": [ "urllib", "http", "urlopen", "curl", "wget" ],
   "author": "fengmk2 <fengmk2@gmail.com> (http://github.com/fengmk2)",
   "homepage": "http://github.com/TBEDP/urllib",
-  "main": "./lib/urllib.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/TBEDP/urllib.git"
@@ -17,11 +17,8 @@
   },
   "devDependencies": {
     "should": ">=0.4.2",
-    "mocha": ">=0.14.1",
-    "jscoverage" : "~0.1.0"
+    "mocha": ">=0.14.1"
   },
-  "engines": {
-    "node": ">=v0.6.10"
-  },
+  "engines": { "node": ">= 0.6.10" },
   "license": "MIT"
 }

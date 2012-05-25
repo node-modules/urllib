@@ -17,7 +17,7 @@ $ npm install urllib
 ```
 var urllib = require('urllib');
 
-urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function(err, data, res) {
+urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res) {
   console.log(res.statusCode);
   console.log(res.headers);
   console.log(data.toString());
@@ -26,6 +26,7 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function(err, data, res)
 
 ## TODO
 
+* Upload file.
 * Auto redirect handle.
 * Bash auth support.
 

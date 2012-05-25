@@ -1,14 +1,18 @@
-SRC = $(shell find lib -type f -name "*.js")
+
 TESTS = test/*.js
-TESTTIMEOUT = 5000
 REPORTER = spec
 
 test:
-	@NODE_ENV=test ./node_modules/mocha/bin/mocha \
-		--reporter $(REPORTER) --timeout $(TESTTIMEOUT) $(TESTS)
+	@NODE_ENV=test ./node_modules/.bin/mocha \
+		--reporter $(REPORTER) \
+		$(TESTS)
 
-cov:
-	@JSCOV=1 ./node_modules/mocha/bin/mocha \
-		--reporter html-cov --timeout ${TESTTIMEOUT} ${TESTS} > coverage.html
+test-cov:
+	@rm -rf ./lib-cov
+	@$(MAKE) lib-cov
+	@URLLIB_COV=1 $(MAKE) test REPORTER=html-cov > coverage.html
 
-.PHONY: test
+lib-cov:
+	@jscoverage lib $@
+
+.PHONY: test-cov test test-cov
