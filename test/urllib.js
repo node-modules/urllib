@@ -50,6 +50,9 @@ var server = require('http').createServer(function (req, res) {
     } else if (req.url.indexOf('/get') === 0) {
       res.writeHeader(200);
       return res.end(req.url);
+    } else if (req.url === '/wrongjson') {
+      res.writeHeader(200);
+      return res.end('{"foo":""');
     }
 
     var url = req.url.split('?');
@@ -215,6 +218,33 @@ describe('urllib.test.js', function () {
         should.not.exist(err);
         res.should.status(200);
         data.should.length(bigdata.length);
+        done();
+      });
+    });
+
+    it('should handle GET /wrongjson with dataType=json', function (done) {
+      urllib.request(host + '/wrongjson', {
+        dataType: 'json'
+      }, function (err, data, res) {
+        should.exist(err);
+        err.name.should.equal('SyntaxError');
+        err.message.should.equal('Unexpected end of input');
+        res.should.status(200);
+        data.toString().should.equal('{"foo":""');
+        done();
+      });
+    });
+  });
+
+  describe('https request', function () {
+    it('GET github search user api', function (done) {
+      urllib.request('https://api.github.com/legacy/user/search/location:china', {dataType: 'json'},
+      function (err, data, res) {
+        should.not.exist(err);
+        data.should.have.property('users');
+        data.users.length.should.above(0);
+        res.should.status(200);
+        res.headers['content-type'].should.include('json');
         done();
       });
     });
