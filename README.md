@@ -30,7 +30,7 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
 * Auto redirect handle.
 * Bash auth support.
 
-# Authors
+## Authors
 
 Below is the output from `git-summary`.
 
@@ -43,6 +43,14 @@ Below is the output from `git-summary`.
      3	Jackson Tian            17.6%
      1	aleafs                  5.9%
 ```
+
+## Contributors
+Ordered by date of first contribution.
+[Auto-generated](http://github.com/dtrejo/node-authors) on Tue Aug 14 2012 03:17:14 GMT+0800 (CST).
+
+- [fengmk2](http://fengmk2.github.com)
+- [aleafs](https://github.com/aleafs)
+- [Jackson Tian aka `JacksonTian`](https://github.com/JacksonTian)
 
 ## License 
 
