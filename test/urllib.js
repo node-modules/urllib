@@ -209,11 +209,24 @@ describe('urllib.test.js', function () {
       });
     });
 
-    it('should post big data', function (done) {
+    it('should post big data with params.content', function (done) {
       var bigdata = new Buffer(1024 * 1024);
       urllib.request(host + '/post', {
         type: 'post',
         content: bigdata
+      }, function (err, data, res) {
+        should.not.exist(err);
+        res.should.status(200);
+        data.should.length(bigdata.length);
+        done();
+      });
+    });
+
+    it('should post big data with params.data', function (done) {
+      var bigdata = new Buffer(1024 * 1024);
+      urllib.request(host + '/post', {
+        type: 'post',
+        data: bigdata
       }, function (err, data, res) {
         should.not.exist(err);
         res.should.status(200);
