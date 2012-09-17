@@ -235,6 +235,19 @@ describe('urllib.test.js', function () {
       });
     });
 
+    it('should post big data with params.data and SlowBuffer', function (done) {
+      var bigdata = new require('buffer').SlowBuffer(1024 * 1024);
+      urllib.request(host + '/post', {
+        type: 'post',
+        data: bigdata
+      }, function (err, data, res) {
+        should.not.exist(err);
+        res.should.status(200);
+        data.should.length(bigdata.length);
+        done();
+      });
+    });
+
     it('should handle GET /wrongjson with dataType=json', function (done) {
       urllib.request(host + '/wrongjson', {
         dataType: 'json'
