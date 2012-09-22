@@ -7,6 +7,8 @@ var should = require('should');
 var http = require('http');
 var querystring = require('querystring');
 var urlutil = require('url');
+var KeepAliveAgent = require('agentkeepalive');
+var pedding = require('pedding');
 
 function implode_buffer_chunks(chunks) {
   var i, len = 0;
@@ -127,14 +129,15 @@ describe('urllib.test.js', function () {
     });
   });
 
-  describe('#request()', function () {
-    // it('should request https success', function (done) {
-    //   urllib.request('https://www.alipay.com/', function (err, data, res) {
-    //     should.not.exist(err);
-    //     res.should.status(200);
-    //     done();
-    //   });
-    // });
+  describe('request()', function () {
+    it('should request https success', function (done) {
+      urllib.request('https://www.alipay.com/', function (err, data, res) {
+        should.not.exist(err);
+        should.ok(Buffer.isBuffer(data));
+        res.should.status(200);
+        done();
+      });
+    });
 
     it('should 301', function (done) {
       urllib.request(host + '/301', function (err, data, res) {
@@ -143,12 +146,14 @@ describe('urllib.test.js', function () {
         done();
       });
     });
+
     it('should 302', function (done) {
       urllib.request(host + '/302', function (err, data, res) {
         res.should.status(302);
         done();
       });
     });
+
     it('should 500ms timeout', function (done) {
       urllib.request(host + '/timeout', { timeout: 450 }, function (err, data, res) {
         should.exist(err);
@@ -160,6 +165,7 @@ describe('urllib.test.js', function () {
         done();
       });
     });
+
     it('should error', function (done) {
       urllib.request(host + '/error', function (err, data, res) {
         should.exist(err);
@@ -260,6 +266,34 @@ describe('urllib.test.js', function () {
         done();
       });
     });
+
+    describe('support agentkeepalive', function () {
+      before(function () {
+        this.agent = new KeepAliveAgent();
+      });
+
+      it('should use KeepAlive agent request all urls', function (done) {
+        var urls = [
+          'http://www.taobao.com/',
+          'http://s.taobao.com/search?spm=1.1000386.220544.1.39f990&q=%C2%E3%D1%A5&refpid=420460_1006&source=tbsy&style=grid&tab=all',
+          'http://s.taobao.com/search?spm=1.1000386.220544.5.39f990&q=%C7%EF%B4%F2%B5%D7%C9%C0&refpid=420464_1006&source=tbsy&pdc=true&style=grid',
+          'http://s.taobao.com/search?spm=a230r.1.6.3.d2f979&q=%C5%A3%D7%D0%BF%E3%C5%AE&style=grid&tab=all&source=tbsy&refpid=420467_1006&newpre=null&p4p_str=fp_midtop%3D0%26firstpage_pushleft%3D0&cps=yes&from=compass&cat=50103042&navlog=compass-3-c-50103042',
+        ];
+        var agent = this.agent;
+        done = pedding(urls.length, done);
+        urls.forEach(function (url) {
+          urllib.request(url, {
+            agent: agent
+          }, function (err, data, res) {
+            should.not.exist(err);
+            data.should.be.an.instanceof(Buffer);
+            res.should.status(200);
+            res.should.have.header('connection', 'keep-alive');
+            done();
+          });
+        });
+      });
+    });
   });
 
   describe('https request', function () {
@@ -270,7 +304,7 @@ describe('urllib.test.js', function () {
         data.should.have.property('users');
         data.users.length.should.above(0);
         res.should.status(200);
-        res.headers['content-type'].should.include('json');
+        res.should.have.header('content-type', 'application/json; charset=utf-8');
         done();
       });
     });

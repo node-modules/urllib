@@ -10,11 +10,8 @@ test:
 
 test-cov:
 	@rm -rf ./lib-cov
-	@$(MAKE) lib-cov
+	@jscoverage lib lib-cov
 	@URLLIB_COV=1 $(MAKE) test REPORTER=dot
 	@URLLIB_COV=1 $(MAKE) test REPORTER=html-cov > coverage.html
 
-lib-cov:
-	@jscoverage lib $@
-
-.PHONY: lib-cov test test-cov
+.PHONY: test test-cov

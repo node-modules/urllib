@@ -13,10 +13,10 @@
   "scripts": {
     "test": "make test"
   },
-  "dependencies": {
-  },
   "devDependencies": {
     "should": ">=0.4.2",
+    "pedding": "*",
+    "agentkeepalive": "*",
     "mocha": ">=0.14.1"
   },
   "engines": { "node": ">= 0.6.10" },
