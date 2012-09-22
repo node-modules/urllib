@@ -283,7 +283,8 @@ describe('urllib.test.js', function () {
         done = pedding(urls.length, done);
         urls.forEach(function (url) {
           urllib.request(url, {
-            agent: agent
+            agent: agent,
+            timeout: 15000,
           }, function (err, data, res) {
             should.not.exist(err);
             data.should.be.an.instanceof(Buffer);

@@ -1,6 +1,6 @@
 TESTS = test/*.js
 REPORTER = spec
-TIMEOUT = 15000
+TIMEOUT = 20000
 
 test:
 	@NODE_ENV=test ./node_modules/.bin/mocha \
