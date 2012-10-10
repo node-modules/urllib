@@ -55,6 +55,10 @@ var server = require('http').createServer(function (req, res) {
     } else if (req.url === '/wrongjson') {
       res.writeHeader(200);
       return res.end('{"foo":""');
+    } else if (req.url === '/auth') {
+      var auth = new Buffer(req.headers.authorization.split(' ')[1], 'base64').toString().split(':');
+      res.writeHeader(200);
+      return res.end(JSON.stringify({user: auth[0], password: auth[1]}));
     }
 
     var url = req.url.split('?');
@@ -88,44 +92,6 @@ describe('urllib.test.js', function () {
       data.should.be.an.instanceof(Buffer);
       res.statusCode.should.eql(302);
       done();
-    });
-  });
-
-  describe('urllib.getCharset()', function () {
-
-    var charsets = [ 'gb2312', 'gbk', 'utf-8' ];
-    charsets.forEach(function (charset) {
-      it('should return ' + charset, function (done) {
-        urllib.request(host + '/?code=200&charset=' + charset, function (err, data, res) {
-          should.not.exist(err);
-          charset.should.equal(urllib.getCharset(res, data));
-          done();
-        });
-      });
-    });
-
-    it('should return null', function (done) {
-      var options = {
-        type: 'POST',
-        content: '<html><meta http-equiv="refresh" content="0;url=http://www.baidu.com/"></html>',
-      };
-      urllib.request(host, options, function (err, data, res) {
-        should.not.exist(err);
-        should.not.exist(urllib.getCharset(res, data));
-        done();
-      });
-    });
-
-    it('should return gbk in html meta header', function (done) {
-      var options = {
-        type: 'POST',
-        content: '<html><meta http-equiv="Content-Type" content="text/html; charset=gbk"></html>',
-      };
-      urllib.request(host, options, function (err, data, res) {
-        should.not.exist(err);
-        urllib.getCharset(res, data).should.equal('gbk');
-        done();
-      });
     });
   });
 
@@ -263,6 +229,31 @@ describe('urllib.test.js', function () {
         err.message.should.equal('Unexpected end of input');
         res.should.status(200);
         data.toString().should.equal('{"foo":""');
+        done();
+      });
+    });
+
+    it('should support options.auth', function (done) {
+      urllib.request(host + '/auth', {
+        type: 'get',
+        dataType: 'json',
+        auth: 'fengmk2:pass'
+      }, function (err, data, res) {
+        should.not.exist(err);
+        res.should.status(200);
+        data.should.eql({user: 'fengmk2', password: 'pass'});
+        done();
+      });
+    });
+
+    it('should support http://user:pass@hostname', function (done) {
+      urllib.request(host.replace('://', '://fengmk2:123456@') + '/auth', {
+        type: 'get',
+        dataType: 'json',
+      }, function (err, data, res) {
+        should.not.exist(err);
+        res.should.status(200);
+        data.should.eql({user: 'fengmk2', password: '123456'});
         done();
       });
     });

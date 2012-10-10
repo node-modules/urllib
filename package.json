@@ -1,7 +1,7 @@
 {
   "name": "urllib",
   "version": "0.2.9",
-  "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more. Like python's _urllib_ module.",
+  "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more.",
   "keywords": [ "urllib", "http", "urlopen", "curl", "wget" ],
   "author": "fengmk2 <fengmk2@gmail.com> (http://github.com/fengmk2)",
   "homepage": "http://github.com/TBEDP/urllib",

@@ -1,8 +1,8 @@
-# urllib
+# urllib [![Build Status](https://secure.travis-ci.org/TBEDP/urllib.png?branch=master)](http://travis-ci.org/TBEDP/urllib)
 
-[![Build Status](https://secure.travis-ci.org/TBEDP/urllib.png?branch=master)](http://travis-ci.org/TBEDP/urllib)
+![logo](https://raw.github.com/TBEDP/urllib/master/logo.png)
 
-Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more. Like python  _urllib_ module.
+Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more.
 
 ## Install
 
@@ -11,8 +11,6 @@ $ npm install urllib
 ```
 
 ## Usage
-
-### urllib.request()
 
 ```
 var urllib = require('urllib');
@@ -26,9 +24,8 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
 
 ## TODO
 
-* Upload file.
+* Upload file like form upload.
 * Auto redirect handle.
-* Bash auth support.
 
 ## Authors
 
