@@ -1,4 +1,6 @@
 logo.png
+.travis.yml
+examples/
 test/
 Makefile
 lib-cov/

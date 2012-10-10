@@ -290,7 +290,8 @@ describe('urllib.test.js', function () {
 
   describe('https request', function () {
     it('GET github search user api', function (done) {
-      urllib.request('https://api.github.com/legacy/user/search/location:china', {dataType: 'json'},
+      urllib.request('https://api.github.com/legacy/user/search/location:china', 
+        { dataType: 'json', timeout: 10000 },
       function (err, data, res) {
         should.not.exist(err);
         data.should.have.property('users');
