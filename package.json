@@ -16,6 +16,7 @@
   "devDependencies": {
     "should": ">=0.4.2",
     "pedding": "*",
+    "jscover": "*",
     "agentkeepalive": "*",
     "mocha": ">=0.14.1"
   },

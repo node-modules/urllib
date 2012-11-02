@@ -4,7 +4,7 @@
 
 Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more.
 
-jscoverage: [100%](http://fengmk2.github.com/coverage/urllib.html)
+* jscoverage: [100%](http://fengmk2.github.com/coverage/urllib.html)
 
 ## Install
 
@@ -34,13 +34,17 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
 Below is the output from `git-summary`.
 
 ```
- project: urllib
- commits: 17
- files  : 9
- authors: 
-    13	fengmk2                 76.5%
-     3	Jackson Tian            17.6%
-     1	aleafs                  5.9%
+$ git summary 
+
+ project  : urllib
+ repo age : 1 year, 6 months
+ active   : 16 days
+ commits  : 35
+ files    : 16
+ authors  : 
+    30  fengmk2                 85.7%
+     4  Jackson Tian            11.4%
+     1  aleafs                  2.9%
 ```
 
 ## Contributors
