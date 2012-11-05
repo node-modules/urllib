@@ -14,7 +14,7 @@ $ npm install urllib
 
 ## Usage
 
-```
+```js
 var urllib = require('urllib');
 
 urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res) {
@@ -22,6 +22,35 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
   console.log(res.headers);
   console.log(data.toString());
 });
+```
+
+### Upload file with `[formstream](https://github.com/fengmk2/formstream)`
+
+```js
+var urllib = require('urllib');
+var formstream = require('formstream');
+var should = require('should');
+
+var form = formstream();
+form.file('file', __filename);
+form.field('hello', '你好urllib');
+var args = {
+  type: 'POST',
+  headers: form.headers(),
+  stream: form
+};
+var req = urllib.request(host + '/stream', args, function (err, data, res) {
+  should.not.exist(err);
+  data = data.toString();
+  data.should.include('你好urllib\r\n----------------------------');
+  data.should.include('Content-Disposition: form-data; name="file"; filename="urllib.test.js"');
+  done();
+});
+
+// you can abort the request after 5 seconds
+setTimout(function () {
+  req.abort();
+}, 5000);
 ```
 
 ## TODO
@@ -33,18 +62,18 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
 
 Below is the output from `git-summary`.
 
-```
+```bash
 $ git summary 
 
  project  : urllib
  repo age : 1 year, 6 months
- active   : 17 days
- commits  : 36
+ active   : 18 days
+ commits  : 38
  files    : 16
  authors  : 
-    31  fengmk2                 86.1%
-     4  Jackson Tian            11.1%
-     1  aleafs                  2.8%
+    33  fengmk2                 86.8%
+     4  Jackson Tian            10.5%
+     1  aleafs                  2.6%
 ```
 
 ## Contributors
