@@ -13,10 +13,14 @@
   "scripts": {
     "test": "make test"
   },
+  "dependencies": {
+    "buffer-concat": "0.0.1"
+  },
   "devDependencies": {
     "should": ">=0.4.2",
     "pedding": "*",
     "jscover": "*",
+    "formstream": "*",
     "agentkeepalive": "*",
     "mocha": ">=0.14.1"
   },

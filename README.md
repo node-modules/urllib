@@ -4,7 +4,7 @@
 
 Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more.
 
-* jscoverage: [100%](http://fengmk2.github.com/coverage/urllib.html)
+* jscoverage: [98%](http://fengmk2.github.com/coverage/urllib.html)
 
 ## Install
 
@@ -38,13 +38,13 @@ $ git summary
 
  project  : urllib
  repo age : 1 year, 6 months
- active   : 16 days
- commits  : 35
+ active   : 17 days
+ commits  : 36
  files    : 16
  authors  : 
-    30  fengmk2                 85.7%
-     4  Jackson Tian            11.4%
-     1  aleafs                  2.9%
+    31  fengmk2                 86.1%
+     4  Jackson Tian            11.1%
+     1  aleafs                  2.8%
 ```
 
 ## Contributors

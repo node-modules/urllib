@@ -9,6 +9,9 @@ var querystring = require('querystring');
 var urlutil = require('url');
 var KeepAliveAgent = require('agentkeepalive');
 var pedding = require('pedding');
+var fs = require('fs');
+var formstream = require('formstream');
+
 
 function implode_buffer_chunks(chunks) {
   var i, len = 0;
@@ -28,8 +31,10 @@ function implode_buffer_chunks(chunks) {
 
 var server = require('http').createServer(function (req, res) {
   var chunks  = [];
+  var size = 0;
   req.on('data', function (buf) {
     chunks.push(buf);
+    size += buf.length;
   });
 
   req.on('end', function () {
@@ -59,6 +64,15 @@ var server = require('http').createServer(function (req, res) {
       var auth = new Buffer(req.headers.authorization.split(' ')[1], 'base64').toString().split(':');
       res.writeHeader(200);
       return res.end(JSON.stringify({user: auth[0], password: auth[1]}));
+    } else if (req.url === '/stream') {
+      res.writeHeader(200, {
+        'Content-Length': String(size)
+      });
+      for (var i = 0; i < chunks.length; i++) {
+        res.write(chunks[i]);
+      }
+      res.end();
+      return;
     }
 
     var url = req.url.split('?');
@@ -76,11 +90,18 @@ var server = require('http').createServer(function (req, res) {
     res.end(ret.replace('##{charset}##', get.charset ? get.charset : ''));
 
   });
-}).listen(33749);
+});
 
 describe('urllib.test.js', function () {
 
-  var host = 'http://127.0.0.1:33749';
+  var host = 'http://127.0.0.1:';
+
+  before(function (done) {
+    server.listen(0, function () {
+      host += server.address().port;
+      done();
+    });
+  });
 
   after(function () {
     server.close();
@@ -124,8 +145,7 @@ describe('urllib.test.js', function () {
       urllib.request(host + '/timeout', { timeout: 450 }, function (err, data, res) {
         should.exist(err);
         err.name.should.equal('RequestTimeoutError');
-        err.stack.should.match(/^RequestTimeoutError: socket hang up, request timeout for 450ms\./);
-        err.code.should.equal('ECONNRESET');
+        err.message.should.equal('Request timeout for 450ms.');
         should.not.exist(data);
         should.not.exist(res);
         done();
@@ -286,6 +306,57 @@ describe('urllib.test.js', function () {
         });
       });
     });
+  });
+
+  describe('support stream', function () {
+    it('should post stream success', function (done) {
+      var stat = fs.statSync(__filename);
+      var stream = fs.createReadStream(__filename);
+      urllib.request(host + '/stream', {
+        type: 'POST',
+        stream: stream
+      }, function (err, data, res) {
+        should.not.exist(err);
+        data.should.be.an.instanceof(Buffer);
+        data.should.length(stat.size);
+        res.headers['content-length'].should.equal(String(stat.size));
+        done();
+      });
+    });
+
+    it('should upload file with formstream', function (done) {
+      var form = formstream();
+      form.file('file', __filename);
+      form.field('hello', '你好urllib');
+      var args = {
+        type: 'POST',
+        headers: form.headers(),
+        stream: form
+      };
+      urllib.request(host + '/stream', args, function (err, data, res) {
+        should.not.exist(err);
+        data = data.toString();
+        data.should.include('你好urllib\r\n----------------------------');
+        data.should.include('Content-Disposition: form-data; name="file"; filename="urllib.test.js"');
+        done();
+      });
+    });
+
+    it('should post not exists file stream', function (done) {
+      var stat = fs.statSync(__filename);
+      var stream = fs.createReadStream(__filename + 'abc');
+      urllib.request(host + '/stream', {
+        type: 'POST',
+        stream: stream
+      }, function (err, data, res) {
+        should.exist(err);
+        err.message.should.include('ENOENT, open');
+        should.not.exist(data);
+        should.not.exist(res);
+        done();
+      });
+    });
+
   });
 
   describe('https request', function () {
