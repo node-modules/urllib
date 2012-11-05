@@ -44,7 +44,6 @@ var req = urllib.request(host + '/stream', args, function (err, data, res) {
   data = data.toString();
   data.should.include('你好urllib\r\n----------------------------');
   data.should.include('Content-Disposition: form-data; name="file"; filename="urllib.test.js"');
-  done();
 });
 
 // you can abort the request after 5 seconds
