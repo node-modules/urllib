@@ -24,7 +24,7 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
 });
 ```
 
-### Upload file with `[formstream](https://github.com/fengmk2/formstream)`
+### Upload file with [`formstream`](https://github.com/fengmk2/formstream)
 
 ```js
 var urllib = require('urllib');
