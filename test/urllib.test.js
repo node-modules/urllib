@@ -95,10 +95,12 @@ var server = require('http').createServer(function (req, res) {
 describe('urllib.test.js', function () {
 
   var host = 'http://127.0.0.1:';
+  var port = null;
 
   before(function (done) {
     server.listen(0, function () {
-      host += server.address().port;
+      port = server.address().port;
+      host += port;
       done();
     });
   });
@@ -179,6 +181,50 @@ describe('urllib.test.js', function () {
         info.pathname.should.equal('/get');
         info.query.sql.should.equal(params.data.sql);
         info.query.data.should.equal(params.data.data);
+        done();
+      });
+    });
+
+    it('should get data with options', function (done) {
+      var params = {
+        data: {
+          sql: 'SELECT * from table',
+          data: '呵呵'
+        }
+      };
+      var options = {
+        path: '/get',
+        port: port,
+      };
+      urllib.request(options, params, function (err, data, res) {
+        should.not.exist(err);
+        res.should.status(200);
+        var info = urlutil.parse(data.toString(), true);
+        info.pathname.should.equal('/get');
+        info.query.sql.should.equal(params.data.sql);
+        info.query.data.should.equal(params.data.data);
+        done();
+      });
+    });
+
+    it('should post data with options', function (done) {
+      var params = {
+        data: {
+          sql: 'SELECT * from table',
+          data: '哈哈'
+        }
+      };
+      var options = {
+        path: '/post',
+        method: 'post',
+        port: port,
+      };
+      urllib.request(options, params, function (err, data, res) {
+        should.not.exist(err);
+        res.should.status(200);
+        data = querystring.parse(data.toString());
+        data.sql.should.equal(params.data.sql);
+        data.data.should.equal(params.data.data);
         done();
       });
     });
