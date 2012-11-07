@@ -1,4 +1,11 @@
 
+0.3.2 / 2012-11-08 
+==================
+
+  * fixed #4 support urllib.request(options, args, callback)
+  * fixed usage demo bug
+  * fixed readme
+
 0.3.1 / 2012-11-05 
 ==================
 
