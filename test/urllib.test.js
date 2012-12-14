@@ -12,6 +12,7 @@ var pedding = require('pedding');
 var fs = require('fs');
 var path = require('path');
 var formstream = require('formstream');
+fs.existsSync = fs.existsSync || path.existsSync;
 
 
 function implode_buffer_chunks(chunks) {
