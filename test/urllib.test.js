@@ -10,6 +10,7 @@ var urlutil = require('url');
 var KeepAliveAgent = require('agentkeepalive');
 var pedding = require('pedding');
 var fs = require('fs');
+var path = require('path');
 var formstream = require('formstream');
 
 
@@ -60,6 +61,9 @@ var server = require('http').createServer(function (req, res) {
     } else if (req.url === '/wrongjson') {
       res.writeHeader(200);
       return res.end('{"foo":""');
+    } else if (req.url === '/writestream') {
+      var s = fs.createReadStream(__filename);
+      return s.pipe(res);
     } else if (req.url === '/auth') {
       var auth = new Buffer(req.headers.authorization.split(' ')[1], 'base64').toString().split(':');
       res.writeHeader(200);
@@ -332,9 +336,7 @@ describe('urllib.test.js', function () {
       it('should use KeepAlive agent request all urls', function (done) {
         var urls = [
           'http://www.taobao.com/',
-          'http://s.taobao.com/search?spm=1.1000386.220544.1.39f990&q=%C2%E3%D1%A5&refpid=420460_1006&source=tbsy&style=grid&tab=all',
-          'http://s.taobao.com/search?spm=1.1000386.220544.5.39f990&q=%C7%EF%B4%F2%B5%D7%C9%C0&refpid=420464_1006&source=tbsy&pdc=true&style=grid',
-          'http://s.taobao.com/search?spm=a230r.1.6.3.d2f979&q=%C5%A3%D7%D0%BF%E3%C5%AE&style=grid&tab=all&source=tbsy&refpid=420467_1006&newpre=null&p4p_str=fp_midtop%3D0%26firstpage_pushleft%3D0&cps=yes&from=compass&cat=50103042&navlog=compass-3-c-50103042',
+          'http://nodejs.org/',
         ];
         var agent = this.agent;
         done = pedding(urls.length, done);
@@ -397,6 +399,51 @@ describe('urllib.test.js', function () {
       }, function (err, data, res) {
         should.exist(err);
         err.message.should.include('ENOENT, open');
+        should.not.exist(data);
+        should.not.exist(res);
+        done();
+      });
+    });
+
+  });
+
+  describe('args.writeStream', function () {
+    var tmpfile = path.join(process.env.TMPDIR, 'urllib_writestream.tmp');
+
+    it('should store data writeStream', function (done) {
+      var writeStream = fs.createWriteStream(tmpfile);
+      urllib.request(host + '/writestream', {
+        writeStream: writeStream
+      }, function (err, data, res) {
+        should.not.exist(err);
+        should.ok(fs.existsSync(tmpfile));
+        should.ok(data === null);
+        fs.readFileSync(tmpfile, 'utf8').should.equal(fs.readFileSync(__filename, 'utf8'));
+        res.should.status(200);
+        done();
+      });
+    });
+
+    it('should return error when writeStream emit error', function (done) {
+      var writeStream = fs.createWriteStream('/wrongpath/haha' + tmpfile);
+      urllib.request(host + '/writestream', {
+        writeStream: writeStream
+      }, function (err, data, res) {
+        should.exist(err);
+        err.message.should.include('ENOENT, open');
+        done();
+      });
+    });
+
+    it('should error', function (done) {
+      var writeStream = fs.createWriteStream(tmpfile);
+      urllib.request(host + '/error', {
+        writeStream: writeStream
+      }, function (err, data, res) {
+        should.exist(err);
+        err.name.should.equal('RequestError');
+        err.stack.should.match(/^RequestError: socket hang up/);
+        err.code.should.equal('ECONNRESET');
         should.not.exist(data);
         should.not.exist(res);
         done();

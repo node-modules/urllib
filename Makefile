@@ -1,10 +1,10 @@
 TESTS = test/*.test.js
 REPORTER = spec
 TIMEOUT = 20000
-JSCOVERAGE = ./node_modules/.bin/jscover
+JSCOVERAGE = ./node_modules/jscover/bin/jscover
 
 test:
-	@NODE_ENV=test ./node_modules/.bin/mocha \
+	@NODE_ENV=test ./node_modules/mocha/bin/mocha \
 		--reporter $(REPORTER) \
 		--timeout $(TIMEOUT) \
 		$(TESTS)
