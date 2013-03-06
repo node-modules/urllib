@@ -1,4 +1,10 @@
 
+0.3.4 / 2013-03-06 
+==================
+
+  * fixed #8 auto add application/x-www-form-urlencoded
+  * fixed existsSync for node < 0.8
+
 0.3.3 / 2012-12-14 
 ==================
 
