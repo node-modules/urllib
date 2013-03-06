@@ -54,6 +54,7 @@ var server = require('http').createServer(function (req, res) {
       res.writeHeader(301);
       return res.end('I am 301 body');
     } else if (req.url === '/post') {
+      res.setHeader('X-Request-Content-Type', req.headers['content-type'] || '');
       res.writeHeader(200);
       return res.end(implode_buffer_chunks(chunks));
     } else if (req.url.indexOf('/get') === 0) {
@@ -234,7 +235,8 @@ describe('urllib.test.js', function () {
       });
     });
 
-    it('should post data', function (done) {
+    it('should post data and auto add "application/x-www-form-urlencoded" Content-Type header', 
+    function (done) {
       var params = {
         type: 'POST',
         data: {
@@ -245,6 +247,30 @@ describe('urllib.test.js', function () {
       urllib.request(host + '/post', params, function (err, data, res) {
         should.not.exist(err);
         res.should.status(200);
+        res.should.header('X-Request-Content-Type', 'application/x-www-form-urlencoded');
+        data = querystring.parse(data.toString());
+        data.sql.should.equal(params.data.sql);
+        data.data.should.equal(params.data.data);
+        done();
+      });
+    });
+
+    it('should post data with custom Content-Type "test-foo-encode"', 
+    function (done) {
+      var params = {
+        type: 'POST',
+        data: {
+          sql: 'SELECT * from table',
+          data: '哈哈'
+        },
+        headers: {
+          'Content-Type': 'test-foo-encode'
+        }
+      };
+      urllib.request(host + '/post', params, function (err, data, res) {
+        should.not.exist(err);
+        res.should.status(200);
+        res.should.header('X-Request-Content-Type', 'test-foo-encode');
         data = querystring.parse(data.toString());
         data.sql.should.equal(params.data.sql);
         data.data.should.equal(params.data.data);
@@ -454,15 +480,15 @@ describe('urllib.test.js', function () {
   });
 
   describe('https request', function () {
-    it('GET github search user api', function (done) {
-      urllib.request('https://api.github.com/legacy/user/search/location:china', 
-        { dataType: 'json', timeout: 10000 },
+    it('GET github page', function (done) {
+      urllib.request('https://github.com/TBEDP/urllib', { timeout: 10000 },
       function (err, data, res) {
         should.not.exist(err);
-        data.should.have.property('users');
-        data.users.length.should.above(0);
+        data.toString().should.include('git@github.com:TBEDP/urllib.git');
+        // data.should.have.property('users');
+        // data.users.length.should.above(0);
         res.should.status(200);
-        res.should.have.header('content-type', 'application/json; charset=utf-8');
+        res.should.have.header('content-type', 'text/html; charset=utf-8');
         done();
       });
     });
