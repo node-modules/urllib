@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-var urllib = process.env.URLLIB_COV ? require('../lib-cov/urllib') : require('../lib/urllib');
+var urllib = require('../');
 var should = require('should');
 var http = require('http');
 var querystring = require('querystring');

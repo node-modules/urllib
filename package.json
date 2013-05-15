@@ -11,7 +11,9 @@
     "url": "git://github.com/TBEDP/urllib.git"
   },
   "scripts": {
-    "test": "make test"
+    "test": "make test-all",
+    "blanket": { "pattern": "urllib/lib" },
+    "travis-cov": { "threshold": 98 }
   },
   "dependencies": {
     "buffer-concat": "0.0.1"
@@ -19,7 +21,8 @@
   "devDependencies": {
     "should": ">=0.4.2",
     "pedding": "*",
-    "jscover": "*",
+    "blanket": "*",
+    "travis-cov": "*",
     "formstream": "*",
     "agentkeepalive": "*",
     "mocha": ">=0.14.1"

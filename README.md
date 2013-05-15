@@ -4,7 +4,7 @@
 
 Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more.
 
-* jscoverage: [98%](http://fengmk2.github.com/coverage/urllib.html)
+* jscoverage: [99%](http://fengmk2.github.com/coverage/urllib.html)
 
 ## Install
 
