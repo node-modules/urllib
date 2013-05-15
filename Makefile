@@ -7,6 +7,7 @@ test:
 	@NODE_ENV=test ./node_modules/mocha/bin/mocha \
 		--reporter $(REPORTER) \
 		--timeout $(TIMEOUT) \
+		--require './test/patch.js' \
 		$(MOCHA_OPTS) \
 		$(TESTS)
 

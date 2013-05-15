@@ -12,8 +12,6 @@ var pedding = require('pedding');
 var fs = require('fs');
 var path = require('path');
 var formstream = require('formstream');
-fs.existsSync = fs.existsSync || path.existsSync;
-
 
 function implode_buffer_chunks(chunks) {
   var i, len = 0;
@@ -435,7 +433,7 @@ describe('urllib.test.js', function () {
   });
 
   describe('args.writeStream', function () {
-    var tmpfile = path.join(process.env.TMPDIR, 'urllib_writestream.tmp');
+    var tmpfile = path.join(process.env.TMPDIR || __dirname, 'urllib_writestream.tmp');
 
     it('should store data writeStream', function (done) {
       var writeStream = fs.createWriteStream(tmpfile);
