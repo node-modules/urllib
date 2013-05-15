@@ -126,7 +126,7 @@ describe('urllib.test.js', function () {
 
   describe('request()', function () {
     it('should request https success', function (done) {
-      urllib.request('https://www.alipay.com/', function (err, data, res) {
+      urllib.request('https://www.alipay.com/', {timeout: 10000}, function (err, data, res) {
         should.not.exist(err);
         should.ok(Buffer.isBuffer(data));
         res.should.status(200);
