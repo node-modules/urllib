@@ -162,7 +162,7 @@ describe('urllib.test.js', function () {
       urllib.request(host + '/error', function (err, data, res) {
         should.exist(err);
         err.name.should.equal('RequestError');
-        err.stack.should.match(/^RequestError: socket hang up/);
+        err.stack.should.include('socket hang up');
         err.code.should.equal('ECONNRESET');
         should.not.exist(data);
         should.not.exist(res);
@@ -433,7 +433,7 @@ describe('urllib.test.js', function () {
   });
 
   describe('args.writeStream', function () {
-    var tmpfile = path.join(process.env.TMPDIR || __dirname, 'urllib_writestream.tmp');
+    var tmpfile = path.join(process.env.TMPDIR || __dirname, 'urllib_writestream.tmp' + process.version);
 
     it('should store data writeStream', function (done) {
       var writeStream = fs.createWriteStream(tmpfile);
@@ -467,7 +467,7 @@ describe('urllib.test.js', function () {
       }, function (err, data, res) {
         should.exist(err);
         err.name.should.equal('RequestError');
-        err.stack.should.match(/^RequestError: socket hang up/);
+        err.stack.should.match(/socket hang up/);
         err.code.should.equal('ECONNRESET');
         should.not.exist(data);
         should.not.exist(res);
