@@ -13,7 +13,6 @@ $ npm install urllib
 ```
 
 ## Usage
-## abc
 
 ```js
 var urllib = require('urllib');
