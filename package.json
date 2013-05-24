@@ -24,6 +24,7 @@
     "blanket": "*",
     "travis-cov": "*",
     "formstream": "*",
+    "iconv-lite": "*",
     "agentkeepalive": "*",
     "mocha": ">=0.14.1"
   },
