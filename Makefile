@@ -8,6 +8,7 @@ install:
 
 test: install
 	@NODE_ENV=test ./node_modules/mocha/bin/mocha \
+		--bail \
 		--reporter $(REPORTER) \
 		--timeout $(TIMEOUT) \
 		--require 'node-patch' \
@@ -27,4 +28,4 @@ test-coveralls:
 
 test-all: test test-cov
 
-.PHONY: test test-cov test-all test-coveralls
+.PHONY: install test test-cov test-all test-coveralls
