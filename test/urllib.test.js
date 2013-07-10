@@ -178,12 +178,11 @@ describe('urllib.test.js', function () {
           data: '呵呵'
         }
       };
-      urllib.request(host + '/get?must_not=be_covered', params, function (err, data, res) {
+      urllib.request(host + '/get', params, function (err, data, res) {
         should.not.exist(err);
         res.should.status(200);
         var info = urlutil.parse(data.toString(), true);
         info.pathname.should.equal('/get');
-        info.query.must_not.should.equal('be_covered');
         info.query.sql.should.equal(params.data.sql);
         info.query.data.should.equal(params.data.data);
         done();
@@ -208,6 +207,24 @@ describe('urllib.test.js', function () {
         info.pathname.should.equal('/get');
         info.query.sql.should.equal(params.data.sql);
         info.query.data.should.equal(params.data.data);
+        done();
+      });
+    });
+
+    it('should concat query string and data correctly when GET', function (done) {
+      urllib.request(host + '/get?that=in_path', {
+        type: 'get',
+        data: {
+          'should_not': 'be_covered',
+          'by': 'data'
+        }
+      }, function (err, data, res) {
+        should.not.exist(err);
+        res.should.status(200);
+        var queries = urlutil.parse(data.toString(), true).query;
+        queries['that'].should.equal('in_path');
+        queries['should_not'].should.equal('be_covered');
+        queries['by'].should.equal('data');
         done();
       });
     });
