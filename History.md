@@ -1,4 +1,15 @@
 
+0.3.5 / 2013-07-10 
+==================
+
+  * fixed writeSteam receive incomplete bug
+  * update makefile
+  * add coveralls
+  * remove 0.11 from travis
+  * add patch for node 0.6
+  * fixed https request timeout tests
+  * use blanket instead of jscover
+
 0.3.4 / 2013-03-06 
 ==================
 
