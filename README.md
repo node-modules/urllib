@@ -125,43 +125,36 @@ var req = urllib.request('http://my.server.com/upload', {
 });
 ```
 
-
 ## TODO
 
-* Upload file like form upload.
-* Auto redirect handle.
+* [ ] Support component
+* [√] Upload file like form upload
+* [ ] Auto redirect handle
 
 ## Authors
 
 Below is the output from `git-summary`.
 
 ```bash
-$ git summary
+$ git summary 
 
  project  : urllib
- repo age : 1 year, 6 months
- active   : 18 days
- commits  : 38
+ repo age : 2 years, 2 months
+ active   : 26 days
+ commits  : 60
  files    : 16
- authors  :
-    33  fengmk2                 86.8%
-     4  Jackson Tian            10.5%
-     1  aleafs                  2.6%
+ authors  : 
+    54  fengmk2                 90.0%
+     4  Jackson Tian            6.7%
+     1  XiNGRZ                  1.7%
+     1  aleafs                  1.7%
 ```
-
-## Contributors
-Ordered by date of first contribution.
-[Auto-generated](http://github.com/dtrejo/node-authors) on Tue Aug 14 2012 03:17:14 GMT+0800 (CST).
-
-- [fengmk2](http://fengmk2.github.com)
-- [aleafs](https://github.com/aleafs)
-- [Jackson Tian aka `JacksonTian`](https://github.com/JacksonTian)
 
 ## License
 
 (The MIT License)
 
-Copyright (c) 2011-2012 fengmk2 &lt;fengmk2@gmail.com&gt;
+Copyright (c) 2011-2013 fengmk2 &lt;fengmk2@gmail.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
