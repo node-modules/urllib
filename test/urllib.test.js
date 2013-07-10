@@ -429,22 +429,24 @@ describe('urllib.test.js', function () {
         done();
       });
     });
-
   });
 
   describe('args.writeStream', function () {
     var tmpfile = path.join(process.env.TMPDIR || __dirname, 'urllib_writestream.tmp' + process.version);
 
     it('should store data writeStream', function (done) {
+      done = pedding(2, done);
       var writeStream = fs.createWriteStream(tmpfile);
-      urllib.request(host + '/writestream', {
-        writeStream: writeStream
+      writeStream.on('close', done);
+      urllib.request('https://codeload.github.com/TBEDP/urllib/zip/0.3.4', {
+        writeStream: writeStream,
       }, function (err, data, res) {
         should.not.exist(err);
         should.ok(fs.existsSync(tmpfile));
         should.ok(data === null);
-        fs.readFileSync(tmpfile, 'utf8').should.equal(fs.readFileSync(__filename, 'utf8'));
         res.should.status(200);
+        fs.statSync(tmpfile).size.should.equal(55695);
+        // fs.readFileSync(tmpfile, 'utf8').should.equal(fs.readFileSync(__filename, 'utf8'));
         done();
       });
     });
@@ -482,9 +484,7 @@ describe('urllib.test.js', function () {
       urllib.request('https://github.com/TBEDP/urllib', { timeout: 10000 },
       function (err, data, res) {
         should.not.exist(err);
-        data.toString().should.include('git@github.com:TBEDP/urllib.git');
-        // data.should.have.property('users');
-        // data.users.length.should.above(0);
+        data.toString().should.include('TBEDP/urllib');
         res.should.status(200);
         res.should.have.header('content-type', 'text/html; charset=utf-8');
         done();
