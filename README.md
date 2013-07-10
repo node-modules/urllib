@@ -32,7 +32,7 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
 
 - **url** String | Object - The URL to request, either a String or a Object that return by [url.parse](http://nodejs.org/api/url.html#url_url_parse_urlstr_parsequerystring_slashesdenotehost).
 - ***options*** Object - Optional
-  - ***type*** String - Request method. Defaults to `GET`. Could be `GET`, `POST`, `DELETE` or `PUT`
+  - ***method*** String - Request method, defaults to `GET`. Could be `GET`, `POST`, `DELETE` or `PUT`. Alias 'type'.
   - ***data*** Object - Data to be sent. Will be stringify automatically.
   - ***content*** String | [Buffer](http://nodejs.org/api/buffer.html) - Manually set the content of payload. If set, `data` will be ignored.
   - ***stream*** [stream.Readable](http://nodejs.org/api/stream.html#stream_class_stream_readable) - Stream to be pipe to the remote. If set, `data` and `content` will be ignored.
@@ -136,14 +136,14 @@ var req = urllib.request('http://my.server.com/upload', {
 Below is the output from `git-summary`.
 
 ```bash
-$ git summary 
+$ git summary
 
  project  : urllib
  repo age : 2 years, 2 months
  active   : 26 days
  commits  : 60
  files    : 16
- authors  : 
+ authors  :
     54  fengmk2                 90.0%
      4  Jackson Tian            6.7%
      1  XiNGRZ                  1.7%
