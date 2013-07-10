@@ -26,6 +26,7 @@
     "coveralls": "*",
     "mocha-lcov-reporter": "*",
     "formstream": "*",
+    "iconv-lite": "*",
     "agentkeepalive": "*",
     "node-patch": "*",
     "mocha": ">=0.14.1"
