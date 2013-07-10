@@ -36,17 +36,18 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
   - ***data*** Object - Data to be sent. Will be stringify automatically.
   - ***content*** String | [Buffer](http://nodejs.org/api/buffer.html) - Manually set the content of payload. If set, `data` will be ignored.
   - ***stream*** [stream.Readable](http://nodejs.org/api/stream.html#stream_class_stream_readable) - Stream to be pipe to the remote. If set, `data` and `content` will be ignored.
-  - ***writeStream*** [stream.Writable](http://nodejs.org/api/stream.html#stream_class_stream_writable) - A writable stream to be piped by the response stream. Responding data will be write to this stream and `callback` will be called with `data` set `null` after finished writing
+  - ***writeStream*** [stream.Writable](http://nodejs.org/api/stream.html#stream_class_stream_writable) - A writable stream to be piped by the response stream. Responding data will be write to this stream and `callback` will be called with `data` set `null` after finished writing.
   - ***dataType*** String - Type of response data. Could be `text` or `json`. If it's `text`, the `callback`ed `data` would be a Buffer. If it's `json`, the `data` of callback would be a parsed JSON Object. Defaults to `text`.
-  - ***headers*** Object - Request headers
+  - ***headers*** Object - Request headers.
   - ***timeout*** Number - Request timeout in milliseconds. Defaults to `exports.TIMEOUT`.
-  - ***auth*** String - `username:password` used in HTTP Basic Authorization
-  - ***agent*** [http.Agent](http://nodejs.org/api/http.html#http_class_http_agent) - HTTP Agent object
-  - ***httpsAgent*** [https.Agent](http://nodejs.org/api/https.html#https_class_https_agent) - HTTPS Agent object
-- ***callback(err, data, res)*** Function - Optional
+  - ***auth*** String - `username:password` used in HTTP Basic Authorization.
+  - ***agent*** [http.Agent](http://nodejs.org/api/http.html#http_class_http_agent) - HTTP Agent object.
+  - ***httpsAgent*** [https.Agent](http://nodejs.org/api/https.html#https_class_https_agent) - HTTPS Agent object.
+- ***callback(err, data, res)*** Function - Optional callback.
   - **err** Error - Would be `null` if no error accured.
-  - **data** Buffer | Object - The data responsed. Would be a Buffer if `dataType` is set to `text` or an JSON parsed into Object if it's set to `json`
+  - **data** Buffer | Object - The data responsed. Would be a Buffer if `dataType` is set to `text` or an JSON parsed into Object if it's set to `json`.
   - **res** [stream.Readable](http://nodejs.org/api/stream.html#stream_class_stream_readable) - The response stream.
+- ***context*** Object - Optional context object that will be binded to `this` of `callback`.
 
 #### Returns
 

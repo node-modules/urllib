@@ -294,6 +294,28 @@ describe('urllib.test.js', function () {
       });
     });
 
+    it('should be case-insensitively keys of which headers', function (done) {
+      var params = {
+        type: 'POST',
+        data: {
+          sql: 'SELECT * from table',
+          data: '哈哈'
+        },
+        headers: {
+          'coNtEnt-tYpe': 'test-foo-encode'
+        }
+      };
+      urllib.request(host + '/post', params, function (err, data, res) {
+        should.not.exist(err);
+        res.should.status(200);
+        res.should.header('X-Request-Content-Type', 'test-foo-encode');
+        data = querystring.parse(data.toString());
+        data.sql.should.equal(params.data.sql);
+        data.data.should.equal(params.data.data);
+        done();
+      });
+    });
+
     it('should post big data with params.content', function (done) {
       var bigdata = new Buffer(1024 * 1024);
       urllib.request(host + '/post', {
