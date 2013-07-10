@@ -60,7 +60,7 @@ When making a request:
 
 ```js
 urllib.request('http://example.com', {
-  type: 'GET',
+  method: 'GET',
   data: {
     'a': 'hello',
     'b': 'world'
@@ -80,7 +80,7 @@ Notes that if you want to send a JSON body, you should stringify it yourself:
 
 ```js
 urllib.request('http://example.com', {
-  type: 'POST',
+  method: 'POST',
   headers: {
     'content-type': 'application/json'
   },
@@ -117,7 +117,7 @@ form.file('file', __filename);
 form.field('hello', '你好urllib');
 
 var req = urllib.request('http://my.server.com/upload', {
-  type: 'POST',
+  method: 'POST',
   headers: form.headers(),
   stream: form
 }, function (err, data) {
