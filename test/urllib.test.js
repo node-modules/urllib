@@ -178,11 +178,12 @@ describe('urllib.test.js', function () {
           data: '呵呵'
         }
       };
-      urllib.request(host + '/get', params, function (err, data, res) {
+      urllib.request(host + '/get?must_not=be_covered', params, function (err, data, res) {
         should.not.exist(err);
         res.should.status(200);
         var info = urlutil.parse(data.toString(), true);
         info.pathname.should.equal('/get');
+        info.query.must_not.should.equal('be_covered');
         info.query.sql.should.equal(params.data.sql);
         info.query.data.should.equal(params.data.data);
         done();
@@ -233,7 +234,7 @@ describe('urllib.test.js', function () {
       });
     });
 
-    it('should post data and auto add "application/x-www-form-urlencoded" Content-Type header', 
+    it('should post data and auto add "application/x-www-form-urlencoded" Content-Type header',
     function (done) {
       var params = {
         type: 'POST',
@@ -253,7 +254,7 @@ describe('urllib.test.js', function () {
       });
     });
 
-    it('should post data with custom Content-Type "test-foo-encode"', 
+    it('should post data with custom Content-Type "test-foo-encode"',
     function (done) {
       var params = {
         type: 'POST',
