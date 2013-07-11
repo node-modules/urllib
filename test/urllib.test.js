@@ -248,24 +248,42 @@ describe('urllib.test.js', function () {
       });
     });
 
-    it('should post data and auto add "application/x-www-form-urlencoded" Content-Type header',
+    it('should post/put/patch data and auto add "application/x-www-form-urlencoded" Content-Type header',
     function (done) {
-      var params = {
+      done = pedding(3, done);
+      var params1 = {
         type: 'POST',
         data: {
           sql: 'SELECT * from table',
           data: '哈哈'
         }
       };
-      urllib.request(host + '/post', params, function (err, data, res) {
+      var check = function (err, data, res) {
         should.not.exist(err);
         res.should.status(200);
         res.should.header('X-Request-Content-Type', 'application/x-www-form-urlencoded');
         data = querystring.parse(data.toString());
-        data.sql.should.equal(params.data.sql);
-        data.data.should.equal(params.data.data);
+        data.sql.should.equal(params1.data.sql);
+        data.data.should.equal(params1.data.data);
         done();
-      });
+      }
+      urllib.request(host + '/post', params1, check);
+      var params2 = {
+        type: 'put',
+        data: {
+          sql: 'SELECT * from table',
+          data: '哈哈'
+        }
+      };
+      urllib.request(host + '/post', params2, check);
+      var params3 = {
+        type: 'patch',
+        data: {
+          sql: 'SELECT * from table',
+          data: '哈哈'
+        }
+      };
+      urllib.request(host + '/post', params3, check);
     });
 
     it('should post data with custom Content-Type "test-foo-encode"',

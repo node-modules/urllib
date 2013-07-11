@@ -4,8 +4,6 @@
 
 Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more.
 
-* jscoverage: [99%](http://fengmk2.github.com/coverage/urllib.html)
-
 ## Install
 
 ```bash
@@ -18,8 +16,12 @@ $ npm install urllib
 var urllib = require('urllib');
 
 urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res) {
+  if (err) {
+    throw err; // you need to handle error
+  }
   console.log(res.statusCode);
   console.log(res.headers);
+  // data is Buffer instance
   console.log(data.toString());
 });
 ```
@@ -71,7 +73,9 @@ urllib.request('http://example.com', {
 
 For `GET` request, `data` will be stringify to query string, e.g. `http://example.com/?a=hello&world`.
 
-For `POST` or `PUT` request, in defaults, the `data` will be stringify into `application/x-www-form-urlencoded`.
+For `POST`, `PATCH` or `PUT` request, 
+in defaults, the `data` will be stringify into `application/x-www-form-urlencoded` format
+if `Content-Type` header is not set.
 
 #### `options.content`
 
@@ -83,7 +87,7 @@ Notes that if you want to send a JSON body, you should stringify it yourself:
 urllib.request('http://example.com', {
   method: 'POST',
   headers: {
-    'content-type': 'application/json'
+    'Content-Type': 'application/json'
   },
   content: JSON.stringify({
     'a': 'hello',
