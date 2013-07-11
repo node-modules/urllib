@@ -221,10 +221,7 @@ describe('urllib.test.js', function () {
       }, function (err, data, res) {
         should.not.exist(err);
         res.should.status(200);
-        var queries = urlutil.parse(data.toString(), true).query;
-        queries['that'].should.equal('in_path');
-        queries['should_not'].should.equal('be_covered');
-        queries['by'].should.equal('data');
+        data.toString().should.equal('/get?that=in_path&should_not=be_covered&by=data');
         done();
       });
     });
@@ -294,7 +291,7 @@ describe('urllib.test.js', function () {
       });
     });
 
-    it('should be case-insensitively keys of which headers', function (done) {
+    it('should trust lower-case header keys and not covered by auto-added headers', function (done) {
       var params = {
         type: 'POST',
         data: {
@@ -302,7 +299,7 @@ describe('urllib.test.js', function () {
           data: '哈哈'
         },
         headers: {
-          'coNtEnt-tYpe': 'test-foo-encode'
+          'content-type': 'test-foo-encode'
         }
       };
       urllib.request(host + '/post', params, function (err, data, res) {
