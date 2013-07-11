@@ -1,4 +1,12 @@
 
+0.3.6 / 2013-07-11 
+==================
+
+  * fixed bug in processing query string #13 (@xingrz)
+  * updated readme example (@xingrz)
+  * update authors
+  * API docs (@xingrz)
+
 0.3.5 / 2013-07-10 
 ==================
 

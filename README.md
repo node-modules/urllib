@@ -137,18 +137,18 @@ var req = urllib.request('http://my.server.com/upload', {
 Below is the output from `git-summary`.
 
 ```bash
-$ git summary
+$ git summary 
 
  project  : urllib
  repo age : 2 years, 2 months
- active   : 26 days
- commits  : 60
+ active   : 28 days
+ commits  : 71
  files    : 16
- authors  :
-    54  fengmk2                 90.0%
-     4  Jackson Tian            6.7%
-     1  XiNGRZ                  1.7%
-     1  aleafs                  1.7%
+ authors  : 
+    57  fengmk2                 80.3%
+     9  XiNGRZ                  12.7%
+     4  Jackson Tian            5.6%
+     1  aleafs                  1.4%
 ```
 
 ## License
