@@ -211,6 +211,21 @@ describe('urllib.test.js', function () {
       });
     });
 
+    it('should concat query string and data correctly when GET', function (done) {
+      urllib.request(host + '/get?that=in_path', {
+        type: 'get',
+        data: {
+          'should_not': 'be_covered',
+          'by': 'data'
+        }
+      }, function (err, data, res) {
+        should.not.exist(err);
+        res.should.status(200);
+        data.toString().should.equal('/get?that=in_path&should_not=be_covered&by=data');
+        done();
+      });
+    });
+
     it('should post data with options', function (done) {
       var params = {
         data: {
@@ -233,7 +248,7 @@ describe('urllib.test.js', function () {
       });
     });
 
-    it('should post data and auto add "application/x-www-form-urlencoded" Content-Type header', 
+    it('should post data and auto add "application/x-www-form-urlencoded" Content-Type header',
     function (done) {
       var params = {
         type: 'POST',
@@ -253,7 +268,7 @@ describe('urllib.test.js', function () {
       });
     });
 
-    it('should post data with custom Content-Type "test-foo-encode"', 
+    it('should post data with custom Content-Type "test-foo-encode"',
     function (done) {
       var params = {
         type: 'POST',
@@ -263,6 +278,28 @@ describe('urllib.test.js', function () {
         },
         headers: {
           'Content-Type': 'test-foo-encode'
+        }
+      };
+      urllib.request(host + '/post', params, function (err, data, res) {
+        should.not.exist(err);
+        res.should.status(200);
+        res.should.header('X-Request-Content-Type', 'test-foo-encode');
+        data = querystring.parse(data.toString());
+        data.sql.should.equal(params.data.sql);
+        data.data.should.equal(params.data.data);
+        done();
+      });
+    });
+
+    it('should trust lower-case header keys and not covered by auto-added headers', function (done) {
+      var params = {
+        type: 'POST',
+        data: {
+          sql: 'SELECT * from table',
+          data: '哈哈'
+        },
+        headers: {
+          'content-type': 'test-foo-encode'
         }
       };
       urllib.request(host + '/post', params, function (err, data, res) {
