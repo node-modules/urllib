@@ -1,4 +1,10 @@
 
+0.3.7 / 2013-07-11 
+==================
+
+  * PATCH method is also "application/x-www-form-urlencoded" by default
+  * replace logo
+
 0.3.6 / 2013-07-11 
 ==================
 
