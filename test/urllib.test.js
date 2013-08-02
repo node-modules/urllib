@@ -205,7 +205,7 @@ describe('urllib.test.js', function () {
       urllib.request(host + '/socket.end.error', function (err, data, res) {
         should.exist(err);
         err.name.should.equal('RequestError');
-        err.code.should.equal('HPE_INVALID_CHUNK_SIZE');
+        err.code && err.code.should.equal('HPE_INVALID_CHUNK_SIZE');
         err.message.should.equal('Parse Error');
         err.bytesParsed.should.equal(2);
         done();
