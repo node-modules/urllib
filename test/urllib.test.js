@@ -56,6 +56,15 @@ var server = require('http').createServer(function (req, res) {
         }, 300);
       }, 200);
       return;
+    } else if (req.url === '/socket.end.error') {
+      res.write('foo haha\n');
+      setTimeout(function () {
+        res.write('foo haha 2');
+        setTimeout(function () {
+          res.socket.end('balabala');
+        }, 300);
+      }, 200);
+      return;
     } else if (req.url === '/302') {
       res.writeHeader(302);
       return res.end();
@@ -184,19 +193,24 @@ describe('urllib.test.js', function () {
       });
     });
 
-    // it.only('should handle server socket end() will normal', function (done) {
-    //   urllib.request(host + '/socket.end', function (err, data, res) {
-    //     console.log(err);
-    //     console.log(data.toString());
-    //     // should.exist(err);
-    //     // err.name.should.equal('RequestError');
-    //     // err.stack.should.include('socket hang up');
-    //     // err.code.should.equal('ECONNRESET');
-    //     // should.not.exist(data);
-    //     // should.not.exist(res);
-    //     done();
-    //   });
-    // });
+    it('should handle server socket end() will normal', function (done) {
+      urllib.request(host + '/socket.end', function (err, data, res) {
+        should.not.exist(err);
+        data.toString().should.equal('foo haha\nfoo haha 2');
+        done();
+      });
+    });
+
+    it('should handle server socket end("balabal") will error', function (done) {
+      urllib.request(host + '/socket.end.error', function (err, data, res) {
+        should.exist(err);
+        err.name.should.equal('RequestError');
+        err.code.should.equal('HPE_INVALID_CHUNK_SIZE');
+        err.message.should.equal('Parse Error');
+        err.bytesParsed.should.equal(2);
+        done();
+      });
+    });
 
     it('should get data', function (done) {
       var params = {
