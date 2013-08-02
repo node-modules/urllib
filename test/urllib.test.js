@@ -45,6 +45,17 @@ var server = require('http').createServer(function (req, res) {
       }, 500);
     } else if (req.url === '/error') {
       return res.destroy();
+    } else if (req.url === '/socket.end') {
+      res.write('foo haha\n');
+      setTimeout(function () {
+        res.write('foo haha 2');
+        setTimeout(function () {
+          // res.end();
+          res.socket.end();
+          // res.socket.end('foosdfsdf');
+        }, 300);
+      }, 200);
+      return;
     } else if (req.url === '/302') {
       res.writeHeader(302);
       return res.end();
@@ -109,8 +120,11 @@ describe('urllib.test.js', function () {
     });
   });
 
-  after(function () {
-    server.close();
+  after(function (done) {
+    setTimeout(function () {
+      server.close();
+      done();
+    }, 1000);
   });
 
   it('should_mocked_http_service_works_fine', function (done) {
@@ -151,7 +165,7 @@ describe('urllib.test.js', function () {
       urllib.request(host + '/timeout', { timeout: 450 }, function (err, data, res) {
         should.exist(err);
         err.name.should.equal('RequestTimeoutError');
-        err.message.should.equal('Request timeout for 450ms.');
+        err.message.should.match(/^Request#\d+ timeout for 450ms$/);
         should.not.exist(data);
         should.not.exist(res);
         done();
@@ -169,6 +183,20 @@ describe('urllib.test.js', function () {
         done();
       });
     });
+
+    // it.only('should handle server socket end() will normal', function (done) {
+    //   urllib.request(host + '/socket.end', function (err, data, res) {
+    //     console.log(err);
+    //     console.log(data.toString());
+    //     // should.exist(err);
+    //     // err.name.should.equal('RequestError');
+    //     // err.stack.should.include('socket hang up');
+    //     // err.code.should.equal('ECONNRESET');
+    //     // should.not.exist(data);
+    //     // should.not.exist(res);
+    //     done();
+    //   });
+    // });
 
     it('should get data', function (done) {
       var params = {
