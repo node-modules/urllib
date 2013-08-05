@@ -151,7 +151,8 @@ var server = require('http').createServer(function (req, res) {
 });
 
 urllib.request('http://127.0.0.1:1984/socket.end', function (err, data, res) {
-  should.not.exist(err);
+  err.name.should.equal('RemoteSocketClosedError');
+  err.message.should.equal('Remote socket was terminated before `response.end()` was called');
   data.toString().should.equal('foo haha\nfoo haha 2');
   should.ok(res.aborted);
   done();
