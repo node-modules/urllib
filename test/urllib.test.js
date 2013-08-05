@@ -204,7 +204,9 @@ describe('urllib.test.js', function () {
 
     it('should socket.destroy', function (done) {
       urllib.request(host + '/socket.destroy', function (err, data, res) {
-        should.not.exist(err);
+        should.exist(err);
+        err.name.should.equal('RemoteSocketClosedError');
+        err.message.should.equal('Remote socket was terminated before `response.end()` was called');
         data.toString().should.equal('foo haha\nfoo haha 2');
         should.ok(res.aborted);
         done();
@@ -213,7 +215,9 @@ describe('urllib.test.js', function () {
 
     it('should handle server socket end() will normal', function (done) {
       urllib.request(host + '/socket.end', function (err, data, res) {
-        should.not.exist(err);
+        should.exist(err);
+        err.name.should.equal('RemoteSocketClosedError');
+        err.message.should.equal('Remote socket was terminated before `response.end()` was called');
         data.toString().should.equal('foo haha\nfoo haha 2');
         should.ok(res.aborted);
         done();
