@@ -130,6 +130,34 @@ var req = urllib.request('http://my.server.com/upload', {
 });
 ```
 
+### `res.aborted`
+
+If the underlaying connection was terminated before `response.end()` was called, `res.aborted` should be `true`.
+
+```js
+var server = require('http').createServer(function (req, res) {
+  req.on('end', function () {
+    res.write('foo haha\n');
+    setTimeout(function () {
+      res.write('foo haha 2');
+      setTimeout(function () {
+        // res.end();
+        res.socket.end();
+        // res.socket.end('foosdfsdf');
+      }, 300);
+    }, 200);
+    return;
+  });
+});
+
+urllib.request('http://127.0.0.1:1984/socket.end', function (err, data, res) {
+  should.not.exist(err);
+  data.toString().should.equal('foo haha\nfoo haha 2');
+  should.ok(res.aborted);
+  done();
+});
+```
+
 ## TODO
 
 * [ ] Support component

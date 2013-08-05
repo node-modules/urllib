@@ -45,6 +45,15 @@ var server = require('http').createServer(function (req, res) {
       }, 500);
     } else if (req.url === '/error') {
       return res.destroy();
+    } else if (req.url === '/socket.destroy') {
+      res.write('foo haha\n');
+      setTimeout(function () {
+        res.write('foo haha 2');
+        setTimeout(function () {
+          res.destroy();
+        }, 300);
+      }, 200);
+      return;
     } else if (req.url === '/socket.end') {
       res.write('foo haha\n');
       setTimeout(function () {
@@ -193,10 +202,20 @@ describe('urllib.test.js', function () {
       });
     });
 
+    it('should socket.destroy', function (done) {
+      urllib.request(host + '/socket.destroy', function (err, data, res) {
+        should.not.exist(err);
+        data.toString().should.equal('foo haha\nfoo haha 2');
+        should.ok(res.aborted);
+        done();
+      });
+    });
+
     it('should handle server socket end() will normal', function (done) {
       urllib.request(host + '/socket.end', function (err, data, res) {
         should.not.exist(err);
         data.toString().should.equal('foo haha\nfoo haha 2');
+        should.ok(res.aborted);
         done();
       });
     });
