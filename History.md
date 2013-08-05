@@ -1,4 +1,9 @@
 
+0.4.1 / 2013-08-05 
+==================
+
+  * return RemoteSocketClosedError when Remote socket was terminated before `response.end()` was called
+
 0.4.0 / 2013-08-05 
 ==================
 
