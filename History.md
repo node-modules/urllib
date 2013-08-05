@@ -1,4 +1,12 @@
 
+0.4.0 / 2013-08-05 
+==================
+
+  * If the underlaying connection was terminated before `response.end()` was called, `res.aborted` should be `true`. fixed #14
+  * fixed test case for 0.6
+  * add res.socket.end() test cases
+  * remove 0.11 from travis
+
 0.3.8 / 2013-08-02 
 ==================
 
