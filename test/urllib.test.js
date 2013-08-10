@@ -67,6 +67,9 @@ var server = http.createServer(function (req, res) {
     } else if (req.url === '/301') {
       res.writeHeader(301);
       return res.end('I am 301 body');
+    } else if (req.url === '/204') {
+      res.statusCode = 204;
+      return res.end();
     } else if (req.url === '/post') {
       res.setHeader('X-Request-Content-Type', req.headers['content-type'] || '');
       res.writeHeader(200);
@@ -712,6 +715,17 @@ describe('urllib.test.js', function () {
         });
         res.should.status(200);
         res.headers.should.have.property('content-type', 'application/json');
+        done();
+      });
+    });
+  });
+
+  describe('204 status response', function () {
+    it('should not convert json data when status 204', function (done) {
+      urllib.request(host + '/204', {dataType: 'json'}, function (err, data, res) {
+        should.not.exist(err);
+        should.not.exist(data);
+        res.should.status(204);
         done();
       });
     });
