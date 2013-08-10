@@ -5,6 +5,7 @@
 var urllib = require('../');
 var should = require('should');
 var http = require('http');
+var https = require('https');
 var querystring = require('querystring');
 var urlutil = require('url');
 var KeepAliveAgent = require('agentkeepalive');
@@ -607,6 +608,57 @@ describe('urllib.test.js', function () {
         data.toString().should.include('TBEDP/urllib');
         res.should.status(200);
         res.should.have.header('content-type', 'text/html; charset=utf-8');
+        done();
+      });
+    });
+  });
+
+  describe('SELF_SIGNED_CERT_IN_CHAIN https request', function () {
+    it('should GET self signed https url', function (done) {
+      done = pedding(3, done);
+      // http://nodejs.org/api/tls.html#tls_tls_connect_port_host_options_callback
+      var params = {
+        ca: fs.readFileSync(path.join(__dirname, 'tsic_ca.crt'), 'utf8'),
+      };
+      params.httpsAgent = new https.Agent(params);
+      urllib.request('https://tsic.data.taobao.com/', params, function (err, data, res) {
+        should.not.exist(err);
+        data.length.should.above(0);
+        res.should.status(200);
+        done();
+      });
+
+      var params2 = {
+        ca: fs.readFileSync(path.join(__dirname, 'tsic_ca.crt'), 'utf8'),
+      };
+      params2.httpsAgent = false;
+      urllib.request('https://tsic.data.taobao.com/', params2, function (err, data, res) {
+        should.not.exist(err);
+        data.length.should.above(0);
+        res.should.status(200);
+        done();
+      });
+
+      var params3 = {
+        rejectUnauthorized: false,
+      };
+      params3.agent = false;
+      urllib.request('https://tsic.data.taobao.com/', params3, function (err, data, res) {
+        should.not.exist(err);
+        data.length.should.above(0);
+        res.should.status(200);
+        done();
+      });
+    });
+
+    it('should return SELF_SIGNED_CERT_IN_CHAIN error when use default agent', function (done) {
+      var params = {};
+      urllib.request('https://tsic.data.taobao.com/', params, function (err, data, res) {
+        should.exist(err);
+        err.name.should.equal('RequestError');
+        err.message.should.equal('SELF_SIGNED_CERT_IN_CHAIN');
+        should.not.exist(data);
+        should.not.exist(res);
         done();
       });
     });
