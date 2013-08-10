@@ -1,4 +1,10 @@
 
+0.4.2 / 2013-08-10 
+==================
+
+  * fix SELF_SIGNED_CERT_IN_CHAIN test case on node 0.8 and 0.6
+  * [√] https & self-signed certificate
+
 0.4.1 / 2013-08-05 
 ==================
 
