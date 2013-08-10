@@ -650,18 +650,25 @@ describe('urllib.test.js', function () {
         done();
       });
     });
-
-    it('should return SELF_SIGNED_CERT_IN_CHAIN error when use default agent', function (done) {
-      var params = {};
-      urllib.request('https://tsic.data.taobao.com/', params, function (err, data, res) {
-        should.exist(err);
-        err.name.should.equal('RequestError');
-        err.message.should.equal('SELF_SIGNED_CERT_IN_CHAIN');
-        should.not.exist(data);
-        should.not.exist(res);
-        done();
+    
+    if (!/^v0\.6\./.test(process.version)) {
+      // node < 0.8 would not check ca
+      it('should return SELF_SIGNED_CERT_IN_CHAIN error when use default agent', function (done) {
+        var params = {
+          rejectUnauthorized: true,
+        };
+        params.httpsAgent = false;
+        urllib.request('https://tsic.data.taobao.com/', params, function (err, data, res) {
+          should.exist(err);
+          err.name.should.equal('RequestError');
+          err.message.should.equal('SELF_SIGNED_CERT_IN_CHAIN');
+          should.not.exist(data);
+          should.not.exist(res);
+          done();
+        });
       });
-    });
+    }
+    
   });
 
 });
