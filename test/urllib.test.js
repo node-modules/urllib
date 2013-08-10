@@ -14,23 +14,8 @@ var fs = require('fs');
 var path = require('path');
 var formstream = require('formstream');
 
-function implode_buffer_chunks(chunks) {
-  var i, len = 0;
-  for (i = 0; i < chunks.length; i++) {
-    len += chunks[i].length;
-  }
 
-  var pos = 0;
-  var buf = new Buffer(len);
-  for (i = 0; i < chunks.length; i++) {
-    chunks[i].copy(buf, pos);
-    pos += chunks[i].length;
-  }
-
-  return buf;
-}
-
-var server = require('http').createServer(function (req, res) {
+var server = http.createServer(function (req, res) {
   var chunks  = [];
   var size = 0;
   req.on('data', function (buf) {
@@ -39,6 +24,7 @@ var server = require('http').createServer(function (req, res) {
   });
 
   req.on('end', function () {
+    // console.log(req.url, Buffer.concat(chunks).toString(), req.headers)
     if (req.url === '/timeout') {
       return setTimeout(function () {
         res.writeHeader(200);
@@ -84,7 +70,7 @@ var server = require('http').createServer(function (req, res) {
     } else if (req.url === '/post') {
       res.setHeader('X-Request-Content-Type', req.headers['content-type'] || '');
       res.writeHeader(200);
-      return res.end(implode_buffer_chunks(chunks));
+      return res.end(Buffer.concat(chunks));
     } else if (req.url.indexOf('/get') === 0) {
       res.writeHeader(200);
       return res.end(req.url);
@@ -107,13 +93,24 @@ var server = require('http').createServer(function (req, res) {
       }
       res.end();
       return;
+    } else if (req.url.indexOf('/json_mirror') === 0) {
+      res.setHeader('Content-Type', req.headers['content-type']);
+      if (req.method === 'GET') {
+        res.end(JSON.stringify({
+          url: req.url,
+          data: Buffer.concat(chunks).toString(),
+        }));
+      } else {
+        res.end(JSON.stringify(JSON.parse(Buffer.concat(chunks))));
+      }
+      return;
     }
 
     var url = req.url.split('?');
     var get = querystring.parse(url[1]);
     var ret;
     if (chunks.length > 0) {
-      ret = implode_buffer_chunks(chunks).toString();
+      ret = Buffer.concat(chunks).toString();
     } else {
       ret = '<html><head><meta http-equiv="Content-Type" content="text/html;charset=##{charset}##">...</html>';
     }
@@ -673,6 +670,51 @@ describe('urllib.test.js', function () {
       });
     }
     
+  });
+
+  describe('application/json content-type request', function () {
+    it('should auto convert data to json string', function (done) {
+      var params = {
+        method: 'post',
+        data: {
+          foo: 'bar',
+          n1: 1,
+          now: new Date()
+        },
+        headers: {'Content-Type': 'application/json'},
+        dataType: 'json',
+      };
+      urllib.request(host + '/json_mirror', params, function (err, serverData, res) {
+        should.not.exist(err);
+        serverData.now = new Date(serverData.now);
+        serverData.should.eql(params.data);
+        res.should.status(200);
+        res.headers.should.have.property('content-type', 'application/json');
+        done();
+      });
+    });
+
+    it('should not auto convert data to json string when method = get', function (done) {
+      var params = {
+        method: 'get',
+        data: {
+          foo: 'bar',
+          n1: 1,
+          now: new Date()
+        },
+        headers: {'Content-Type': 'application/json'},
+        dataType: 'json',
+      };
+      urllib.request(host + '/json_mirror', params, function (err, serverData, res) {
+        should.not.exist(err);
+        serverData.should.eql({
+          url: '/json_mirror?foo=bar&n1=1&now=', data: ''
+        });
+        res.should.status(200);
+        res.headers.should.have.property('content-type', 'application/json');
+        done();
+      });
+    });
   });
 
 });

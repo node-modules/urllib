@@ -67,7 +67,6 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
   - **err** Error - Would be `null` if no error accured.
   - **data** Buffer | Object - The data responsed. Would be a Buffer if `dataType` is set to `text` or an JSON parsed into Object if it's set to `json`.
   - **res** [http.IncomingMessage](http://nodejs.org/api/http.html#http_http_incomingmessage) - The response.
-- ***context*** Object - Optional context object that will be binded to `this` of `callback`.
 
 #### Returns
 
