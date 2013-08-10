@@ -1,4 +1,10 @@
 
+0.4.3 / 2013-08-10 
+==================
+
+  * Auto convert data to json string when content-type is 'json' fixed #15
+  * add drone.io status build image
+
 0.4.2 / 2013-08-10 
 ==================
 
