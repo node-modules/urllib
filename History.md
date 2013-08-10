@@ -1,4 +1,9 @@
 
+0.4.4 / 2013-08-10 
+==================
+
+  * handle json response to null when data size is zero
+
 0.4.3 / 2013-08-10 
 ==================
 
