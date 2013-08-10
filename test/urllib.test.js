@@ -62,8 +62,7 @@ var server = http.createServer(function (req, res) {
       }, 200);
       return;
     } else if (req.url === '/302') {
-      res.writeHeader(302);
-      return res.end();
+      res.writeHead(302, 'Redirect to /204', {'Location': '/204'});
     } else if (req.url === '/301') {
       res.writeHeader(301);
       return res.end('I am 301 body');
@@ -147,10 +146,11 @@ describe('urllib.test.js', function () {
   });
 
   it('should_mocked_http_service_works_fine', function (done) {
-    urllib.request(host + '/?a=12&code=302', function (error, data, res) {
+    urllib.request(host + '/?a=12&code=200', function (error, data, res) {
+      // 302 is sexy, choose anthoer one?
       should.ok(!error);
       data.should.be.an.instanceof(Buffer);
-      res.statusCode.should.eql(302);
+      res.statusCode.should.eql(200);
       done();
     });
   });
@@ -174,8 +174,9 @@ describe('urllib.test.js', function () {
     });
 
     it('should 302', function (done) {
-      urllib.request(host + '/302', function (err, data, res) {
-        res.should.status(302);
+      urllib.request(host + '/get302', {timeout: 10000, followRedirect: true}, function (err, data, res) { 
+        res.should.status(200);
+        data.toString().should.eql('/get302');
         done();
       });
     });
