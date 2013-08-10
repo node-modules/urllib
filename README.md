@@ -47,18 +47,18 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
     Set `false` if you does not use agent.
   - ***httpsAgent*** [https.Agent](http://nodejs.org/api/https.html#https_class_https_agent) - HTTPS Agent object. 
     Set `false` if you does not use agent.
-  - ***ca*** String|Buffer|Array - An array of strings or Buffers of trusted certificates.
+  - ***ca*** String | Buffer | Array - An array of strings or Buffers of trusted certificates.
     If this is omitted several well known "root" CAs will be used, like VeriSign. 
     These are used to authorize connections.
-    Notes: This is necessary only if the server uses the self-signed certificate
+    **Notes**: This is necessary only if the server uses the self-signed certificate
   - ***rejectUnauthorized*** Boolean - If true, the server certificate is verified against the list of supplied CAs. 
     An 'error' event is emitted if verification fails. Default: true.
-  - ***pfx*** String|Buffer - A string or Buffer containing the private key, 
+  - ***pfx*** String | Buffer - A string or Buffer containing the private key, 
     certificate and CA certs of the server in PFX or PKCS12 format. 
-  - ***key*** String|Buffer - A string or Buffer containing the private key of the client in PEM format.
-    Notes: This is necessary only if using the client certificate authentication
-  - ***cert*** String|Buffer - A string or Buffer containing the certificate key of the client in PEM format.
-    Notes: This is necessary only if using the client certificate authentication
+  - ***key*** String | Buffer - A string or Buffer containing the private key of the client in PEM format.
+    **Notes**: This is necessary only if using the client certificate authentication
+  - ***cert*** String | Buffer - A string or Buffer containing the certificate key of the client in PEM format.
+    **Notes**: This is necessary only if using the client certificate authentication
   - ***passphrase*** String - A string of passphrase for the private key or pfx.
 - ***callback(err, data, res)*** Function - Optional callback.
   - **err** Error - Would be `null` if no error accured.
