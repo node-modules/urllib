@@ -1,4 +1,7 @@
-# urllib [![Build Status](https://secure.travis-ci.org/TBEDP/urllib.png?branch=master)](http://travis-ci.org/TBEDP/urllib) [![Coverage Status](https://coveralls.io/repos/TBEDP/urllib/badge.png)](https://coveralls.io/r/TBEDP/urllib)
+# urllib 
+[![Build Status](https://secure.travis-ci.org/TBEDP/urllib.png?branch=master)](http://travis-ci.org/TBEDP/urllib) 
+[![Coverage Status](https://coveralls.io/repos/TBEDP/urllib/badge.png)](https://coveralls.io/r/TBEDP/urllib)
+[![Build Status](https://drone.io/github.com/TBEDP/urllib/status.png)](https://drone.io/github.com/TBEDP/urllib/latest)
 
 ![logo](https://raw.github.com/TBEDP/urllib/master/logo.png)
 

@@ -618,6 +618,7 @@ describe('urllib.test.js', function () {
       done = pedding(3, done);
       // http://nodejs.org/api/tls.html#tls_tls_connect_port_host_options_callback
       var params = {
+        timeout: 10000,
         ca: fs.readFileSync(path.join(__dirname, 'tsic_ca.crt'), 'utf8'),
       };
       params.httpsAgent = new https.Agent(params);
@@ -629,6 +630,7 @@ describe('urllib.test.js', function () {
       });
 
       var params2 = {
+        timeout: 10000,
         ca: fs.readFileSync(path.join(__dirname, 'tsic_ca.crt'), 'utf8'),
       };
       params2.httpsAgent = false;
@@ -640,6 +642,7 @@ describe('urllib.test.js', function () {
       });
 
       var params3 = {
+        timeout: 10000,
         rejectUnauthorized: false,
       };
       params3.agent = false;
@@ -655,6 +658,7 @@ describe('urllib.test.js', function () {
       // node < 0.8 would not check ca
       it('should return SELF_SIGNED_CERT_IN_CHAIN error when use default agent', function (done) {
         var params = {
+          timeout: 10000,
           rejectUnauthorized: true,
         };
         params.httpsAgent = false;
