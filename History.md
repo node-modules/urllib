@@ -1,4 +1,10 @@
 
+0.5.0 / 2013-08-11 
+==================
+
+  * Support max redirects to protect loop redirect
+  * Auto redirect handle (@ibigbug)
+
 0.4.4 / 2013-08-10 
 ==================
 
