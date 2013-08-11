@@ -31,7 +31,7 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
 
 ## API Doc
 
-### .request(url[, options][, callback][, content])
+### .request(url[, options][, callback])
 
 #### Arguments
 
