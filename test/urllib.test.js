@@ -174,6 +174,13 @@ describe('urllib.test.js', function () {
     });
 
     it('should 302', function (done) {
+      urllib.request(host + '/get302', {timeout: 10000, followRedirect: false}, function (err, data, res) { 
+        res.should.status(302);
+        done();
+      });
+    });
+
+    it('should redirect from 302 to 204', function (done) {
       urllib.request(host + '/get302', {timeout: 10000, followRedirect: true}, function (err, data, res) { 
         res.should.status(200);
         data.toString().should.eql('/get302');
