@@ -24,7 +24,6 @@ var server = http.createServer(function (req, res) {
   });
 
   req.on('end', function () {
-    // console.log(req.url, Buffer.concat(chunks).toString(), req.headers)
     if (req.url === '/timeout') {
       return setTimeout(function () {
         res.writeHeader(200);
@@ -66,11 +65,19 @@ var server = http.createServer(function (req, res) {
       res.setHeader('Location', '/204');
       return res.end('Redirect to /204');
     } else if (req.url === '/301') {
-      res.writeHeader(301);
+      res.statusCode = 301;
+      res.setHeader('Location', '/204');
       return res.end('I am 301 body');
+    } else if (req.url === '/redirect_no_location') {
+      res.statusCode = 302;
+      return res.end('I am 302 body');
     } else if (req.url === '/204') {
       res.statusCode = 204;
       return res.end();
+    } else if (req.url === '/loop_redirect') {
+      res.statusCode = 302;
+      res.setHeader('Location', '/loop_redirect');
+      return res.end('Redirect to /loop_redirect');
     } else if (req.url === '/post') {
       res.setHeader('X-Request-Content-Type', req.headers['content-type'] || '');
       res.writeHeader(200);
@@ -175,7 +182,7 @@ describe('urllib.test.js', function () {
     });
 
     it('should 302', function (done) {
-      urllib.request(host + '/302', {timeout: 10000, followRedirect: false}, function (err, data, res) { 
+      urllib.request(host + '/302', {followRedirect: false}, function (err, data, res) { 
         res.should.status(302);
         res.headers.location.should.eql('/204');
         done();
@@ -183,8 +190,28 @@ describe('urllib.test.js', function () {
     });
 
     it('should redirect from 302 to 204', function (done) {
-      urllib.request(host + '/302', {timeout: 10000, followRedirect: true}, function (err, data, res) { 
+      urllib.request(host + '/302', {followRedirect: true}, function (err, data, res) { 
         res.should.status(204);
+        done();
+      });
+    });
+
+    it('should FollowRedirectError', function (done) {
+      urllib.request(host + '/redirect_no_location', {followRedirect: true}, function (err, data, res) { 
+        should.exist(err);
+        err.name.should.equal('FollowRedirectError');
+        err.message.should.equal('Got statusCode 302 but cannot resolve next location from headers');
+        data.toString().should.equal('I am 302 body');
+        done();
+      });
+    });
+
+    it('should MaxRedirectError', function (done) {
+      urllib.request(host + '/loop_redirect', {followRedirect: true}, function (err, data, res) { 
+        should.exist(err);
+        err.name.should.equal('MaxRedirectError');
+        err.message.should.include('Exceeded maxRedirects. Probably stuck in a redirect loop ');
+        data.toString().should.equal('Redirect to /loop_redirect');
         done();
       });
     });

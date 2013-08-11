@@ -63,6 +63,8 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
   - ***cert*** String | Buffer - A string or Buffer containing the certificate key of the client in PEM format.
     **Notes**: This is necessary only if using the client certificate authentication
   - ***passphrase*** String - A string of passphrase for the private key or pfx.
+  - ***followRedirect*** Boolean - follow HTTP 3xx responses as redirects. defaults to false.
+  - ***maxRedirects*** Number - The maximum number of redirects to follow, defaults to 10.
 - ***callback(err, data, res)*** Function - Optional callback.
   - **err** Error - Would be `null` if no error accured.
   - **data** Buffer | Object - The data responsed. Would be a Buffer if `dataType` is set to `text` or an JSON parsed into Object if it's set to `json`.
@@ -180,7 +182,7 @@ urllib.request('http://127.0.0.1:1984/socket.end', function (err, data, res) {
 
 * [ ] Support component
 * [√] Upload file like form upload
-* [ ] Auto redirect handle
+* [√] Auto redirect handle
 * [√] https & self-signed certificate
 
 ## Authors
