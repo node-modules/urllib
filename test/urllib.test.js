@@ -62,11 +62,9 @@ var server = http.createServer(function (req, res) {
       }, 200);
       return;
     } else if (req.url === '/302') {
-      // According to http://nodejs.org/api/http.html#http_response_writehead_statuscode_reasonphrase_headers
-      // This will send a status code 302, but `should` got 200.
-      // So I didn't use this path and use `httpbin` instead
-      // What's wrong with it :(
-      res.writeHead(302, 'Redirect to /204', {'Location': '/204'});
+      res.statusCode = 302;
+      res.setHeader('Location', '/204');
+      return res.end('Redirect to /204');
     } else if (req.url === '/301') {
       res.writeHeader(301);
       return res.end('I am 301 body');
@@ -151,7 +149,6 @@ describe('urllib.test.js', function () {
 
   it('should_mocked_http_service_works_fine', function (done) {
     urllib.request(host + '/?a=12&code=200', function (error, data, res) {
-      // 302 is sexy, choose anthoer one?
       should.ok(!error);
       data.should.be.an.instanceof(Buffer);
       res.statusCode.should.eql(200);
@@ -178,17 +175,16 @@ describe('urllib.test.js', function () {
     });
 
     it('should 302', function (done) {
-      urllib.request('http://httpbin.org/redirect/2', {timeout: 10000, followRedirect: false}, function (err, data, res) { 
+      urllib.request(host + '/302', {timeout: 10000, followRedirect: false}, function (err, data, res) { 
         res.should.status(302);
-        res.headers.location.should.eql('/redirect/1');
+        res.headers.location.should.eql('/204');
         done();
       });
     });
 
-    it('should redirect from 302 to 200', function (done) {
-      // I don't konw why `should` says that host + /302 is sending a statusCode 200 and the test will not pass so I use the `httpbin` tool.
-      urllib.request('http://httpbin.org/redirect/2', {timeout: 10000, followRedirect: true}, function (err, data, res) { 
-        res.should.status(200);
+    it('should redirect from 302 to 204', function (done) {
+      urllib.request(host + '/302', {timeout: 10000, followRedirect: true}, function (err, data, res) { 
+        res.should.status(204);
         done();
       });
     });
