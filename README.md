@@ -184,6 +184,7 @@ urllib.request('http://127.0.0.1:1984/socket.end', function (err, data, res) {
 * [√] Upload file like form upload
 * [√] Auto redirect handle
 * [√] https & self-signed certificate
+* [√] Connection timeout & response timeout
 
 ## Authors
 
@@ -194,15 +195,15 @@ $ git summary
 
  project  : urllib
  repo age : 2 years, 3 months
- active   : 33 days
- commits  : 103
+ active   : 34 days
+ commits  : 106
  files    : 17
  authors  : 
-    83  fengmk2                 80.6%
-     9  XiNGRZ                  8.7%
-     6  ibigbug                 5.8%
-     4  Jackson Tian            3.9%
-     1  aleafs                  1.0%
+    86  fengmk2                 81.1%
+     9  XiNGRZ                  8.5%
+     6  ibigbug                 5.7%
+     4  Jackson Tian            3.8%
+     1  aleafs                  0.9%
 ```
 
 ## License

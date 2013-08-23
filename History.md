@@ -1,4 +1,10 @@
 
+0.5.1 / 2013-08-23 
+==================
+
+  * detect connect timeout or response timeout fixed #18
+  * update doc
+
 0.5.0 / 2013-08-11 
 ==================
 
