@@ -44,7 +44,7 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
   - ***writeStream*** [stream.Writable](http://nodejs.org/api/stream.html#stream_class_stream_writable) - A writable stream to be piped by the response stream. Responding data will be write to this stream and `callback` will be called with `data` set `null` after finished writing.
   - ***dataType*** String - Type of response data. Could be `text` or `json`. If it's `text`, the `callback`ed `data` would be a Buffer. If it's `json`, the `data` of callback would be a parsed JSON Object. Defaults to `text`.
   - ***headers*** Object - Request headers.
-  - ***timeout*** Number - Request timeout in milliseconds. Defaults to `exports.TIMEOUT`.
+  - ***timeout*** Number - Request timeout in milliseconds. Defaults to `exports.TIMEOUT`. Include remote server connecting timeout and response timeout. When timeout happen, will return `ConnectionTimeout` or `ResponseTimeout`.
   - ***auth*** String - `username:password` used in HTTP Basic Authorization.
   - ***agent*** [http.Agent](http://nodejs.org/api/http.html#http_class_http_agent) - HTTP Agent object. 
     Set `false` if you does not use agent.
