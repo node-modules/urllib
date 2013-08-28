@@ -95,10 +95,12 @@ For `GET` request, `data` will be stringify to query string, e.g. `http://exampl
 For others like `POST`, `PATCH` or `PUT` request, 
 in defaults, the `data` will be stringify into `application/x-www-form-urlencoded` format
 if `Content-Type` header is not set.
+If `Content-type` is `application/json`, the `data` will be `JSON.stringify` to JSON data format.
 
 #### `options.content`
 
-`options.content` is useful when you wish to construct the request body by yourself, for example making a `Content-Type: application/json` request.
+`options.content` is useful when you wish to construct the request body by yourself, 
+for example making a `Content-Type: application/json` request.
 
 Notes that if you want to send a JSON body, you should stringify it yourself:
 
@@ -109,8 +111,8 @@ urllib.request('http://example.com', {
     'Content-Type': 'application/json'
   },
   content: JSON.stringify({
-    'a': 'hello',
-    'b': 'world'
+    a: 'hello',
+    b: 'world'
   })
 });
 ```
@@ -126,6 +128,21 @@ Content-Type: application/json
   "a": "hello",
   "b": "world"
 }
+```
+
+This exmaple can use `options.data` with `application/json` content type:
+
+```js
+urllib.request('http://example.com', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  data: {
+    a: 'hello',
+    b: 'world'
+  }
+});
 ```
 
 #### `options.stream`
@@ -144,7 +161,7 @@ var req = urllib.request('http://my.server.com/upload', {
   method: 'POST',
   headers: form.headers(),
   stream: form
-}, function (err, data) {
+}, function (err, data, res) {
   // upload finished
 });
 ```
