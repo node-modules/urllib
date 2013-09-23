@@ -1,4 +1,9 @@
 
+0.5.2 / 2013-09-23 
+==================
+
+  * add JSONResponseFormatError; append request url infomation to err.message
+
 0.5.1 / 2013-08-23 
 ==================
 

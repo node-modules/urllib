@@ -204,7 +204,7 @@ describe('urllib.test.js', function () {
       urllib.request(host + '/redirect_no_location', {followRedirect: true}, function (err, data, res) { 
         should.exist(err);
         err.name.should.equal('FollowRedirectError');
-        err.message.should.equal('Got statusCode 302 but cannot resolve next location from headers');
+        err.message.should.include('Got statusCode 302 but cannot resolve next location from headers, GET http://127.0.0.1:');
         data.toString().should.equal('I am 302 body');
         done();
       });
@@ -225,7 +225,7 @@ describe('urllib.test.js', function () {
         urllib.request(host + '/timeout', { timeout: 450 }, function (err, data, res) {
           should.exist(err);
           err.name.should.equal('ConnectionTimeoutError');
-          err.message.should.match(/^Request#\d+ timeout for 450ms$/);
+          err.message.should.match(/^Request#\d+ timeout for 450ms\, GET http/);
           should.not.exist(data);
           should.not.exist(res);
           done();
@@ -236,7 +236,7 @@ describe('urllib.test.js', function () {
         urllib.request(host + '/response_timeout', { timeout: 450 }, function (err, data, res) {
           should.exist(err);
           err.name.should.equal('ResponseTimeoutError');
-          err.message.should.match(/^Request#\d+ timeout for 450ms$/);
+          err.message.should.match(/^Request#\d+ timeout for 450ms\, GET http/);
           should.exist(data);
           data.toString().should.equal('foo');
           should.exist(res);
@@ -275,7 +275,7 @@ describe('urllib.test.js', function () {
       urllib.request(host + '/socket.destroy', function (err, data, res) {
         should.exist(err);
         err.name.should.equal('RemoteSocketClosedError');
-        err.message.should.equal('Remote socket was terminated before `response.end()` was called');
+        err.message.should.include('Remote socket was terminated before `response.end()` was called, GET http://127.0.0.1:');
         data.toString().should.equal('foo haha\nfoo haha 2');
         should.ok(res.aborted);
         done();
@@ -286,7 +286,7 @@ describe('urllib.test.js', function () {
       urllib.request(host + '/socket.end', function (err, data, res) {
         should.exist(err);
         err.name.should.equal('RemoteSocketClosedError');
-        err.message.should.equal('Remote socket was terminated before `response.end()` was called');
+        err.message.should.include('Remote socket was terminated before `response.end()` was called, GET http://127.0.0.1:');
         data.toString().should.equal('foo haha\nfoo haha 2');
         should.ok(res.aborted);
         done();
@@ -298,7 +298,7 @@ describe('urllib.test.js', function () {
         should.exist(err);
         err.name.should.equal('RequestError');
         err.code && err.code.should.equal('HPE_INVALID_CHUNK_SIZE');
-        err.message.should.equal('Parse Error');
+        err.message.should.include('Parse Error, GET http://127.0.0.1:');
         err.bytesParsed.should.equal(2);
         done();
       });
@@ -509,8 +509,8 @@ describe('urllib.test.js', function () {
         dataType: 'json'
       }, function (err, data, res) {
         should.exist(err);
-        err.name.should.equal('SyntaxError');
-        err.message.should.equal('Unexpected end of input');
+        err.name.should.equal('JSONResponseFormatError');
+        err.message.should.include('Unexpected end of input, GET http://127.0.0.1:');
         res.should.status(200);
         data.toString().should.equal('{"foo":""');
         done();
