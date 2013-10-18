@@ -1,4 +1,9 @@
 
+0.5.3 / 2013-10-18 
+==================
+
+  * add args.beforeRequest(options) hook to change options before http send
+
 0.5.2 / 2013-09-23 
 ==================
 
