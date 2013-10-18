@@ -65,6 +65,7 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
   - ***passphrase*** String - A string of passphrase for the private key or pfx.
   - ***followRedirect*** Boolean - follow HTTP 3xx responses as redirects. defaults to false.
   - ***maxRedirects*** Number - The maximum number of redirects to follow, defaults to 10.
+  - ***beforeRequest*** Function - Before request hook, you can change every thing here.
 - ***callback(err, data, res)*** Function - Optional callback.
   - **err** Error - Would be `null` if no error accured.
   - **data** Buffer | Object - The data responsed. Would be a Buffer if `dataType` is set to `text` or an JSON parsed into Object if it's set to `json`.
