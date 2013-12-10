@@ -496,9 +496,9 @@ describe('urllib.test.js', function () {
         'http://www.taobao.com/sitemap.php',
         'http://nodejs.org/',
         'http://www.taobao.com/',
-        'http://nodejs.org/docs/latest/api/https.html#https_https_createserver_options_requestlistener',
-        // 'http://cnodejs.org/',
-        // 'http://cnodejs.org/tag/%E7%A4%BE%E5%8C%BA%E6%B4%BB%E5%8A%A8',
+        'http://cnpmjs.org/',
+        'http://nodejs.org/docs/latest/api/https.html',
+        'http://cnpmjs.org/package/urllib',
       ];
 
       urls.forEach(function (url) {
@@ -510,8 +510,9 @@ describe('urllib.test.js', function () {
           }, function (err, data, res) {
             should.not.exist(err);
             data.should.be.an.instanceof(Buffer);
-            // console.log(res.headers)
-            res.should.status(200);
+            if (res.statusCode !== 200) {
+              console.log(res.statusCode, res.headers)
+            }
             res.should.have.header('connection', 'keep-alive');
             done();
           });
