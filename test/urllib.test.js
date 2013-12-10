@@ -591,6 +591,24 @@ describe('urllib.test.js', function () {
       });
     });
 
+    it('should store data writeStream with followRedirect', function (done) {
+      done = pedding(2, done);
+      var writeStream = fs.createWriteStream(tmpfile);
+      writeStream.on('close', done);
+      urllib.request('http://registry.npmjs.org/connect-mysql/-/connect-mysql-0.1.0.tgz', {
+        writeStream: writeStream,
+        followRedirect: true,
+        timeout: 10000
+      }, function (err, data, res) {
+        should.not.exist(err);
+        should.ok(fs.existsSync(tmpfile));
+        should.ok(data === null);
+        res.should.status(200);
+        fs.statSync(tmpfile).size.should.equal(1086);
+        done();
+      });
+    });
+
     it('should return error when writeStream emit error', function (done) {
       var writeStream = fs.createWriteStream('/wrongpath/haha' + tmpfile);
       urllib.request(host + '/writestream', {
