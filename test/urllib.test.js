@@ -1,6 +1,6 @@
 /**!
  * urllib - test/urllib.test.js
- * 
+ *
  * Copyright(c) 2011 - 2013 fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
  * MIT Licensed
  */
@@ -72,7 +72,7 @@ describe('urllib.test.js', function () {
     });
 
     it('should 302', function (done) {
-      urllib.request(host + '/302', {followRedirect: false}, function (err, data, res) { 
+      urllib.request(host + '/302', {followRedirect: false}, function (err, data, res) {
         res.should.status(302);
         res.headers.location.should.eql('/204');
         done();
@@ -80,14 +80,14 @@ describe('urllib.test.js', function () {
     });
 
     it('should redirect from 302 to 204', function (done) {
-      urllib.request(host + '/302', {followRedirect: true}, function (err, data, res) { 
+      urllib.request(host + '/302', {followRedirect: true}, function (err, data, res) {
         res.should.status(204);
         done();
       });
     });
 
     it('should FollowRedirectError', function (done) {
-      urllib.request(host + '/redirect_no_location', {followRedirect: true}, function (err, data, res) { 
+      urllib.request(host + '/redirect_no_location', {followRedirect: true}, function (err, data, res) {
         should.exist(err);
         err.name.should.equal('FollowRedirectError');
         err.message.should.include('Got statusCode 302 but cannot resolve next location from headers, GET http://127.0.0.1:');
@@ -97,7 +97,7 @@ describe('urllib.test.js', function () {
     });
 
     it('should MaxRedirectError', function (done) {
-      urllib.request(host + '/loop_redirect', {followRedirect: true}, function (err, data, res) { 
+      urllib.request(host + '/loop_redirect', {followRedirect: true}, function (err, data, res) {
         should.exist(err);
         err.name.should.equal('MaxRedirectError');
         err.message.should.include('Exceeded maxRedirects. Probably stuck in a redirect loop ');
@@ -495,7 +495,7 @@ describe('urllib.test.js', function () {
       var urls = [
         'http://www.taobao.com/sitemap.php',
         'http://nodejs.org/',
-        'http://www.taobao.com/',        
+        'http://www.taobao.com/',
         'http://nodejs.org/docs/latest/api/https.html#https_https_createserver_options_requestlistener',
         // 'http://cnodejs.org/',
         // 'http://cnodejs.org/tag/%E7%A4%BE%E5%8C%BA%E6%B4%BB%E5%8A%A8',
@@ -574,7 +574,7 @@ describe('urllib.test.js', function () {
   describe('args.writeStream', function () {
     var tmpfile = path.join(process.env.TMPDIR || __dirname, 'urllib_writestream.tmp' + process.version);
 
-    it('should store data writeStream', function (done) {
+    it('should store data writeStream with https', function (done) {
       done = pedding(2, done);
       var writeStream = fs.createWriteStream(tmpfile);
       writeStream.on('close', done);
@@ -594,8 +594,14 @@ describe('urllib.test.js', function () {
     it('should store data writeStream with followRedirect', function (done) {
       done = pedding(2, done);
       var writeStream = fs.createWriteStream(tmpfile);
-      writeStream.on('close', done);
-      urllib.request('http://registry.npmjs.org/connect-mysql/-/connect-mysql-0.1.0.tgz', {
+      writeStream.on('close', function () {
+        console.log('writeStream close event');
+        done();
+      });
+      writeStream.on('finish', function () {
+        console.log('writeStream finish event');
+      });
+      urllib.request('http://registry.cnpmjs.org/urllib/download/urllib-0.5.4.tgz', {
         writeStream: writeStream,
         followRedirect: true,
         timeout: 10000
@@ -604,13 +610,17 @@ describe('urllib.test.js', function () {
         should.ok(fs.existsSync(tmpfile));
         should.ok(data === null);
         res.should.status(200);
-        fs.statSync(tmpfile).size.should.equal(1086);
+        fs.statSync(tmpfile).size.should.equal(9198);
         done();
       });
     });
 
     it('should return error when writeStream emit error', function (done) {
       var writeStream = fs.createWriteStream('/wrongpath/haha' + tmpfile);
+      done = pedding(2, done);
+      writeStream.on('error', function () {
+        done();
+      });
       urllib.request(host + '/writestream', {
         writeStream: writeStream
       }, function (err, data, res) {
@@ -620,7 +630,7 @@ describe('urllib.test.js', function () {
       });
     });
 
-    it('should error', function (done) {
+    it('should end writeStream when server error', function (done) {
       var writeStream = fs.createWriteStream(tmpfile);
       urllib.request(host + '/error', {
         writeStream: writeStream
@@ -691,7 +701,7 @@ describe('urllib.test.js', function () {
         done();
       });
     });
-    
+
     // if (!/^v0\.6\./.test(process.version)) {
     //   // node < 0.8 would not check ca
     //   it('should return SELF_SIGNED_CERT_IN_CHAIN error when use default agent', function (done) {
@@ -710,7 +720,7 @@ describe('urllib.test.js', function () {
     //     });
     //   });
     // }
-    
+
   });
 
   describe('application/json content-type request', function () {
