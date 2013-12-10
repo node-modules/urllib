@@ -1,4 +1,10 @@
 
+0.5.5 / 2013-12-10 
+==================
+
+  * should pass done instead of callback and end the writeStream
+  * support args.writeStream with follow redirect (@dead-horse)
+
 0.5.4 / 2013-11-09 
 ==================
 

@@ -219,16 +219,17 @@ Below is the output from `git-summary`.
 $ git summary
 
  project  : urllib
- repo age : 2 years, 6 months
- active   : 38 days
- commits  : 112
+ repo age : 2 years, 7 months
+ active   : 40 days
+ commits  : 116
  files    : 18
  authors  :
-    92  fengmk2                 82.1%
-     9  XiNGRZ                  8.0%
-     6  ibigbug                 5.4%
-     4  Jackson Tian            3.6%
+    95  fengmk2                 81.9%
+     9  XiNGRZ                  7.8%
+     6  ibigbug                 5.2%
+     4  Jackson Tian            3.4%
      1  aleafs                  0.9%
+     1  dead_horse              0.9%
 ```
 
 ## License
