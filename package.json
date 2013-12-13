@@ -13,7 +13,7 @@
   "scripts": {
     "test": "make test-all",
     "blanket": { "pattern": "urllib/lib" },
-    "travis-cov": { "threshold": 98 }
+    "travis-cov": { "threshold": 95 }
   },
   "dependencies": {
     "buffer-concat": "0.0.1",
