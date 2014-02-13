@@ -650,10 +650,10 @@ describe('urllib.test.js', function () {
 
   describe('https request', function () {
     it('GET github page', function (done) {
-      urllib.request('https://github.com/TBEDP/urllib', { timeout: 10000 },
+      urllib.request('https://github.com/fengmk2/urllib', { timeout: 10000 },
       function (err, data, res) {
         should.not.exist(err);
-        data.toString().should.include('TBEDP/urllib');
+        data.toString().should.include('fengmk2/urllib');
         res.should.status(200);
         res.should.have.header('content-type', 'text/html; charset=utf-8');
         done();
