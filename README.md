@@ -1,12 +1,11 @@
 # urllib
 
-[![Build Status](https://secure.travis-ci.org/TBEDP/urllib.png?branch=master)](http://travis-ci.org/TBEDP/urllib)
-[![Coverage Status](https://coveralls.io/repos/TBEDP/urllib/badge.png)](https://coveralls.io/r/TBEDP/urllib)
-[![Build Status](https://drone.io/github.com/TBEDP/urllib/status.png)](https://drone.io/github.com/TBEDP/urllib/latest)
+[![Build Status](https://secure.travis-ci.org/fengmk2/urllib.png?branch=master)](http://travis-ci.org/fengmk2/urllib)
+[![Coverage Status](https://coveralls.io/repos/fengmk2/urllib/badge.png)](https://coveralls.io/r/fengmk2/urllib)
 
 [![NPM](https://nodei.co/npm/urllib.png?downloads=true&stars=true)](https://nodei.co/npm/urllib/)
 
-![logo](https://raw.github.com/TBEDP/urllib/master/logo.png)
+![logo](https://raw.github.com/fengmk2/urllib/master/logo.png)
 
 Help in opening URLs (mostly HTTP) in a complex world — basic
 and digest authentication, redirections, cookies, timeout and more.
