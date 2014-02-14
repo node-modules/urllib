@@ -4,32 +4,39 @@
   "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more.",
   "keywords": [ "urllib", "http", "urlopen", "curl", "wget", "request", "https" ],
   "author": "fengmk2 <fengmk2@gmail.com> (http://github.com/fengmk2)",
-  "homepage": "http://github.com/TBEDP/urllib",
+  "homepage": "http://github.com/fengmk2/urllib",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/TBEDP/urllib.git"
+    "url": "git://github.com/fengmk2/urllib.git"
   },
   "scripts": {
-    "test": "make test-all",
-    "blanket": { "pattern": "urllib/lib" },
+    "test": "make test-all"
+  },
+  "config": {
+    "blanket": {
+      "pattern": "urllib/lib",
+      "data-cover-flags": {
+        "debug": false
+      }
+    },
     "travis-cov": { "threshold": 95 }
   },
   "dependencies": {
     "buffer-concat": "0.0.1",
-    "debug": "0.7.2"
+    "debug": "0.7.4"
   },
   "devDependencies": {
-    "should": ">=0.4.2",
-    "pedding": "*",
-    "formstream": "*",
-    "agentkeepalive": "*",
-    "node-patch": "*",
+    "agentkeepalive": "0.2.2",
+    "autod": "*",
     "blanket": "*",
-    "travis-cov": "*",
     "coveralls": "*",
+    "formstream": "0.0.8",
+    "mocha": ">=0.14.1",
     "mocha-lcov-reporter": "*",
-    "mocha": ">=0.14.1"
+    "pedding": "0.0.3",
+    "should": "3.1.2",
+    "travis-cov": "*"
   },
   "engines": { "node": ">= 0.8.0" },
   "license": "MIT"

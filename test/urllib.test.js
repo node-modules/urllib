@@ -494,10 +494,10 @@ describe('urllib.test.js', function () {
 
       var urls = [
         'http://www.taobao.com/sitemap.php',
-        'http://nodejs.org/',
-        'http://www.taobao.com/',
+        // 'http://nodejs.org/',
         'http://cnpmjs.org/',
-        'http://nodejs.org/docs/latest/api/https.html',
+        'http://www.taobao.com/',
+        // 'http://nodejs.org/docs/latest/api/https.html',
         'http://cnpmjs.org/package/urllib',
       ];
 
@@ -581,6 +581,7 @@ describe('urllib.test.js', function () {
       writeStream.on('close', done);
       urllib.request('https://codeload.github.com/TBEDP/urllib/zip/0.3.4', {
         writeStream: writeStream,
+        timeout: 15000,
       }, function (err, data, res) {
         should.not.exist(err);
         should.ok(fs.existsSync(tmpfile));
