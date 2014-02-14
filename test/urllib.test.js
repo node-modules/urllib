@@ -55,7 +55,7 @@ describe('urllib.test.js', function () {
 
   describe('request()', function () {
     it('should request https success', function (done) {
-      urllib.request('https://www.alipay.com/', {timeout: 10000}, function (err, data, res) {
+      urllib.request('https://www.npmjs.org/', {timeout: 10000}, function (err, data, res) {
         should.not.exist(err);
         should.ok(Buffer.isBuffer(data));
         res.should.status(200);
@@ -493,10 +493,13 @@ describe('urllib.test.js', function () {
       });
 
       var urls = [
-        'http://www.taobao.com/sitemap.php',
+        'https://www.npmjs.org/search?q=urllib',
+        // 'http://www.taobao.com/sitemap.php',
         // 'http://nodejs.org/',
         'http://cnpmjs.org/',
-        'http://www.taobao.com/',
+        'https://www.npmjs.org/package/urllib',
+        'https://www.npmjs.org/',
+        // 'http://www.taobao.com/',
         // 'http://nodejs.org/docs/latest/api/https.html',
         'http://cnpmjs.org/package/urllib',
       ];
