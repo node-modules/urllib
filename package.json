@@ -1,6 +1,6 @@
 {
   "name": "urllib",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more.",
   "keywords": [ "urllib", "http", "urlopen", "curl", "wget", "request", "https" ],
   "author": "fengmk2 <fengmk2@gmail.com> (http://github.com/fengmk2)",
@@ -35,7 +35,7 @@
     "mocha": ">=0.14.1",
     "mocha-lcov-reporter": "*",
     "pedding": "0.0.3",
-    "should": "3.1.2",
+    "should": "3.1.3",
     "travis-cov": "*"
   },
   "engines": { "node": ">= 0.8.0" },

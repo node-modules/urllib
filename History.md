@@ -1,4 +1,14 @@
 
+0.5.6 / 2014-03-05 
+==================
+
+  * add data/res to error
+  * fix typo (@coderhaoxin)
+  * access npmjs.org https
+  * fix test cases and use autod
+  * install from cnpm
+  * no more support on node 0.6.x
+
 0.5.5 / 2013-12-10 
 ==================
 
