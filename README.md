@@ -94,7 +94,7 @@ urllib.request('http://example.com', {
 });
 ```
 
-For `GET` request, `data` will be stringify to query string, e.g. `http://example.com/?a=hello&world`.
+For `GET` request, `data` will be stringify to query string, e.g. `http://example.com/?a=hello&b=world`.
 
 For others like `POST`, `PATCH` or `PUT` request,
 in defaults, the `data` will be stringify into `application/x-www-form-urlencoded` format
