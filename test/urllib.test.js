@@ -164,6 +164,7 @@ describe('urllib.test.js', function () {
         err.message.should.include('Remote socket was terminated before `response.end()` was called, GET http://127.0.0.1:');
         data.toString().should.equal('foo haha\nfoo haha 2');
         should.ok(res.aborted);
+        should.ok(err.res.aborted);
         done();
       });
     });
