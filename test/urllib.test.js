@@ -313,7 +313,8 @@ describe('urllib.test.js', function () {
         data.sql.should.equal(params1.data.sql);
         data.data.should.equal(params1.data.data);
         done();
-      }
+      };
+
       urllib.request(host + '/post', params1, check);
       var params2 = {
         type: 'put',
@@ -515,7 +516,7 @@ describe('urllib.test.js', function () {
             should.not.exist(err);
             data.should.be.an.instanceof(Buffer);
             if (res.statusCode !== 200) {
-              console.log(res.statusCode, res.headers)
+              console.log(res.statusCode, res.headers);
             }
             res.should.have.header('connection', 'keep-alive');
             done();

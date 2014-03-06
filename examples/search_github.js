@@ -1,5 +1,7 @@
 // curl https://api.github.com/legacy/user/search/location:china
 
+"use strict";
+
 var urllib = require('../');
 
 urllib.request('https://api.github.com/legacy/user/search/location:china', {dataType: 'json'},

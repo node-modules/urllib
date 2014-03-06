@@ -32,6 +32,7 @@
     "blanket": "*",
     "coveralls": "*",
     "formstream": "0.0.8",
+    "jshint": "*",
     "mocha": ">=0.14.1",
     "mocha-lcov-reporter": "*",
     "pedding": "0.0.3",

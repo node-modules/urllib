@@ -6,3 +6,5 @@ test/
 Makefile
 lib-cov/
 coverage.html
+.jshintrc
+.jshintignore
