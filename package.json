@@ -23,7 +23,6 @@
     "travis-cov": { "threshold": 95 }
   },
   "dependencies": {
-    "buffer-concat": "0.0.1",
     "debug": "0.7.4"
   },
   "devDependencies": {
