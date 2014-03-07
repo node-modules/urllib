@@ -1,7 +1,7 @@
 /**!
  * urllib - test/fixtures/server.js
- * 
- * Copyright(c) 2011 - 2013 fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
+ *
+ * Copyright(c) 2011 - 2014 fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
  * MIT Licensed
  */
 
@@ -11,11 +11,13 @@
  * Module dependencies.
  */
 
+var should = require('should');
 var http = require('http');
 var querystring = require('querystring');
 var fs = require('fs');
 
 var server = http.createServer(function (req, res) {
+  req.headers['user-agent'].should.match(/^node\-urllib\/\d+\.\d+\.\d+$/);
   var chunks  = [];
   var size = 0;
   req.on('data', function (buf) {

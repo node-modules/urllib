@@ -1,7 +1,7 @@
 /**!
  * urllib - test/urllib.test.js
  *
- * Copyright(c) 2011 - 2013 fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
+ * Copyright(c) 2011 - 2014 fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
  * MIT Licensed
  */
 
@@ -646,6 +646,7 @@ describe('urllib.test.js', function () {
         err.name.should.equal('RequestError');
         err.stack.should.match(/socket hang up/);
         err.code.should.equal('ECONNRESET');
+        err.message.should.include('/error -1\nheaders: {}');
         should.not.exist(data);
         should.not.exist(res);
         done();
