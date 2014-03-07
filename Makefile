@@ -4,7 +4,7 @@ TIMEOUT = 20000
 MOCHA_OPTS =
 
 install:
-	@npm install --registry=http://registry.cnpmjs.org --cache=${HOME}/.npm/.cache/cnpm
+	@npm install --registry=http://registry.cnpmjs.org --disturl=http://dist.cnpmjs.org
 
 jshint: install
 	@./node_modules/.bin/jshint .
@@ -24,7 +24,7 @@ test-cov-html:
 	@$(MAKE) test MOCHA_OPTS='--require blanket' REPORTER=html-cov > coverage.html
 	@ls -lh coverage.html
 
-test-coveralls: test
+test-coveralls: jshint test
 	@echo TRAVIS_JOB_ID $(TRAVIS_JOB_ID)
 	@-$(MAKE) test MOCHA_OPTS='--require blanket' REPORTER=mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js
 

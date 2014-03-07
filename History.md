@@ -1,4 +1,11 @@
 
+0.5.7 / 2014-03-07 
+==================
+
+  * no more deps on buffer-concat
+  * add default User-Agent: node-urllib/x.x.x
+  * add jshint
+
 0.5.6 / 2014-03-05 
 ==================
 
