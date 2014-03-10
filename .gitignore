@@ -1,5 +1,4 @@
 .project
 .settings
 node_modules/
-coverage.html
-lib-cov
+coverage/

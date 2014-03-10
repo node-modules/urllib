@@ -4,7 +4,6 @@ logo.png
 examples/
 test/
 Makefile
-lib-cov/
-coverage.html
 .jshintrc
 .jshintignore
+coverage/

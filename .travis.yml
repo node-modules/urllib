@@ -3,4 +3,4 @@ node_js:
   - '0.8'
   - '0.10'
   - '0.11'
-script: make test-coveralls
+script: make test-all

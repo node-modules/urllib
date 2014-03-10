@@ -1,11 +1,14 @@
 /**!
  * urllib - test/urllib.test.js
  *
- * Copyright(c) 2011 - 2014 fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
+ * Copyright(c) 2011 - 2014 fengmk2 and other contributors.
  * MIT Licensed
+ *
+ * Authors:
+ *   fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
  */
 
-"use strict";
+'use strict';
 
 /**
  * Module dependencies.
@@ -771,6 +774,86 @@ describe('urllib.test.js', function () {
         });
         res.should.status(200);
         res.headers.should.have.property('content-type', 'application/json');
+        done();
+      });
+    });
+  });
+
+  describe('gzip content', function () {
+    it('should auto accept and decode gzip response content', function (done) {
+      urllib.request('http://r.cnpmjs.org/npm', {dataType: 'json', gzip: true, timeout: 10000},
+      function (err, data, res) {
+        should.not.exist(err);
+        data.name.should.equal('npm');
+        res.should.have.header('content-encoding', 'gzip');
+        res.should.have.header('content-type', 'application/json');
+        done();
+      });
+    });
+
+    it('should redirect and gzip', function (done) {
+      urllib.request('http://dist.cnpmjs.org/v0.10.1/SHASUMS.txt', {followRedirect: true, gzip: true},
+      function (err, data, res) {
+        should.not.exist(err);
+        data.toString().should.include('e213170fe5ec7721b31149fba1a7a691c50b5379');
+        res.should.have.header('content-encoding', 'gzip');
+        res.should.have.header('content-type', 'text/plain');
+        done();
+      });
+    });
+
+    it('should not ungzip binary content', function (done) {
+      urllib.request('http://dist.u.qiniudn.com/v0.10.0/node.exp', {gzip: true}, function (err, data, res) {
+        should.not.exist(err);
+        should.not.exist(res.headers['content-encoding']);
+        res.should.have.header('content-type', 'application/octet-stream');
+        // console.log(res.headers);
+        done();
+      });
+    });
+
+    it('should not return gzip response content', function (done) {
+      done = pedding(3, done);
+      urllib.request('http://r.cnpmjs.org', {dataType: 'json'},
+      function (err, data, res) {
+        should.not.exist(err);
+        data.db_name.should.equal('registry');
+        should.not.exist(res.headers['content-encoding']);
+        res.should.have.header('content-type', 'application/json');
+        done();
+      });
+
+      urllib.request('http://r.cnpmjs.org', {dataType: 'json', gzip: false},
+      function (err, data, res) {
+        should.not.exist(err);
+        data.db_name.should.equal('registry');
+        should.not.exist(res.headers['content-encoding']);
+        res.should.have.header('content-type', 'application/json');
+        done();
+      });
+
+      urllib.request('http://r.cnpmjs.org', {dataType: 'json', gzip: true},
+      function (err, data, res) {
+        should.not.exist(err);
+        data.db_name.should.equal('registry');
+        res.should.have.header('content-encoding', 'gzip');
+        res.should.have.header('content-type', 'application/json');
+        done();
+      });
+    });
+
+    it('should not ungzip content when server not accept gzip', function (done) {
+      urllib.request(host + '/no-gzip', {gzip: true}, function (err, data, res) {
+        should.not.exist(err);
+        should.not.exist(res.headers['content-encoding']);
+        done();
+      });
+    });
+
+    it('should gzip content when server accept gzip', function (done) {
+      urllib.request(host + '/gzip', {gzip: true}, function (err, data, res) {
+        should.not.exist(err);
+        res.should.have.header('content-encoding', 'gzip');
         done();
       });
     });

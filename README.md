@@ -1,7 +1,6 @@
 # urllib
 
 [![Build Status](https://secure.travis-ci.org/fengmk2/urllib.png?branch=master)](http://travis-ci.org/fengmk2/urllib)
-[![Coverage Status](https://coveralls.io/repos/fengmk2/urllib/badge.png)](https://coveralls.io/r/fengmk2/urllib)
 
 [![NPM](https://nodei.co/npm/urllib.png?downloads=true&stars=true)](https://nodei.co/npm/urllib/)
 
@@ -9,6 +8,8 @@
 
 Help in opening URLs (mostly HTTP) in a complex world — basic
 and digest authentication, redirections, cookies, timeout and more.
+
+[Code coverage: 94%](http://qtestbucket.qiniudn.com/cov/html/urllib/0.5.8/index.html)
 
 ## Install
 
@@ -69,6 +70,7 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
     - ***followRedirect*** Boolean - follow HTTP 3xx responses as redirects. defaults to false.
     - ***maxRedirects*** Number - The maximum number of redirects to follow, defaults to 10.
     - ***beforeRequest*** Function - Before request hook, you can change every thing here.
+    - ***gzip*** Boolean - Accept gzip response content and auto decode it, default is `false`.
 - ***callback(err, data, res)*** Function - Optional callback.
     - **err** Error - Would be `null` if no error accured.
     - **data** Buffer | Object - The data responsed. Would be a Buffer if `dataType` is set to `text` or an JSON parsed into Object if it's set to `json`.
@@ -209,6 +211,7 @@ urllib.request('http://127.0.0.1:1984/socket.end', function (err, data, res) {
 * [√] Auto redirect handle
 * [√] https & self-signed certificate
 * [√] Connection timeout & Response timeout
+* [√] Support `Accept-Encoding=gzip` by `options.gzip = true`
 
 ## Authors
 

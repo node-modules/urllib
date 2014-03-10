@@ -1,8 +1,11 @@
 /**!
  * urllib - test/fixtures/server.js
  *
- * Copyright(c) 2011 - 2014 fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
+ * Copyright(c) 2011 - 2014 fengmk2 and other contributors.
  * MIT Licensed
+ *
+ * Authors:
+ *   fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
  */
 
 "use strict";
@@ -15,6 +18,7 @@ var should = require('should');
 var http = require('http');
 var querystring = require('querystring');
 var fs = require('fs');
+var zlib = require('zlib');
 
 var server = http.createServer(function (req, res) {
   req.headers['user-agent'].should.match(/^node\-urllib\/\d+\.\d+\.\d+$/);
@@ -121,6 +125,13 @@ var server = http.createServer(function (req, res) {
         res.end(JSON.stringify(JSON.parse(Buffer.concat(chunks))));
       }
       return;
+    } else if (req.url.indexOf('/no-gzip') === 0) {
+      fs.createReadStream(__filename).pipe(res);
+      return;
+    } else if (req.url.indexOf('/gzip') === 0) {
+      res.setHeader('Content-Encoding', 'gzip');
+      fs.createReadStream(__filename).pipe(zlib.createGzip()).pipe(res);
+      return;
     }
 
     var url = req.url.split('?');
@@ -136,7 +147,6 @@ var server = http.createServer(function (req, res) {
       'Content-Type': 'text/html',
     });
     res.end(ret.replace('##{charset}##', get.charset ? get.charset : ''));
-
   });
 });
 
