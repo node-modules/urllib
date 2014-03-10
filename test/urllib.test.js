@@ -781,8 +781,8 @@ describe('urllib.test.js', function () {
 
   describe('gzip content', function () {
     it('should auto accept and decode gzip response content', function (done) {
-      urllib.request('http://r.cnpmjs.org/npm', {dataType: 'json', gzip: true, timeout: 10000},
-      function (err, data, res) {
+      urllib.request('http://r.cnpmjs.org/npm',
+        {dataType: 'json', gzip: true, timeout: 10000}, function (err, data, res) {
         should.not.exist(err);
         data.name.should.equal('npm');
         res.should.have.header('content-encoding', 'gzip');
@@ -792,8 +792,8 @@ describe('urllib.test.js', function () {
     });
 
     it('should redirect and gzip', function (done) {
-      urllib.request('http://dist.cnpmjs.org/v0.10.1/SHASUMS.txt', {followRedirect: true, gzip: true},
-      function (err, data, res) {
+      urllib.request('http://dist.cnpmjs.org/v0.10.1/SHASUMS.txt',
+        {followRedirect: true, gzip: true, timeout: 10000}, function (err, data, res) {
         should.not.exist(err);
         data.toString().should.include('e213170fe5ec7721b31149fba1a7a691c50b5379');
         res.should.have.header('content-encoding', 'gzip');
@@ -803,7 +803,8 @@ describe('urllib.test.js', function () {
     });
 
     it('should not ungzip binary content', function (done) {
-      urllib.request('http://dist.u.qiniudn.com/v0.10.0/node.exp', {gzip: true}, function (err, data, res) {
+      urllib.request('http://dist.u.qiniudn.com/v0.10.0/node.exp', {gzip: true, timeout: 10000},
+      function (err, data, res) {
         should.not.exist(err);
         should.not.exist(res.headers['content-encoding']);
         res.should.have.header('content-type', 'application/octet-stream');
@@ -814,7 +815,7 @@ describe('urllib.test.js', function () {
 
     it('should not return gzip response content', function (done) {
       done = pedding(3, done);
-      urllib.request('http://r.cnpmjs.org', {dataType: 'json'},
+      urllib.request('http://r.cnpmjs.org', {dataType: 'json', timeout: 10000},
       function (err, data, res) {
         should.not.exist(err);
         data.db_name.should.equal('registry');
@@ -823,7 +824,7 @@ describe('urllib.test.js', function () {
         done();
       });
 
-      urllib.request('http://r.cnpmjs.org', {dataType: 'json', gzip: false},
+      urllib.request('http://r.cnpmjs.org', {dataType: 'json', gzip: false, timeout: 10000},
       function (err, data, res) {
         should.not.exist(err);
         data.db_name.should.equal('registry');
@@ -832,7 +833,7 @@ describe('urllib.test.js', function () {
         done();
       });
 
-      urllib.request('http://r.cnpmjs.org', {dataType: 'json', gzip: true},
+      urllib.request('http://r.cnpmjs.org', {dataType: 'json', gzip: true, timeout: 10000},
       function (err, data, res) {
         should.not.exist(err);
         data.db_name.should.equal('registry');
