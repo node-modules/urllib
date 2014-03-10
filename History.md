@@ -1,4 +1,9 @@
 
+0.5.9 / 2014-03-10 
+==================
+
+  * Support `options.gzip = true` to handle gzip response. fixed #26
+
 0.5.8 / 2014-03-07 
 ==================
 
