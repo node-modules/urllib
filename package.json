@@ -22,7 +22,6 @@
   "devDependencies": {
     "agentkeepalive": "0.2.2",
     "autod": "*",
-    "cov": "*",
     "formstream": "0.0.8",
     "istanbul": "*",
     "jshint": "*",

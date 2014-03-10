@@ -33,9 +33,6 @@ check-coverage:
 		--functions 94 \
 		--lines 96
 
-cov:
-	@./node_modules/.bin/cov coverage
-
 test-all: jshint test test-cov
 
 autod: install
