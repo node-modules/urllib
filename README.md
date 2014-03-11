@@ -1,6 +1,4 @@
-# urllib
-
-[![Build Status](https://secure.travis-ci.org/fengmk2/urllib.png?branch=master)](http://travis-ci.org/fengmk2/urllib)
+# urllib [![Build Status](https://secure.travis-ci.org/fengmk2/urllib.png?branch=master)](http://travis-ci.org/fengmk2/urllib)
 
 [![NPM](https://nodei.co/npm/urllib.png?downloads=true&stars=true)](https://nodei.co/npm/urllib/)
 
@@ -8,8 +6,6 @@
 
 Help in opening URLs (mostly HTTP) in a complex world — basic
 and digest authentication, redirections, cookies, timeout and more.
-
-[Code coverage: 94%](http://qtestbucket.qiniudn.com/cov/html/urllib/0.5.8/index.html)
 
 ## Install
 
@@ -221,17 +217,18 @@ Below is the output from `git-summary`.
 $ git summary
 
  project  : urllib
- repo age : 2 years, 7 months
- active   : 40 days
- commits  : 116
- files    : 18
+ repo age : 2 years, 10 months
+ active   : 48 days
+ commits  : 139
+ files    : 20
  authors  :
-    95  fengmk2                 81.9%
-     9  XiNGRZ                  7.8%
-     6  ibigbug                 5.2%
-     4  Jackson Tian            3.4%
-     1  aleafs                  0.9%
-     1  dead_horse              0.9%
+   116	fengmk2                 83.5%
+     9	XiNGRZ                  6.5%
+     6	ibigbug                 4.3%
+     4	Jackson Tian            2.9%
+     2	dead_horse              1.4%
+     1	coderhaoxin             0.7%
+     1	aleafs                  0.7%
 ```
 
 ## License
