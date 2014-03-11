@@ -17,6 +17,7 @@
 var should = require('should');
 var http = require('http');
 var https = require('https');
+var zlib = require('zlib');
 var querystring = require('querystring');
 var urlutil = require('url');
 var KeepAliveAgent = require('agentkeepalive');
@@ -781,13 +782,34 @@ describe('urllib.test.js', function () {
 
   describe('gzip content', function () {
     it('should auto accept and decode gzip response content', function (done) {
-      urllib.request('http://r.cnpmjs.org/npm',
+      urllib.request('http://r.cnpmjs.org/byte',
         {dataType: 'json', gzip: true, timeout: 10000}, function (err, data, res) {
         should.not.exist(err);
-        data.name.should.equal('npm');
+        data.name.should.equal('byte');
         res.should.have.header('content-encoding', 'gzip');
         res.should.have.header('content-type', 'application/json');
         done();
+      });
+    });
+
+    it('should auto accept and custom decode gzip response content', function (done) {
+      urllib.request('http://r.cnpmjs.org/byte', {
+        dataType: 'json', gzip: true, timeout: 10000,
+        headers: {
+          'accept-encoding': 'gzip'
+        }
+      }, function (err, data, res) {
+        should.not.exist(err);
+        data.should.be.a.Buffer;
+        data.length.should.above(0);
+        res.should.have.header('content-encoding', 'gzip');
+        res.should.have.header('content-type', 'application/json');
+        zlib.gunzip(data, function (err, buf) {
+          should.not.exist(err);
+          buf.should.be.a.Buffer;
+          JSON.parse(buf).name.should.equal('byte');
+          done();
+        });
       });
     });
 
