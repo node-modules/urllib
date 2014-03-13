@@ -1,4 +1,9 @@
 
+0.5.11 / 2014-03-13 
+==================
+
+  * improve user-agent, add node version and plaform detail
+
 0.5.10 / 2014-03-11 
 ==================
 
