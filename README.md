@@ -7,6 +7,9 @@
 Help in opening URLs (mostly HTTP) in a complex world — basic
 and digest authentication, redirections, cookies, timeout and more.
 
+If you are using [co](https://github.com/visionmedia/co) or [koa](https://github.com/koajs/koa),
+please take a look at [co-urllib](https://github.com/dead-horse/co-urllib).
+
 ## Install
 
 ```bash
