@@ -49,6 +49,7 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
     - ***headers*** Object - Request headers.
     - ***timeout*** Number - Request timeout in milliseconds. Defaults to `exports.TIMEOUT`. Include remote server connecting timeout and response timeout. When timeout happen, will return `ConnectionTimeout` or `ResponseTimeout`.
     - ***auth*** String - `username:password` used in HTTP Basic Authorization.
+    - ***digestAuth*** String - `username:password` used in HTTP [Digest Authorization](http://en.wikipedia.org/wiki/Digest_access_authentication).
     - ***agent*** [http.Agent](http://nodejs.org/api/http.html#http_class_http_agent) - HTTP Agent object.
       Set `false` if you does not use agent.
     - ***httpsAgent*** [https.Agent](http://nodejs.org/api/https.html#https_class_https_agent) - HTTPS Agent object.
@@ -211,6 +212,7 @@ urllib.request('http://127.0.0.1:1984/socket.end', function (err, data, res) {
 * [√] https & self-signed certificate
 * [√] Connection timeout & Response timeout
 * [√] Support `Accept-Encoding=gzip` by `options.gzip = true`
+* [√] Support [Digest access authentication](http://en.wikipedia.org/wiki/Digest_access_authentication)
 
 ## Authors
 

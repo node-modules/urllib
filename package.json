@@ -18,7 +18,8 @@
   },
   "dependencies": {
     "debug": "0.7.4",
-    "default-user-agent": "0.0.1"
+    "default-user-agent": "0.0.1",
+    "utility": "0.1.11"
   },
   "devDependencies": {
     "agentkeepalive": "0.2.2",
@@ -28,7 +29,7 @@
     "jshint": "*",
     "mocha": ">=0.14.1",
     "pedding": "0.0.3",
-    "should": "3.1.3"
+    "should": "3.2.0-beta1"
   },
   "engines": { "node": ">= 0.8.0" },
   "license": "MIT"
