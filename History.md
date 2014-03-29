@@ -1,4 +1,10 @@
 
+0.5.12 / 2014-03-29
+==================
+
+ * support Digest access authentication. fix #27
+ * add co-urllib desc
+
 0.5.11 / 2014-03-13 
 ==================
 
