@@ -17,9 +17,9 @@
     "travis-cov": { "threshold": 95 }
   },
   "dependencies": {
-    "debug": "0.7.4",
+    "debug": "0.8.0",
     "default-user-agent": "0.0.1",
-    "utility": "0.1.11"
+    "digest-header": "0.0.1"
   },
   "devDependencies": {
     "agentkeepalive": "0.2.2",
@@ -29,7 +29,7 @@
     "jshint": "*",
     "mocha": ">=0.14.1",
     "pedding": "0.0.3",
-    "should": "3.2.0-beta1"
+    "should": "3.2.0"
   },
   "engines": { "node": ">= 0.8.0" },
   "license": "MIT"

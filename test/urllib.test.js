@@ -503,13 +503,15 @@ describe('urllib.test.js', function () {
         // 'https://www.npmjs.org/search?q=urllib',
         // 'http://www.taobao.com/sitemap.php',
         // 'http://nodejs.org/',
-        'http://cnpmjs.org/',
+        // 'http://cnpmjs.org/',
+        'http://dist.u.qiniudn.com',
         'https://dn-abc.qbox.me/2.txt',
         // 'https://www.npmjs.org/package/urllib',
         // 'https://www.npmjs.org/',
         // 'http://www.taobao.com/',
         // 'http://nodejs.org/docs/latest/api/https.html',
-        'http://cnpmjs.org/package/urllib',
+        // 'http://cnpmjs.org/package/urllib',
+        'http://dist.u.qiniudn.com/v0.10.0/SHASUMS.txt',
         'https://dn-abc.qbox.me/3.txt',
       ];
 
@@ -817,7 +819,7 @@ describe('urllib.test.js', function () {
     });
 
     it('should redirect and gzip', function (done) {
-      urllib.request('http://dist.cnpmjs.org/v0.10.1/SHASUMS.txt',
+      urllib.request('http://dist.u.qiniudn.com/v0.10.1/SHASUMS.txt',
         {followRedirect: true, gzip: true, timeout: 10000}, function (err, data, res) {
         should.not.exist(err);
         data.toString().should.include('e213170fe5ec7721b31149fba1a7a691c50b5379');
