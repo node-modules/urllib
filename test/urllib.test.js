@@ -620,7 +620,7 @@ describe('urllib.test.js', function () {
       urllib.request('http://registry.cnpmjs.org/urllib/download/urllib-0.5.4.tgz', {
         writeStream: writeStream,
         followRedirect: true,
-        timeout: 10000
+        timeout: 20000
       }, function (err, data, res) {
         should.not.exist(err);
         should.ok(fs.existsSync(tmpfile));

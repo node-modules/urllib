@@ -29,7 +29,7 @@
     "jshint": "*",
     "mocha": ">=0.14.1",
     "pedding": "0.0.3",
-    "should": "3.2.0"
+    "should": "3.3.1"
   },
   "engines": { "node": ">= 0.8.0" },
   "license": "MIT"
