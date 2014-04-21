@@ -16,7 +16,7 @@ test: install
 		$(MOCHA_OPTS) \
 		$(TESTS)
 
-test-cov:
+test-cov cov:
 	@NODE_ENV=test node --harmony \
 		node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha \
 		-- -u exports \

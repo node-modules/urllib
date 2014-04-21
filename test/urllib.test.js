@@ -666,10 +666,10 @@ describe('urllib.test.js', function () {
 
   describe('https request', function () {
     it('GET github page', function (done) {
-      urllib.request('https://github.com/fengmk2/urllib', { timeout: 10000 },
+      urllib.request('https://github.com/node-modules/urllib', { timeout: 10000 },
       function (err, data, res) {
         should.not.exist(err);
-        data.toString().should.include('fengmk2/urllib');
+        data.toString().should.include('node-modules/urllib');
         res.should.status(200);
         res.should.have.header('content-type', 'text/html; charset=utf-8');
         done();
@@ -898,4 +898,37 @@ describe('urllib.test.js', function () {
     });
   });
 
+  describe('user-agent', function () {
+    it('should return default user agent', function (done) {
+      urllib.request(host + '/ua', {dataType: 'json'}, function (err, data, res) {
+        should.not.exist(err);
+        should.exist(data['user-agent']);
+        data['user-agent'].should.match(/^node\-urllib\/\d+\.\d+\.\d+ node\//);
+        res.should.status(200);
+        done();
+      });
+    });
+
+    it('should return mock user agent', function (done) {
+      urllib.request(host + '/ua', {dataType: 'json', headers: {'user-agent': 'mock agent'}},
+      function (err, data, res) {
+        should.not.exist(err);
+        should.exist(data['user-agent']);
+        data['user-agent'].should.equal('mock agent');
+        res.should.status(200);
+        done();
+      });
+    });
+
+    it('should return mock 2 user agent', function (done) {
+      urllib.request(host + '/ua', {dataType: 'json', headers: {'User-Agent': 'mock2 agent'}},
+      function (err, data, res) {
+        should.not.exist(err);
+        should.exist(data['user-agent']);
+        data['user-agent'].should.equal('mock2 agent');
+        res.should.status(200);
+        done();
+      });
+    });
+  });
 });

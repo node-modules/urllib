@@ -21,7 +21,7 @@ var fs = require('fs');
 var zlib = require('zlib');
 
 var server = http.createServer(function (req, res) {
-  req.headers['user-agent'].should.match(/^node\-urllib\/\d+\.\d+\.\d+ node\//);
+  // req.headers['user-agent'].should.match(/^node\-urllib\/\d+\.\d+\.\d+ node\//);
   var chunks  = [];
   var size = 0;
   req.on('data', function (buf) {
@@ -131,6 +131,9 @@ var server = http.createServer(function (req, res) {
     } else if (req.url.indexOf('/gzip') === 0) {
       res.setHeader('Content-Encoding', 'gzip');
       fs.createReadStream(__filename).pipe(zlib.createGzip()).pipe(res);
+      return;
+    } else if (req.url === '/ua') {
+      res.end(JSON.stringify(req.headers));
       return;
     }
 
