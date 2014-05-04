@@ -1,14 +1,14 @@
-# urllib [![Build Status](https://secure.travis-ci.org/fengmk2/urllib.png?branch=master)](http://travis-ci.org/fengmk2/urllib)
+# urllib [![Build Status](https://secure.travis-ci.org/node-modules/urllib.png?branch=master)](http://travis-ci.org/node-modules/urllib)
 
 [![NPM](https://nodei.co/npm/urllib.png?downloads=true&stars=true)](https://nodei.co/npm/urllib/)
 
-![logo](https://raw.github.com/fengmk2/urllib/master/logo.png)
+![logo](https://raw.github.com/node-modules/urllib/master/logo.png)
 
 Help in opening URLs (mostly HTTP) in a complex world — basic
 and digest authentication, redirections, cookies, timeout and more.
 
 If you are using [co](https://github.com/visionmedia/co) or [koa](https://github.com/koajs/koa),
-please take a look at [co-urllib](https://github.com/dead-horse/co-urllib).
+please take a look at [co-urllib](https://github.com/node-modules/co-urllib).
 
 ## Install
 

@@ -1,14 +1,14 @@
 {
   "name": "urllib",
-  "version": "0.5.14",
+  "version": "0.5.15",
   "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more.",
   "keywords": [ "urllib", "http", "urlopen", "curl", "wget", "request", "https" ],
   "author": "fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)",
-  "homepage": "http://github.com/fengmk2/urllib",
+  "homepage": "http://github.com/node-modules/urllib",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/fengmk2/urllib.git"
+    "url": "git://github.com/node-modules/urllib.git"
   },
   "scripts": {
     "test": "make test-all"
@@ -17,7 +17,7 @@
     "travis-cov": { "threshold": 95 }
   },
   "dependencies": {
-    "debug": "0.8.0",
+    "debug": "0.8.1",
     "default-user-agent": "0.0.1",
     "digest-header": "0.0.1"
   },
