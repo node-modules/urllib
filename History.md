@@ -1,4 +1,10 @@
 
+0.5.17 / 2014-08-08
+==================
+
+ * Remove aborted. joyent/node#7457
+ * missing I in urllib logo
+
 0.5.16 / 2014-05-15
 ==================
 
