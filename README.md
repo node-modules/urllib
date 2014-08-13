@@ -1,6 +1,21 @@
-# urllib [![Build Status](https://secure.travis-ci.org/node-modules/urllib.png?branch=master)](http://travis-ci.org/node-modules/urllib)
+# urllib
 
-[![NPM](https://nodei.co/npm/urllib.png?downloads=true&stars=true)](https://nodei.co/npm/urllib/)
+[![NPM version][npm-image]][npm-url]
+[![build status][travis-image]][travis-url]
+[![Test coverage][coveralls-image]][coveralls-url]
+[![Gittip][gittip-image]][gittip-url]
+[![David deps][david-image]][david-url]
+
+[npm-image]: https://img.shields.io/npm/v/urllib.svg?style=flat
+[npm-url]: https://npmjs.org/package/urllib
+[travis-image]: https://img.shields.io/travis/node-modules/urllib.svg?style=flat
+[travis-url]: https://travis-ci.org/node-modules/urllib
+[coveralls-image]: https://img.shields.io/coveralls/node-modules/urllib.svg?style=flat
+[coveralls-url]: https://coveralls.io/r/node-modules/urllib?branch=master
+[gittip-image]: https://img.shields.io/gittip/fengmk2.svg?style=flat
+[gittip-url]: https://www.gittip.com/fengmk2/
+[david-image]: https://img.shields.io/david/node-modules/urllib.svg?style=flat
+[david-url]: https://david-dm.org/node-modules/urllib
 
 ![logo](https://raw.github.com/node-modules/urllib/master/logo.png)
 
@@ -13,7 +28,7 @@ please take a look at [co-urllib](https://github.com/node-modules/co-urllib).
 ## Install
 
 ```bash
-$ npm install urllib
+$ npm install urllib --save
 ```
 
 ## Usage

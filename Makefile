@@ -16,22 +16,27 @@ test: install
 		$(MOCHA_OPTS) \
 		$(TESTS)
 
-test-cov cov:
+test-cov cov: install
 	@NODE_ENV=test node --harmony \
-		node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha \
-		-- -u exports \
+		node_modules/.bin/istanbul cover --preserve-comments \
+		./node_modules/.bin/_mocha \
+		-- \
 		--reporter $(REPORTER) \
 		--timeout $(TIMEOUT) \
 		$(MOCHA_OPTS) \
 		$(TESTS)
-	@-$(MAKE) check-coverage
+	@-./node_modules/.bin/cov coverage
 
-check-coverage:
-	@./node_modules/.bin/istanbul check-coverage \
-		--statements 96 \
-		--branches 93 \
-		--functions 94 \
-		--lines 96
+test-travis: install
+	@NODE_ENV=test node --harmony \
+		node_modules/.bin/istanbul cover --preserve-comments \
+		./node_modules/.bin/_mocha \
+		--report lcovonly \
+		-- \
+		--reporter dot \
+		--timeout $(TIMEOUT) \
+		$(MOCHA_OPTS) \
+		$(TESTS)
 
 test-all: jshint test test-cov
 

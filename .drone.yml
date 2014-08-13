@@ -1,9 +1,0 @@
-image: node0.10
-# env:
-#   - GOPATH=/var/cache/drone
-script:
-  - npm test
-notify:
-  email:
-    recipients:
-      - fengmk2@gmail.com
