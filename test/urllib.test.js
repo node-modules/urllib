@@ -504,14 +504,14 @@ describe('urllib.test.js', function () {
         // 'http://www.taobao.com/sitemap.php',
         // 'http://nodejs.org/',
         // 'http://cnpmjs.org/',
-        'http://dist.u.qiniudn.com',
+        'http://npm.taobao.org',
         'https://dn-abc.qbox.me/2.txt',
         // 'https://www.npmjs.org/package/urllib',
         // 'https://www.npmjs.org/',
         // 'http://www.taobao.com/',
         // 'http://nodejs.org/docs/latest/api/https.html',
         // 'http://cnpmjs.org/package/urllib',
-        'http://dist.u.qiniudn.com/v0.10.0/SHASUMS.txt',
+        'http://npm.taobao.org/dist/v0.10.0/SHASUMS.txt',
         'https://dn-abc.qbox.me/3.txt',
       ];
 
