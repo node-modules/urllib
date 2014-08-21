@@ -94,7 +94,7 @@ describe('urllib.test.js', function () {
       urllib.request(host + '/redirect_no_location', {followRedirect: true}, function (err, data, res) {
         should.exist(err);
         err.name.should.equal('FollowRedirectError');
-        err.message.should.include('Got statusCode 302 but cannot resolve next location from headers, GET http://127.0.0.1:');
+        err.message.should.containEql('Got statusCode 302 but cannot resolve next location from headers, GET http://127.0.0.1:');
         data.toString().should.equal('I am 302 body');
         done();
       });
@@ -104,7 +104,7 @@ describe('urllib.test.js', function () {
       urllib.request(host + '/loop_redirect', {followRedirect: true}, function (err, data, res) {
         should.exist(err);
         err.name.should.equal('MaxRedirectError');
-        err.message.should.include('Exceeded maxRedirects. Probably stuck in a redirect loop ');
+        err.message.should.containEql('Exceeded maxRedirects. Probably stuck in a redirect loop ');
         data.toString().should.equal('Redirect to /loop_redirect');
         done();
       });
@@ -140,7 +140,7 @@ describe('urllib.test.js', function () {
       urllib.request(host + '/error', function (err, data, res) {
         should.exist(err);
         err.name.should.equal('RequestError');
-        err.stack.should.include('socket hang up');
+        err.stack.should.containEql('socket hang up');
         err.code.should.equal('ECONNRESET');
         should.not.exist(data);
         should.not.exist(res);
@@ -152,7 +152,7 @@ describe('urllib.test.js', function () {
       var req = urllib.request(host + '/timeout', function (err, data, res) {
         should.exist(err);
         err.name.should.equal('RequestError');
-        err.stack.should.include('socket hang up');
+        err.stack.should.containEql('socket hang up');
         err.code.should.equal('ECONNRESET');
         should.not.exist(data);
         should.not.exist(res);
@@ -165,7 +165,7 @@ describe('urllib.test.js', function () {
     //   urllib.request(host + '/socket.destroy', function (err, data, res) {
     //     should.exist(err);
     //     err.name.should.equal('RemoteSocketClosedError');
-    //     err.message.should.include('Remote socket was terminated before `response.end()` was called, GET http://127.0.0.1:');
+    //     err.message.should.containEql('Remote socket was terminated before `response.end()` was called, GET http://127.0.0.1:');
     //     data.toString().should.equal('foo haha\nfoo haha 2');
     //     should.ok(res.aborted);
     //     should.ok(err.res.aborted);
@@ -177,7 +177,7 @@ describe('urllib.test.js', function () {
     //   urllib.request(host + '/socket.end', function (err, data, res) {
     //     should.exist(err);
     //     err.name.should.equal('RemoteSocketClosedError');
-    //     err.message.should.include('Remote socket was terminated before `response.end()` was called, GET http://127.0.0.1:');
+    //     err.message.should.containEql('Remote socket was terminated before `response.end()` was called, GET http://127.0.0.1:');
     //     data.toString().should.equal('foo haha\nfoo haha 2');
     //     should.ok(res.aborted);
     //     done();
@@ -189,7 +189,7 @@ describe('urllib.test.js', function () {
         should.exist(err);
         err.name.should.equal('RequestError');
         err.code && err.code.should.equal('HPE_INVALID_CHUNK_SIZE');
-        err.message.should.include('Parse Error (req "error"), GET http://127.0.0.1:');
+        err.message.should.containEql('Parse Error (req "error"), GET http://127.0.0.1:');
         err.bytesParsed.should.equal(2);
         done();
       });
@@ -428,7 +428,7 @@ describe('urllib.test.js', function () {
       }, function (err, data, res) {
         should.exist(err);
         err.name.should.equal('JSONResponseFormatError');
-        err.message.should.include('Unexpected end of input, GET http://127.0.0.1:');
+        err.message.should.containEql('Unexpected end of input, GET http://127.0.0.1:');
         res.should.status(200);
         data.toString().should.equal('{"foo":""');
         done();
@@ -564,8 +564,8 @@ describe('urllib.test.js', function () {
       urllib.request(host + '/stream', args, function (err, data, res) {
         should.not.exist(err);
         data = data.toString();
-        data.should.include('你好urllib\r\n----------------------------');
-        data.should.include('Content-Disposition: form-data; name="file"; filename="urllib.test.js"');
+        data.should.containEql('你好urllib\r\n----------------------------');
+        data.should.containEql('Content-Disposition: form-data; name="file"; filename="urllib.test.js"');
         done();
       });
     });
@@ -578,7 +578,7 @@ describe('urllib.test.js', function () {
         stream: stream
       }, function (err, data, res) {
         should.exist(err);
-        err.message.should.include('ENOENT, open');
+        err.message.should.containEql('ENOENT, open');
         should.not.exist(data);
         should.not.exist(res);
         done();
@@ -641,7 +641,7 @@ describe('urllib.test.js', function () {
         writeStream: writeStream
       }, function (err, data, res) {
         should.exist(err);
-        err.message.should.include('ENOENT, open');
+        err.message.should.containEql('ENOENT, open');
         done();
       });
     });
@@ -655,7 +655,7 @@ describe('urllib.test.js', function () {
         err.name.should.equal('RequestError');
         err.stack.should.match(/socket hang up/);
         err.code.should.equal('ECONNRESET');
-        err.message.should.include('/error -1\nheaders: {}');
+        err.message.should.containEql('/error -1\nheaders: {}');
         should.not.exist(data);
         should.not.exist(res);
         done();
@@ -669,7 +669,7 @@ describe('urllib.test.js', function () {
       urllib.request('https://github.com/node-modules/urllib', { timeout: 10000 },
       function (err, data, res) {
         should.not.exist(err);
-        data.toString().should.include('node-modules/urllib');
+        data.toString().should.containEql('node-modules/urllib');
         res.should.status(200);
         res.should.have.header('content-type', 'text/html; charset=utf-8');
         done();
@@ -822,7 +822,7 @@ describe('urllib.test.js', function () {
       urllib.request('http://dist.u.qiniudn.com/v0.10.1/SHASUMS.txt',
         {followRedirect: true, gzip: true, timeout: 10000}, function (err, data, res) {
         should.not.exist(err);
-        data.toString().should.include('e213170fe5ec7721b31149fba1a7a691c50b5379');
+        data.toString().should.containEql('e213170fe5ec7721b31149fba1a7a691c50b5379');
         // res.should.have.header('content-encoding', 'gzip');
         // res.should.have.header('content-type', 'text/plain');
         done();

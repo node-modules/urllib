@@ -26,7 +26,7 @@ describe('digest_auth.test.js', function () {
       should.not.exist(err);
       res.should.status(404);
       data = data.toString();
-      data.should.include('<p>The requested URL /auth-digest/user3 was not found on this server.</p>');
+      data.should.containEql('<p>The requested URL /auth-digest/user3 was not found on this server.</p>');
       done();
     });
   });
@@ -40,7 +40,7 @@ describe('digest_auth.test.js', function () {
       res.should.status(401);
       res.should.have.header('www-authenticate');
       data = data.toString();
-      data.should.include('401 Authorization Required');
+      data.should.containEql('401 Authorization Required');
       done();
     });
   });
