@@ -35,7 +35,7 @@
     "should-http": "0.0.2"
   },
   "devDependencies": {
-    "agentkeepalive": "~1.0.0",
+    "agentkeepalive": "~0.2.0",
     "autod": "*",
     "contributors": "*",
     "formstream": "~0.0.8",
