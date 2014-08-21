@@ -25,12 +25,8 @@
     "jshint": "jshint .",
     "cov": "npm run test-cov",
     "autod": "autod -w --prefix '~' && npm run cnpm",
-    "cnpm": "npm install --registry=https://registry.npm.taobao.org"
-  },
-  "config": {
-    "travis-cov": {
-      "threshold": 95
-    }
+    "cnpm": "npm install --registry=https://registry.npm.taobao.org",
+    "contributors": "contributors -f plain -o AUTHORS"
   },
   "dependencies": {
     "debug": "~1.0.4",
@@ -41,6 +37,7 @@
   "devDependencies": {
     "agentkeepalive": "~1.0.0",
     "autod": "*",
+    "contributors": "*",
     "formstream": "~0.0.8",
     "istanbul": "*",
     "jshint": "*",
