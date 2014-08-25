@@ -32,9 +32,10 @@
     "debug": "~1.0.4",
     "default-user-agent": "~0.0.1",
     "digest-header": "~0.0.1",
-    "should-http": "0.0.2"
+    "native-or-bluebird": "~1.0.0"
   },
   "devDependencies": {
+    "bluebird": "*",
     "agentkeepalive": "~0.2.0",
     "autod": "*",
     "contributors": "*",
@@ -43,7 +44,8 @@
     "jshint": "*",
     "mocha": "*",
     "pedding": "~1.0.0",
-    "should": "~4.0.4"
+    "should": "~4.0.4",
+    "should-http": "0.0.2"
   },
   "engines": {
     "node": ">= 0.10.0"

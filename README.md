@@ -28,9 +28,6 @@
 Help in opening URLs (mostly HTTP) in a complex world — basic
 and digest authentication, redirections, cookies, timeout and more.
 
-If you are using [co](https://github.com/visionmedia/co) or [koa](https://github.com/koajs/koa),
-please take a look at [co-urllib](https://github.com/node-modules/co-urllib).
-
 ## Install
 
 ```bash
@@ -38,6 +35,8 @@ $ npm install urllib --save
 ```
 
 ## Usage
+
+### callback
 
 ```js
 var urllib = require('urllib');
@@ -51,6 +50,44 @@ urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res
   // data is Buffer instance
   console.log(data.toString());
 });
+```
+
+### Promise
+
+If you've installed [bluebird][bluebird],
+[bluebird][bluebird] will be used.
+`urllib` does not install [bluebird][bluebird] for you.
+
+Otherwise, if you're using a node that has native v8 Promises (v0.11.13+),
+then that will be used.
+
+Otherwise, this library will crash the process and exit,
+so you might as well install [bluebird][bluebird] as a dependency!
+
+```js
+var urllib = require('urllib');
+
+urllib.request('http://nodejs.org').then(function (result) {
+  // result: {data: buffer, res: response object}
+  console.log('status: %s, body size: %d, headers: %j', result.res.statusCode, result.data.length, result.res.headers);
+}).error(function (err) {
+  console.error(err);
+});
+```
+
+### co & generator
+
+If you are using [co](https://github.com/visionmedia/co) or [koa](https://github.com/koajs/koa):
+
+```js
+var co = require('co');
+var urllib = require('urllib');
+
+co(function* () {
+  var result = yield urllib.request('http://nodejs.org');
+  console.log('status: %s, body size: %d, headers: %j',
+    result.res.statusCode, result.data.length, result.res.headers);
+})();
 ```
 
 ## API Doc
@@ -281,3 +318,5 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[bluebird]: https://github.com/petkaantonov/bluebird
