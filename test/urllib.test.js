@@ -931,4 +931,40 @@ describe('urllib.test.js', function () {
       });
     });
   });
+
+  describe('on()', function () {
+    afterEach(function () {
+      urllib.removeAllListeners('response');
+    });
+
+    it('should listen response event', function (done) {
+      done = pedding(4, done);
+      urllib.on('response', function (info) {
+        if (info.options.path === '/error') {
+          should.exist(info.error);
+          info.status.should.equal(-1);
+          info.requestSize.should.equal(0);
+        } else {
+          should.not.exist(info.error);
+          info.status.should.equal(200);
+          info.requestSize.should.equal(7);
+          info.responseSize.should.equal(info.requestSize);
+          info.options.path.should.equal('/stream');
+        }
+        done();
+      });
+      urllib.request(host + '/error', function (err) {
+        should.exist(err);
+        done();
+      });
+
+      urllib.request(host + '/stream', {
+        method: 'post',
+        data: {foo: 'bar'}
+      }, function (err) {
+        should.not.exist(err);
+        done();
+      });
+    });
+  });
 });

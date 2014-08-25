@@ -90,6 +90,21 @@ co(function* () {
 })();
 ```
 
+## Global `response` event
+
+```js
+urllib.on('response', function (info) {
+  error: err,
+  url: url,
+  options: options,
+  status: statusCode,
+  rt: requestUsetime,
+  requestSize: requestSize,
+  responseSize: responseSize,
+  headers: headers
+});
+```
+
 ## API Doc
 
 ### Method: `http.request(url[, options][, callback])`
