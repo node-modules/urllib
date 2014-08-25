@@ -1,4 +1,11 @@
 
+1.0.0 / 2014-08-25
+==================
+
+ * return Promise when callback missing. fixed #33
+ * rm Makefile
+ * use flat image
+
 0.5.17 / 2014-08-08
 ==================
 
