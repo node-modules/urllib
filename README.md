@@ -95,6 +95,7 @@ co(function* () {
 ```js
 urllib.on('response', function (info) {
   error: err,
+  ctx: args.ctx,
   req: {
     url: url,
     options: options,

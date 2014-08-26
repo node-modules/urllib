@@ -947,23 +947,36 @@ describe('urllib.test.js', function () {
           should.exist(info.error);
           info.res.status.should.equal(-1);
           info.req.size.should.equal(0);
+          info.ctx.should.eql({
+            foo: 'error request'
+          });
         } else {
           should.not.exist(info.error);
           info.res.status.should.equal(200);
           info.req.size.should.equal(7);
           info.res.size.should.equal(info.req.size);
           info.req.options.path.should.equal('/stream');
+          info.ctx.should.eql({
+            foo: 'stream request'
+          });
         }
         done();
       });
-      urllib.request(host + '/error', function (err) {
+      urllib.request(host + '/error', {
+        ctx: {
+          foo: 'error request'
+        }
+      }, function (err) {
         should.exist(err);
         done();
       });
 
       urllib.request(host + '/stream', {
         method: 'post',
-        data: {foo: 'bar'}
+        data: {foo: 'bar'},
+        ctx: {
+          foo: 'stream request'
+        }
       }, function (err) {
         should.not.exist(err);
         done();
