@@ -92,8 +92,12 @@ co(function* () {
 
 ## Global `response` event
 
+You should create a urllib instance first.
+
 ```js
-urllib.on('response', function (info) {
+var httpclient = require('urllib').create();
+
+httpclient.on('response', function (info) {
   error: err,
   ctx: args.ctx,
   req: {
@@ -102,6 +106,10 @@ urllib.on('response', function (info) {
     size: requestSize,
   },
   res: res
+});
+
+httpclient.request('http://nodejs.org', function (err, body) {
+  console.log('body size: %d', body.length);
 });
 ```
 

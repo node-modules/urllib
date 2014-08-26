@@ -936,6 +936,7 @@ describe('urllib.test.js', function () {
   });
 
   describe('on()', function () {
+    var urllib = require('../').create();
     afterEach(function () {
       urllib.removeAllListeners('response');
     });
@@ -962,6 +963,7 @@ describe('urllib.test.js', function () {
         }
         done();
       });
+
       urllib.request(host + '/error', {
         ctx: {
           foo: 'error request'
