@@ -86,7 +86,7 @@ var urllib = require('urllib');
 co(function* () {
   var result = yield urllib.request('http://nodejs.org');
   console.log('status: %s, body size: %d, headers: %j',
-    result.res.statusCode, result.data.length, result.res.headers);
+    result.status, result.data.length, result.headers);
 })();
 ```
 
@@ -95,13 +95,12 @@ co(function* () {
 ```js
 urllib.on('response', function (info) {
   error: err,
-  url: url,
-  options: options,
-  status: statusCode,
-  rt: requestUsetime,
-  requestSize: requestSize,
-  responseSize: responseSize,
-  headers: headers
+  req: {
+    url: url,
+    options: options,
+    size: requestSize,
+  },
+  res: res
 });
 ```
 
@@ -246,7 +245,17 @@ var req = urllib.request('http://my.server.com/upload', {
 });
 ```
 
-### Response: `res.aborted`
+### Response Object
+
+Response is normal object, it contains:
+
+* `status` or `statusCode`: response status code, `-1` meaning some network error like `ENOTFOUND`
+* `headers`: response http headers, default is `{}`
+* `size`: response size
+* `aborted`: response was aborted or not
+* `rt`: total request and response time in ms.
+
+#### Response: `res.aborted`
 
 If the underlaying connection was terminated before `response.end()` was called,
 `res.aborted` should be `true`,
@@ -295,18 +304,20 @@ Below is the output from `git-summary`.
 $ git summary
 
  project  : urllib
- repo age : 2 years, 10 months
- active   : 48 days
- commits  : 139
- files    : 20
+ repo age : 3 years, 3 months
+ active   : 61 days
+ commits  : 171
+ files    : 22
  authors  :
-   116	fengmk2                 83.5%
-     9	XiNGRZ                  6.5%
-     6	ibigbug                 4.3%
-     4	Jackson Tian            2.9%
-     2	dead_horse              1.4%
-     1	coderhaoxin             0.7%
-     1	aleafs                  0.7%
+   144	fengmk2                 84.2%
+     9	XiNGRZ                  5.3%
+     6	ibigbug                 3.5%
+     4	Jackson Tian            2.3%
+     3	dead_horse              1.8%
+     2	alsotang                1.2%
+     1	coderhaoxin             0.6%
+     1	aleafs                  0.6%
+     1	Jonathan Dahan          0.6%
 ```
 
 ## License

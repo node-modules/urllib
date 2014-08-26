@@ -117,7 +117,7 @@ describe('urllib.test.js', function () {
           err.name.should.equal('ConnectionTimeoutError');
           err.message.should.match(/^Request#\d+ timeout for 450ms\, GET http/);
           should.not.exist(data);
-          should.not.exist(res);
+          should.exist(res);
           done();
         });
       });
@@ -143,7 +143,7 @@ describe('urllib.test.js', function () {
         err.stack.should.containEql('socket hang up');
         err.code.should.equal('ECONNRESET');
         should.not.exist(data);
-        should.not.exist(res);
+        should.exist(res);
         done();
       });
     });
@@ -155,7 +155,7 @@ describe('urllib.test.js', function () {
         err.stack.should.containEql('socket hang up');
         err.code.should.equal('ECONNRESET');
         should.not.exist(data);
-        should.not.exist(res);
+        should.exist(res);
         done();
       });
       req.abort();
@@ -579,8 +579,9 @@ describe('urllib.test.js', function () {
       }, function (err, data, res) {
         should.exist(err);
         err.message.should.containEql('ENOENT, open');
+        err.res.should.equal(res);
         should.not.exist(data);
-        should.not.exist(res);
+        should.exist(res);
         done();
       });
     });
@@ -656,8 +657,10 @@ describe('urllib.test.js', function () {
         err.stack.should.match(/socket hang up/);
         err.code.should.equal('ECONNRESET');
         err.message.should.containEql('/error -1\nheaders: {}');
+        err.res.should.equal(res);
         should.not.exist(data);
-        should.not.exist(res);
+        should.exist(res);
+        res.should.have.keys('status', 'statusCode', 'headers', 'size', 'rt', 'aborted');
         done();
       });
     });
@@ -940,16 +943,16 @@ describe('urllib.test.js', function () {
     it('should listen response event', function (done) {
       done = pedding(4, done);
       urllib.on('response', function (info) {
-        if (info.options.path === '/error') {
+        if (info.req.options.path === '/error') {
           should.exist(info.error);
-          info.status.should.equal(-1);
-          info.requestSize.should.equal(0);
+          info.res.status.should.equal(-1);
+          info.req.size.should.equal(0);
         } else {
           should.not.exist(info.error);
-          info.status.should.equal(200);
-          info.requestSize.should.equal(7);
-          info.responseSize.should.equal(info.requestSize);
-          info.options.path.should.equal('/stream');
+          info.res.status.should.equal(200);
+          info.req.size.should.equal(7);
+          info.res.size.should.equal(info.req.size);
+          info.req.options.path.should.equal('/stream');
         }
         done();
       });

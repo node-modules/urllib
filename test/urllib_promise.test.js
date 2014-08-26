@@ -21,11 +21,19 @@ describe('urllib_promise.test.js', function () {
   it('should return promise when callback missing', function (done) {
     urllib.request('http://nodejs.org')
     .then(function (result) {
+      should.exist(result);
+      result.should.have.keys('data', 'status', 'headers', 'res');
       should.exist(result.data);
       should.exist(result.res);
       result.data.should.be.a.Buffer;
+      result.status.should.equal(200);
       result.res.should.status(200);
       result.res.should.have.header('connection', 'keep-alive');
+
+      result.res.should.have.keys('status', 'statusCode', 'headers', 'rt', 'size', 'aborted');
+      result.res.status.should.equal(200);
+      result.res.rt.should.above(0);
+      result.res.size.should.above(0);
       done();
     }).error(done);
   });
@@ -44,5 +52,23 @@ describe('urllib_promise.test.js', function () {
       result.res.should.have.header('connection', 'keep-alive');
       done();
     }).error(done);
+  });
+
+  it('should throw error', function (done) {
+    urllib.request('http://nodejsnot-exists-ooll.abcsdf123.org', {
+      data: {
+        q: 'foo'
+      }
+    })
+    .then(function (result) {
+      throw new Error('should not run this');
+    }).error(function (err) {
+      should.exist(err);
+      err.code.should.equal('ENOTFOUND');
+      err.status.should.equal(-1);
+      err.headers.should.eql({});
+      err.res.should.have.keys('status', 'statusCode', 'headers', 'rt', 'size', 'aborted');
+      done();
+    });
   });
 });
