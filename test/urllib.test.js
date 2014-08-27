@@ -491,7 +491,8 @@ describe('urllib.test.js', function () {
         // this will timeout first
         var req = urllib.request(host + '/timeout', {agent: agent, timeout: 300}, function (err) {
           should.exist(err);
-          err.name.should.equal('ConnectionTimeoutError');
+          err.noSocket.should.equal(true);
+          err.name.should.equal('SocketAssignTimeoutError');
           errCount.should.equal(0);
           errCount++;
           done();
