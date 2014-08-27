@@ -435,6 +435,17 @@ describe('urllib.test.js', function () {
       });
     });
 
+    it('should support options.dataType=text', function (done) {
+      urllib.request(host + '/wrongjson', {
+        dataType: 'text'
+      }, function (err, data, res) {
+        should.not.exist(err);
+        res.should.status(200);
+        data.should.equal('{"foo":""');
+        done();
+      });
+    });
+
     it('should support options.auth', function (done) {
       urllib.request(host + '/auth', {
         type: 'get',
