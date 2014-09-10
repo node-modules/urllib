@@ -84,7 +84,7 @@ var co = require('co');
 var urllib = require('urllib');
 
 co(function* () {
-  var result = yield urllib.request('http://nodejs.org');
+  var result = yield urllib.requestThunk('http://nodejs.org');
   console.log('status: %s, body size: %d, headers: %j',
     result.status, result.data.length, result.headers);
 })();
