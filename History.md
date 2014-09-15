@@ -1,4 +1,9 @@
 
+0.5.18 / 2014-09-15
+==================
+
+ * do not check ssl, fix hang up in some node version
+
 0.5.17 / 2014-08-08
 ==================
 
