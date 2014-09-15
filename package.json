@@ -1,6 +1,6 @@
 {
   "name": "urllib",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more.",
   "keywords": [
     "urllib",
