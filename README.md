@@ -41,7 +41,7 @@ $ npm install urllib --save
 ```js
 var urllib = require('urllib');
 
-urllib.request('http://cnodejs.org/', { wd: 'nodejs' }, function (err, data, res) {
+urllib.request('http://cnodejs.org/', function (err, data, res) {
   if (err) {
     throw err; // you need to handle error
   }
@@ -235,7 +235,7 @@ urllib.request('http://example.com', {
 
 #### Options: `options.stream`
 
-Uploads a file with [formstream](https://github.com/fengmk2/formstream):
+Uploads a file with [formstream](https://github.com/node-modules/formstream):
 
 ```js
 var urllib = require('urllib');
@@ -353,5 +353,6 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 [bluebird]: https://github.com/petkaantonov/bluebird
