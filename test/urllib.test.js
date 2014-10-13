@@ -997,4 +997,38 @@ describe('urllib.test.js', function () {
       });
     });
   });
+
+  describe('charset support', function () {
+    it('should auto decode when dataType = json', function (done) {
+      urllib.request(host + '/gbk/json', {
+        dataType: 'json'
+      }, function (err, data, res) {
+        res.should.have.header('content-type', 'application/json;charset=gbk');
+        data.should.eql({
+          hello: '你好'
+        });
+        done(err);
+      });
+    });
+
+    it('should auto decode when dataType = text', function (done) {
+      urllib.request(host + '/gbk/text', {
+        dataType: 'text'
+      }, function (err, data, res) {
+        res.should.have.header('content-type', 'text/plain;charset=gbk');
+        data.should.equal('你好');
+        done(err);
+      });
+    });
+
+    it('should ignore wrong charset', function (done) {
+      urllib.request(host + '/errorcharset', {
+        dataType: 'text'
+      }, function (err, data, res) {
+        res.should.have.header('content-type', 'text/plain;charset=notfound');
+        data.should.eql(new Buffer('你好'));
+        done(err);
+      });
+    });
+  });
 });
