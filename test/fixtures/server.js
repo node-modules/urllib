@@ -19,6 +19,7 @@ var http = require('http');
 var querystring = require('querystring');
 var fs = require('fs');
 var zlib = require('zlib');
+var iconv = require('iconv-lite');
 
 var server = http.createServer(function (req, res) {
   // req.headers['user-agent'].should.match(/^node\-urllib\/\d+\.\d+\.\d+ node\//);
@@ -135,6 +136,17 @@ var server = http.createServer(function (req, res) {
     } else if (req.url === '/ua') {
       res.end(JSON.stringify(req.headers));
       return;
+    } else if (req.url === '/gbk/json') {
+      res.setHeader('Content-Type', 'application/json;charset=gbk');
+      var content = iconv.encode(JSON.stringify({hello: '你好'}), 'gbk');
+      return res.end(content);
+    } else if (req.url === '/gbk/text') {
+      res.setHeader('Content-Type', 'text/plain;charset=gbk');
+      var content = iconv.encode('你好', 'gbk');
+      return res.end(content);
+    } else if (req.url === '/errorcharset') {
+      res.setHeader('Content-Type', 'text/plain;charset=notfound');
+      return res.end('你好');
     }
 
     var url = req.url.split('?');

@@ -32,7 +32,9 @@
     "debug": "~1.0.4",
     "default-user-agent": "~0.0.1",
     "digest-header": "~0.0.1",
-    "native-or-bluebird": "~1.0.0"
+    "native-or-bluebird": "~1.0.0",
+    "media-typer": "~0.3.0",
+    "iconv-lite": "~0.4.4"
   },
   "devDependencies": {
     "agentkeepalive": "~0.2.0",
