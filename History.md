@@ -1,4 +1,9 @@
 
+2.0.0 / 2014-10-13
+==================
+
+ * support auto decode charset when dataType set
+
 1.5.2 / 2014-09-15
 ==================
 
