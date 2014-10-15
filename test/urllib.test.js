@@ -900,29 +900,26 @@ describe('urllib.test.js', function () {
 
     it('should not return gzip response content', function (done) {
       done = pedding(3, done);
-      urllib.request('http://r.cnpmjs.org', {dataType: 'json', timeout: 10000},
+      urllib.request('https://www.nodejitsu.com/company/contact/',
       function (err, data, res) {
         should.not.exist(err);
-        data.db_name.should.equal('registry');
         should.not.exist(res.headers['content-encoding']);
         // res.should.have.header('content-type', 'application/json');
         done();
       });
 
-      urllib.request('http://r.cnpmjs.org', {dataType: 'json', gzip: false, timeout: 10000},
+      urllib.request('https://www.nodejitsu.com/company/contact/', {gzip: false},
       function (err, data, res) {
         should.not.exist(err);
-        data.db_name.should.equal('registry');
         should.not.exist(res.headers['content-encoding']);
         // res.should.have.header('content-type', 'application/json');
         done();
       });
 
-      urllib.request('http://r.cnpmjs.org', {dataType: 'json', gzip: true, timeout: 10000},
+      urllib.request('https://www.nodejitsu.com/company/contact/', {gzip: true},
       function (err, data, res) {
         should.not.exist(err);
-        data.db_name.should.equal('registry');
-        // res.should.have.header('content-encoding', 'gzip');
+        res.should.have.header('content-encoding', 'gzip');
         // res.should.have.header('content-type', 'application/json');
         done();
       });
