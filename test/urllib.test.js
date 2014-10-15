@@ -16,7 +16,6 @@
 
 var should = require('should');
 var http = require('http');
-var https = require('https');
 var zlib = require('zlib');
 var querystring = require('querystring');
 var urlutil = require('url');
@@ -149,7 +148,7 @@ describe('urllib.test.js', function () {
     });
 
     it('should socket hang up by req.abort() before `response` event emit', function (done) {
-      var req = urllib.request(host + '/timeout', function (err, data, res) {
+      var req = urllib.request(host + '/timeout', {timeout: 500}, function (err, data, res) {
         should.exist(err);
         err.name.should.equal('RequestError');
         err.stack.should.containEql('socket hang up');
@@ -158,7 +157,9 @@ describe('urllib.test.js', function () {
         should.exist(res);
         done();
       });
-      req.abort();
+      setTimeout(function () {
+        req.abort();
+      }, 1);
     });
 
     // it('should res.socket.destroy() after `response` event emit', function (done) {
