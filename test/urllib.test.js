@@ -836,9 +836,6 @@ describe('urllib.test.js', function () {
       };
       urllib.request(host + '/json_mirror', params, function (err, serverData, res) {
         should.not.exist(err);
-        // serverData.should.eql({
-        //   url: '/json_mirror?foo=bar&n1=1&now=', data: ''
-        // });
         res.should.status(200);
         res.headers.should.have.property('content-type', 'application/json');
         done();
