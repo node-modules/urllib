@@ -116,7 +116,7 @@ var server = http.createServer(function (req, res) {
       res.end();
       return;
     } else if (req.url.indexOf('/json_mirror') === 0) {
-      res.setHeader('Content-Type', req.headers['content-type']);
+      res.setHeader('Content-Type', req.headers['content-type'] || 'application/json');
       if (req.method === 'GET') {
         res.end(JSON.stringify({
           url: req.url,
