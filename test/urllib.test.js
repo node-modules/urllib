@@ -517,14 +517,14 @@ describe('urllib.test.js', function () {
         // 'http://www.taobao.com/sitemap.php',
         // 'http://nodejs.org/',
         // 'http://cnpmjs.org/',
-        'http://npm.taobao.org',
+        'https://www.nodejitsu.com',
         'https://dn-abc.qbox.me/2.txt',
         // 'https://www.npmjs.org/package/urllib',
         // 'https://www.npmjs.org/',
         // 'http://www.taobao.com/',
         // 'http://nodejs.org/docs/latest/api/https.html',
         // 'http://cnpmjs.org/package/urllib',
-        'http://npm.taobao.org/dist/v0.10.0/SHASUMS.txt',
+        'https://www.nodejitsu.com/npm/',
         'https://dn-abc.qbox.me/3.txt',
       ];
 
