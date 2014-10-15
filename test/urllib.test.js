@@ -58,7 +58,7 @@ describe('urllib.test.js', function () {
 
   describe('request()', function () {
     it('should request https success', function (done) {
-      urllib.request('https://dn-abc.qbox.me/1.txt', {timeout: 10000}, function (err, data, res) {
+      urllib.request('https://www.nodejitsu.com/npm/', {timeout: 10000}, function (err, data, res) {
         should.not.exist(err);
         should.ok(Buffer.isBuffer(data));
         res.should.status(200);
@@ -512,20 +512,20 @@ describe('urllib.test.js', function () {
       });
 
       var urls = [
-        'https://dn-abc.qbox.me/1.txt',
+        'https://github.com/',
+        'https://www.nodejitsu.com',
+        'https://github.com/about',
+        'https://www.nodejitsu.com/npm/',
         // 'https://www.npmjs.org/search?q=urllib',
         // 'http://www.taobao.com/sitemap.php',
         // 'http://nodejs.org/',
         // 'http://cnpmjs.org/',
-        'https://www.nodejitsu.com',
-        'https://dn-abc.qbox.me/2.txt',
+
         // 'https://www.npmjs.org/package/urllib',
         // 'https://www.npmjs.org/',
         // 'http://www.taobao.com/',
         // 'http://nodejs.org/docs/latest/api/https.html',
         // 'http://cnpmjs.org/package/urllib',
-        'https://www.nodejitsu.com/npm/',
-        'https://dn-abc.qbox.me/3.txt',
       ];
 
       urls.forEach(function (url) {
@@ -691,69 +691,6 @@ describe('urllib.test.js', function () {
         done();
       });
     });
-  });
-
-  describe.skip('SELF_SIGNED_CERT_IN_CHAIN https request', function () {
-    var ca = fs.readFileSync(path.join(__dirname, 'ca.crt'), 'utf8');
-    it('should GET self signed https url', function (done) {
-      // done = pedding(3, done);
-      // http://nodejs.org/api/tls.html#tls_tls_connect_port_host_options_callback
-      // var params = {
-      //   timeout: 10000,
-      //   ca: ca
-      // };
-      // params.httpsAgent = new https.Agent(params);
-      // urllib.request('https://data.taobao.com/', params, function (err, data, res) {
-      //   should.not.exist(err);
-      //   data.length.should.above(0);
-      //   res.should.status(200);
-      //   done();
-      // });
-
-      // var params2 = {
-      //   timeout: 10000,
-      //   ca: ca
-      // };
-      // params2.httpsAgent = false;
-      // urllib.request('https://data.taobao.com/', params2, function (err, data, res) {
-      //   should.not.exist(err);
-      //   data.length.should.above(0);
-      //   res.should.status(200);
-      //   done();
-      // });
-
-      var params3 = {
-        timeout: 10000,
-        rejectUnauthorized: false,
-      };
-      params3.agent = false;
-      urllib.request('https://data.taobao.com/', params3, function (err, data, res) {
-        should.not.exist(err);
-        data.length.should.above(0);
-        res.should.status(200);
-        done();
-      });
-    });
-
-    // if (!/^v0\.6\./.test(process.version)) {
-    //   // node < 0.8 would not check ca
-    //   it('should return SELF_SIGNED_CERT_IN_CHAIN error when use default agent', function (done) {
-    //     var params = {
-    //       timeout: 10000,
-    //       rejectUnauthorized: true,
-    //     };
-    //     params.httpsAgent = false;
-    //     urllib.request('https://data.taobao.com/', params, function (err, data, res) {
-    //       should.exist(err);
-    //       err.name.should.equal('RequestError');
-    //       err.message.should.equal('SELF_SIGNED_CERT_IN_CHAIN');
-    //       should.not.exist(data);
-    //       should.not.exist(res);
-    //       done();
-    //     });
-    //   });
-    // }
-
   });
 
   describe('application/json content-type request', function () {
