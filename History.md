@@ -1,4 +1,11 @@
 
+2.0.1 / 2014-10-15
+==================
+
+ * add args.contentType option (@coderhaoxin)
+ * Simply the HTTPClient implementation (@JacksonTian)
+ * refine urllib code (@JacksonTian)
+
 2.0.0 / 2014-10-13
 ==================
 

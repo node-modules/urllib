@@ -315,21 +315,21 @@ $ git summary
 
  project  : urllib
  repo age : 3 years, 5 months
- active   : 68 days
- commits  : 197
- files    : 23
+ active   : 69 days
+ commits  : 206
+ files    : 22
  authors  :
-   164	fengmk2                 83.2%
-     9	XiNGRZ                  4.6%
-     7	dead_horse              3.6%
-     6	ibigbug                 3.0%
-     4	Jackson Tian            2.0%
+   170	fengmk2                 82.5%
+     9	XiNGRZ                  4.4%
+     7	dead_horse              3.4%
+     6	Jackson Tian            2.9%
+     6	ibigbug                 2.9%
      2	alsotang                1.0%
+     2	haoxin                  1.0%
      1	popomore                0.5%
      1	Jonathan Dahan          0.5%
      1	aleafs                  0.5%
      1	coderhaoxin             0.5%
-     1	haoxin                  0.5%
 ```
 
 ## License
