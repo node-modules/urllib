@@ -512,9 +512,9 @@ describe('urllib.test.js', function () {
       });
 
       var urls = [
-        'https://github.com/',
+        'https://opbeat.com/',
         'https://www.nodejitsu.com',
-        'https://github.com/about',
+        'https://opbeat.com/about',
         'https://www.nodejitsu.com/npm/',
         // 'https://www.npmjs.org/search?q=urllib',
         // 'http://www.taobao.com/sitemap.php',
