@@ -800,6 +800,51 @@ describe('urllib.test.js', function () {
     });
   });
 
+  describe('json contentType request', function () {
+    it('should auto convert data to json string', function (done) {
+      var params = {
+        method: 'post',
+        data: {
+          foo: 'bar',
+          n1: 1,
+          now: new Date()
+        },
+        contentType: 'json',
+        dataType: 'json'
+      };
+      urllib.request(host + '/json_mirror', params, function (err, serverData, res) {
+        should.not.exist(err);
+        serverData.now = new Date(serverData.now);
+        serverData.should.eql(params.data);
+        res.should.status(200);
+        res.headers.should.have.property('content-type', 'application/json');
+        done();
+      });
+    });
+
+    it('should not auto convert data to json string when method = get', function (done) {
+      var params = {
+        method: 'get',
+        data: {
+          foo: 'bar',
+          n1: 1,
+          now: new Date()
+        },
+        contentType: 'json',
+        dataType: 'json'
+      };
+      urllib.request(host + '/json_mirror', params, function (err, serverData, res) {
+        should.not.exist(err);
+        // serverData.should.eql({
+        //   url: '/json_mirror?foo=bar&n1=1&now=', data: ''
+        // });
+        res.should.status(200);
+        res.headers.should.have.property('content-type', 'application/json');
+        done();
+      });
+    });
+  });
+
   describe('gzip content', function () {
     it('should auto accept and decode gzip response content', function (done) {
       urllib.request('http://registry.npm.taobao.org/byte',
