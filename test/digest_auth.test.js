@@ -22,6 +22,7 @@ describe('digest_auth.test.js', function () {
     var url = 'http://test.webdav.org/auth-digest/user3';
     urllib.request(url, {
       digestAuth: 'user3:user3',
+      timeout: 10000
     }, function (err, data, res) {
       should.not.exist(err);
       res.should.status(404);
@@ -35,6 +36,7 @@ describe('digest_auth.test.js', function () {
     var url = 'http://test.webdav.org/auth-digest/user3';
     urllib.request(url, {
       digestAuth: 'user3:fail',
+      timeout: 10000
     }, function (err, data, res) {
       should.not.exist(err);
       res.should.status(401);
@@ -50,6 +52,7 @@ describe('digest_auth.test.js', function () {
     urllib.request(url, {
       digestAuth: 'user:passwd',
       dataType: 'json',
+      timeout: 10000
     }, function (err, data, res) {
       should.not.exist(err);
       res.should.status(200);

@@ -1,7 +1,7 @@
 /**!
  * urllib - test/urllib.test.js
  *
- * Copyright(c) 2011 - 2014 fengmk2 and other contributors.
+ * Copyright(c) fengmk2 and other contributors.
  * MIT Licensed
  *
  * Authors:
@@ -90,7 +90,7 @@ describe('urllib.test.js', function () {
     });
 
     it('should FollowRedirectError', function (done) {
-      urllib.request(host + '/redirect_no_location', {followRedirect: true}, function (err, data, res) {
+      urllib.request(host + '/redirect_no_location', {followRedirect: true}, function (err, data) {
         should.exist(err);
         err.name.should.equal('FollowRedirectError');
         err.message.should.containEql('Got statusCode 302 but cannot resolve next location from headers, GET http://127.0.0.1:');
@@ -100,7 +100,7 @@ describe('urllib.test.js', function () {
     });
 
     it('should MaxRedirectError', function (done) {
-      urllib.request(host + '/loop_redirect', {followRedirect: true}, function (err, data, res) {
+      urllib.request(host + '/loop_redirect', {followRedirect: true}, function (err, data) {
         should.exist(err);
         err.name.should.equal('MaxRedirectError');
         err.message.should.containEql('Exceeded maxRedirects. Probably stuck in a redirect loop ');
@@ -162,36 +162,14 @@ describe('urllib.test.js', function () {
       }, 1);
     });
 
-    // it('should res.socket.destroy() after `response` event emit', function (done) {
-    //   urllib.request(host + '/socket.destroy', function (err, data, res) {
-    //     should.exist(err);
-    //     err.name.should.equal('RemoteSocketClosedError');
-    //     err.message.should.containEql('Remote socket was terminated before `response.end()` was called, GET http://127.0.0.1:');
-    //     data.toString().should.equal('foo haha\nfoo haha 2');
-    //     should.ok(res.aborted);
-    //     should.ok(err.res.aborted);
-    //     done();
-    //   });
-    // });
-    //
-    // it('should handle server socket end() will normal after `response` event emit', function (done) {
-    //   urllib.request(host + '/socket.end', function (err, data, res) {
-    //     should.exist(err);
-    //     err.name.should.equal('RemoteSocketClosedError');
-    //     err.message.should.containEql('Remote socket was terminated before `response.end()` was called, GET http://127.0.0.1:');
-    //     data.toString().should.equal('foo haha\nfoo haha 2');
-    //     should.ok(res.aborted);
-    //     done();
-    //   });
-    // });
-
     it('should handle server socket end("balabal") will error', function (done) {
-      urllib.request(host + '/socket.end.error', function (err, data, res) {
+      urllib.request(host + '/socket.end.error', function (err, data) {
         should.exist(err);
         err.name.should.equal('RequestError');
         err.code && err.code.should.equal('HPE_INVALID_CHUNK_SIZE');
         err.message.should.containEql('Parse Error (req "error"), GET http://127.0.0.1:');
         err.bytesParsed.should.equal(2);
+        should.not.exist(data);
         done();
       });
     });
@@ -579,12 +557,12 @@ describe('urllib.test.js', function () {
         data = data.toString();
         data.should.containEql('你好urllib\r\n----------------------------');
         data.should.containEql('Content-Disposition: form-data; name="file"; filename="urllib.test.js"');
+        res.should.status(200);
         done();
       });
     });
 
     it('should post not exists file stream', function (done) {
-      var stat = fs.statSync(__filename);
       var stream = fs.createReadStream(__filename + 'abc');
       urllib.request(host + '/stream', {
         type: 'POST',
@@ -653,7 +631,7 @@ describe('urllib.test.js', function () {
       });
       urllib.request(host + '/writestream', {
         writeStream: writeStream
-      }, function (err, data, res) {
+      }, function (err) {
         should.exist(err);
         err.message.should.containEql('ENOENT, open');
         done();
@@ -682,7 +660,7 @@ describe('urllib.test.js', function () {
 
   describe('https request', function () {
     it('GET github page', function (done) {
-      urllib.request('https://github.com/node-modules/urllib', { timeout: 10000 },
+      urllib.request('https://github.com/node-modules/urllib', { timeout: 15000 },
       function (err, data, res) {
         should.not.exist(err);
         data.toString().should.containEql('node-modules/urllib');
@@ -792,8 +770,8 @@ describe('urllib.test.js', function () {
       });
     });
 
-    it.skip('should auto accept and custom decode gzip response content', function (done) {
-      urllib.request('http://r.cnpmjs.org/byte', {
+    it('should auto accept and custom decode gzip response content', function (done) {
+      urllib.request('https://www.nodejitsu.com/company/contact/', {
         dataType: 'json', gzip: true, timeout: 10000,
         headers: {
           'accept-encoding': 'gzip'
@@ -803,11 +781,9 @@ describe('urllib.test.js', function () {
         data.should.be.a.Buffer;
         data.length.should.above(0);
         res.should.have.header('content-encoding', 'gzip');
-        res.should.have.header('content-type', 'application/json; charset=utf-8');
         zlib.gunzip(data, function (err, buf) {
           should.not.exist(err);
           buf.should.be.a.Buffer;
-          JSON.parse(buf).name.should.equal('byte');
           done();
         });
       });
@@ -818,6 +794,7 @@ describe('urllib.test.js', function () {
         {followRedirect: true, gzip: true, timeout: 10000}, function (err, data, res) {
         should.not.exist(err);
         data.toString().should.containEql('e213170fe5ec7721b31149fba1a7a691c50b5379');
+        res.should.status(200);
         // res.should.have.header('content-encoding', 'gzip');
         // res.should.have.header('content-type', 'text/plain');
         done();
@@ -830,34 +807,30 @@ describe('urllib.test.js', function () {
         should.not.exist(err);
         should.not.exist(res.headers['content-encoding']);
         res.should.have.header('content-type', 'application/octet-stream');
-        // console.log(res.headers);
         done();
       });
     });
 
     it('should not return gzip response content', function (done) {
       done = pedding(3, done);
-      urllib.request('https://www.nodejitsu.com/company/contact/',
+      urllib.request('https://www.nodejitsu.com/company/contact/', {timeout: 10000},
       function (err, data, res) {
         should.not.exist(err);
         should.not.exist(res.headers['content-encoding']);
-        // res.should.have.header('content-type', 'application/json');
         done();
       });
 
-      urllib.request('https://www.nodejitsu.com/company/contact/', {gzip: false},
+      urllib.request('https://www.nodejitsu.com/company/contact/', {gzip: false, timeout: 10000},
       function (err, data, res) {
         should.not.exist(err);
         should.not.exist(res.headers['content-encoding']);
-        // res.should.have.header('content-type', 'application/json');
         done();
       });
 
-      urllib.request('https://www.nodejitsu.com/company/contact/', {gzip: true},
+      urllib.request('https://www.nodejitsu.com/company/contact/', {gzip: true, timeout: 10000},
       function (err, data, res) {
         should.not.exist(err);
         res.should.have.header('content-encoding', 'gzip');
-        // res.should.have.header('content-type', 'application/json');
         done();
       });
     });

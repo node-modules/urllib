@@ -1,6 +1,5 @@
 logo.png
 .travis.yml
-.drone.yml
 examples/
 test/
 Makefile

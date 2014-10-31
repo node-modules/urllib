@@ -35,7 +35,7 @@ describe('urllib_promise.test.js', function () {
       result.res.rt.should.above(0);
       result.res.size.should.above(0);
       done();
-    }).error(done);
+    }).catch(done);
   });
 
   it('should work with args', function (done) {
@@ -51,20 +51,20 @@ describe('urllib_promise.test.js', function () {
       result.res.should.status(200);
       result.res.should.have.header('connection', 'keep-alive');
       done();
-    }).error(done);
+    }).catch(done);
   });
 
   it('should throw error', function (done) {
-    urllib.request('http://nodejsnot-exists-ooll.abcsdf123.org', {
+    urllib.request('http://127.0.0.1:12312', {
       data: {
         q: 'foo'
       }
     })
-    .then(function (result) {
+    .then(function () {
       throw new Error('should not run this');
-    }).error(function (err) {
+    }).catch(function (err) {
       should.exist(err);
-      err.code.should.equal('ENOTFOUND');
+      err.code.should.equal('ECONNREFUSED');
       err.status.should.equal(-1);
       err.headers.should.eql({});
       err.res.should.have.keys('status', 'statusCode', 'headers', 'rt', 'size', 'aborted');
