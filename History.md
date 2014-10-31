@@ -1,4 +1,10 @@
 
+2.0.2 / 2014-11-01
+==================
+
+ * chore: bump deps version and make test more stable
+ * refactor: dont add new property on res object
+
 2.0.1 / 2014-10-15
 ==================
 
