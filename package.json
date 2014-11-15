@@ -31,6 +31,7 @@
     "debug": "~2.1.0",
     "default-user-agent": "~0.0.1",
     "digest-header": "~0.0.1",
+    "humanize-ms": "~1.0.0",
     "iconv-lite": "~0.4.4",
     "media-typer": "~0.3.0",
     "native-or-bluebird": "~1.1.2"
@@ -41,12 +42,12 @@
     "bluebird": "*",
     "co": "*",
     "contributors": "*",
-    "formstream": "~0.0.8",
+    "formstream": "~1.0.0",
     "istanbul": "*",
     "jshint": "*",
     "mocha": "*",
-    "pedding": "*",
-    "should": "~4.0.4",
+    "pedding": "~1.0.0",
+    "should": "~4.3.0",
     "should-http": "*"
   },
   "engines": {
