@@ -28,8 +28,8 @@ describe('urllib_promise.test.js', function () {
       result.data.should.be.a.Buffer;
       result.status.should.equal(200);
       result.res.should.status(200);
-      result.res.should.have.header('connection', 'keep-alive');
-
+      result.res.should.have.header('connection');
+      result.res.headers.connection.toLowerCase().should.equal('keep-alive');
       result.res.should.have.keys('status', 'statusCode', 'headers', 'rt', 'size', 'aborted');
       result.res.status.should.equal(200);
       result.res.rt.should.above(0);
@@ -49,7 +49,8 @@ describe('urllib_promise.test.js', function () {
       should.exist(result.res);
       result.data.should.be.a.Buffer;
       result.res.should.status(200);
-      result.res.should.have.header('connection', 'keep-alive');
+      result.res.should.have.header('connection');
+      result.res.headers.connection.toLowerCase().should.equal('keep-alive');
       done();
     }).catch(done);
   });
