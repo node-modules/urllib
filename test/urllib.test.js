@@ -661,6 +661,34 @@ describe('urllib.test.js', function () {
 
   });
 
+  describe('args.customResponse', function () {
+    it('custom the response data', function (done) {
+      urllib.request('http://www.taobao.com', {
+        timeout: 10000,
+        customResponse: true
+      }, function (err, data, res) {
+        should.not.exist(err);
+        var size = 0;
+        res.on('data', function (chunk) {
+          size += chunk.length;
+        });
+        res.on('end', function () {
+          size.should.above(0);
+          done();
+        });
+      });
+    });
+    it('custom the response data should ok when req error', function (done) {
+      urllib.request('https://no-exist/fengmk2/urllib', {
+        timeout: 10000,
+        customResponse: true
+      }, function (err, data, res) {
+        err.code.should.equal('ENOTFOUND');
+        done();
+      });
+    });
+  });
+
   describe('https request', function () {
     it('GET github page', function (done) {
       urllib.request('https://github.com/node-modules/urllib', { timeout: 15000 },
