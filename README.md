@@ -152,6 +152,7 @@ httpclient.request('http://nodejs.org', function (err, body) {
     - ***followRedirect*** Boolean - follow HTTP 3xx responses as redirects. defaults to false.
     - ***maxRedirects*** Number - The maximum number of redirects to follow, defaults to 10.
     - ***beforeRequest*** Function - Before request hook, you can change every thing here.
+    - ***customResponse*** Boolean - let you get the `res` object when request  connected, default `false`.
     - ***gzip*** Boolean - Accept gzip response content and auto decode it, default is `false`.
 - ***callback(err, data, res)*** Function - Optional callback.
     - **err** Error - Would be `null` if no error accured.
