@@ -588,15 +588,15 @@ describe('urllib.test.js', function () {
       done = pedding(2, done);
       var writeStream = fs.createWriteStream(tmpfile);
       writeStream.on('close', done);
-      urllib.request('https://codeload.github.com/TBEDP/urllib/zip/0.3.4', {
+      urllib.request('https://github.com/', {
         writeStream: writeStream,
-        timeout: 15000,
+        timeout: 10000,
       }, function (err, data, res) {
         should.not.exist(err);
         should.ok(fs.existsSync(tmpfile));
         should.ok(data === null);
         res.should.status(200);
-        fs.statSync(tmpfile).size.should.equal(55695);
+        fs.statSync(tmpfile).size.should.above(100);
         // fs.readFileSync(tmpfile, 'utf8').should.equal(fs.readFileSync(__filename, 'utf8'));
         done();
       });
