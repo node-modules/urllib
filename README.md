@@ -70,7 +70,7 @@ var urllib = require('urllib');
 urllib.request('http://nodejs.org').then(function (result) {
   // result: {data: buffer, res: response object}
   console.log('status: %s, body size: %d, headers: %j', result.res.statusCode, result.data.length, result.res.headers);
-}).error(function (err) {
+}).catch(function (err) {
   console.error(err);
 });
 ```
