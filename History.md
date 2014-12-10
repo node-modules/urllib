@@ -1,4 +1,11 @@
 
+2.2.1 / 2014-12-10
+==================
+
+ * refactor and add more comments
+ * add path to error (@coderhaoxin)
+ * fix promise example in readme
+
 2.2.0 / 2014-11-28
 ==================
 
