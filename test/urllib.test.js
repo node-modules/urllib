@@ -612,16 +612,15 @@ describe('urllib.test.js', function () {
       writeStream.on('finish', function () {
         console.log('writeStream finish event');
       });
-      urllib.request('http://registry.cnpmjs.org/urllib/download/urllib-0.5.4.tgz', {
+      urllib.request('http://test.webdav.org/redir-tmp/', {
         writeStream: writeStream,
         followRedirect: true,
         timeout: 20000
-      }, function (err, data, res) {
+      }, function (err, data) {
         should.not.exist(err);
         should.ok(fs.existsSync(tmpfile));
         should.ok(data === null);
-        res.should.status(200);
-        fs.statSync(tmpfile).size.should.equal(9198);
+        fs.statSync(tmpfile).size.should.above(0);
         done();
       });
     });
