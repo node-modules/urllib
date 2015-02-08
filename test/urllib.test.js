@@ -572,7 +572,7 @@ describe('urllib.test.js', function () {
         stream: stream
       }, function (err, data, res) {
         should.exist(err);
-        err.message.should.containEql('ENOENT, open');
+        err.message.should.containEql('ENOENT');
         err.res.should.equal(res);
         should.not.exist(data);
         should.exist(res);
@@ -635,7 +635,7 @@ describe('urllib.test.js', function () {
         writeStream: writeStream
       }, function (err) {
         should.exist(err);
-        err.message.should.containEql('ENOENT, open');
+        err.message.should.containEql('ENOENT');
         done();
       });
     });
