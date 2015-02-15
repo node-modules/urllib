@@ -30,7 +30,7 @@ describe('urllib_promise.test.js', function () {
       result.res.should.status(200);
       result.res.should.have.header('connection');
       result.res.headers.connection.toLowerCase().should.equal('keep-alive');
-      result.res.should.have.keys('status', 'statusCode', 'headers', 'rt', 'size', 'aborted');
+      result.res.should.have.keys('status', 'statusCode', 'headers', 'rt', 'size', 'aborted', 'keepAliveSocket');
       result.res.status.should.equal(200);
       result.res.rt.should.above(0);
       result.res.size.should.above(0);
@@ -56,7 +56,7 @@ describe('urllib_promise.test.js', function () {
   });
 
   it('should throw error', function (done) {
-    urllib.request('http://127.0.0.1:12312', {
+    urllib.request('http://127.0.0.1:11', {
       data: {
         q: 'foo'
       }
@@ -68,7 +68,7 @@ describe('urllib_promise.test.js', function () {
       err.code.should.equal('ECONNREFUSED');
       err.status.should.equal(-1);
       err.headers.should.eql({});
-      err.res.should.have.keys('status', 'statusCode', 'headers', 'rt', 'size', 'aborted');
+      err.res.should.have.keys('status', 'statusCode', 'headers', 'rt', 'size', 'aborted', 'keepAliveSocket');
       done();
     });
   });

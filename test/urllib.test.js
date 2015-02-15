@@ -58,7 +58,8 @@ describe('urllib.test.js', function () {
 
   describe('request()', function () {
     it('should request https success', function (done) {
-      urllib.request('https://www.nodejitsu.com/npm/', {timeout: 10000}, function (err, data, res) {
+      urllib.request('https://iojs.org/dist/v1.2.0/SHASUMS256.txt', {timeout: 10000},
+      function (err, data, res) {
         should.not.exist(err);
         should.ok(Buffer.isBuffer(data));
         res.should.status(200);
@@ -110,18 +111,18 @@ describe('urllib.test.js', function () {
     });
 
     describe('ConnectionTimeoutError and ResponseTimeoutError', function () {
-      it('should 500ms connection timeout', function (done) {
-        urllib.request(host + '/timeout', { timeout: 450 }, function (err, data, res) {
+      it('should connection timeout', function (done) {
+        urllib.request('http://npm.taobao.org', { timeout: 1 }, function (err, data, res) {
           should.exist(err);
           err.name.should.equal('ConnectionTimeoutError');
-          err.message.should.match(/^Request#\d+ timeout for 450ms\, GET http/);
+          err.message.should.match(/^Request#\d+ timeout for 1ms\, GET http/);
           should.not.exist(data);
           should.exist(res);
           done();
         });
       });
 
-      it('should 500ms response timeout', function (done) {
+      it('should response timeout', function (done) {
         urllib.request(host + '/response_timeout', { timeout: 450 }, function (err, data, res) {
           should.exist(err);
           err.name.should.equal('ResponseTimeoutError');
@@ -138,7 +139,7 @@ describe('urllib.test.js', function () {
     it('should socket hang up by res.socket.destroy() before `response` event emit', function (done) {
       urllib.request(host + '/error', function (err, data, res) {
         should.exist(err);
-        err.name.should.equal('RequestError');
+        err.name.should.equal('ResponseError');
         err.stack.should.containEql('socket hang up');
         err.code.should.equal('ECONNRESET');
         should.not.exist(data);
@@ -150,7 +151,6 @@ describe('urllib.test.js', function () {
     it('should socket hang up by req.abort() before `response` event emit', function (done) {
       var req = urllib.request(host + '/timeout', {timeout: 500}, function (err, data, res) {
         should.exist(err);
-        err.name.should.equal('RequestError');
         err.stack.should.containEql('socket hang up');
         err.code.should.equal('ECONNRESET');
         should.not.exist(data);
@@ -165,7 +165,7 @@ describe('urllib.test.js', function () {
     it('should handle server socket end("balabal") will error', function (done) {
       urllib.request(host + '/socket.end.error', function (err, data) {
         should.exist(err);
-        err.name.should.equal('RequestError');
+        err.name.should.equal('ResponseError');
         err.code && err.code.should.equal('HPE_INVALID_CHUNK_SIZE');
         err.message.should.containEql('Parse Error (req "error"), GET http://127.0.0.1:');
         err.bytesParsed.should.equal(2);
@@ -490,30 +490,27 @@ describe('urllib.test.js', function () {
           this.agent = new KeepAliveAgent({
             keepAlive: true,
           });
+          this.httpsAgent = new KeepAliveAgent.HttpsAgent({
+            keepAlive: true
+          });
         });
 
         var urls = [
-          'https://opbeat.com/',
-          'https://www.nodejitsu.com',
-          'https://opbeat.com/about',
-          'https://www.nodejitsu.com/npm/',
-          // 'https://www.npmjs.org/search?q=urllib',
-          // 'http://www.taobao.com/sitemap.php',
-          // 'http://nodejs.org/',
-          // 'http://cnpmjs.org/',
-
-          // 'https://www.npmjs.org/package/urllib',
-          // 'https://www.npmjs.org/',
-          // 'http://www.taobao.com/',
-          // 'http://nodejs.org/docs/latest/api/https.html',
-          // 'http://cnpmjs.org/package/urllib',
+          'http://r.cnpmjs.org/',
+          'https://cnpmjs.org/mirrors/iojs/v1.2.0/SHASUMS256.txt',
+          'https://cnpmjs.org/mirrors/iojs/v1.2.0/SHASUMS256.txt',
+          'https://cnpmjs.org/mirrors/iojs/v1.2.0/SHASUMS256.txt',
+          'http://r.cnpmjs.org/pedding',
+          'https://cnpmjs.org/mirrors/iojs/v1.1.0/SHASUMS256.txt',
         ];
 
-        urls.forEach(function (url) {
+        urls.forEach(function (url, index) {
           it('should use KeepAlive agent request ' + url, function (done) {
             var agent = this.agent;
+            var httpsAgent = this.httpsAgent;
             urllib.request(url, {
               agent: agent,
+              httpsAgent: httpsAgent,
               timeout: 15000,
             }, function (err, data, res) {
               should.not.exist(err);
@@ -522,6 +519,9 @@ describe('urllib.test.js', function () {
                 console.log(res.statusCode, res.headers);
               }
               res.should.have.header('connection', 'keep-alive');
+              if (index >= 2) {
+                res.keepAliveSocket.should.equal(true);
+              }
               done();
             });
           });
@@ -646,14 +646,14 @@ describe('urllib.test.js', function () {
         writeStream: writeStream
       }, function (err, data, res) {
         should.exist(err);
-        err.name.should.equal('RequestError');
+        err.name.should.equal('ResponseError');
         err.stack.should.match(/socket hang up/);
         err.code.should.equal('ECONNRESET');
-        err.message.should.containEql('/error -1\nheaders: {}');
+        err.message.should.containEql('/error -1 (connnected: true, keepalive socket: false)\nheaders: {}');
         err.res.should.equal(res);
         should.not.exist(data);
         should.exist(res);
-        res.should.have.keys('status', 'statusCode', 'headers', 'size', 'rt', 'aborted');
+        res.should.have.keys('status', 'statusCode', 'headers', 'size', 'rt', 'aborted', 'keepAliveSocket');
         done();
       });
     });
@@ -681,21 +681,9 @@ describe('urllib.test.js', function () {
       urllib.request('https://no-exist/fengmk2/urllib', {
         timeout: 10000,
         customResponse: true
-      }, function (err, data, res) {
+      }, function (err) {
+        should.exist(err);
         err.code.should.equal('ENOTFOUND');
-        done();
-      });
-    });
-  });
-
-  describe('https request', function () {
-    it('GET github page', function (done) {
-      urllib.request('https://github.com/node-modules/urllib', { timeout: 15000 },
-      function (err, data, res) {
-        should.not.exist(err);
-        data.toString().should.containEql('node-modules/urllib');
-        res.should.status(200);
-        res.should.have.header('content-type', 'text/html; charset=utf-8');
         done();
       });
     });
@@ -790,19 +778,21 @@ describe('urllib.test.js', function () {
 
   describe('gzip content', function () {
     it('should auto accept and decode gzip response content', function (done) {
-      urllib.request('https://registry.npmjs.org/byte',
+      urllib.request('http://registry.cnpmjs.org/byte',
         {dataType: 'json', gzip: true, timeout: 10000}, function (err, data, res) {
         should.not.exist(err);
         data.name.should.equal('byte');
-        // res.should.have.header('content-encoding', 'gzip');
-        res.should.have.header('content-type', 'application/json');
+        res.should.have.header('content-encoding', 'gzip');
+        res.should.have.header('content-type', 'application/json; charset=utf-8');
         done();
       });
     });
 
     it('should auto accept and custom decode gzip response content', function (done) {
-      urllib.request('https://www.nodejitsu.com/company/contact/', {
-        dataType: 'json', gzip: true, timeout: 10000,
+      urllib.request('http://registry.cnpmjs.org/byte', {
+        dataType: 'json',
+        gzip: true,
+        timeout: 10000,
         headers: {
           'accept-encoding': 'gzip'
         }
@@ -819,45 +809,33 @@ describe('urllib.test.js', function () {
       });
     });
 
-    it.skip('should redirect and gzip', function (done) {
-      urllib.request('http://dist.u.qiniudn.com/v0.10.1/SHASUMS.txt',
+    it('should redirect and gzip', function (done) {
+      urllib.request('http://cnpmjs.org/pedding',
         {followRedirect: true, gzip: true, timeout: 10000}, function (err, data, res) {
         should.not.exist(err);
-        data.toString().should.containEql('e213170fe5ec7721b31149fba1a7a691c50b5379');
         res.should.status(200);
-        // res.should.have.header('content-encoding', 'gzip');
-        // res.should.have.header('content-type', 'text/plain');
-        done();
-      });
-    });
-
-    it.skip('should not ungzip binary content', function (done) {
-      urllib.request('http://dist.u.qiniudn.com/v0.10.0/node.exp', {gzip: true, timeout: 10000},
-      function (err, data, res) {
-        should.not.exist(err);
-        should.not.exist(res.headers['content-encoding']);
-        res.should.have.header('content-type', 'application/octet-stream');
+        res.should.have.header('content-encoding', 'gzip');
         done();
       });
     });
 
     it('should not return gzip response content', function (done) {
       done = pedding(3, done);
-      urllib.request('https://www.nodejitsu.com/company/contact/', {timeout: 10000},
+      urllib.request('http://cnpmjs.org', {timeout: 10000},
       function (err, data, res) {
         should.not.exist(err);
         should.not.exist(res.headers['content-encoding']);
         done();
       });
 
-      urllib.request('https://www.nodejitsu.com/company/contact/', {gzip: false, timeout: 10000},
+      urllib.request('http://cnpmjs.org', {gzip: false, timeout: 10000},
       function (err, data, res) {
         should.not.exist(err);
         should.not.exist(res.headers['content-encoding']);
         done();
       });
 
-      urllib.request('https://www.nodejitsu.com/company/contact/', {gzip: true, timeout: 10000},
+      urllib.request('http://cnpmjs.org', {gzip: true, timeout: 10000},
       function (err, data, res) {
         should.not.exist(err);
         res.should.have.header('content-encoding', 'gzip');
