@@ -1,4 +1,9 @@
 
+2.3.0 / 2015-02-16
+==================
+
+ * feat: mark off connection state and response state
+
 2.2.2 / 2015-01-21
 ==================
 
