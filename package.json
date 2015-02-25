@@ -52,7 +52,8 @@
     "should-http": "*"
   },
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">= 0.10.0",
+    "iojs": ">= 1.0.0"
   },
   "license": "MIT"
 }
