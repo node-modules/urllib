@@ -764,28 +764,24 @@ describe('urllib.test.js', function () {
         {dataType: 'json', gzip: true, timeout: 10000}, function (err, data, res) {
         should.not.exist(err);
         data.name.should.equal('byte');
-        // res.should.have.header('content-encoding', 'gzip');
+        res.should.have.header('content-encoding', 'gzip');
         res.should.have.header('content-type', 'application/json; charset=utf-8');
         done();
       });
     });
 
-    it('should auto accept and custom decode gzip response content', function (done) {
-      urllib.request('https://www.nodejitsu.com/company/contact/', {
-        dataType: 'json', gzip: true, timeout: 10000,
+    it('should auto decode gzip response content', function (done) {
+      urllib.request('http://registry.npm.taobao.org/byte', {
+        dataType: 'json',
+        timeout: 10000,
         headers: {
           'accept-encoding': 'gzip'
         }
       }, function (err, data, res) {
         should.not.exist(err);
-        data.should.be.a.Buffer;
-        data.length.should.above(0);
+        data.name.should.equal('byte');
         res.should.have.header('content-encoding', 'gzip');
-        zlib.gunzip(data, function (err, buf) {
-          should.not.exist(err);
-          buf.should.be.a.Buffer;
-          done();
-        });
+        done();
       });
     });
 
