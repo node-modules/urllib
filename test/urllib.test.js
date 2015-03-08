@@ -590,7 +590,7 @@ describe('urllib.test.js', function () {
       writeStream.on('close', done);
       urllib.request('https://github.com/', {
         writeStream: writeStream,
-        timeout: 10000,
+        timeout: 15000,
       }, function (err, data, res) {
         should.not.exist(err);
         should.ok(fs.existsSync(tmpfile));
@@ -791,21 +791,16 @@ describe('urllib.test.js', function () {
     it('should auto accept and custom decode gzip response content', function (done) {
       urllib.request('http://registry.cnpmjs.org/byte', {
         dataType: 'json',
-        gzip: true,
         timeout: 10000,
         headers: {
           'accept-encoding': 'gzip'
         }
       }, function (err, data, res) {
         should.not.exist(err);
-        data.should.be.a.Buffer;
-        data.length.should.above(0);
+        data.name.should.equal('byte');
         res.should.have.header('content-encoding', 'gzip');
-        zlib.gunzip(data, function (err, buf) {
-          should.not.exist(err);
-          buf.should.be.a.Buffer;
-          done();
-        });
+        res.should.have.header('content-type', 'application/json; charset=utf-8');
+        done();
       });
     });
 

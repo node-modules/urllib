@@ -20,7 +20,7 @@ var urllib = require('../');
 describe('httpclient.test.js', function () {
   it('should requestThunk()', function (done) {
     var client = urllib.create();
-    client.requestThunk('http://nodejs.org')(function (err, result) {
+    client.requestThunk('https://iojs.org')(function (err, result) {
       should.not.exist(err);
       result.data.should.be.a.Buffer;
       result.status.should.equal(200);

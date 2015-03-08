@@ -19,7 +19,7 @@ var urllib = require('../');
 
 describe('urllib_promise.test.js', function () {
   it('should return promise when callback missing', function (done) {
-    urllib.request('http://nodejs.org')
+    urllib.request('https://nodejs.org')
     .then(function (result) {
       should.exist(result);
       result.should.have.keys('data', 'status', 'headers', 'res');
@@ -39,7 +39,7 @@ describe('urllib_promise.test.js', function () {
   });
 
   it('should work with args', function (done) {
-    urllib.request('http://nodejs.org', {
+    urllib.request('https://nodejs.org', {
       data: {
         q: 'foo'
       }
