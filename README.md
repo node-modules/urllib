@@ -313,34 +313,6 @@ urllib.request('http://127.0.0.1:1984/socket.end', function (err, data, res) {
 * [√] Support `Accept-Encoding=gzip` by `options.gzip = true`
 * [√] Support [Digest access authentication](http://en.wikipedia.org/wiki/Digest_access_authentication)
 
-## Authors
-
-Below is the output from `git-summary`.
-
-```bash
-$ git summary
-
- project  : urllib
- repo age : 3 years, 9 months
- active   : 78 days
- commits  : 230
- files    : 24
- authors  :
-   188	fengmk2                 81.7%
-    10	XiNGRZ                  4.3%
-     9	dead_horse              3.9%
-     6	Jackson Tian            2.6%
-     6	ibigbug                 2.6%
-     3	haoxin                  1.3%
-     2	alsotang                0.9%
-     1	popomore                0.4%
-     1	Jonathan Dahan          0.4%
-     1	Yiyu He                 0.4%
-     1	aleafs                  0.4%
-     1	coderhaoxin             0.4%
-     1	fishbar                 0.4%
-```
-
 ## License
 
 [MIT](LICENSE.txt)
