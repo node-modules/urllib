@@ -1,4 +1,9 @@
 
+2.3.3 / 2015-03-30
+==================
+
+ * fix: add ciphers and secureProtocol params support for https request
+
 2.3.2 / 2015-03-29
 ==================
 
