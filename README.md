@@ -155,6 +155,8 @@ httpclient.request('http://nodejs.org', function (err, body) {
     - ***cert*** String | Buffer - A string or Buffer containing the certificate key of the client in PEM format.
       **Notes**: This is necessary only if using the client certificate authentication
     - ***passphrase*** String - A string of passphrase for the private key or pfx.
+    - ***ciphers*** String - A string describing the ciphers to use or exclude.
+    - ***secureProtocol*** String - The SSL method to use, e.g. SSLv3_method to force SSL version 3.
     - ***followRedirect*** Boolean - follow HTTP 3xx responses as redirects. defaults to false.
     - ***maxRedirects*** Number - The maximum number of redirects to follow, defaults to 10.
     - ***beforeRequest*** Function - Before request hook, you can change every thing here.
