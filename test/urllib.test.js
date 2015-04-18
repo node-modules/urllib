@@ -649,7 +649,7 @@ describe('urllib.test.js', function () {
         err.name.should.equal('ResponseError');
         err.stack.should.match(/socket hang up/);
         err.code.should.equal('ECONNRESET');
-        err.message.should.containEql('/error -1 (connnected: true, keepalive socket: false)\nheaders: {}');
+        err.message.should.containEql('/error -1 (connected: true, keepalive socket: false)\nheaders: {}');
         err.res.should.equal(res);
         should.not.exist(data);
         should.exist(res);
