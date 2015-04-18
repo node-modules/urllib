@@ -13,7 +13,10 @@
   ],
   "author": "fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)",
   "homepage": "http://github.com/node-modules/urllib",
-  "main": "index.js",
+  "main": "lib/urllib.js",
+  "files": [
+    "lib/"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/node-modules/urllib.git"

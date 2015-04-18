@@ -29,8 +29,6 @@
 [download-image]: https://img.shields.io/npm/dm/urllib.svg?style=flat-square
 [download-url]: https://npmjs.org/package/urllib
 
-![logo](https://raw.github.com/node-modules/urllib/master/logo.png)
-
 Request HTTP URLs in a complex world — basic
 and digest authentication, redirections, cookies, timeout and more.
 

@@ -1,11 +1,11 @@
 /**!
  * urllib - test/urllib.test.js
  *
- * Copyright(c) fengmk2 and other contributors.
+ * Copyright(c) node-modules and other contributors.
  * MIT Licensed
  *
  * Authors:
- *   fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
+ *   fengmk2 <fengmk2@gmail.com> (http://fengmk2.com)
  */
 
 'use strict';
@@ -16,7 +16,6 @@
 
 var should = require('should');
 var http = require('http');
-var zlib = require('zlib');
 var querystring = require('querystring');
 var urlutil = require('url');
 var pedding = require('pedding');

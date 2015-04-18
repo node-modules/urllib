@@ -1,9 +1,0 @@
-logo.png
-.travis.yml
-appveyor.yml
-examples/
-test/
-Makefile
-.jshintrc
-.jshintignore
-coverage/
