@@ -1,11 +1,11 @@
 /**!
  * urllib - test/urllib.test.js
  *
- * Copyright(c) fengmk2 and other contributors.
+ * Copyright(c) node-modules and other contributors.
  * MIT Licensed
  *
  * Authors:
- *   fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
+ *   fengmk2 <fengmk2@gmail.com> (http://fengmk2.com)
  */
 
 'use strict';
@@ -16,7 +16,6 @@
 
 var should = require('should');
 var http = require('http');
-var zlib = require('zlib');
 var querystring = require('querystring');
 var urlutil = require('url');
 var pedding = require('pedding');
@@ -482,52 +481,103 @@ describe('urllib.test.js', function () {
       });
     });
 
-    // only test agentkeepalive on node >= 0.11.12
-    if (semver.gte(process.version.substring(1), '0.11.12')) {
-      describe('support agentkeepalive', function () {
-        before(function () {
-          var KeepAliveAgent = require('agentkeepalive');
-          this.agent = new KeepAliveAgent({
-            keepAlive: true,
-          });
-          this.httpsAgent = new KeepAliveAgent.HttpsAgent({
-            keepAlive: true
+    describe('support agentkeepalive', function () {
+      before(function () {
+        var KeepAliveAgent = require('agentkeepalive');
+        this.agent = new KeepAliveAgent({
+          keepAlive: true,
+        });
+        this.httpsAgent = new KeepAliveAgent.HttpsAgent({
+          keepAlive: true
+        });
+      });
+
+      var urls = [
+        'http://r.cnpmjs.org/byte',
+        'https://cnpmjs.org/',
+        'http://r.cnpmjs.org/byte',
+        'https://cnpmjs.org/',
+        'https://cnpmjs.org/package/pedding',
+        'https://cnpmjs.org/package/byte',
+        'http://r.cnpmjs.org/pedding',
+        'https://cnpmjs.org/package/ms',
+      ];
+
+      urls.forEach(function (url, index) {
+        it('should use KeepAlive agent request ' + url, function (done) {
+          var agent = this.agent;
+          var httpsAgent = this.httpsAgent;
+          urllib.request(url, {
+            agent: agent,
+            httpsAgent: httpsAgent,
+            timeout: 15000,
+          }, function (err, data, res) {
+            should.not.exist(err);
+            data.should.be.an.instanceof(Buffer);
+            if (res.statusCode !== 200) {
+              console.log(res.statusCode, res.headers);
+            }
+            res.should.have.header('connection', 'keep-alive');
+            if (index >= 2) {
+              res.keepAliveSocket.should.equal(true);
+            }
+            done();
           });
         });
+      });
 
-        var urls = [
-          'http://r.cnpmjs.org/',
-          'https://cnpmjs.org/mirrors/iojs/v1.2.0/SHASUMS256.txt',
-          'https://cnpmjs.org/mirrors/iojs/v1.2.0/SHASUMS256.txt',
-          'https://cnpmjs.org/mirrors/iojs/v1.2.0/SHASUMS256.txt',
-          'http://r.cnpmjs.org/pedding',
-          'https://cnpmjs.org/mirrors/iojs/v1.1.0/SHASUMS256.txt',
-        ];
-
-        urls.forEach(function (url, index) {
-          it('should use KeepAlive agent request ' + url, function (done) {
-            var agent = this.agent;
-            var httpsAgent = this.httpsAgent;
-            urllib.request(url, {
+      it('should request http timeout', function (done) {
+        var agent = this.agent;
+        var httpsAgent = this.httpsAgent;
+        urllib.request('http://r.cnpmjs.org/koa', {
+          agent: agent,
+          httpsAgent: httpsAgent,
+          timeout: 15000,
+        }, function (err, data, res) {
+          should.not.exist(err);
+          data.should.be.an.instanceof(Buffer);
+          res.statusCode.should.equal(200);
+          // make sure free socket release to free list
+          process.nextTick(function () {
+            urllib.request('http://r.cnpmjs.org/npm', {
               agent: agent,
               httpsAgent: httpsAgent,
-              timeout: 15000,
-            }, function (err, data, res) {
-              should.not.exist(err);
-              data.should.be.an.instanceof(Buffer);
-              if (res.statusCode !== 200) {
-                console.log(res.statusCode, res.headers);
-              }
-              res.should.have.header('connection', 'keep-alive');
-              if (index >= 2) {
-                res.keepAliveSocket.should.equal(true);
-              }
+              timeout: 100,
+            }, function (err) {
+              should.exist(err);
+              err.message.should.containEql('(connected: true, keepalive socket: true, agent status: {"createSocketCount":');
               done();
             });
           });
         });
       });
-    }
+
+      it('should request https timeout', function (done) {
+        var agent = this.agent;
+        var httpsAgent = this.httpsAgent;
+        urllib.request('https://r.cnpmjs.org/koa', {
+          agent: agent,
+          httpsAgent: httpsAgent,
+          timeout: 15000,
+        }, function (err, data, res) {
+          should.not.exist(err);
+          data.should.be.an.instanceof(Buffer);
+          res.statusCode.should.equal(200);
+          // make sure free socket release to free list
+          process.nextTick(function () {
+            urllib.request('https://r.cnpmjs.org/npm', {
+              agent: agent,
+              httpsAgent: httpsAgent,
+              timeout: 100,
+            }, function (err) {
+              should.exist(err);
+              err.message.should.containEql('(connected: true, keepalive socket: true, agent status: {"createSocketCount":');
+              done();
+            });
+          });
+        });
+      });
+    });
   });
 
   describe('support stream', function () {
