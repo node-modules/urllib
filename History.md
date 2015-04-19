@@ -1,4 +1,9 @@
 
+2.3.4 / 2015-04-19
+==================
+
+ * feat: show agent status message when request error
+
 2.3.3 / 2015-03-30
 ==================
 
