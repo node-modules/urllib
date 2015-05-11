@@ -22,7 +22,6 @@ var pedding = require('pedding');
 var fs = require('fs');
 var path = require('path');
 var formstream = require('formstream');
-var semver = require('semver');
 var server = require('./fixtures/server');
 var urllib = require('../');
 
@@ -529,7 +528,7 @@ describe('urllib.test.js', function () {
       it('should request http timeout', function (done) {
         var agent = this.agent;
         var httpsAgent = this.httpsAgent;
-        urllib.request('http://r.cnpmjs.org/koa', {
+        urllib.request('http://r.cnpmjs.org/byte', {
           agent: agent,
           httpsAgent: httpsAgent,
           timeout: 15000,
@@ -707,11 +706,28 @@ describe('urllib.test.js', function () {
         done();
       });
     });
-
   });
 
-  describe('args.customResponse', function () {
-    it('custom the response data', function (done) {
+  describe('args.streaming = true', function () {
+    it('should got streaming the response', function (done) {
+      urllib.request('http://www.taobao.com', {
+        timeout: 10000,
+        streaming: true
+      }, function (err, data, res) {
+        should.not.exist(err);
+        should.not.exist(data);
+        var size = 0;
+        res.on('data', function (chunk) {
+          size += chunk.length;
+        });
+        res.on('end', function () {
+          size.should.above(0);
+          done();
+        });
+      });
+    });
+
+    it('should work with alias name customResponse', function (done) {
       urllib.request('http://www.taobao.com', {
         timeout: 10000,
         customResponse: true
@@ -727,6 +743,7 @@ describe('urllib.test.js', function () {
         });
       });
     });
+
     it('custom the response data should ok when req error', function (done) {
       urllib.request('https://no-exist/fengmk2/urllib', {
         timeout: 10000,
@@ -735,6 +752,47 @@ describe('urllib.test.js', function () {
         should.exist(err);
         err.code.should.equal('ENOTFOUND');
         done();
+      });
+    });
+
+    it('should follow redirect', function (done) {
+      urllib.request('http://cnpmjs.org/mirrors/operadriver/0.2.2/v0.2.2.tar.gz', {
+        timeout: 10000,
+        streaming: true,
+        followRedirect: true
+      }, function (err, data, res) {
+        should.not.exist(err);
+        should.not.exist(data);
+        res.statusCode.should.equal(200);
+        should.not.exist(res.headers.location);
+        var size = 0;
+        res.on('data', function (chunk) {
+          size += chunk.length;
+        });
+        res.on('end', function () {
+          size.should.above(0);
+          done();
+        });
+      });
+    });
+
+    it('should work with promise', function (done) {
+      urllib.request('http://cnpmjs.org/mirrors/operadriver/0.2.2/v0.2.2.tar.gz', {
+        timeout: 10000,
+        streaming: true,
+        followRedirect: true
+      }).then(function (result) {
+        result.status.should.equal(200);
+        result.headers['content-type'].should.equal('application/x-compressed');
+        result.res.should.be.a.Stream;
+        var size = 0;
+        result.res.on('data', function (chunk) {
+          size += chunk.length;
+        });
+        result.res.on('end', function () {
+          size.should.above(0);
+          done();
+        });
       });
     });
   });
