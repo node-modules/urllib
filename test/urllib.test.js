@@ -88,6 +88,20 @@ describe('urllib.test.js', function () {
       });
     });
 
+    it('should redirect from 307 to 204', function (done) {
+      urllib.request(host + '/307', {followRedirect: true}, function (err, data, res) {
+        res.should.status(204);
+        done();
+      });
+    });
+
+    it('should redirect from 303 to 204', function (done) {
+      urllib.request(host + '/303', {followRedirect: true}, function (err, data, res) {
+        res.should.status(204);
+        done();
+      });
+    });
+
     it('should FollowRedirectError', function (done) {
       urllib.request(host + '/redirect_no_location', {followRedirect: true}, function (err, data) {
         should.exist(err);

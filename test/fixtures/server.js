@@ -79,6 +79,14 @@ var server = http.createServer(function (req, res) {
       res.statusCode = 301;
       res.setHeader('Location', '/204');
       return res.end('I am 301 body');
+    } else if (req.url === '/303') {
+      res.statusCode = 303;
+      res.setHeader('Location', '/204');
+      return res.end('Redirect to /204');
+    } else if (req.url === '/307') {
+      res.statusCode = 307;
+      res.setHeader('Location', '/204');
+      return res.end('I am 307 body');
     } else if (req.url === '/redirect_no_location') {
       res.statusCode = 302;
       return res.end('I am 302 body');
