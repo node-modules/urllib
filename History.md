@@ -1,4 +1,10 @@
 
+2.3.7 / 2015-06-04
+==================
+
+ * test: use cnpmjs.org instead of taobao.com
+ * fix: need to resume res before next redirect request start
+
 2.3.6 / 2015-06-03
 ==================
 
