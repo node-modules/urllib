@@ -22,6 +22,7 @@ var pedding = require('pedding');
 var fs = require('fs');
 var path = require('path');
 var formstream = require('formstream');
+var coffee = require('coffee');
 var server = require('./fixtures/server');
 var urllib = require('../');
 
@@ -100,6 +101,13 @@ describe('urllib.test.js', function () {
         res.should.status(204);
         done();
       });
+    });
+
+    it('should redirect with writeStream and make sure res resume', function (done) {
+      coffee.fork(path.join(__dirname, 'redirect.js'))
+      .expect('stdout', '404')
+      .expect('code', 0)
+      .end(done);
     });
 
     it('should FollowRedirectError', function (done) {
@@ -724,7 +732,7 @@ describe('urllib.test.js', function () {
 
   describe('args.streaming = true', function () {
     it('should got streaming the response', function (done) {
-      urllib.request('http://www.taobao.com', {
+      urllib.request('http://cnpmjs.org', {
         timeout: 10000,
         streaming: true
       }, function (err, data, res) {
@@ -742,7 +750,7 @@ describe('urllib.test.js', function () {
     });
 
     it('should work with alias name customResponse', function (done) {
-      urllib.request('http://www.taobao.com', {
+      urllib.request('http://cnpmjs.org', {
         timeout: 10000,
         customResponse: true
       }, function (err, data, res) {

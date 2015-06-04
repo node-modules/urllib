@@ -40,17 +40,18 @@
     "statuses": "~1.2.1"
   },
   "devDependencies": {
-    "agentkeepalive": "~2.0.2",
+    "agentkeepalive": "2",
     "autod": "*",
     "bluebird": "*",
     "co": "*",
-    "formstream": "~1.0.0",
+    "coffee": "1",
+    "formstream": "1",
     "istanbul": "*",
     "jshint": "*",
     "mocha": "*",
-    "pedding": "~1.0.0",
-    "semver": "~4.3.3",
-    "should": "~6.0.3",
+    "pedding": "1",
+    "semver": "4",
+    "should": "6",
     "should-http": "*"
   },
   "engines": {
