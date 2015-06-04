@@ -22,6 +22,7 @@ var pedding = require('pedding');
 var fs = require('fs');
 var path = require('path');
 var formstream = require('formstream');
+var coffee = require('coffee');
 var server = require('./fixtures/server');
 var urllib = require('../');
 
@@ -100,6 +101,13 @@ describe('urllib.test.js', function () {
         res.should.status(204);
         done();
       });
+    });
+
+    it('should redirect with writeStream and make sure res resume', function (done) {
+      coffee.fork(path.join(__dirname, 'redirect.js'))
+      .expect('stdout', '404')
+      .expect('code', 0)
+      .end(done);
     });
 
     it('should FollowRedirectError', function (done) {
