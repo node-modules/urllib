@@ -732,7 +732,7 @@ describe('urllib.test.js', function () {
 
   describe('args.streaming = true', function () {
     it('should got streaming the response', function (done) {
-      urllib.request('http://www.taobao.com', {
+      urllib.request('http://cnpmjs.org', {
         timeout: 10000,
         streaming: true
       }, function (err, data, res) {
@@ -750,7 +750,7 @@ describe('urllib.test.js', function () {
     });
 
     it('should work with alias name customResponse', function (done) {
-      urllib.request('http://www.taobao.com', {
+      urllib.request('http://cnpmjs.org', {
         timeout: 10000,
         customResponse: true
       }, function (err, data, res) {
