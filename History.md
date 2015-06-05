@@ -1,4 +1,9 @@
 
+2.3.8 / 2015-06-06
+==================
+
+ * fix: need to clear timer after follow redirect
+
 2.3.7 / 2015-06-04
 ==================
 
