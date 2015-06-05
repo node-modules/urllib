@@ -52,7 +52,8 @@
     "pedding": "1",
     "semver": "4",
     "should": "6",
-    "should-http": "*"
+    "should-http": "*",
+    "tar": "2"
   },
   "engines": {
     "node": ">= 0.10.0",

@@ -23,6 +23,9 @@ var fs = require('fs');
 var path = require('path');
 var formstream = require('formstream');
 var coffee = require('coffee');
+var tar = require('tar');
+var zlib = require('zlib');
+var os = require('os');
 var server = require('./fixtures/server');
 var urllib = require('../');
 
@@ -815,6 +818,28 @@ describe('urllib.test.js', function () {
           size.should.above(0);
           done();
         });
+      });
+    });
+
+    it('should streaming with ungzip', function (done) {
+      var url = 'http://registry.cnpmjs.org/urllib/download/urllib-2.3.7.tgz';
+      urllib.request(url, {
+        streaming: true,
+        followRedirect: true,
+      }, function (err, _, res) {
+        should.not.exist(err);
+        res.statusCode.should.equal(200);
+
+        var tmpdir = path.join(os.tmpdir(), 'urllib-ungzip2');
+        var gunzip = zlib.createGunzip();
+        gunzip.on('error', done);
+        var extracter = tar.Extract({ path: tmpdir });
+        extracter.on('error', done);
+        extracter.on('end', function () {
+          console.log('version %s', require(path.join(tmpdir, 'package/package.json')).version);
+          done();
+        });
+        res.pipe(gunzip).pipe(extracter);
       });
     });
   });
