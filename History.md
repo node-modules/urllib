@@ -1,4 +1,9 @@
 
+2.3.9 / 2015-07-23
+==================
+
+ * feat: show json format data when json parse error
+
 2.3.8 / 2015-06-06
 ==================
 
