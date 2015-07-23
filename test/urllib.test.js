@@ -430,9 +430,22 @@ describe('urllib.test.js', function () {
       }, function (err, data, res) {
         should.exist(err);
         err.name.should.equal('JSONResponseFormatError');
-        err.message.should.containEql('Unexpected end of input, GET http://127.0.0.1:');
+        err.message.should.containEql('Unexpected end of input (data json format: "{\\"foo\\":\\"\\""), GET http://127.0.0.1:');
         res.should.status(200);
         data.toString().should.equal('{"foo":""');
+        done();
+      });
+    });
+
+    it('should handle GET /wrongjson-gbk with dataType=json and data size > 1024', function (done) {
+      urllib.request(host + '/wrongjson-gbk', {
+        dataType: 'json'
+      }, function (err, data, res) {
+        should.exist(err);
+        err.name.should.equal('JSONResponseFormatError');
+        err.message.should.containEql('Unexpected token / (data json format: "/**!\\n * urllib - test/fixtures/server.js\\n');
+        err.message.should.containEql('" ...skip... "');
+        res.should.status(200);
         done();
       });
     });

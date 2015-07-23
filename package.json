@@ -11,7 +11,7 @@
     "request",
     "https"
   ],
-  "author": "fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)",
+  "author": "fengmk2 <m@fengmk2.com> (http://fengmk2.com)",
   "homepage": "http://github.com/node-modules/urllib",
   "main": "lib/urllib.js",
   "files": [
