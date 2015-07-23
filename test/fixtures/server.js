@@ -106,7 +106,11 @@ var server = http.createServer(function (req, res) {
       return res.end(req.url);
     } else if (req.url === '/wrongjson') {
       res.writeHeader(200);
-      return res.end('{"foo":""');
+      return res.end(new Buffer('{"foo":""'));
+    } else if (req.url === '/wrongjson-gbk') {
+      res.setHeader('content-type', 'application/json; charset=gbk');
+      res.writeHeader(200);
+      return res.end(fs.readFileSync(__filename));
     } else if (req.url === '/writestream') {
       var s = fs.createReadStream(__filename);
       return s.pipe(res);
