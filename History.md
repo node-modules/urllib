@@ -1,4 +1,10 @@
 
+2.3.10 / 2015-08-12
+==================
+
+ * fix: add alias urllib.curl()
+ * chore: add decodeBodyByCharset error debug log
+
 2.3.9 / 2015-07-23
 ==================
 
