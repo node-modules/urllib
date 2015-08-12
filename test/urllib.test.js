@@ -69,6 +69,16 @@ describe('urllib.test.js', function () {
       });
     });
 
+    it('should alias curl() work', function (done) {
+      urllib.curl('http://cnpmjs.org/mirrors/iojs/v1.2.0/SHASUMS256.txt', {timeout: 10000},
+      function (err, data, res) {
+        should.not.exist(err);
+        should.ok(Buffer.isBuffer(data));
+        res.should.status(200);
+        done();
+      });
+    });
+
     it('should 301', function (done) {
       urllib.request(host + '/301', function (err, data, res) {
         res.should.status(301);
@@ -530,14 +540,13 @@ describe('urllib.test.js', function () {
       });
 
       var urls = [
-        'http://r.cnpmjs.org/byte',
-        'https://cnpmjs.org/',
-        'http://r.cnpmjs.org/byte',
-        'https://cnpmjs.org/',
-        'https://cnpmjs.org/package/pedding',
-        'https://cnpmjs.org/package/byte',
-        'http://r.cnpmjs.org/pedding',
-        'https://cnpmjs.org/package/ms',
+        'http://registry.npm.taobao.org/byte',
+        'https://www.npmjs.com',
+        'http://npm.taobao.org/',
+        'http://npm.taobao.org/package/byte',
+        'https://www.npmjs.com/package/byte',
+        'http://registry.npm.taobao.org/pedding',
+        'http://npm.taobao.org/package/ms',
       ];
 
       urls.forEach(function (url, index) {
@@ -547,7 +556,7 @@ describe('urllib.test.js', function () {
           urllib.request(url, {
             agent: agent,
             httpsAgent: httpsAgent,
-            timeout: 15000,
+            timeout: 25000,
           }, function (err, data, res) {
             should.not.exist(err);
             data.should.be.an.instanceof(Buffer);
@@ -555,7 +564,7 @@ describe('urllib.test.js', function () {
               console.log(res.statusCode, res.headers);
             }
             res.should.have.header('connection', 'keep-alive');
-            if (index >= 2) {
+            if (index >= 3) {
               res.keepAliveSocket.should.equal(true);
             }
             done();
@@ -566,20 +575,20 @@ describe('urllib.test.js', function () {
       it('should request http timeout', function (done) {
         var agent = this.agent;
         var httpsAgent = this.httpsAgent;
-        urllib.request('http://r.cnpmjs.org/byte', {
+        urllib.request('http://registry.npm.taobao.org/byte', {
           agent: agent,
           httpsAgent: httpsAgent,
-          timeout: 15000,
+          timeout: 25000,
         }, function (err, data, res) {
           should.not.exist(err);
           data.should.be.an.instanceof(Buffer);
           res.statusCode.should.equal(200);
           // make sure free socket release to free list
           process.nextTick(function () {
-            urllib.request('http://r.cnpmjs.org/npm', {
+            urllib.request('http://registry.npm.taobao.org/npm', {
               agent: agent,
               httpsAgent: httpsAgent,
-              timeout: 100,
+              timeout: 10,
             }, function (err) {
               should.exist(err);
               err.message.should.containEql('(connected: true, keepalive socket: true, agent status: {"createSocketCount":');
@@ -592,20 +601,20 @@ describe('urllib.test.js', function () {
       it('should request https timeout', function (done) {
         var agent = this.agent;
         var httpsAgent = this.httpsAgent;
-        urllib.request('https://r.cnpmjs.org/koa', {
+        urllib.request('https://registry.npmjs.com/koa', {
           agent: agent,
           httpsAgent: httpsAgent,
-          timeout: 15000,
+          timeout: 25000,
         }, function (err, data, res) {
           should.not.exist(err);
           data.should.be.an.instanceof(Buffer);
           res.statusCode.should.equal(200);
           // make sure free socket release to free list
           process.nextTick(function () {
-            urllib.request('https://r.cnpmjs.org/npm', {
+            urllib.request('https://registry.npmjs.com/npm', {
               agent: agent,
               httpsAgent: httpsAgent,
-              timeout: 100,
+              timeout: 10,
             }, function (err) {
               should.exist(err);
               err.message.should.containEql('(connected: true, keepalive socket: true, agent status: {"createSocketCount":');
