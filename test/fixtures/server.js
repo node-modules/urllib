@@ -159,6 +159,9 @@ var server = http.createServer(function (req, res) {
     } else if (req.url === '/errorcharset') {
       res.setHeader('Content-Type', 'text/plain;charset=notfound');
       return res.end('你好');
+    } else if (req.url === '/json_with_controls_unicode') {
+      res.writeHeader(200);
+      return res.end(new Buffer('{"foo":"\u000e\u0086"}'));
     }
 
     var url = req.url.split('?');
