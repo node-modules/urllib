@@ -1161,4 +1161,16 @@ describe('urllib.test.js', function () {
       });
     });
   });
+  
+  describe('json string with controls unicode', function() {
+    it('should handle GET /json_with_controls_unicode with dataType=json', function (done) {
+      urllib.request(host + '/json_with_controls_unicode', {
+        dataType: 'json'
+      }, function (err, data, res) {
+        res.should.status(200);
+        data.should.eql({foo:"\u000e"});
+        done();
+      });
+    });
+  });
 });
