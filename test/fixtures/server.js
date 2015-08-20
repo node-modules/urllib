@@ -161,7 +161,7 @@ var server = http.createServer(function (req, res) {
       return res.end('你好');
     } else if (req.url === '/json_with_controls_unicode') {
       res.writeHeader(200);
-      return res.end(new Buffer('{"foo":"\u000e\u0086"}'));
+      return res.end(new Buffer('{"foo":"\u000e"}'));
     }
 
     var url = req.url.split('?');

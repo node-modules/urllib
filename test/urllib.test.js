@@ -1168,7 +1168,7 @@ describe('urllib.test.js', function () {
         dataType: 'json'
       }, function (err, data, res) {
         res.should.status(200);
-        data.should.eql({foo:""});
+        data.should.eql({foo:"\u000e"});
         done();
       });
     });
