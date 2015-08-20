@@ -1161,4 +1161,35 @@ describe('urllib.test.js', function () {
       });
     });
   });
+
+  describe('options.fixJSONCtlChars = true | false', function () {
+
+    it('should auto fix json control characters', function (done) {
+      urllib.request(host + '/json_with_controls_unicode', {
+        dataType: 'json',
+        fixJSONCtlChars: true,
+      }, function (err, data) {
+        should.not.exist(err);
+        data.should.eql({
+          foo: '\b\f\n\r\tbar\u000e!1!!2!\u0000!3!\u001f!4!\\!5!end\\\\'
+        });
+        done();
+      });
+    });
+
+    it('should throw error when response has json control characters', function (done) {
+      urllib.request(host + '/json_with_controls_unicode', {
+        dataType: 'json',
+        // fixJSONCtlChars: false,
+      }, function (err, data) {
+        should.exist(err);
+        err.name.should.equal('JSONResponseFormatError');
+        err.message.should.containEql('Unexpected token \b (data json format:');
+        data.should.equal('{"foo":"\b\f\n\r\tbar\u000e!1!!2!\u0000!3!\u001f!4!\\!5!end\\\\"}');
+        done();
+      });
+    });
+
+  });
+
 });
