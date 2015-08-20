@@ -1,4 +1,10 @@
 
+2.4.0 / 2015-08-20
+==================
+
+ * feat: add options.fixJSONCtlChars to fix JSON control characters
+ * Fix a typo in comment
+
 2.3.11 / 2015-08-12
 ==================
 
