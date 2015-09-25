@@ -1,6 +1,4 @@
 /**!
- * urllib - test/urllib.test.js
- *
  * Copyright(c) node-modules and other contributors.
  * MIT Licensed
  *
@@ -1186,6 +1184,32 @@ describe('urllib.test.js', function () {
         err.name.should.equal('JSONResponseFormatError');
         err.message.should.containEql('Unexpected token \b (data json format:');
         data.should.equal('{"foo":"\b\f\n\r\tbar\u000e!1!!2!\u0000!3!\u001f!4!\\!5!end\\\\"}');
+        done();
+      });
+    });
+
+  });
+
+  describe('args.stream = stream', function() {
+
+    it('should post stream', function(done) {
+      var form = formstream();
+      form.file('file1', __filename);
+      form.field('hello', '你好urllib');
+      var args = {
+        timeout: 30000,
+        method: 'post',
+        dataType: 'json',
+        headers: form.headers(),
+        stream: form
+      };
+
+      var url = 'http://httpbin.org/post';
+      urllib.request(url, args, function (err, data, res) {
+        should.not.exist(err);
+        data.files.file1.should.be.a.String;
+        data.form.hello.should.equal('你好urllib');
+        res.status.should.equal(200);
         done();
       });
     });
