@@ -1,4 +1,12 @@
 
+2.5.0 / 2015-09-30
+==================
+
+ * test: fix test url
+ * feat: remove request# in error message
+ * test: add streaming upload test
+ * test: use codecov.io
+
 2.4.0 / 2015-08-20
 ==================
 
