@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "debug": "~2.2.0",
-    "default-user-agent": "~0.0.1",
+    "default-user-agent": "~1.0.0",
     "digest-header": "~0.0.1",
     "humanize-ms": "~1.0.1",
     "iconv-lite": "~0.4.10",
@@ -49,8 +49,8 @@
     "jshint": "*",
     "mocha": "*",
     "pedding": "1",
-    "semver": "4",
-    "should": "6",
+    "semver": "5.0.3",
+    "should": "7.1.0",
     "should-http": "*",
     "tar": "2"
   },
