@@ -42,7 +42,7 @@
     "agentkeepalive": "2",
     "autod": "*",
     "bluebird": "*",
-    "co": "*",
+    "co": "4.6.0",
     "coffee": "1",
     "formstream": "1",
     "istanbul": "*",
