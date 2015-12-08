@@ -21,6 +21,7 @@ var path = require('path');
 urllib.request('http://test.webdav.org/redir-tmp/', {
   followRedirect: true,
   writeStream: fs.createWriteStream(path.join(__dirname, '.tmp.txt')),
+  timeout: 20000
 }, function (err, _, res) {
   if (err) {
     throw err;

@@ -58,7 +58,7 @@ describe('urllib.test.js', function () {
 
   describe('request()', function () {
     it('should request https success', function (done) {
-      urllib.request('https://iojs.org/dist/v1.2.0/SHASUMS256.txt', {timeout: 10000},
+      urllib.request('https://iojs.org/dist/v1.2.0/SHASUMS256.txt', {timeout: 20000},
       function (err, data, res) {
         should.not.exist(err);
         should.ok(Buffer.isBuffer(data));
@@ -68,7 +68,7 @@ describe('urllib.test.js', function () {
     });
 
     it('should alias curl() work', function (done) {
-      urllib.curl('http://cnpmjs.org/mirrors/iojs/v1.2.0/SHASUMS256.txt', {timeout: 10000},
+      urllib.curl('http://cnpmjs.org/mirrors/iojs/v1.2.0/SHASUMS256.txt', {timeout: 20000},
       function (err, data, res) {
         should.not.exist(err);
         should.ok(Buffer.isBuffer(data));
@@ -1081,6 +1081,7 @@ describe('urllib.test.js', function () {
     var urllib = require('../').create();
     afterEach(function () {
       urllib.removeAllListeners('response');
+      urllib.removeAllListeners('request')
     });
 
     it('should listen response event', function (done) {
@@ -1102,7 +1103,41 @@ describe('urllib.test.js', function () {
           info.ctx.should.eql({
             foo: 'stream request'
           });
+          info.req.socket.remoteAddress.should.equal('127.0.0.1');
+          info.req.socket.remotePort.should.equal(port);
         }
+        done();
+      });
+
+      urllib.request(host + '/error', {
+        ctx: {
+          foo: 'error request'
+        }
+      }, function (err) {
+        should.exist(err);
+        done();
+      });
+
+      urllib.request(host + '/stream', {
+        method: 'post',
+        data: {foo: 'bar'},
+        ctx: {
+          foo: 'stream request'
+        }
+      }, function (err) {
+        should.not.exist(err);
+        done();
+      });
+    });
+
+    it('should listen request event', function (done) {
+      done = pedding(4, done);
+      urllib.on('request', function (info) {
+        info.args.headers = info.args.headers || {};
+        info.args.headers['custom-header'] = 'custom-header';
+      });
+      urllib.on('response', function (info) {
+        info.req.options.headers['custom-header'].should.equal('custom-header');
         done();
       });
 
