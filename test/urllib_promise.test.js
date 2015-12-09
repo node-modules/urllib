@@ -1,11 +1,9 @@
 /**!
- * urllib - test/urllib_promise.test.js
- *
- * Copyright(c) fengmk2 and other contributors.
+ * Copyright(c) node-modules and other contributors.
  * MIT Licensed
  *
  * Authors:
- *   fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
+ *   fengmk2 <fengmk2@gmail.com> (http://fengmk2.com)
  */
 
 'use strict';
@@ -17,9 +15,9 @@
 var should = require('should');
 var urllib = require('../');
 
-describe('urllib_promise.test.js', function () {
+describe('test/urllib_promise.test.js', function () {
   it('should return promise when callback missing', function (done) {
-    urllib.request('https://nodejs.org/en/', {timeout: 20000})
+    urllib.request('https://npm.taobao.org/', {timeout: 20000})
     .then(function (result) {
       should.exist(result);
       result.should.have.keys('data', 'status', 'headers', 'res');
@@ -39,7 +37,7 @@ describe('urllib_promise.test.js', function () {
   });
 
   it('should work with args', function (done) {
-    urllib.request('https://nodejs.org/en/', {
+    urllib.request('https://npm.taobao.org/', {
       data: {
         q: 'foo'
       },
