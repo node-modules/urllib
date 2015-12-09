@@ -27,7 +27,7 @@ var os = require('os');
 var server = require('./fixtures/server');
 var urllib = require('../');
 
-describe('urllib.test.js', function () {
+describe('test/urllib.test.js', function () {
 
   var host = 'http://127.0.0.1:';
   var port = null;
@@ -58,7 +58,7 @@ describe('urllib.test.js', function () {
 
   describe('request()', function () {
     it('should request https success', function (done) {
-      urllib.request('https://iojs.org/dist/v1.2.0/SHASUMS256.txt', {timeout: 20000},
+      urllib.request('https://npm.taobao.org/mirrors/node/v5.1.1/SHASUMS256.txt', {timeout: 20000},
       function (err, data, res) {
         should.not.exist(err);
         should.ok(Buffer.isBuffer(data));
@@ -68,7 +68,7 @@ describe('urllib.test.js', function () {
     });
 
     it('should alias curl() work', function (done) {
-      urllib.curl('http://cnpmjs.org/mirrors/iojs/v1.2.0/SHASUMS256.txt', {timeout: 20000},
+      urllib.curl('http://npm.taobao.org/mirrors/iojs/v1.2.0/SHASUMS256.txt', {timeout: 20000},
       function (err, data, res) {
         should.not.exist(err);
         should.ok(Buffer.isBuffer(data));
@@ -540,12 +540,12 @@ describe('urllib.test.js', function () {
       });
 
       var urls = [
-        'http://registry.npm.taobao.org/byte',
-        'https://www.npmjs.com',
+        'https://registry.npm.taobao.org/byte',
+        // 'https://www.npmjs.com',
         'http://npm.taobao.org/',
         'http://npm.taobao.org/package/byte',
-        'https://www.npmjs.com/package/byte',
-        'http://registry.npm.taobao.org/pedding',
+        // 'https://www.npmjs.com/package/byte',
+        'https://registry.npm.taobao.org/pedding',
         'http://npm.taobao.org/package/ms',
       ];
 
@@ -601,7 +601,7 @@ describe('urllib.test.js', function () {
       it('should request https timeout', function (done) {
         var agent = this.agent;
         var httpsAgent = this.httpsAgent;
-        urllib.request('https://registry.npmjs.com/koa', {
+        urllib.request('https://registry.npm.taobao.org/koa', {
           agent: agent,
           httpsAgent: httpsAgent,
           timeout: 25000,
@@ -611,10 +611,10 @@ describe('urllib.test.js', function () {
           res.statusCode.should.equal(200);
           // make sure free socket release to free list
           process.nextTick(function () {
-            urllib.request('https://registry.npmjs.com/npm', {
+            urllib.request('https://registry.npm.taobao.org/npm', {
               agent: agent,
               httpsAgent: httpsAgent,
-              timeout: 10,
+              timeout: 1,
             }, function (err) {
               should.exist(err);
               err.message.should.containEql('(connected: true, keepalive socket: true, agent status: {"createSocketCount":');
@@ -684,7 +684,7 @@ describe('urllib.test.js', function () {
       done = pedding(2, done);
       var writeStream = fs.createWriteStream(tmpfile);
       writeStream.on('close', done);
-      urllib.request('https://github.com/', {
+      urllib.request('https://npm.taobao.org/', {
         writeStream: writeStream,
         timeout: 15000,
       }, function (err, data, res) {
@@ -708,7 +708,7 @@ describe('urllib.test.js', function () {
       writeStream.on('finish', function () {
         console.log('writeStream finish event');
       });
-      urllib.request('http://test.webdav.org/redir-tmp/', {
+      urllib.request('https://npm.taobao.org/redir-tmp/', {
         writeStream: writeStream,
         followRedirect: true,
         timeout: 20000
@@ -757,7 +757,7 @@ describe('urllib.test.js', function () {
 
   describe('args.streaming = true', function () {
     it('should got streaming the response', function (done) {
-      urllib.request('http://cnpmjs.org', {
+      urllib.request('https://npm.taobao.org', {
         timeout: 10000,
         streaming: true
       }, function (err, data, res) {
@@ -775,7 +775,7 @@ describe('urllib.test.js', function () {
     });
 
     it('should work with alias name customResponse', function (done) {
-      urllib.request('http://cnpmjs.org', {
+      urllib.request('https://npm.taobao.org', {
         timeout: 10000,
         customResponse: true
       }, function (err, data, res) {
@@ -803,8 +803,8 @@ describe('urllib.test.js', function () {
     });
 
     it('should follow redirect', function (done) {
-      urllib.request('http://cnpmjs.org/mirrors/operadriver/0.2.2/v0.2.2.tar.gz', {
-        timeout: 10000,
+      urllib.request('https://registry.npm.taobao.org/pedding/download/pedding-1.0.0.tgz', {
+        timeout: 15000,
         streaming: true,
         followRedirect: true
       }, function (err, data, res) {
@@ -824,13 +824,12 @@ describe('urllib.test.js', function () {
     });
 
     it('should work with promise', function (done) {
-      urllib.request('http://cnpmjs.org/mirrors/operadriver/0.2.2/v0.2.2.tar.gz', {
+      urllib.request('https://registry.npm.taobao.org/pedding/download/pedding-1.0.0.tgz', {
         timeout: 10000,
         streaming: true,
         followRedirect: true
       }).then(function (result) {
         result.status.should.equal(200);
-        result.headers['content-type'].should.equal('application/x-compressed');
         result.res.should.be.a.Stream;
         var size = 0;
         result.res.on('data', function (chunk) {
@@ -840,11 +839,11 @@ describe('urllib.test.js', function () {
           size.should.above(0);
           done();
         });
-      });
+      }).catch(done);
     });
 
     it('should streaming with ungzip', function (done) {
-      var url = 'http://registry.cnpmjs.org/urllib/download/urllib-2.3.7.tgz';
+      var url = 'https://registry.npm.taobao.org/urllib/download/urllib-2.3.7.tgz';
       urllib.request(url, {
         streaming: true,
         followRedirect: true,
@@ -955,34 +954,32 @@ describe('urllib.test.js', function () {
 
   describe('gzip content', function () {
     it('should auto accept and decode gzip response content', function (done) {
-      urllib.request('http://registry.cnpmjs.org/byte',
-        {dataType: 'json', gzip: true, timeout: 10000}, function (err, data, res) {
+      urllib.request('https://www.baidu.com/',
+        {
+          gzip: true,
+          timeout: 15000,
+        }, function (err, data, res) {
         should.not.exist(err);
-        data.name.should.equal('byte');
         res.should.have.header('content-encoding', 'gzip');
-        res.should.have.header('content-type', 'application/json; charset=utf-8');
         done();
       });
     });
 
     it('should auto accept and custom decode gzip response content', function (done) {
-      urllib.request('http://registry.cnpmjs.org/byte', {
-        dataType: 'json',
-        timeout: 10000,
+      urllib.request('https://www.baidu.com/', {
+        timeout: 15000,
         headers: {
           'accept-encoding': 'gzip'
         }
       }, function (err, data, res) {
         should.not.exist(err);
-        data.name.should.equal('byte');
         res.should.have.header('content-encoding', 'gzip');
-        res.should.have.header('content-type', 'application/json; charset=utf-8');
         done();
       });
     });
 
     it('should redirect and gzip', function (done) {
-      urllib.request('http://cnpmjs.org/pedding',
+      urllib.request('http://npm.taobao.org/pedding',
         {followRedirect: true, gzip: true, timeout: 10000}, function (err, data, res) {
         should.not.exist(err);
         res.should.status(200);
@@ -993,21 +990,21 @@ describe('urllib.test.js', function () {
 
     it('should not return gzip response content', function (done) {
       done = pedding(3, done);
-      urllib.request('http://cnpmjs.org', {timeout: 10000},
+      urllib.request('http://npm.taobao.org', {timeout: 10000},
       function (err, data, res) {
         should.not.exist(err);
         should.not.exist(res.headers['content-encoding']);
         done();
       });
 
-      urllib.request('http://cnpmjs.org', {gzip: false, timeout: 10000},
+      urllib.request('http://npm.taobao.org', {gzip: false, timeout: 10000},
       function (err, data, res) {
         should.not.exist(err);
         should.not.exist(res.headers['content-encoding']);
         done();
       });
 
-      urllib.request('http://cnpmjs.org', {gzip: true, timeout: 10000},
+      urllib.request('http://npm.taobao.org', {gzip: true, timeout: 10000},
       function (err, data, res) {
         should.not.exist(err);
         res.should.have.header('content-encoding', 'gzip');
@@ -1081,7 +1078,7 @@ describe('urllib.test.js', function () {
     var urllib = require('../').create();
     afterEach(function () {
       urllib.removeAllListeners('response');
-      urllib.removeAllListeners('request')
+      urllib.removeAllListeners('request');
     });
 
     it('should listen response event', function (done) {

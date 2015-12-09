@@ -1,7 +1,5 @@
 /**!
- * urllib - test/digest_auth.test.js
- *
- * Copyright(c) fengmk2 and other contributors.
+ * Copyright(c) node-modules and other contributors.
  * MIT Licensed
  *
  * Authors:
@@ -17,7 +15,7 @@
 var should = require('should');
 var urllib = require('../');
 
-describe('digest_auth.test.js', function () {
+describe('test/digest_auth.test.js', function () {
   it('should request with digest auth success in webdav', function (done) {
     var url = 'http://test.webdav.org/auth-digest/user3';
     urllib.request(url, {
