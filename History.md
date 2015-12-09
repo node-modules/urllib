@@ -1,4 +1,12 @@
 
+2.6.0 / 2015-12-09
+==================
+
+ * test: fix unstable test cases
+ * feat: enhance global events
+ * chore(package): update semver to version 5.1.0
+ * chore(package): update should to version 7.1.1
+
 2.5.0 / 2015-09-30
 ==================
 
