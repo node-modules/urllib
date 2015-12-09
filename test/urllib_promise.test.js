@@ -19,7 +19,7 @@ var urllib = require('../');
 
 describe('urllib_promise.test.js', function () {
   it('should return promise when callback missing', function (done) {
-    urllib.request('https://nodejs.org/en/')
+    urllib.request('https://nodejs.org/en/', {timeout: 20000})
     .then(function (result) {
       should.exist(result);
       result.should.have.keys('data', 'status', 'headers', 'res');
@@ -42,7 +42,8 @@ describe('urllib_promise.test.js', function () {
     urllib.request('https://nodejs.org/en/', {
       data: {
         q: 'foo'
-      }
+      },
+      timeout: 20000
     })
     .then(function (result) {
       should.exist(result.data);
@@ -59,7 +60,8 @@ describe('urllib_promise.test.js', function () {
     urllib.request('http://127.0.0.1:11', {
       data: {
         q: 'foo'
-      }
+      },
+      timeout: 20000
     })
     .then(function () {
       throw new Error('should not run this');
