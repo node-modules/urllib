@@ -1,4 +1,10 @@
 
+2.7.0 / 2016-01-14
+==================
+
+  * feat: response event include data property
+  * chore: Add host info into debug
+
 2.6.0 / 2015-12-09
 ==================
 
