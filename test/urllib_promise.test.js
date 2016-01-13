@@ -28,7 +28,7 @@ describe('test/urllib_promise.test.js', function () {
       result.res.should.status(200);
       result.res.should.have.header('connection');
       result.res.headers.connection.toLowerCase().should.equal('keep-alive');
-      result.res.should.have.keys('status', 'statusCode', 'headers', 'rt', 'size', 'aborted', 'keepAliveSocket');
+      result.res.should.have.keys('status', 'statusCode', 'headers', 'rt', 'size', 'aborted', 'keepAliveSocket', 'data');
       result.res.status.should.equal(200);
       result.res.rt.should.above(0);
       result.res.size.should.above(0);
@@ -68,7 +68,7 @@ describe('test/urllib_promise.test.js', function () {
       err.code.should.equal('ECONNREFUSED');
       err.status.should.equal(-1);
       err.headers.should.eql({});
-      err.res.should.have.keys('status', 'statusCode', 'headers', 'rt', 'size', 'aborted', 'keepAliveSocket');
+      err.res.should.have.keys('status', 'statusCode', 'headers', 'rt', 'size', 'aborted', 'keepAliveSocket', 'data');
       done();
     });
   });
