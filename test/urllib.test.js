@@ -67,6 +67,17 @@ describe('test/urllib.test.js', function () {
       });
     });
 
+    it('should include res.data', function (done) {
+      urllib.request('https://npm.taobao.org/mirrors/node/v5.1.1/SHASUMS256.txt', {timeout: 20000},
+      function (err, data, res) {
+        should.not.exist(err);
+        should.ok(Buffer.isBuffer(data));
+        res.should.status(200);
+        data.should.equal(res.data)
+        done();
+      });
+    });
+
     it('should alias curl() work', function (done) {
       urllib.curl('http://npm.taobao.org/mirrors/iojs/v1.2.0/SHASUMS256.txt', {timeout: 20000},
       function (err, data, res) {
@@ -749,7 +760,7 @@ describe('test/urllib.test.js', function () {
         err.res.should.equal(res);
         should.not.exist(data);
         should.exist(res);
-        res.should.have.keys('status', 'statusCode', 'headers', 'size', 'rt', 'aborted', 'keepAliveSocket');
+        res.should.have.keys('status', 'statusCode', 'headers', 'size', 'rt', 'aborted', 'keepAliveSocket', 'data');
         done();
       });
     });
