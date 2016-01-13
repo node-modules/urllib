@@ -50,7 +50,7 @@
     "mocha": "*",
     "pedding": "1",
     "semver": "5.1.0",
-    "should": "7.1.1",
+    "should": "8.1.0",
     "should-http": "*",
     "tar": "2"
   },
