@@ -46,7 +46,7 @@
     "coffee": "1",
     "formstream": "1",
     "istanbul": "*",
-    "jshint": "*",
+    "jshint": "2.9.1",
     "mocha": "*",
     "pedding": "1",
     "semver": "5.1.0",
