@@ -1001,21 +1001,21 @@ describe('test/urllib.test.js', function () {
 
     it('should not return gzip response content', function (done) {
       done = pedding(3, done);
-      urllib.request('http://npm.taobao.org', {timeout: 10000},
+      urllib.request('http://npm.taobao.org', {timeout: 20000},
       function (err, data, res) {
         should.not.exist(err);
         should.not.exist(res.headers['content-encoding']);
         done();
       });
 
-      urllib.request('http://npm.taobao.org', {gzip: false, timeout: 10000},
+      urllib.request('http://npm.taobao.org', {gzip: false, timeout: 20000},
       function (err, data, res) {
         should.not.exist(err);
         should.not.exist(res.headers['content-encoding']);
         done();
       });
 
-      urllib.request('http://npm.taobao.org', {gzip: true, timeout: 10000},
+      urllib.request('http://npm.taobao.org', {gzip: true, timeout: 20000},
       function (err, data, res) {
         should.not.exist(err);
         res.should.have.header('content-encoding', 'gzip');
