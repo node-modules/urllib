@@ -1,4 +1,10 @@
 
+2.7.1 / 2016-02-02
+==================
+
+  * fix: clean up headers.Host before redirect request start
+  * chore: update authors
+
 2.7.0 / 2016-01-14
 ==================
 
