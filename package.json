@@ -29,13 +29,13 @@
     "cnpm": "npm install --registry=https://registry.npm.taobao.org"
   },
   "dependencies": {
+    "any-promise": "~1.0.0",
     "debug": "~2.2.0",
     "default-user-agent": "~0.0.1",
     "digest-header": "~0.0.1",
     "humanize-ms": "~1.0.1",
     "iconv-lite": "~0.4.10",
     "media-typer": "~0.3.0",
-    "native-or-bluebird": "~1.2.0",
     "statuses": "~1.2.1"
   },
   "devDependencies": {
