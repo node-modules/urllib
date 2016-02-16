@@ -1,4 +1,4 @@
-/**!
+/**
  * Copyright(c) node-modules and other contributors.
  * MIT Licensed
  *

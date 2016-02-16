@@ -1,6 +1,4 @@
-/**!
- * urllib - httpclient.test.js
- *
+/**
  * Copyright(c) node-modules and other contributors.
  * MIT Licensed
  *

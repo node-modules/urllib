@@ -1,4 +1,4 @@
-/**!
+/**
  * Copyright(c) node-modules and other contributors.
  * MIT Licensed
  *
@@ -73,7 +73,7 @@ describe('test/urllib.test.js', function () {
         should.not.exist(err);
         should.ok(Buffer.isBuffer(data));
         res.should.status(200);
-        data.should.equal(res.data)
+        data.should.equal(res.data);
         done();
       });
     });
@@ -464,7 +464,7 @@ describe('test/urllib.test.js', function () {
       }, function (err, data, res) {
         should.exist(err);
         err.name.should.equal('JSONResponseFormatError');
-        err.message.should.containEql('Unexpected token / (data json format: "/**!\\n * urllib - test/fixtures/server.js\\n');
+        err.message.should.containEql('Unexpected token / (data json format: "/**\\n * Copyright(c) node-modules and other contributors.\\n');
         err.message.should.containEql('" ...skip... "');
         res.should.status(200);
         done();
@@ -1214,7 +1214,7 @@ describe('test/urllib.test.js', function () {
       }, function (err, data) {
         should.not.exist(err);
         data.should.eql({
-          foo: '\b\f\n\r\tbar\u000e!1!!2!\u0000!3!\u001f!4!\\!5!end\\\\'
+          foo: '\b\f\n\r\tbar\u000e!1!\u0086!2\!\u0000\!3\!\u001f\!4\!\\\!5\!end\\\\'
         });
         done();
       });
@@ -1228,7 +1228,7 @@ describe('test/urllib.test.js', function () {
         should.exist(err);
         err.name.should.equal('JSONResponseFormatError');
         err.message.should.containEql('Unexpected token \b (data json format:');
-        data.should.equal('{"foo":"\b\f\n\r\tbar\u000e!1!!2!\u0000!3!\u001f!4!\\!5!end\\\\"}');
+        data.should.equal('{"foo":"\b\f\n\r\tbar\u000e!1!\u0086!2!\u0000!3!\u001f!4!\\!5!end\\\\"}');
         done();
       });
     });

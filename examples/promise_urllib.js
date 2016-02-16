@@ -1,3 +1,5 @@
+'use strict';
+
 var urllib = require('../');
 
 urllib.request('http://nodejs.org').then(function (result) {

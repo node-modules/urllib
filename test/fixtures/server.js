@@ -1,11 +1,9 @@
-/**!
- * urllib - test/fixtures/server.js
- *
- * Copyright(c) 2011 - 2014 fengmk2 and other contributors.
+/**
+ * Copyright(c) node-modules and other contributors.
  * MIT Licensed
  *
  * Authors:
- *   fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
+ *   fengmk2 <fengmk2@gmail.com> (http://fengmk2.com)
  */
 
 "use strict";
@@ -14,7 +12,6 @@
  * Module dependencies.
  */
 
-var should = require('should');
 var http = require('http');
 var querystring = require('querystring');
 var fs = require('fs');

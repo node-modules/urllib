@@ -1,5 +1,4 @@
-/*!
- * urllib - example
+/*
  * Copyright(c) 2012 fengmk2 <fengmk2@gmail.com>
  * MIT Licensed
  */
