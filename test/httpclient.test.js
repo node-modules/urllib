@@ -13,6 +13,7 @@
  */
 
 var should = require('should');
+var config = require('./config');
 var urllib = require('../');
 
 describe('test/httpclient.test.js', function () {
@@ -20,7 +21,7 @@ describe('test/httpclient.test.js', function () {
     var client = urllib.create();
     client.hasCustomAgent.should.equal(false);
     client.hasCustomHttpsAgent.should.equal(false);
-    client.requestThunk('https://npm.taobao.org', {
+    client.requestThunk(config.npmWeb, {
       timeout: 25000
     })(function (err, result) {
       should.not.exist(err);
@@ -34,7 +35,7 @@ describe('test/httpclient.test.js', function () {
     var client = urllib.create();
     client.hasCustomAgent.should.equal(false);
     client.hasCustomHttpsAgent.should.equal(false);
-    client.curl('https://npm.taobao.org', {
+    client.curl(config.npmWeb, {
       timeout: 25000
     }, function (err, result, res) {
       should.not.exist(err);
@@ -48,7 +49,7 @@ describe('test/httpclient.test.js', function () {
     var client = urllib.create();
     client.hasCustomAgent.should.equal(false);
     client.hasCustomHttpsAgent.should.equal(false);
-    client.curl('https://npm.taobao.org/package/pedding', {
+    client.curl(config.npmWeb + '/package/pedding', {
       timeout: 25000
     }).then(function (result) {
       result.data.should.be.a.Buffer;

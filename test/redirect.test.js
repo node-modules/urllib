@@ -24,6 +24,7 @@ describe('test/redirect.test.js', function() {
       }
       var url = 'https://' + address + '/pedding/download/pedding-1.0.0.tgz';
       urllib.request(url, {
+        timeout: 30000,
         headers: {
           Host: 'registry.npm.taobao.org',
         },

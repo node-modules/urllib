@@ -13,11 +13,12 @@
  */
 
 var should = require('should');
+var config = require('./config');
 var urllib = require('../');
 
 describe('test/urllib_promise.test.js', function () {
   it('should return promise when callback missing', function (done) {
-    urllib.request('https://npm.taobao.org/', {timeout: 20000})
+    urllib.request(config.npmWeb, {timeout: 20000})
     .then(function (result) {
       should.exist(result);
       result.should.have.keys('data', 'status', 'headers', 'res');
@@ -37,7 +38,7 @@ describe('test/urllib_promise.test.js', function () {
   });
 
   it('should work with args', function (done) {
-    urllib.request('https://npm.taobao.org/', {
+    urllib.request(config.npmWeb, {
       data: {
         q: 'foo'
       },
