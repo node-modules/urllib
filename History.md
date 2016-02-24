@@ -1,4 +1,13 @@
 
+2.7.2 / 2016-02-25
+==================
+
+  * test: support windows
+  * fix: keep headers.Host on `location: /foo` redirect
+  * test: use npmjs.com on travis ci
+  * fix: jshint style
+  * deps: any-promise instead of native-or-blubird
+
 2.7.1 / 2016-02-02
 ==================
 
