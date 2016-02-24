@@ -1,6 +1,6 @@
 // curl https://api.github.com/legacy/user/search/location:china
 
-"use strict";
+'use strict';
 
 var urllib = require('../');
 

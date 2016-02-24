@@ -1,6 +1,5 @@
 'use strict';
 
-var zlib = require('zlib');
 var http = require('http');
 var size = 0;
 
