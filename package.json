@@ -29,12 +29,12 @@
     "autod": "autod -w --prefix '~' -t test -e examples"
   },
   "dependencies": {
-    "any-promise": "~1.0.0",
+    "any-promise": "~1.1.0",
     "debug": "~2.2.0",
-    "default-user-agent": "~0.0.1",
+    "default-user-agent": "~1.0.0",
     "digest-header": "~0.0.1",
     "humanize-ms": "~1.0.1",
-    "iconv-lite": "~0.4.10",
+    "iconv-lite": "~0.4.13",
     "media-typer": "~0.3.0",
     "statuses": "~1.2.1"
   },

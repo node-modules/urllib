@@ -126,12 +126,14 @@ describe('test/urllib.test.js', function () {
       });
     });
 
-    it('should redirect with writeStream and make sure res resume', function (done) {
-      coffee.fork(path.join(__dirname, 'redirect.js'))
-      .expect('stdout', '404')
-      .expect('code', 0)
-      .end(done);
-    });
+    if (process.platform !== 'win32') {
+      it('should redirect with writeStream and make sure res resume', function (done) {
+        coffee.fork(path.join(__dirname, 'redirect.js'))
+        .expect('stdout', '404')
+        .expect('code', 0)
+        .end(done);
+      });
+    }
 
     it('should FollowRedirectError', function (done) {
       urllib.request(host + '/redirect_no_location', {followRedirect: true}, function (err, data) {
@@ -558,7 +560,7 @@ describe('test/urllib.test.js', function () {
 
         config.npmWeb + '/package/byte',
         config.npmRegistry + '/pedding',
-        config.npmWeb + '/package/ms',
+        config.npmWeb + '/package/pedding',
         config.npmHttpRegistry + '/byte',
       ];
 
@@ -838,7 +840,7 @@ describe('test/urllib.test.js', function () {
 
     it('should work with promise', function (done) {
       urllib.request(config.npmWeb + '/pedding', {
-        timeout: 10000,
+        timeout: 30000,
         streaming: true,
         followRedirect: true
       }).then(function (result) {
@@ -856,15 +858,16 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should streaming with ungzip', function (done) {
-      var url = config.npmRegistry + '/urllib/-/urllib-2.3.7.tgz';
+      var url = config.npmRegistry + '/pedding/-/pedding-1.0.0.tgz';
       urllib.request(url, {
         streaming: true,
         followRedirect: true,
+        timeout: 30000,
       }, function (err, _, res) {
         should.not.exist(err);
         res.statusCode.should.equal(200);
 
-        var tmpdir = path.join(os.tmpdir(), 'urllib-ungzip2');
+        var tmpdir = path.join(os.tmpdir(), 'pedding-ungzip2');
         var gunzip = zlib.createGunzip();
         gunzip.on('error', done);
         var extracter = tar.Extract({ path: tmpdir });
@@ -993,7 +996,7 @@ describe('test/urllib.test.js', function () {
 
     it('should redirect and gzip', function (done) {
       urllib.request(config.npmWeb + '/pedding',
-        {followRedirect: true, gzip: true, timeout: 10000}, function (err, data, res) {
+        {followRedirect: true, gzip: true, timeout: 20000}, function (err, data, res) {
         should.not.exist(err);
         res.should.status(200);
         res.should.have.header('content-encoding', 'gzip');
@@ -1003,21 +1006,21 @@ describe('test/urllib.test.js', function () {
 
     it('should not return gzip response content', function (done) {
       done = pedding(3, done);
-      urllib.request(config.npmWeb, {timeout: 20000},
+      urllib.request(config.npmWeb, {timeout: 30000},
       function (err, data, res) {
         should.not.exist(err);
         should.not.exist(res.headers['content-encoding']);
         done();
       });
 
-      urllib.request(config.npmWeb, {gzip: false, timeout: 20000},
+      urllib.request(config.npmWeb, {gzip: false, timeout: 30000},
       function (err, data, res) {
         should.not.exist(err);
         should.not.exist(res.headers['content-encoding']);
         done();
       });
 
-      urllib.request(config.npmWeb, {gzip: true, timeout: 20000},
+      urllib.request(config.npmWeb, {gzip: true, timeout: 30000},
       function (err, data, res) {
         should.not.exist(err);
         res.should.have.header('content-encoding', 'gzip');
@@ -1058,7 +1061,7 @@ describe('test/urllib.test.js', function () {
       urllib.request(host + '/ua', {dataType: 'json'}, function (err, data, res) {
         should.not.exist(err);
         should.exist(data['user-agent']);
-        data['user-agent'].should.match(/^node\-urllib\/\d+\.\d+\.\d+ node\//);
+        data['user-agent'].should.match(/^node\-urllib\/\d+\.\d+\.\d+ Node\.js\/\d+\.\d+\.\d+ \(/);
         res.should.status(200);
         done();
       });
