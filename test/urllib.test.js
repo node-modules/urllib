@@ -57,6 +57,15 @@ describe('test/urllib.test.js', function () {
     });
   });
 
+  describe('requestThunk()', function() {
+    it('should mock request error', function(done) {
+      urllib.requestThunk('localhost-mock-error:' + (port + 101))(function(err) {
+        should.exist(err);
+        done();
+      });
+    });
+  });
+
   describe('request()', function () {
 
     it('should request(host-only) work', function(done) {
@@ -70,7 +79,7 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should request(localhost:port) work', function(done) {
-      urllib.request('localhost:' + port, { timeout: 30000 }, function(err, data, res) {
+      urllib.requestWithCallback('localhost:' + port, function(err, data, res) {
         should.not.exist(err);
         data.should.be.a.Buffer;
         res.should.status(200);
@@ -79,7 +88,59 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should request https success', function (done) {
-      urllib.request(config.npmRegistry + '/pedding/*', {timeout: 20000},
+      urllib.request(config.npmRegistry + '/pedding/*', {
+        timeout: 20000,
+      },
+      function (err, data, res) {
+        should.not.exist(err);
+        should.ok(Buffer.isBuffer(data));
+        res.should.status(200);
+        done();
+      });
+    });
+
+    it('should request https with port success', function (done) {
+      urllib.request(config.npmRegistry + ':443/pedding/*', {
+        timeout: 20000,
+      },
+      function (err, data, res) {
+        should.not.exist(err);
+        should.ok(Buffer.isBuffer(data));
+        res.should.status(200);
+        done();
+      });
+    });
+
+    it('should request https with rejectUnauthorized:false success', function (done) {
+      urllib.request(config.npmRegistry + '/pedding/*', {
+        timeout: 20000,
+        rejectUnauthorized: false,
+      },
+      function (err, data, res) {
+        should.not.exist(err);
+        should.ok(Buffer.isBuffer(data));
+        res.should.status(200);
+        done();
+      });
+    });
+
+    it('should request https disable httpsAgent work', function (done) {
+      done = pedding(2, done);
+      urllib.request(config.npmRegistry + '/pedding/*', {
+        httpsAgent: false,
+        timeout: 20000,
+      },
+      function (err, data, res) {
+        should.not.exist(err);
+        should.ok(Buffer.isBuffer(data));
+        res.should.status(200);
+        done();
+      });
+
+      urllib.request(config.npmRegistry + '/pedding/*', {
+        agent: false,
+        timeout: 20000,
+      },
       function (err, data, res) {
         should.not.exist(err);
         should.ok(Buffer.isBuffer(data));
@@ -127,6 +188,7 @@ describe('test/urllib.test.js', function () {
 
     it('should redirect from 302 to 204', function (done) {
       urllib.request(host + '/302', {followRedirect: true}, function (err, data, res) {
+        should.not.exist(err);
         res.should.status(204);
         done();
       });
@@ -134,6 +196,7 @@ describe('test/urllib.test.js', function () {
 
     it('should redirect from 307 to 204', function (done) {
       urllib.request(host + '/307', {followRedirect: true}, function (err, data, res) {
+        should.not.exist(err);
         res.should.status(204);
         done();
       });
@@ -141,7 +204,23 @@ describe('test/urllib.test.js', function () {
 
     it('should redirect from 303 to 204', function (done) {
       urllib.request(host + '/303', {followRedirect: true}, function (err, data, res) {
+        should.not.exist(err);
         res.should.status(204);
+        done();
+      });
+    });
+
+    it('should redirect to a full url and clean up the Host header', function (done) {
+      var hostname = urlutil.parse(config.npmRegistry).hostname;
+      urllib.request(config.npmRegistry + '/pedding/-/pedding-1.0.0.tgz', {
+        followRedirect: true,
+        timeout: 30000,
+        headers: {
+          Host: hostname,
+        }
+      }, function (err, data, res) {
+        should.not.exist(err);
+        res.should.status(200);
         done();
       });
     });
@@ -1002,11 +1081,45 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should auto accept and custom decode gzip response content', function (done) {
-      urllib.request('https://www.baidu.com/', {
-        timeout: 15000,
+      done = pedding(4, done);
+
+      urllib.request(config.npmWeb, {
+        timeout: 20000,
         headers: {
           'accept-encoding': 'gzip'
         }
+      }, function (err, data, res) {
+        should.not.exist(err);
+        res.should.have.header('content-encoding', 'gzip');
+        done();
+      });
+
+      urllib.request(config.npmWeb, {
+        timeout: 20000,
+        headers: {
+          'Accept-Encoding': 'gzip'
+        }
+      }, function (err, data, res) {
+        should.not.exist(err);
+        res.should.have.header('content-encoding', 'gzip');
+        done();
+      });
+
+      urllib.request(config.npmWeb, {
+        timeout: 20000,
+        gzip: true,
+        headers: {
+          'accept-encoding': 'gzip'
+        }
+      }, function (err, data, res) {
+        should.not.exist(err);
+        res.should.have.header('content-encoding', 'gzip');
+        done();
+      });
+
+      urllib.request(config.npmWeb, {
+        timeout: 20000,
+        gzip: true,
       }, function (err, data, res) {
         should.not.exist(err);
         res.should.have.header('content-encoding', 'gzip');
