@@ -21,7 +21,7 @@ describe('test/httpclient.test.js', function () {
     var client = urllib.create();
     client.hasCustomAgent.should.equal(false);
     client.hasCustomHttpsAgent.should.equal(false);
-    client.requestThunk(config.npmWeb, {
+    client.requestThunk(config.npmRegistry + '/pedding/*', {
       timeout: 25000
     })(function (err, result) {
       should.not.exist(err);
@@ -35,7 +35,7 @@ describe('test/httpclient.test.js', function () {
     var client = urllib.create();
     client.hasCustomAgent.should.equal(false);
     client.hasCustomHttpsAgent.should.equal(false);
-    client.curl(config.npmWeb, {
+    client.curl(config.npmRegistry + '/pedding/*', {
       timeout: 25000
     }, function (err, result, res) {
       should.not.exist(err);

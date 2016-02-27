@@ -8,4 +8,4 @@ node_js:
 script:
   - 'npm run ci'
 after_script:
-  - 'npm i codecov && ./node_modules/.bin/codecov'
+  - 'npm i codecov && codecov'
