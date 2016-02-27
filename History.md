@@ -1,4 +1,10 @@
 
+2.8.0 / 2016-02-27
+==================
+
+  * test: improve coverage
+  * feat: http default protocol for URL argument
+
 2.7.3 / 2016-02-27
 ==================
 
