@@ -58,6 +58,26 @@ describe('test/urllib.test.js', function () {
   });
 
   describe('request()', function () {
+
+    it('should request(host-only) work', function(done) {
+      var host = urlutil.parse(config.npmWeb).host;
+      urllib.request(host, { timeout: 30000 }, function(err, data, res) {
+        should.not.exist(err);
+        data.should.be.a.Buffer;
+        res.should.status(200);
+        done();
+      });
+    });
+
+    it('should request(localhost:port) work', function(done) {
+      urllib.request('localhost:' + port, { timeout: 30000 }, function(err, data, res) {
+        should.not.exist(err);
+        data.should.be.a.Buffer;
+        res.should.status(200);
+        done();
+      });
+    });
+
     it('should request https success', function (done) {
       urllib.request(config.npmRegistry + '/pedding/*', {timeout: 20000},
       function (err, data, res) {
