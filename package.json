@@ -15,7 +15,7 @@
   "homepage": "http://github.com/node-modules/urllib",
   "main": "lib/urllib.js",
   "files": [
-    "lib/"
+    "lib"
   ],
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
     "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- -t 30000 -r should -r should-http test/*.test.js",
     "ci": "npm run lint && npm run test-cov",
     "lint": "jshint .",
-    "autod": "autod -w --prefix '~' -t test -e examples"
+    "autod": "autod -w --prefix '~' --devprefix '^' -t test -e examples"
   },
   "dependencies": {
     "any-promise": "~1.1.0",
@@ -39,20 +39,20 @@
     "statuses": "~1.2.1"
   },
   "devDependencies": {
-    "agentkeepalive": "2",
+    "agentkeepalive": "^2.0.3",
     "autod": "*",
     "bluebird": "*",
     "co": "*",
     "coffee": "1",
-    "formstream": "1",
+    "formstream": "^1.0.0",
     "istanbul": "*",
     "jshint": "*",
     "mocha": "*",
-    "pedding": "1",
+    "pedding": "^1.0.0",
     "semver": "5",
-    "should": "7",
+    "should": "^8.2.2",
     "should-http": "*",
-    "tar": "2"
+    "tar": "^2.2.1"
   },
   "engines": {
     "node": ">= 0.10.0"
