@@ -32,7 +32,7 @@ describe('test/redirect.test.js', function() {
       }
       res.statusCode.should.equal(200);
       data.length.should.above(100);
-      res._requestUrl.length.should.above(1);
+      res.requestUrls.length.should.above(1);
       done();
     });
   });
@@ -57,7 +57,7 @@ describe('test/redirect.test.js', function() {
         }
         res.statusCode.should.equal(200);
         data.length.should.above(100);
-        res._requestUrl.length.should.above(1);
+        res.requestUrls.length.should.above(1);
         done();
       });
     });
