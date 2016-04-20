@@ -69,7 +69,7 @@ describe('test/urllib.test.js', function () {
   describe('request()', function () {
 
     it('should request(host-only) work', function(done) {
-      var host = urlutil.parse(config.npmWeb).host;
+      var host = urlutil.parse(config.npmRegistry).host;
       urllib.request(host, { timeout: 30000 }, function(err, data, res) {
         should.not.exist(err);
         data.should.be.a.Buffer;
