@@ -78,6 +78,18 @@ describe('test/urllib.test.js', function () {
       });
     });
 
+    it('should request(undefined) thrown', function() {
+      (function () {
+        urllib.requestWithCallback(undefined, function() {});
+      }).should.throw('expect request url to be a string or a http request options, but got undefined');
+    });
+
+    it('should request(1) thrown', function() {
+      (function () {
+        urllib.requestWithCallback(1, function() {});
+      }).should.throw('expect request url to be a string or a http request options, but got 1');
+    });
+
     it('should request(localhost:port) work', function(done) {
       urllib.requestWithCallback('localhost:' + port, function(err, data, res) {
         should.not.exist(err);
