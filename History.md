@@ -1,4 +1,10 @@
 
+2.9.1 / 2016-05-09
+==================
+
+  * fix: check url before request (#172)
+  * chore(package): update any-promise to version 1.2.0 (#171)
+
 2.9.0 / 2016-04-21
 ==================
 
