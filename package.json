@@ -29,7 +29,7 @@
     "autod": "autod -w --prefix '~' --devprefix '^' -t test -e examples"
   },
   "dependencies": {
-    "any-promise": "~1.2.0",
+    "any-promise": "~1.3.0",
     "debug": "~2.2.0",
     "default-user-agent": "~1.0.0",
     "digest-header": "~0.0.1",
