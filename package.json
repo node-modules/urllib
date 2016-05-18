@@ -51,7 +51,7 @@
     "pedding": "^1.0.0",
     "semver": "5",
     "should": "^8.3.2",
-    "should-http": "*",
+    "should-http": "0.0.4",
     "tar": "^2.2.1"
   },
   "engines": {
