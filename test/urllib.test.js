@@ -24,6 +24,7 @@ var coffee = require('coffee');
 var tar = require('tar');
 var zlib = require('zlib');
 var os = require('os');
+var through = require('through2');
 var server = require('./fixtures/server');
 var config = require('./config');
 var urllib = require('../');
@@ -877,6 +878,29 @@ describe('test/urllib.test.js', function () {
         should.exist(res);
         res.should.have.keys('status', 'statusCode', 'headers', 'size', 'rt', 'aborted', 'keepAliveSocket', 'data', 'requestUrls');
         done();
+      });
+    });
+
+    it('should end when writeStream is not consumed', function(done) {
+      var writeStream = through();
+      urllib.request(config.npmWeb, {
+        writeStream: writeStream,
+        consumeWriteStream: false,
+        timeout: 15000,
+      }, function (err, data, res) {
+        should.not.exist(err);
+        should.ok(data === null);
+        res.should.status(200);
+
+        var content = '';
+        writeStream
+        .on('data', function(data) {
+          content += data;
+        })
+        .on('end', function() {
+          new Buffer(content).length.should.above(100);
+          done();
+        });
       });
     });
   });

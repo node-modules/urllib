@@ -52,7 +52,8 @@
     "semver": "5",
     "should": "^8.4.0",
     "should-http": "*",
-    "tar": "^2.2.1"
+    "tar": "^2.2.1",
+    "through2": "^2.0.1"
   },
   "engines": {
     "node": ">= 0.10.0"
