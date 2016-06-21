@@ -1,4 +1,10 @@
 
+2.10.0 / 2016-06-21
+==================
+
+  * feat: add an options consumeWriteStream (#187)
+  * chore(package): update statuses to version 1.3.0 (#174)
+
 2.9.1 / 2016-05-09
 ==================
 
