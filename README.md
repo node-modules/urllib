@@ -5,6 +5,7 @@
 [![appveyor build status][appveyor-image]][appveyor-url]
 [![Test coverage][codecov-image]][codecov-url]
 [![David deps][david-image]][david-url]
+[![Known Vulnerabilities][snyk-image]][snyk-url]
 [![npm download][download-image]][download-url]
 
 [npm-image]: https://img.shields.io/npm/v/urllib.svg?style=flat-square
@@ -13,10 +14,12 @@
 [travis-url]: https://travis-ci.org/node-modules/urllib
 [appveyor-image]: https://ci.appveyor.com/api/projects/status/wpnl7r1llxyruja9/branch/master?svg=true
 [appveyor-url]: https://ci.appveyor.com/project/fengmk2/urllib-54ds2
-[codecov-image]: https://codecov.io/github/node-modules/urllib/coverage.svg?branch=master
-[codecov-url]: https://codecov.io/github/node-modules/urllib?branch=master
+[codecov-image]: https://codecov.io/gh/node-modules/urllib/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/node-modules/urllib
 [david-image]: https://img.shields.io/david/node-modules/urllib.svg?style=flat-square
 [david-url]: https://david-dm.org/node-modules/urllib
+[snyk-image]: https://snyk.io/test/npm/urllib/badge.svg?style=flat-square
+[snyk-url]: https://snyk.io/test/npm/urllib
 [download-image]: https://img.shields.io/npm/dm/urllib.svg?style=flat-square
 [download-url]: https://npmjs.org/package/urllib
 
