@@ -554,7 +554,7 @@ describe('test/urllib.test.js', function () {
       }, function (err, data, res) {
         should.exist(err);
         err.name.should.equal('JSONResponseFormatError');
-        err.message.should.containEql('Unexpected end of input (data json format: "{\\"foo\\":\\"\\""), GET http://127.0.0.1:');
+        err.message.should.containEql('Unexpected end ');
         res.should.status(200);
         data.toString().should.equal('{"foo":""');
         done();
@@ -567,7 +567,7 @@ describe('test/urllib.test.js', function () {
       }, function (err, data, res) {
         should.exist(err);
         err.name.should.equal('JSONResponseFormatError');
-        err.message.should.containEql('Unexpected token / (data json format: "/**\\n * Copyright(c) node-modules and other contributors.\\n');
+        err.message.should.containEql('Unexpected token ');
         err.message.should.containEql('" ...skip... "');
         res.should.status(200);
         done();
@@ -1389,7 +1389,7 @@ describe('test/urllib.test.js', function () {
       }, function (err, data) {
         should.exist(err);
         err.name.should.equal('JSONResponseFormatError');
-        err.message.should.containEql('Unexpected token \b (data json format:');
+        err.message.should.containEql('Unexpected token ');
         data.should.equal('{"foo":"\b\f\n\r\tbar\u000e!1!\u0086!2!\u0000!3!\u001f!4!\\!5!end\\\\"}');
         done();
       });
