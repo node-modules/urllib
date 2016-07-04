@@ -41,7 +41,7 @@
   "devDependencies": {
     "agentkeepalive": "2",
     "autod": "*",
-    "bluebird": "*",
+    "bluebird": "3.3.3",
     "co": "*",
     "coffee": "1",
     "formstream": "1",
