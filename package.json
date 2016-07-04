@@ -44,7 +44,7 @@
     "bluebird": "*",
     "co": "*",
     "coffee": "1",
-    "formstream": "1",
+    "formstream": "1.0.0",
     "istanbul": "*",
     "jshint": "*",
     "mocha": "*",
