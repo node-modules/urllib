@@ -47,7 +47,7 @@
     "formstream": "1",
     "istanbul": "*",
     "jshint": "*",
-    "mocha": "*",
+    "mocha": "2.4.5",
     "pedding": "1",
     "semver": "5",
     "should": "8",
