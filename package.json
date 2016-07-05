@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "agentkeepalive": "2",
-    "autod": "*",
+    "autod": "2.1.3",
     "bluebird": "*",
     "co": "*",
     "coffee": "1",
