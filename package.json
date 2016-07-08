@@ -43,7 +43,7 @@
     "autod": "*",
     "bluebird": "*",
     "co": "*",
-    "coffee": "1",
+    "coffee": "3.2.4",
     "formstream": "1",
     "istanbul": "*",
     "jshint": "*",
