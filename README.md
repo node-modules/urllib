@@ -129,7 +129,7 @@ httpclient.request('http://nodejs.org', function (err, body) {
     - ***dataType*** String - Type of response data. Could be `text` or `json`. If it's `text`, the `callback`ed `data` would be a String. If it's `json`, the `data` of callback would be a parsed JSON Object. Default `callback`ed `data` would be a `Buffer`.
     - **fixJSONCtlChars** Boolean - Fix the control characters (U+0000 through U+001F) before JSON parse response. Default is `false`.
     - ***headers*** Object - Request headers.
-    - ***timeout*** Number - Request timeout in milliseconds. Defaults to `exports.TIMEOUT`. Include remote server connecting timeout and response timeout. When timeout happen, will return `ConnectionTimeout` or `ResponseTimeout`.
+    - ***timeout*** Number | Array - Request timeout in milliseconds for connecting phase and response receiving phase. Defaults to `exports.TIMEOUT`, both are 5s. You can use `timeout: 5000` to tell urllib use same timeout on two phase or set them seperately such as `timeout: [3000, 5000]`, which will set connecting timeout to 3s and response 5s.
     - ***auth*** String - `username:password` used in HTTP Basic Authorization.
     - ***digestAuth*** String - `username:password` used in HTTP [Digest Authorization](http://en.wikipedia.org/wiki/Digest_access_authentication).
     - ***agent*** [http.Agent](http://nodejs.org/api/http.html#http_class_http_agent) - HTTP Agent object.
