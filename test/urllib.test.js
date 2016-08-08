@@ -923,7 +923,7 @@ describe('test/urllib.test.js', function () {
   describe('args.streaming = true', function () {
     it('should got streaming the response', function (done) {
       urllib.request(config.npmWeb, {
-        timeout: 10000,
+        timeout: 20000,
         streaming: true
       }, function (err, data, res) {
         should.not.exist(err);
