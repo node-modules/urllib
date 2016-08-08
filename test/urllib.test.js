@@ -890,7 +890,8 @@ describe('test/urllib.test.js', function () {
         err.res.should.equal(res);
         should.not.exist(data);
         should.exist(res);
-        res.should.have.keys('status', 'statusCode', 'headers', 'size', 'rt', 'aborted', 'keepAliveSocket', 'data', 'requestUrls');
+        res.should.have.keys('status', 'statusCode', 'headers', 'size', 'rt',
+          'aborted', 'keepAliveSocket', 'data', 'requestUrls', 'timing');
         done();
       });
     });

@@ -4,8 +4,15 @@
 
 var urllib = require('../');
 
-urllib.request('https://api.github.com/legacy/user/search/location:china', {dataType: 'json'},
+urllib.request('https://api.github.com/legacy/user/search/location:china', {
+  dataType: 'json',
+  timing: true,
+  timeout: 10000,
+},
 function (err, data, res) {
+  if (err) {
+    console.log(err);
+  }
   console.log(data, res.statusCode, res.headers);
 });
 
