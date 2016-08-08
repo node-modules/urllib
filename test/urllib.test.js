@@ -260,7 +260,7 @@ describe('test/urllib.test.js', function () {
         urllib.request('http://npm.taobao.org', { timeout: 1 }, function (err, data, res) {
           should.exist(err);
           err.name.should.equal('ConnectionTimeoutError');
-          err.message.should.match(/^Request timeout for 1ms\, GET http/);
+          err.message.should.match(/^Connect timeout for 1ms\, GET http/);
           err.requestId.should.be.instanceof(Number);
           should.not.exist(data);
           should.exist(res);
@@ -272,7 +272,33 @@ describe('test/urllib.test.js', function () {
         urllib.request(host + '/response_timeout', { timeout: 450 }, function (err, data, res) {
           should.exist(err);
           err.name.should.equal('ResponseTimeoutError');
-          err.message.should.match(/^Request timeout for 450ms\, GET http/);
+          err.message.should.match(/^Response timeout for 450ms\, GET http/);
+          err.requestId.should.be.instanceof(Number);
+          should.exist(data);
+          data.toString().should.equal('foo');
+          should.exist(res);
+          res.should.status(200);
+          done();
+        });
+      });
+
+      it('can pass two timeout seperately and get connect error', function (done) {
+        urllib.request('http://npm.taobao.net', { timeout: [1, 10000] }, function (err, data, res) {
+          should.exist(err);
+          err.name.should.equal('ConnectionTimeoutError');
+          err.message.should.match(/^Connect timeout for 1ms\, GET http/);
+          err.requestId.should.be.instanceof(Number);
+          should.not.exist(data);
+          should.exist(res);
+          done();
+        });
+      });
+
+      it('can pass two timeout seperately and get response error', function(done) {
+        urllib.request(host + '/response_timeout', { timeout: [1000, 450] }, function (err, data, res) {
+          should.exist(err);
+          err.name.should.equal('ResponseTimeoutError');
+          err.message.should.match(/^Response timeout for 450ms\, GET http/);
           err.requestId.should.be.instanceof(Number);
           should.exist(data);
           data.toString().should.equal('foo');
