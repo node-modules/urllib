@@ -898,10 +898,10 @@ describe('test/urllib.test.js', function () {
 
     it('should end when writeStream is not consumed', function(done) {
       var writeStream = through();
-      urllib.request(config.npmWeb, {
+      urllib.request('https://registry.cnpmjs.org', {
         writeStream: writeStream,
         consumeWriteStream: false,
-        timeout: 15000,
+        timeout: 25000,
       }, function (err, data, res) {
         should.not.exist(err);
         should.ok(data === null);
