@@ -271,11 +271,10 @@ Response is normal object, it contains:
 #### Response: `res.aborted`
 
 If the underlaying connection was terminated before `response.end()` was called,
-`res.aborted` should be `true`,
-and return `RemoteSocketClosedError` error.
+`res.aborted` should be `true`.
 
 ```js
-var server = require('http').createServer(function (req, res) {
+require('http').createServer(function (req, res) {
   req.resume();
   req.on('end', function () {
     res.write('foo haha\n');
@@ -287,11 +286,9 @@ var server = require('http').createServer(function (req, res) {
     }, 200);
     return;
   });
-});
+}).listen(1984);
 
 urllib.request('http://127.0.0.1:1984/socket.end', function (err, data, res) {
-  err.name.should.equal('RemoteSocketClosedError');
-  err.message.should.equal('Remote socket was terminated before `response.end()` was called');
   data.toString().should.equal('foo haha\nfoo haha 2');
   should.ok(res.aborted);
   done();
