@@ -1,8 +1,8 @@
 'use strict';
 
 var assert = require('power-assert');
-var https = require('https');
-var httpsAgent = new https.Agent({ keepAlive: true });
+var HttpsAgent = require('agentkeepalive').HttpsAgent;
+var httpsAgent = new HttpsAgent({ keepAlive: true });
 var urllib = require('..');
 
 describe('timing.test.js', function() {
@@ -14,6 +14,7 @@ describe('timing.test.js', function() {
     }, function(err, data, res) {
       assert(!err);
       assert(data);
+      assert(!res.keepAliveSocket);
       assert(res.timing);
       console.log(res.timing);
       assert(res.timing.queuing >= 0);
@@ -38,9 +39,12 @@ describe('timing.test.js', function() {
           assert(res2.timing.queuing >= 0);
           // connected, requestSent should less than res1
           assert(res2.timing.connected < res.timing.connected);
-          assert(res2.timing.requestSent < res.timing.requestSent);
           assert(res2.timing.waiting < res.timing.waiting);
           assert(res2.timing.contentDownload < res.timing.contentDownload);
+          // requestSent is wrong on 0.10.x
+          if (!/^0\.10\.\d+$/.test(process.version)) {
+            assert(res2.timing.requestSent < res.timing.requestSent);
+          }
 
           // queuing should equal to connected time
           assert(res2.timing.connected === res2.timing.queuing);
