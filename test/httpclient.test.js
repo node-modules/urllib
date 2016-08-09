@@ -8,7 +8,9 @@ var urllib = require('../');
 describe('test/httpclient.test.js', function () {
   it('should request without args work', function (done) {
     var client = urllib.create();
-    client.request(config.npmRegistry + '/pedding/*', function (err, data, res) {
+    client.request(config.npmRegistry + '/pedding/*', {
+      timeout: 25000,
+    }, function (err, data, res) {
       should.not.exist(err);
       data.should.be.a.Buffer;
       res.status.should.equal(200);
@@ -25,7 +27,7 @@ describe('test/httpclient.test.js', function () {
     client.hasCustomAgent.should.equal(true);
     client.hasCustomHttpsAgent.should.equal(true);
     client.requestThunk(config.npmRegistry + '/pedding/*', {
-      timeout: 25000
+      timeout: 25000,
     })(function (err, result) {
       should.not.exist(err);
       result.data.should.be.a.Buffer;
@@ -33,7 +35,9 @@ describe('test/httpclient.test.js', function () {
       done();
     });
 
-    client.requestThunk(config.npmRegistry + '/pedding/*')(function (err, result) {
+    client.requestThunk(config.npmRegistry + '/pedding/*', {
+      timeout: 25000,
+    })(function (err, result) {
       should.not.exist(err);
       result.data.should.be.a.Buffer;
       result.status.should.equal(200);

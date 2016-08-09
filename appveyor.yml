@@ -1,16 +1,13 @@
 environment:
   matrix:
-    - nodejs_version: "6"
-    - nodejs_version: "4"
-    - nodejs_version: "0.12"
     - nodejs_version: "0.10"
+    - nodejs_version: "0.12"
+    - nodejs_version: "4"
+    - nodejs_version: "6"
 
-# Install scripts. (runs after repo cloning)
 install:
-  # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node $env:nodejs_version
-  # install modules
-  - npm install
+  - npm i npm && node_modules\.bin\npm i
 
 # Post-install test scripts.
 test_script:

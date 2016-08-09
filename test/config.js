@@ -1,9 +1,9 @@
 'use strict';
 
 module.exports = process.env.CI ? {
-  npmWeb: 'https://cnpmjs.org',
-  npmRegistry: 'https://registry.cnpmjs.org',
-  npmHttpRegistry: 'http://registry.cnpmjs.org',
+  npmWeb: 'https://www.npmjs.com',
+  npmRegistry: 'https://registry.npmjs.com',
+  npmHttpRegistry: 'http://registry.npmjs.com',
 } : {
   npmWeb: 'https://npm.taobao.org',
   npmRegistry: 'https://registry.npm.taobao.org',
