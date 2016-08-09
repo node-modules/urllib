@@ -19,7 +19,12 @@ describe('timing.test.js', function() {
       console.log(res.timing);
       assert(res.timing.queuing >= 0);
       assert(res.timing.connected > 0);
-      assert(res.timing.requestSent > 0);
+      // requestSent is wrong on 0.10.x
+      if (/^v0\.10\.\d+$/.test(process.version)) {
+        assert(res.timing.requestSent >= 0);
+      } else {
+        assert(res.timing.requestSent > 0);
+      }
       assert(res.timing.waiting > 0);
       assert(res.timing.contentDownload > 0);
       assert(res.timing.contentDownload === res.rt);
@@ -42,7 +47,7 @@ describe('timing.test.js', function() {
           assert(res2.timing.waiting < res.timing.waiting);
           assert(res2.timing.contentDownload < res.timing.contentDownload);
           // requestSent is wrong on 0.10.x
-          if (!/^0\.10\.\d+$/.test(process.version)) {
+          if (!/^v0\.10\.\d+$/.test(process.version)) {
             assert(res2.timing.requestSent < res.timing.requestSent);
           }
 
