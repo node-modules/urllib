@@ -71,4 +71,26 @@ describe('test/httpclient.test.js', function () {
       done();
     }).catch(done);
   });
+
+  it('should emit request event with ctx', function (done) {
+    done = pedding(2, done);
+    var client = urllib.create();
+    client.on('request', function(info) {
+      info.ctx.should.eql({
+        foo: 'bar',
+      });
+      done();
+    });
+    client.request(config.npmRegistry + '/pedding/*', {
+      timeout: 25000,
+      ctx: {
+        foo: 'bar',
+      }
+    }, function (err, data, res) {
+      should.not.exist(err);
+      data.should.be.a.Buffer;
+      res.status.should.equal(200);
+      done();
+    });
+  });
 });
