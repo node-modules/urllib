@@ -222,6 +222,8 @@ describe('test/urllib.test.js', function () {
       }, function (err, data, res) {
         should.not.exist(err);
         res.should.status(200);
+        // size should be 2107
+        res.size.should.equal(2107);
         done();
       });
     });
