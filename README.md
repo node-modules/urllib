@@ -153,6 +153,7 @@ httpclient.request('http://nodejs.org', function (err, body) {
     - ***secureProtocol*** String - The SSL method to use, e.g. SSLv3_method to force SSL version 3.
     - ***followRedirect*** Boolean - follow HTTP 3xx responses as redirects. defaults to false.
     - ***maxRedirects*** Number - The maximum number of redirects to follow, defaults to 10.
+    - ***formatRedirectUrl*** Function - Format the redirect url by your self. Default is `url.resolve(from, to)`.
     - ***beforeRequest*** Function - Before request hook, you can change every thing here.
     - ***streaming*** Boolean - let you get the `res` object when request  connected, default `false`. alias `customResponse`
     - ***gzip*** Boolean - Accept gzip response content and auto decode it, default is `false`.

@@ -1,6 +1,7 @@
 'use strict';
 
 var dns = require('dns');
+var urlresolve = require('url').resolve;
 var config = require('./config');
 var urllib = require('../');
 
@@ -48,6 +49,25 @@ describe('test/redirect.test.js', function() {
         res.requestUrls.length.should.above(1);
         done();
       });
+    });
+  });
+
+  it('should use formatRedirectUrl', function(done) {
+    var url = 'https://cnpmjs.org/pedding';
+    urllib.request(url, {
+      timeout: 30000,
+      followRedirect: true,
+      formatRedirectUrl: function(from, to) {
+        return urlresolve(from, to.replace('/package/pedding', '/package/foo'));
+      },
+    }, function(err, data, res) {
+      if (err) {
+        return done(err);
+      }
+      res.statusCode.should.equal(200);
+      data.length.should.above(100);
+      res.requestUrls.length.should.above(1);
+      done();
     });
   });
 });
