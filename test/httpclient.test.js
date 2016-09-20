@@ -98,4 +98,34 @@ describe('test/httpclient.test.js', function () {
       done();
     });
   });
+
+  it('should get remoteAddress from response event on non-keepalive connection', function (done) {
+    done = pedding(3, done);
+    var client = urllib.create();
+    client.on('request', function(info) {
+      info.ctx.should.eql({
+        foo: 'bar',
+      });
+      done();
+    });
+    client.request(config.npmRegistry + '/pedding/*', {
+      timeout: 25000,
+      ctx: {
+        foo: 'bar',
+      },
+      headers: {
+        connection: 'close',
+      },
+    }, function (err, data, res) {
+      should.not.exist(err);
+      data.should.be.a.Buffer;
+      res.status.should.equal(200);
+      done();
+    });
+    client.on('response', function(info) {
+      info.res.remoteAddress.should.be.a.String();
+      info.res.remotePort.should.be.a.Number();
+      done();
+    });
+  });
 });

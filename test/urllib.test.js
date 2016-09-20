@@ -893,7 +893,8 @@ describe('test/urllib.test.js', function () {
         should.not.exist(data);
         should.exist(res);
         res.should.have.keys('status', 'statusCode', 'headers', 'size', 'rt',
-          'aborted', 'keepAliveSocket', 'data', 'requestUrls', 'timing');
+          'aborted', 'keepAliveSocket', 'data', 'requestUrls', 'timing',
+          'remoteAddress', 'remotePort');
         done();
       });
     });
