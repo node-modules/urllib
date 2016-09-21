@@ -66,14 +66,14 @@ describe('test/httpclient.test.js', function () {
     client.curl(config.npmWeb + '/package/pedding', {
       timeout: 25000
     }).then(function (result) {
-      result.data.should.be.a.Buffer;
+      should.ok(Buffer.isBuffer(result.data));
       result.status.should.equal(200);
       done();
     }).catch(done);
   });
 
-  it('should emit request event with ctx', function (done) {
-    done = pedding(2, done);
+  it('should emit request, response event with ctx', function (done) {
+    done = pedding(3, done);
     var client = urllib.create();
     client.on('request', function(info) {
       info.ctx.should.eql({
@@ -90,6 +90,41 @@ describe('test/httpclient.test.js', function () {
       should.not.exist(err);
       data.should.be.a.Buffer;
       res.status.should.equal(200);
+      done();
+    });
+    client.on('response', function(info) {
+      info.req.socket.remoteAddress.should.be.a.String();
+      info.req.socket.remotePort.should.be.a.Number();
+      done();
+    });
+  });
+
+  it('should get remoteAddress from response event on non-keepalive connection', function (done) {
+    done = pedding(3, done);
+    var client = urllib.create();
+    client.on('request', function(info) {
+      info.ctx.should.eql({
+        foo: 'bar',
+      });
+      done();
+    });
+    client.request(config.npmRegistry + '/pedding/*', {
+      timeout: 25000,
+      ctx: {
+        foo: 'bar',
+      },
+      headers: {
+        connection: 'close',
+      },
+    }, function (err, data, res) {
+      should.not.exist(err);
+      data.should.be.a.Buffer;
+      res.status.should.equal(200);
+      done();
+    });
+    client.on('response', function(info) {
+      info.res.remoteAddress.should.be.a.String();
+      info.res.remotePort.should.be.a.Number();
       done();
     });
   });

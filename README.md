@@ -270,6 +270,8 @@ Response is normal object, it contains:
 * `aborted`: response was aborted or not
 * `rt`: total request and response time in ms.
 * `timing`: timing object if timing enable.
+* `remoteAddress`: http server ip address
+* `remotePort`: http server ip port
 
 #### Response: `res.aborted`
 
