@@ -1,13 +1,16 @@
 'use strict';
 
+var dns = require('dns');
 var assert = require('power-assert');
+var pedding = require('pedding');
 var HttpsAgent = require('agentkeepalive').HttpsAgent;
 var httpsAgent = new HttpsAgent({ keepAlive: true });
 var urllib = require('..');
 
 describe('timing.test.js', function() {
+  var firstDnsLookup;
   it('should get timing data', function(done) {
-    urllib.request('https://cnpmjs.org', {
+    urllib.request('https://r.cnpmjs.org/urllib', {
       timing: true,
       timeout: 10000,
       httpsAgent: httpsAgent,
@@ -18,6 +21,8 @@ describe('timing.test.js', function() {
       assert(res.timing);
       console.log(res.timing);
       assert(res.timing.queuing >= 0);
+      firstDnsLookup = res.timing.dnslookup;
+      assert(res.timing.dnslookup > 0);
       assert(res.timing.connected > 0);
       // requestSent is wrong on 0.10.x
       if (/^v0\.10\.\d+$/.test(process.version)) {
@@ -31,7 +36,7 @@ describe('timing.test.js', function() {
 
       // keepalive request again should be faster
       setImmediate(function() {
-        urllib.request('https://cnpmjs.org', {
+        urllib.request('https://r.cnpmjs.org/urllib', {
           timing: true,
           timeout: 10000,
           httpsAgent: httpsAgent,
@@ -42,21 +47,102 @@ describe('timing.test.js', function() {
           assert(res2.timing);
           console.log(res2.timing);
           assert(res2.timing.queuing >= 0);
-          // connected, requestSent should less than res1
-          assert(res2.timing.connected < res.timing.connected);
-          assert(res2.timing.waiting < res.timing.waiting);
-          assert(res2.timing.contentDownload < res.timing.contentDownload);
+          assert(res2.timing.waiting >= 0);
+          assert(res2.timing.contentDownload > 0);
           // requestSent is wrong on 0.10.x
           if (!/^v0\.10\.\d+$/.test(process.version)) {
             assert(res2.timing.requestSent < res.timing.requestSent);
           }
 
-          // queuing should equal to connected time
-          assert(res2.timing.connected === res2.timing.queuing);
+          // connected and dnslookup should be 0
+          assert(res2.timing.dnslookup === 0);
+          assert(res2.timing.connected === 0);
+
           assert(res2.timing.contentDownload === res2.rt);
           done();
         });
       });
+    });
+  });
+
+  it('should dns cache on https', function(done) {
+    urllib.request('https://r.cnpmjs.org/urllib', {
+      timing: true,
+      timeout: 10000,
+      // disable keepalive
+      httpsAgent: false,
+    }, function(err, data, res) {
+      assert(!err);
+      assert(data);
+      assert(res.timing);
+      console.log(res.timing);
+      assert(res.timing.dnslookup < firstDnsLookup);
+      done();
+    });
+  });
+
+  it('should dns cache on http', function(done) {
+    urllib.request('http://r.cnpmjs.org/urllib', {
+      timing: true,
+      timeout: 10000,
+      // disable keepalive
+      agent: false,
+    }, function(err, data, res) {
+      assert(!err);
+      assert(data);
+      assert(res.timing);
+      console.log(res.timing);
+      assert(res.timing.dnslookup < firstDnsLookup);
+      done();
+    });
+  });
+
+  // FIXME: why https request not support options.lookup
+  it.skip('should custom dns lookup work on https', function(done) {
+    done = pedding(2, done);
+    urllib.request('https://r.cnpmjs.org/urllib', {
+      timing: true,
+      timeout: 10000,
+      // disable keepalive
+      httpsAgent: false,
+      lookup: function foo(host, dnsopts, callback) {
+        setTimeout(function() {
+          assert(host === 'r.cnpmjs.org');
+          dns.lookup(host, dnsopts, callback);
+          done();
+        }, 123);
+      },
+    }, function(err, data, res) {
+      assert(!err);
+      assert(data);
+      assert(res.timing);
+      console.log(res.timing);
+      assert(res.timing.dnslookup >= 123);
+      done();
+    });
+  });
+
+  it('should custom dns lookup work on http', function(done) {
+    done = pedding(2, done);
+    urllib.request('http://r.cnpmjs.org/urllib', {
+      timing: true,
+      timeout: 10000,
+      // disable keepalive
+      agent: false,
+      lookup: function foo(host, dnsopts, callback) {
+        setTimeout(function() {
+          assert(host === 'r.cnpmjs.org');
+          dns.lookup(host, dnsopts, callback);
+          done();
+        }, 123);
+      },
+    }, function(err, data, res) {
+      assert(!err);
+      assert(data);
+      assert(res.timing);
+      console.log(res.timing);
+      assert(res.timing.dnslookup >= 123);
+      done();
     });
   });
 });
