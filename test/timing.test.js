@@ -22,13 +22,15 @@ describe('timing.test.js', function() {
       console.log(res.timing);
       assert(res.timing.queuing >= 0);
       firstDnsLookup = res.timing.dnslookup;
-      assert(res.timing.dnslookup > 0);
       assert(res.timing.connected > 0);
       // requestSent is wrong on 0.10.x
       if (/^v0\.10\.\d+$/.test(process.version)) {
         assert(res.timing.requestSent >= 0);
+        // socket lookup event wont fire on 0.10
+        assert(res.timing.dnslookup === 0);
       } else {
         assert(res.timing.requestSent > 0);
+        assert(res.timing.dnslookup > 0);
       }
       assert(res.timing.waiting > 0);
       assert(res.timing.contentDownload > 0);
@@ -76,7 +78,12 @@ describe('timing.test.js', function() {
       assert(data);
       assert(res.timing);
       console.log(res.timing);
-      assert(res.timing.dnslookup < firstDnsLookup);
+      if (/^v0\.10\.\d+$/.test(process.version)) {
+        // socket lookup event wont fire on 0.10
+        assert(res.timing.dnslookup === 0);
+      } else {
+        assert(res.timing.dnslookup < firstDnsLookup);
+      }
       done();
     });
   });
@@ -92,7 +99,12 @@ describe('timing.test.js', function() {
       assert(data);
       assert(res.timing);
       console.log(res.timing);
-      assert(res.timing.dnslookup < firstDnsLookup);
+      if (/^v0\.10\.\d+$/.test(process.version)) {
+        // socket lookup event wont fire on 0.10
+        assert(res.timing.dnslookup === 0);
+      } else {
+        assert(res.timing.dnslookup < firstDnsLookup);
+      }
       done();
     });
   });
@@ -117,7 +129,12 @@ describe('timing.test.js', function() {
       assert(data);
       assert(res.timing);
       console.log(res.timing);
-      assert(res.timing.dnslookup >= 123);
+      if (/^v0\.10\.\d+$/.test(process.version)) {
+        // socket lookup event wont fire on 0.10
+        assert(res.timing.dnslookup === 0);
+      } else {
+        assert(res.timing.dnslookup >= 123);
+      }
       done();
     });
   });
@@ -130,6 +147,7 @@ describe('timing.test.js', function() {
       // disable keepalive
       agent: false,
       lookup: function foo(host, dnsopts, callback) {
+        console.log('custom dns lookup %s, %j', host, dnsopts);
         setTimeout(function() {
           assert(host === 'r.cnpmjs.org');
           dns.lookup(host, dnsopts, callback);
@@ -141,7 +159,13 @@ describe('timing.test.js', function() {
       assert(data);
       assert(res.timing);
       console.log(res.timing);
-      assert(res.timing.dnslookup >= 123);
+      // custom dns lookup require node >= 4.0.0
+      if (/^v0\./.test(process.version)) {
+        // make pedding finish
+        done();
+      } else {
+        assert(res.timing.dnslookup >= 123);
+      }
       done();
     });
   });
