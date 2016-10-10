@@ -1056,6 +1056,27 @@ describe('test/urllib.test.js', function () {
       });
     });
 
+    it('should auto convert data to json string with charset', function (done) {
+      var params = {
+        method: 'post',
+        data: {
+          foo: 'bar',
+          n1: 1,
+          now: new Date()
+        },
+        headers: {'Content-Type': 'application/json; charset=utf-8'},
+        dataType: 'json',
+      };
+      urllib.request(host + '/json_mirror', params, function (err, serverData, res) {
+        should.not.exist(err);
+        serverData.now = new Date(serverData.now);
+        serverData.should.eql(params.data);
+        res.should.status(200);
+        res.headers.should.have.property('content-type', 'application/json; charset=utf-8');
+        done();
+      });
+    });
+
     it('should not auto convert data to json string when method = get', function (done) {
       var params = {
         method: 'get',
