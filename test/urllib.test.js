@@ -264,8 +264,10 @@ describe('test/urllib.test.js', function () {
           err.name.should.equal('ConnectionTimeoutError');
           err.message.should.match(/^Connect timeout for 1ms\, GET http/);
           err.requestId.should.be.instanceof(Number);
+          err.status.should.equal(-2);
           should.not.exist(data);
           should.exist(res);
+          res.status.should.equal(-2);
           done();
         });
       });
