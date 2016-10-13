@@ -264,7 +264,9 @@ var req = urllib.request('http://my.server.com/upload', {
 
 Response is normal object, it contains:
 
-* `status` or `statusCode`: response status code, `-1` meaning some network error like `ENOTFOUND`
+* `status` or `statusCode`: response status code.
+  * `-1` meaning some network error like `ENOTFOUND`
+  * `-2` meaning ConnectionTimeoutError
 * `headers`: response http headers, default is `{}`
 * `size`: response size
 * `aborted`: response was aborted or not
