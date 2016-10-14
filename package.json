@@ -50,6 +50,7 @@
     "co": "*",
     "coffee": "1",
     "formstream": "^1.1.0",
+    "http-proxy": "^1.16.2",
     "intelli-espower-loader": "^1.0.1",
     "istanbul": "*",
     "jshint": "*",

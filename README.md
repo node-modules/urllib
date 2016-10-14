@@ -316,10 +316,47 @@ options extends from urllib, besides below
 - ***retryDelay*** Number - wait a delay(ms) between retries.
 - ***isRetry*** Function - determine whether retry, a response object as the first argument. it will retry when status >= 500 by default. Request error is not included.
 
+## Proxy
+
+Support both `http` and `https` protocol.
+
+### Programming
+
+```js
+urllib.request('https://twitter.com/', {
+  proxy: 'http://localhost:8008',
+}, (err, data, res) => {
+  console.log(res.status, res.headers);
+});
+```
+
+### System environment variable
+
+- http
+
+```bash
+HTTP_PROXY=http://localhost:8008
+http_proxy=http://localhost:8008
+```
+
+- https
+
+```bash
+HTTP_PROXY=http://localhost:8008
+http_proxy=http://localhost:8008
+HTTPS_PROXY=https://localhost:8008
+https_proxy=https://localhost:8008
+```
+
+```bash
+$ http_proxy=http://localhost:8008 node index.js
+```
+
 ## TODO
 
 * [ ] Support component
 * [ ] Browser env use Ajax
+* [√] Support Proxy
 * [√] Upload file like form upload
 * [√] Auto redirect handle
 * [√] https & self-signed certificate
