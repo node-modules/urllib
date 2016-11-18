@@ -146,6 +146,9 @@ var server = http.createServer(function (req, res) {
       return res.end('你好');
     } else if (req.url === '/json_with_controls_unicode') {
       return res.end(new Buffer('{"foo":"\b\f\n\r\tbar\u000e!1!\u0086!2!\u0000!3!\u001F!4!\u005C!5!end\u005C\\"}'));
+    } else if (req.url === '/u0001.json') {
+      res.setHeader('content-type', 'application/json; charset=gbk');
+      return res.end(new Buffer(require('./u0001.json').data));
     }
 
     var url = req.url.split('?');
