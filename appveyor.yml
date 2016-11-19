@@ -1,19 +1,16 @@
 environment:
   matrix:
-    - nodejs_version: "0.10"
-    - nodejs_version: "0.12"
-    - nodejs_version: "4"
-    - nodejs_version: "6"
+    - nodejs_version: '0.10'
+    - nodejs_version: '0.12'
+    - nodejs_version: '4'
+    - nodejs_version: '6'
+    - nodejs_version: '7'
 
 install:
   - ps: Install-Product node $env:nodejs_version
   - npm i npm && node_modules\.bin\npm i
 
-# Post-install test scripts.
 test_script:
-  - node --version
-  - npm --version
   - npm run ci
 
-# Don't actually build.
 build: off

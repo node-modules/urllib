@@ -1,12 +1,12 @@
 sudo: false
 language: node_js
 node_js:
-  - '6'
-  - '4'
-  - '0.12'
   - '0.10'
+  - '0.12'
+  - '4'
+  - '6'
+  - '7'
 install:
-  # use npm3
   - npm i npm && npm i
 script:
   - npm run ci
