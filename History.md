@@ -1,4 +1,9 @@
 
+2.17.1 / 2016-11-25
+==================
+
+  * add environment detection for connect timer, because no socket event in browser env (#236)
+
 2.17.0 / 2016-10-13
 ==================
 
