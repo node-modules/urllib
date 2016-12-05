@@ -16,7 +16,7 @@ describe('test/digest_auth.test.js', function () {
       data.should.containEql('<p>The requested URL /auth-digest/user3 was not found on this server.</p>');
       done();
     });
-  });
+  }).timeout(30 * 1000);
 
   it('should request with digest auth fail in webdav', function (done) {
     var url = 'http://test.webdav.org/auth-digest/user3';
@@ -31,7 +31,7 @@ describe('test/digest_auth.test.js', function () {
       data.should.containEql('401 Authorization Required');
       done();
     });
-  });
+  }).timeout(30 * 1000);
 
   it('should request with digest auth success in httpbin', function (done) {
     var url = 'http://httpbin.org/digest-auth/auth/user/passwd';
@@ -48,5 +48,5 @@ describe('test/digest_auth.test.js', function () {
       });
       done();
     });
-  });
+  }).timeout(30 * 1000);
 });

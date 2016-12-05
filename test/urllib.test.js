@@ -90,7 +90,7 @@ describe('test/urllib.test.js', function () {
 
     it('should request https success', function (done) {
       urllib.request(config.npmRegistry + '/pedding/*', {
-        timeout: 20000,
+        timeout: 25000,
       },
       function (err, data, res) {
         should.not.exist(err);
@@ -102,7 +102,7 @@ describe('test/urllib.test.js', function () {
 
     it('should request https with port success', function (done) {
       urllib.request(config.npmRegistry + ':443/pedding/*', {
-        timeout: 20000,
+        timeout: 25000,
       },
       function (err, data, res) {
         should.not.exist(err);
@@ -114,7 +114,7 @@ describe('test/urllib.test.js', function () {
 
     it('should request https with rejectUnauthorized:false success', function (done) {
       urllib.request(config.npmRegistry + '/pedding/*', {
-        timeout: 20000,
+        timeout: 25000,
         rejectUnauthorized: false,
       },
       function (err, data, res) {
@@ -129,7 +129,7 @@ describe('test/urllib.test.js', function () {
       done = pedding(2, done);
       urllib.request(config.npmRegistry + '/pedding/*', {
         httpsAgent: false,
-        timeout: 20000,
+        timeout: 25000,
       },
       function (err, data, res) {
         should.not.exist(err);
@@ -140,7 +140,7 @@ describe('test/urllib.test.js', function () {
 
       urllib.request(config.npmRegistry + '/pedding/*', {
         agent: false,
-        timeout: 20000,
+        timeout: 25000,
       },
       function (err, data, res) {
         should.not.exist(err);
@@ -151,7 +151,7 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should include res.data', function (done) {
-      urllib.request(config.npmRegistry + '/pedding/*', {timeout: 20000},
+      urllib.request(config.npmRegistry + '/pedding/*', {timeout: 25000},
       function (err, data, res) {
         should.not.exist(err);
         should.ok(Buffer.isBuffer(data));
@@ -162,7 +162,7 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should alias curl() work', function (done) {
-      urllib.curl(config.npmHttpRegistry + '/pedding/*', {timeout: 20000},
+      urllib.curl(config.npmHttpRegistry + '/pedding/*', {timeout: 25000},
       function (err, data, res) {
         should.not.exist(err);
         should.ok(Buffer.isBuffer(data));
@@ -856,7 +856,7 @@ describe('test/urllib.test.js', function () {
       urllib.request(config.npmWeb + '/redir-tmp/', {
         writeStream: writeStream,
         followRedirect: true,
-        timeout: 20000
+        timeout: 25000
       }, function (err, data) {
         should.not.exist(err);
         should.ok(fs.existsSync(tmpfile));
@@ -928,7 +928,7 @@ describe('test/urllib.test.js', function () {
   describe('args.streaming = true', function () {
     it('should got streaming the response', function (done) {
       urllib.request(config.npmWeb, {
-        timeout: 20000,
+        timeout: 25000,
         streaming: true
       }, function (err, data, res) {
         should.not.exist(err);
@@ -1161,7 +1161,7 @@ describe('test/urllib.test.js', function () {
       done = pedding(4, done);
 
       urllib.request(config.npmWeb, {
-        timeout: 20000,
+        timeout: 25000,
         headers: {
           'accept-encoding': 'gzip'
         }
@@ -1172,7 +1172,7 @@ describe('test/urllib.test.js', function () {
       });
 
       urllib.request(config.npmWeb, {
-        timeout: 20000,
+        timeout: 25000,
         headers: {
           'Accept-Encoding': 'gzip'
         }
@@ -1183,7 +1183,7 @@ describe('test/urllib.test.js', function () {
       });
 
       urllib.request(config.npmWeb, {
-        timeout: 20000,
+        timeout: 25000,
         gzip: true,
         headers: {
           'accept-encoding': 'gzip'
@@ -1195,7 +1195,7 @@ describe('test/urllib.test.js', function () {
       });
 
       urllib.request(config.npmWeb, {
-        timeout: 20000,
+        timeout: 25000,
         gzip: true,
       }, function (err, data, res) {
         should.not.exist(err);
@@ -1206,7 +1206,7 @@ describe('test/urllib.test.js', function () {
 
     it('should redirect and gzip', function (done) {
       urllib.request(config.npmWeb + '/pedding',
-        {followRedirect: true, gzip: true, timeout: 20000}, function (err, data, res) {
+        {followRedirect: true, gzip: true, timeout: 25000}, function (err, data, res) {
         should.not.exist(err);
         res.should.status(200);
         res.should.have.header('content-encoding', 'gzip');
@@ -1472,7 +1472,7 @@ describe('test/urllib.test.js', function () {
         res.status.should.equal(200);
         done();
       });
-    });
+    }).timeout(30 * 1000);
 
   });
 

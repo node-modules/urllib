@@ -302,6 +302,17 @@ urllib.request('http://127.0.0.1:1984/socket.end', function (err, data, res) {
 });
 ```
 
+### HttpClient2
+
+HttpClient2 is a new instance for future. request method only return a promise, compatible with `async/await` and generator in co.
+
+#### Options
+
+options extends from urllib, besides below
+
+- ***retry*** Number - a retry count, when get an error, it will request again until reach the retry count.
+- ***isRetry*** Function - determine whether retry, a response object as the first argument. it will retry when status >= 500 by default. Request error is not included.
+
 ## TODO
 
 * [ ] Support component
