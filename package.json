@@ -22,7 +22,7 @@
     "url": "git://github.com/node-modules/urllib.git"
   },
   "scripts": {
-    "test": "mocha -R spec -t 30000 -r should -r should-http -r intelli-espower-loader test/*.test.js",
+    "test": "npm run lint && mocha -R spec -t 30000 -r should -r should-http -r intelli-espower-loader test/*.test.js",
     "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- -t 30000 -r should -r should-http -r intelli-espower-loader test/*.test.js",
     "ci": "npm run lint && npm run test-cov",
     "lint": "jshint .",
@@ -49,6 +49,7 @@
     "istanbul": "*",
     "jshint": "*",
     "mocha": "*",
+    "muk": "^0.4.0",
     "pedding": "1",
     "power-assert": "^1.4.1",
     "semver": "5",
