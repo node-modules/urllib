@@ -1,7 +1,7 @@
 'use strict';
 
 var should = require('should');
-var assert = require('assert');
+var assert = require('power-assert');
 var http = require('http');
 var querystring = require('querystring');
 var urlutil = require('url');
@@ -847,7 +847,7 @@ describe('test/urllib.test.js', function () {
       writeStream.on('close', done);
       urllib.request(config.npmWeb, {
         writeStream: writeStream,
-        timeout: 15000,
+        timeout: 25000,
       }, function (err, data, res) {
         should.not.exist(err);
         should.ok(fs.existsSync(tmpfile));
@@ -962,7 +962,7 @@ describe('test/urllib.test.js', function () {
 
     it('should work with alias name customResponse', function (done) {
       urllib.request(config.npmWeb, {
-        timeout: 10000,
+        timeout: 25000,
         customResponse: true
       }, function (err, data, res) {
         should.not.exist(err);
@@ -990,7 +990,7 @@ describe('test/urllib.test.js', function () {
 
     it('should follow redirect', function (done) {
       urllib.request(config.npmWeb + '/pedding', {
-        timeout: 15000,
+        timeout: 25000,
         streaming: true,
         followRedirect: true
       }, function (err, data, res) {
@@ -1165,7 +1165,7 @@ describe('test/urllib.test.js', function () {
       urllib.request('https://www.baidu.com/',
         {
           gzip: true,
-          timeout: 15000,
+          timeout: 25000,
         }, function (err, data, res) {
         should.not.exist(err);
         res.should.have.header('content-encoding', 'gzip');
