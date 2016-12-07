@@ -1,4 +1,11 @@
 
+2.18.0 / 2016-12-07
+==================
+
+  * fix: use nextTick to prevent promise handling error.
+  * refactor: move to separated files
+  * feat: add retry option
+
 2.17.1 / 2016-11-25
 ==================
 
