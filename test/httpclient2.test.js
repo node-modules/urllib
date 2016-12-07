@@ -135,4 +135,29 @@ describe('test/httpclient2.test.js', function () {
     });
   });
 
+  describe('when callback throw error', function() {
+    var listeners;
+    before(function() {
+      listeners = process.listeners('uncaughtException');
+      process.removeAllListeners('uncaughtException');
+    });
+    after(function() {
+      listeners.forEach(function(listener) {
+        process.on('uncaughtException', listener);
+      });
+    });
+
+    it('should requestThunk()', function (done) {
+      process.once('uncaughtException', function(err) {
+        err.message.should.eql('callback error');
+        done();
+      });
+      client.requestThunk(config.npmRegistry + '/pedding/*', {
+        timeout: 25000,
+      })(function () {
+        throw new Error('callback error');
+      });
+    });
+  });
+
 });
