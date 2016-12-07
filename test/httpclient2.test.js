@@ -4,6 +4,7 @@ var http = require('http');
 var should = require('should');
 var muk = require('muk');
 var config = require('./config');
+var mockUrllib = require('../lib/urllib');
 var urllib = require('..');
 var request = urllib.request;
 var HttpClient = urllib.HttpClient2;
@@ -58,7 +59,7 @@ describe('test/httpclient2.test.js', function () {
 
   it('should request() with retry fail', function (done) {
     var count = 0;
-    muk(urllib, 'request', function(url, args, callback) {
+    muk(mockUrllib, 'request', function(url, args, callback) {
       count++;
       return request(url, args, callback);
     });
@@ -75,7 +76,7 @@ describe('test/httpclient2.test.js', function () {
 
   it('should request() with isRetry status', function (done) {
     var count = 0;
-    muk(urllib, 'request', function(url, args, callback) {
+    muk(mockUrllib, 'request', function(url, args, callback) {
       count++;
       return request(url, args, callback);
     });
@@ -95,7 +96,7 @@ describe('test/httpclient2.test.js', function () {
 
   it('should request() with isRetry body', function (done) {
     var count = 0;
-    muk(urllib, 'request', function(url, args, callback) {
+    muk(mockUrllib, 'request', function(url, args, callback) {
       count++;
       return request(url, args, callback);
     });
@@ -116,7 +117,7 @@ describe('test/httpclient2.test.js', function () {
 
   it('should request() with client error', function (done) {
     var count = 0;
-    muk(urllib, 'request', function(url, args, callback) {
+    muk(mockUrllib, 'request', function(url, args, callback) {
       count++;
       return request(url, args, callback);
     });

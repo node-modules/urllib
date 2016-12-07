@@ -1,6 +1,7 @@
 'use strict';
 
 var should = require('should');
+var assert = require('assert');
 var http = require('http');
 var querystring = require('querystring');
 var urlutil = require('url');
@@ -35,6 +36,21 @@ describe('test/urllib.test.js', function () {
       server.close();
       done();
     }, 1000);
+  });
+
+  it('should assert exports', function() {
+    assert(urllib.USER_AGENT);
+    assert(urllib.agent);
+    assert(urllib.httpsAgent);
+    assert(urllib.TIMEOUT);
+    assert(urllib.TIMEOUTS);
+    assert(urllib.request);
+    assert(urllib.requestWithCallback);
+    assert(urllib.curl);
+    assert(urllib.requestThunk);
+    assert(urllib.HttpClient);
+    assert(urllib.HttpClient2);
+    assert(urllib.create);
   });
 
   it('should_mocked_http_service_works_fine', function (done) {
