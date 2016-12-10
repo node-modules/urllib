@@ -53,7 +53,7 @@
     "pedding": "1",
     "power-assert": "^1.4.1",
     "semver": "5",
-    "should": "8",
+    "should": "11.1.2",
     "should-http": "*",
     "tar": "2",
     "through2": "2"
