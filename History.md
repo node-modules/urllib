@@ -1,4 +1,9 @@
 
+2.19.0 / 2016-12-14
+==================
+
+  * feat: add `dataAsQueryString` params for convert data to query string (#240)
+
 2.18.0 / 2016-12-07
 ==================
 
