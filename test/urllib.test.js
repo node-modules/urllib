@@ -1492,4 +1492,20 @@ describe('test/urllib.test.js', function () {
 
   });
 
+  describe('args.dataAsQueryString = true', function() {
+    it('should delete params go in query string', function(done) {
+      urllib.request(host + '/delete-params', {
+        method: 'delete',
+        data: {
+          foo: 'bar',
+        },
+        dataType: 'json',
+        dataAsQueryString: true,
+      }, function(err, data) {
+        assert(!err);
+        assert(data.url === '/delete-params?foo=bar');
+        done();
+      });
+    });
+  });
 });

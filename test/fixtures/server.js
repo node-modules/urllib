@@ -149,6 +149,11 @@ var server = http.createServer(function (req, res) {
     } else if (req.url === '/u0001.json') {
       res.setHeader('content-type', 'application/json; charset=gbk');
       return res.end(new Buffer(require('./u0001.json').data));
+    } else if (req.method === 'DELETE' && req.url.indexOf('/delete-params') === 0) {
+      res.setHeader('Content-Type', 'application/json');
+      return res.end(JSON.stringify({
+        url: req.url,
+      }));
     }
 
     var url = req.url.split('?');
