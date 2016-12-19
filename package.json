@@ -44,7 +44,7 @@
     "bluebird": "*",
     "co": "*",
     "coffee": "1",
-    "formstream": "1",
+    "formstream": "1.1.0",
     "intelli-espower-loader": "^1.0.1",
     "istanbul": "*",
     "jshint": "*",
