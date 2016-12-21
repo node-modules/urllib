@@ -31,7 +31,7 @@
   "dependencies": {
     "any-promise": "^1.2.0",
     "content-type": "^1.0.2",
-    "debug": "^2.2.0",
+    "debug": "^2.5.1",
     "default-user-agent": "^1.0.0",
     "digest-header": "^0.0.1",
     "humanize-ms": "^1.2.0",
