@@ -39,7 +39,7 @@
     "statuses": "^1.3.0"
   },
   "devDependencies": {
-    "agentkeepalive": "2",
+    "agentkeepalive": "2.0.3",
     "autod": "*",
     "bluebird": "*",
     "co": "*",
