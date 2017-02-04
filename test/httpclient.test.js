@@ -2,6 +2,7 @@
 
 var pedding = require('pedding');
 var should = require('should');
+var assert = require('assert');
 var config = require('./config');
 var urllib = require('../');
 
@@ -72,13 +73,16 @@ describe('test/httpclient.test.js', function () {
     }).catch(done);
   });
 
-  it('should emit request, response event with ctx', function (done) {
+  it('should emit request, response event with ctx', function(done) {
     done = pedding(3, done);
     var client = urllib.create();
-    client.on('request', function(info) {
-      info.ctx.should.eql({
+    var reqMeta;
+    client.on('request', function(req) {
+      assert.deepEqual(req.ctx, {
         foo: 'bar',
       });
+      reqMeta = req;
+      reqMeta.starttime = Date.now();
       done();
     });
     client.request(config.npmRegistry + '/pedding/*', {
@@ -86,15 +90,18 @@ describe('test/httpclient.test.js', function () {
       ctx: {
         foo: 'bar',
       }
-    }, function (err, data, res) {
-      should.not.exist(err);
-      data.should.be.a.Buffer;
-      res.status.should.equal(200);
+    }, function(err, data, res) {
+      assert(!err);
+      assert(Buffer.isBuffer(data));
+      assert(res.status === 200);
       done();
     });
-    client.on('response', function(info) {
-      info.req.socket.remoteAddress.should.be.a.String();
-      info.req.socket.remotePort.should.be.a.Number();
+    client.on('response', function(res) {
+      assert(typeof res.req.socket.remoteAddress === 'string');
+      assert(typeof res.req.socket.remotePort === 'number');
+      // should be the same object
+      assert(reqMeta === res.req);
+      assert(typeof res.req.starttime === 'number');
       done();
     });
   });
