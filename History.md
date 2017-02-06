@@ -1,4 +1,10 @@
 
+2.20.0 / 2017-02-06
+==================
+
+  * deps: bump deps versions
+  * fix: keep the same req object across request and response event
+
 2.19.0 / 2016-12-14
 ==================
 
