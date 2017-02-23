@@ -1,6 +1,6 @@
 'use strict';
 
-var should = require('should');
+var assert = require('assert');
 var urllib = require('../');
 
 describe('test/digest_auth.test.js', function () {
@@ -8,12 +8,11 @@ describe('test/digest_auth.test.js', function () {
     var url = 'http://test.webdav.org/auth-digest/user3';
     urllib.request(url, {
       digestAuth: 'user3:user3',
-      timeout: 20000
+      timeout: 20000,
     }, function (err, data, res) {
-      should.not.exist(err);
-      res.should.status(404);
-      data = data.toString();
-      data.should.containEql('<p>The requested URL /auth-digest/user3 was not found on this server.</p>');
+      assert(!err);
+      assert(res.statusCode === 404);
+      assert(data.toString().indexOf('<p>The requested URL /auth-digest/user3 was not found on this server.</p>') >= 0);
       done();
     });
   }).timeout(30 * 1000);
@@ -22,13 +21,12 @@ describe('test/digest_auth.test.js', function () {
     var url = 'http://test.webdav.org/auth-digest/user3';
     urllib.request(url, {
       digestAuth: 'user3:fail',
-      timeout: 20000
+      timeout: 20000,
     }, function (err, data, res) {
-      should.not.exist(err);
-      res.should.status(401);
-      res.should.have.header('www-authenticate');
-      data = data.toString();
-      data.should.containEql('401 Authorization Required');
+      assert(!err);
+      assert(res.statusCode === 401);
+      assert(res.headers['www-authenticate']);
+      assert(data.toString().indexOf('401 Authorization Required') >= 0);
       done();
     });
   }).timeout(30 * 1000);
@@ -38,13 +36,13 @@ describe('test/digest_auth.test.js', function () {
     urllib.request(url, {
       digestAuth: 'user:passwd',
       dataType: 'json',
-      timeout: 10000
+      timeout: 10000,
     }, function (err, data, res) {
-      should.not.exist(err);
-      res.should.status(200);
-      data.should.eql({
+      assert(!err);
+      assert(res.statusCode === 200);
+      assert.deepEqual(data, {
         user: "user",
-        authenticated: true
+        authenticated: true,
       });
       done();
     });

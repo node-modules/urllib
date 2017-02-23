@@ -1,5 +1,6 @@
 'use strict';
 
+var assert = require('assert');
 var dns = require('dns');
 var urlresolve = require('url').resolve;
 var config = require('./config');
@@ -16,12 +17,10 @@ describe('test/redirect.test.js', function() {
       },
       followRedirect: true,
     }, function(err, data, res) {
-      if (err) {
-        return done(err);
-      }
-      res.statusCode.should.equal(200);
-      data.length.should.above(100);
-      res.requestUrls.length.should.above(1);
+      assert(!err);
+      assert(res.statusCode === 200);
+      assert(data.length > 100);
+      assert(res.requestUrls.length > 1);
       done();
     });
   });
@@ -41,12 +40,10 @@ describe('test/redirect.test.js', function() {
         },
         followRedirect: true,
       }, function(err, data, res) {
-        if (err) {
-          return done(err);
-        }
-        res.statusCode.should.equal(200);
-        data.length.should.above(100);
-        res.requestUrls.length.should.above(1);
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(data.length > 100);
+        assert(res.requestUrls.length > 1);
         done();
       });
     });
@@ -61,12 +58,10 @@ describe('test/redirect.test.js', function() {
         return urlresolve(from, to.replace('/package/pedding', '/package/foo'));
       },
     }, function(err, data, res) {
-      if (err) {
-        return done(err);
-      }
-      res.statusCode.should.equal(200);
-      data.length.should.above(100);
-      res.requestUrls.length.should.above(1);
+      assert(!err);
+      assert(res.statusCode === 200);
+      assert(data.length > 100);
+      assert(res.requestUrls.length > 1);
       done();
     });
   });

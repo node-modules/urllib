@@ -1,7 +1,6 @@
 'use strict';
 
 var pedding = require('pedding');
-var should = require('should');
 var assert = require('assert');
 var config = require('./config');
 var urllib = require('../');
@@ -12,9 +11,9 @@ describe('test/httpclient.test.js', function () {
     client.request(config.npmRegistry + '/pedding/*', {
       timeout: 25000,
     }, function (err, data, res) {
-      should.not.exist(err);
-      data.should.be.a.Buffer;
-      res.status.should.equal(200);
+      assert(!err);
+      assert(Buffer.isBuffer(data));
+      assert(res.statusCode === 200);
       done();
     });
   });
@@ -25,50 +24,49 @@ describe('test/httpclient.test.js', function () {
       agent: urllib.agent,
       httpsAgent: urllib.httpsAgent,
     });
-    client.hasCustomAgent.should.equal(true);
-    client.hasCustomHttpsAgent.should.equal(true);
+    assert(client.hasCustomAgent === true);
+    assert(client.hasCustomHttpsAgent === true);
     client.requestThunk(config.npmRegistry + '/pedding/*', {
       timeout: 25000,
     })(function (err, result) {
-      should.not.exist(err);
-      result.data.should.be.a.Buffer;
-      result.status.should.equal(200);
+      assert(!err);
+      assert(Buffer.isBuffer(result.data));
+      assert(result.status === 200);
       done();
     });
 
     client.requestThunk(config.npmRegistry + '/pedding/*', {
       timeout: 25000,
     })(function (err, result) {
-      should.not.exist(err);
-      result.data.should.be.a.Buffer;
-      result.status.should.equal(200);
+      assert(!err);
+      assert(Buffer.isBuffer(result.data));
+      assert(result.status === 200);
       done();
     });
   });
 
   it('should curl() with callback', function (done) {
     var client = urllib.create();
-    client.hasCustomAgent.should.equal(false);
-    client.hasCustomHttpsAgent.should.equal(false);
+    assert(client.hasCustomAgent === false);
+    assert(client.hasCustomHttpsAgent === false);
     client.curl(config.npmRegistry + '/pedding/*', {
       timeout: 25000
     }, function (err, result, res) {
-      should.not.exist(err);
-      result.should.be.a.Buffer;
-      res.status.should.equal(200);
+      assert(!err);
+      assert(res.statusCode === 200);
       done();
     });
   });
 
   it('should curl() with promise', function (done) {
     var client = urllib.create();
-    client.hasCustomAgent.should.equal(false);
-    client.hasCustomHttpsAgent.should.equal(false);
+    assert(client.hasCustomAgent === false);
+    assert(client.hasCustomHttpsAgent === false);
     client.curl(config.npmWeb + '/package/pedding', {
       timeout: 25000
     }).then(function (result) {
-      should.ok(Buffer.isBuffer(result.data));
-      result.status.should.equal(200);
+      assert(Buffer.isBuffer(result.data));
+      assert(result.status === 200);
       done();
     }).catch(done);
   });
@@ -110,7 +108,7 @@ describe('test/httpclient.test.js', function () {
     done = pedding(3, done);
     var client = urllib.create();
     client.on('request', function(info) {
-      info.ctx.should.eql({
+      assert.deepEqual(info.ctx, {
         foo: 'bar',
       });
       done();
@@ -124,14 +122,14 @@ describe('test/httpclient.test.js', function () {
         connection: 'close',
       },
     }, function (err, data, res) {
-      should.not.exist(err);
-      data.should.be.a.Buffer;
-      res.status.should.equal(200);
+      assert(!err);
+      assert(Buffer.isBuffer(data));
+      assert(res.statusCode === 200);
       done();
     });
     client.on('response', function(info) {
-      info.res.remoteAddress.should.be.a.String();
-      info.res.remotePort.should.be.a.Number();
+      assert(typeof info.res.remoteAddress === 'string');
+      assert(typeof info.res.remotePort === 'number');
       done();
     });
   });

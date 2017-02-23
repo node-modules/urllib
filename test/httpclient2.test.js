@@ -1,7 +1,7 @@
 'use strict';
 
 var http = require('http');
-var should = require('should');
+var assert = require('assert');
 var muk = require('muk');
 var config = require('./config');
 var mockUrllib = require('../lib/urllib');
@@ -39,8 +39,8 @@ describe('test/httpclient2.test.js', function () {
     client.request(config.npmWeb + '/package/pedding', {
       timeout: 25000
     }).then(function (result) {
-      should.ok(Buffer.isBuffer(result.data));
-      result.status.should.equal(200);
+      assert(Buffer.isBuffer(result.data));
+      assert(result.status === 200);
       done();
     }).catch(done);
   });
@@ -49,9 +49,9 @@ describe('test/httpclient2.test.js', function () {
     client.requestThunk(config.npmRegistry + '/pedding/*', {
       timeout: 25000,
     })(function (err, result) {
-      should.not.exist(err);
-      result.data.should.be.a.Buffer;
-      result.status.should.equal(200);
+      assert(!err);
+      assert(Buffer.isBuffer(result.data));
+      assert(result.status === 200);
       done();
     });
   });
@@ -66,9 +66,9 @@ describe('test/httpclient2.test.js', function () {
       timeout: 25000,
       retry: 2,
     }).then(function (result) {
-      should.ok(Buffer.isBuffer(result.data));
-      result.status.should.equal(500);
-      count.should.equal(3);
+      assert(Buffer.isBuffer(result.data));
+      assert(result.status === 500);
+      assert(count === 3);
       done();
     }).catch(done);
   });
@@ -85,11 +85,11 @@ describe('test/httpclient2.test.js', function () {
       retry: 2,
       retryDelay: 200,
     }).then(function (result) {
-      should.ok(Buffer.isBuffer(result.data));
-      result.status.should.equal(500);
-      count.should.equal(3);
+      assert(Buffer.isBuffer(result.data));
+      assert(result.status === 500);
+      assert(count === 3);
       var use = Date.now() - start;
-      use.should.above(400);
+      assert(use > 400);
       done();
     }).catch(done);
   });
@@ -107,9 +107,9 @@ describe('test/httpclient2.test.js', function () {
         return res.status > 400;
       },
     }).then(function (result) {
-      should.ok(Buffer.isBuffer(result.data));
-      result.status.should.equal(404);
-      count.should.equal(3);
+      assert(Buffer.isBuffer(result.data));
+      assert(result.status === 404);
+      assert(count === 3);
       done();
     }).catch(done);
   });
@@ -128,9 +128,9 @@ describe('test/httpclient2.test.js', function () {
         return body.status !== 'success';
       },
     }).then(function (result) {
-      should.ok(Buffer.isBuffer(result.data));
-      result.status.should.equal(200);
-      count.should.equal(3);
+      assert(Buffer.isBuffer(result.data));
+      assert(result.status === 200);
+      assert(count === 3);
       done();
     }).catch(done);
   });
@@ -149,8 +149,9 @@ describe('test/httpclient2.test.js', function () {
         return body.status !== 'success';
       },
     }).catch(function(err) {
-      err.code.should.equal('ECONNREFUSED');
-      count.should.equal(3);
+      assert(err);
+      assert(err.code === 'ECONNREFUSED');
+      assert(count === 3);
       done();
     });
   });
@@ -169,7 +170,7 @@ describe('test/httpclient2.test.js', function () {
 
     it('should requestThunk()', function (done) {
       process.once('uncaughtException', function(err) {
-        err.message.should.eql('callback error');
+        assert(err.message === 'callback error');
         done();
       });
       client.requestThunk(config.npmRegistry + '/pedding/*', {
@@ -179,5 +180,4 @@ describe('test/httpclient2.test.js', function () {
       });
     });
   });
-
 });
