@@ -10,7 +10,6 @@ var request = urllib.request;
 var HttpClient = urllib.HttpClient2;
 
 describe('test/httpclient2.test.js', function () {
-
   var client;
   var server;
   before(function() {
@@ -70,6 +69,27 @@ describe('test/httpclient2.test.js', function () {
       should.ok(Buffer.isBuffer(result.data));
       result.status.should.equal(500);
       count.should.equal(3);
+      done();
+    }).catch(done);
+  });
+
+  it('should request() with retry fail after 200ms', function (done) {
+    var count = 0;
+    muk(mockUrllib, 'request', function(url, args, callback) {
+      count++;
+      return request(url, args, callback);
+    });
+    var start = Date.now();
+    client.request('http://127.0.0.1:12345/500', {
+      timeout: 25000,
+      retry: 2,
+      retryDelay: 200,
+    }).then(function (result) {
+      should.ok(Buffer.isBuffer(result.data));
+      result.status.should.equal(500);
+      count.should.equal(3);
+      var use = Date.now() - start;
+      use.should.above(400);
       done();
     }).catch(done);
   });
