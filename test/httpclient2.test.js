@@ -2,7 +2,9 @@
 
 var http = require('http');
 var assert = require('assert');
+var https = require('https');
 var muk = require('muk');
+var assert = require('assert');
 var config = require('./config');
 var mockUrllib = require('../lib/urllib');
 var urllib = require('..');
@@ -154,6 +156,30 @@ describe('test/httpclient2.test.js', function () {
       assert(count === 3);
       done();
     });
+  });
+
+  it('should support keepalive', function(done) {
+    var client = new HttpClient({
+      httpsAgent: new https.Agent({ keepAlive: true })
+    });
+
+    var isKeepAlive = [];
+    var url = config.npmWeb + '/package/pedding';
+    client.on('response', function(info) {
+      isKeepAlive.push(info.res.keepAliveSocket);
+    });
+    client.request(url, {
+      timeout: 25000
+    }).then(function() {
+      return client.request(url, {
+        timeout: 25000
+      });
+    }).then(function() {
+      assert(isKeepAlive.length === 2);
+      assert(isKeepAlive[0] === false);
+      assert(isKeepAlive[1] === true);
+      done();
+    }).catch(done);
   });
 
   describe('when callback throw error', function() {
