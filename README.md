@@ -312,6 +312,7 @@ HttpClient2 is a new instance for future. request method only return a promise, 
 options extends from urllib, besides below
 
 - ***retry*** Number - a retry count, when get an error, it will request again until reach the retry count.
+- ***retryDelay*** Number - wait a delay(ms) between retries.
 - ***isRetry*** Function - determine whether retry, a response object as the first argument. it will retry when status >= 500 by default. Request error is not included.
 
 ## TODO
