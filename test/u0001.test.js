@@ -1,5 +1,6 @@
 'use strict';
 
+var assert = require('assert');
 var urllib = require('..');
 var server = require('./fixtures/server');
 
@@ -29,8 +30,8 @@ describe('test/u0001.test.js', function() {
     }).then(function(result) {
       // console.log(result.data);
       // console.log(result.data.data.title.replace(/\u0001/g, ''));
-      result.data.data.title.should.be.a.String();
-      result.data.data.title.should.containEql('\u0001\u0001');
+      assert(typeof result.data.data.title === 'string');
+      assert(result.data.data.title.indexOf('\u0001\u0001') >= 0);
     });
   });
 });

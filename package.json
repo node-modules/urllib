@@ -11,7 +11,7 @@
     "request",
     "https"
   ],
-  "author": "fengmk2 <m@fengmk2.com> (http://fengmk2.com)",
+  "author": "fengmk2 <fengmk2@gmail.com> (https://fengmk2.com)",
   "homepage": "http://github.com/node-modules/urllib",
   "main": "lib/index.js",
   "files": [
@@ -22,8 +22,8 @@
     "url": "git://github.com/node-modules/urllib.git"
   },
   "scripts": {
-    "test": "npm run lint && mocha -R spec -t 30000 -r should -r should-http -r intelli-espower-loader test/*.test.js",
-    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- -t 30000 -r should -r should-http -r intelli-espower-loader test/*.test.js",
+    "test": "npm run lint && mocha -R spec -t 30000 -r intelli-espower-loader test/*.test.js",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- -t 30000 -r intelli-espower-loader test/*.test.js",
     "ci": "npm run lint && npm run test-cov",
     "lint": "jshint .",
     "autod": "autod -w --prefix '^' -t test -e examples"
@@ -36,7 +36,6 @@
     "digest-header": "^0.0.1",
     "humanize-ms": "^1.2.0",
     "iconv-lite": "^0.4.15",
-    "mz-modules": "^1.0.0",
     "statuses": "^1.3.1"
   },
   "devDependencies": {
@@ -54,8 +53,6 @@
     "pedding": "^1.1.0",
     "power-assert": "^1.4.2",
     "semver": "5",
-    "should": "8",
-    "should-http": "*",
     "tar": "^2.2.1",
     "through2": "^2.0.3"
   },

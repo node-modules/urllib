@@ -1,7 +1,6 @@
 'use strict';
 
-var should = require('should');
-var assert = require('power-assert');
+var assert = require('assert');
 var http = require('http');
 var querystring = require('querystring');
 var urlutil = require('url');
@@ -14,12 +13,12 @@ var tar = require('tar');
 var zlib = require('zlib');
 var os = require('os');
 var through = require('through2');
+var Stream = require('stream');
 var server = require('./fixtures/server');
 var config = require('./config');
 var urllib = require('../');
 
 describe('test/urllib.test.js', function () {
-
   var host = 'http://127.0.0.1:';
   var port = null;
 
@@ -55,9 +54,9 @@ describe('test/urllib.test.js', function () {
 
   it('should_mocked_http_service_works_fine', function (done) {
     urllib.request(host + '/?a=12&code=200', function (error, data, res) {
-      should.ok(!error);
-      data.should.be.an.instanceof(Buffer);
-      res.statusCode.should.eql(200);
+      assert(!error);
+      assert(data instanceof Buffer);
+      assert(res.statusCode === 200);
       done();
     });
   });
@@ -65,7 +64,7 @@ describe('test/urllib.test.js', function () {
   describe('requestThunk()', function() {
     it('should mock request error', function(done) {
       urllib.requestThunk('localhost-mock-error:' + (port + 101))(function(err) {
-        should.exist(err);
+        assert(err);
         done();
       });
     });
@@ -76,30 +75,30 @@ describe('test/urllib.test.js', function () {
     it('should request(host-only) work', function(done) {
       var host = urlutil.parse(config.npmRegistry).host;
       urllib.request(host, { timeout: 30000 }, function(err, data, res) {
-        should.not.exist(err);
-        data.should.be.a.Buffer;
-        res.should.status(200);
+        assert(!err);
+        assert(data instanceof Buffer);
+        assert(res.statusCode === 200);
         done();
       });
     });
 
     it('should request(undefined) thrown', function() {
-      (function () {
+      assert.throws(function () {
         urllib.requestWithCallback(undefined, function() {});
-      }).should.throw('expect request url to be a string or a http request options, but got undefined');
+      }, 'expect request url to be a string or a http request options, but got undefined');
     });
 
     it('should request(1) thrown', function() {
-      (function () {
+      assert.throws(function () {
         urllib.requestWithCallback(1, function() {});
-      }).should.throw('expect request url to be a string or a http request options, but got 1');
+      }, 'expect request url to be a string or a http request options, but got 1');
     });
 
     it('should request(localhost:port) work', function(done) {
       urllib.requestWithCallback('localhost:' + port, function(err, data, res) {
-        should.not.exist(err);
-        data.should.be.a.Buffer;
-        res.should.status(200);
+        assert(!err);
+        assert(data instanceof Buffer);
+        assert(res.statusCode === 200);
         done();
       });
     });
@@ -109,9 +108,9 @@ describe('test/urllib.test.js', function () {
         timeout: 25000,
       },
       function (err, data, res) {
-        should.not.exist(err);
-        should.ok(Buffer.isBuffer(data));
-        res.should.status(200);
+        assert(!err);
+        assert(Buffer.isBuffer(data));
+        assert(res.statusCode === 200);
         done();
       });
     });
@@ -121,9 +120,9 @@ describe('test/urllib.test.js', function () {
         timeout: 25000,
       },
       function (err, data, res) {
-        should.not.exist(err);
-        should.ok(Buffer.isBuffer(data));
-        res.should.status(200);
+        assert(!err);
+        assert(Buffer.isBuffer(data));
+        assert(res.statusCode === 200);
         done();
       });
     });
@@ -134,9 +133,9 @@ describe('test/urllib.test.js', function () {
         rejectUnauthorized: false,
       },
       function (err, data, res) {
-        should.not.exist(err);
-        should.ok(Buffer.isBuffer(data));
-        res.should.status(200);
+        assert(!err);
+        assert(Buffer.isBuffer(data));
+        assert(res.statusCode === 200);
         done();
       });
     });
@@ -148,9 +147,9 @@ describe('test/urllib.test.js', function () {
         timeout: 25000,
       },
       function (err, data, res) {
-        should.not.exist(err);
-        should.ok(Buffer.isBuffer(data));
-        res.should.status(200);
+        assert(!err);
+        assert(Buffer.isBuffer(data));
+        assert(res.statusCode === 200);
         done();
       });
 
@@ -159,9 +158,9 @@ describe('test/urllib.test.js', function () {
         timeout: 25000,
       },
       function (err, data, res) {
-        should.not.exist(err);
-        should.ok(Buffer.isBuffer(data));
-        res.should.status(200);
+        assert(!err);
+        assert(Buffer.isBuffer(data));
+        assert(res.statusCode === 200);
         done();
       });
     });
@@ -169,10 +168,10 @@ describe('test/urllib.test.js', function () {
     it('should include res.data', function (done) {
       urllib.request(config.npmRegistry + '/pedding/*', {timeout: 25000},
       function (err, data, res) {
-        should.not.exist(err);
-        should.ok(Buffer.isBuffer(data));
-        res.should.status(200);
-        data.should.equal(res.data);
+        assert(!err);
+        assert(Buffer.isBuffer(data));
+        assert(res.statusCode === 200);
+        assert(data === res.data);
         done();
       });
     });
@@ -180,49 +179,49 @@ describe('test/urllib.test.js', function () {
     it('should alias curl() work', function (done) {
       urllib.curl(config.npmHttpRegistry + '/pedding/*', {timeout: 25000},
       function (err, data, res) {
-        should.not.exist(err);
-        should.ok(Buffer.isBuffer(data));
-        res.should.status(200);
+        assert(!err);
+        assert(Buffer.isBuffer(data));
+        assert(res.statusCode === 200);
         done();
       });
     });
 
     it('should 301', function (done) {
       urllib.request(host + '/301', function (err, data, res) {
-        res.should.status(301);
-        data.toString().should.equal('I am 301 body');
+        assert(res.statusCode === 301);
+        assert(data.toString() === 'I am 301 body');
         done();
       });
     });
 
     it('should 302', function (done) {
       urllib.request(host + '/302', {followRedirect: false}, function (err, data, res) {
-        res.should.status(302);
-        res.headers.location.should.eql('/204');
+        assert(res.statusCode === 302);
+        assert(res.headers.location === '/204');
         done();
       });
     });
 
     it('should redirect from 302 to 204', function (done) {
       urllib.request(host + '/302', {followRedirect: true}, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(204);
+        assert(!err);
+        assert(res.statusCode === 204);
         done();
       });
     });
 
     it('should redirect from 307 to 204', function (done) {
       urllib.request(host + '/307', {followRedirect: true}, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(204);
+        assert(!err);
+        assert(res.statusCode === 204);
         done();
       });
     });
 
     it('should redirect from 303 to 204', function (done) {
       urllib.request(host + '/303', {followRedirect: true}, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(204);
+        assert(!err);
+        assert(res.statusCode === 204);
         done();
       });
     });
@@ -236,10 +235,10 @@ describe('test/urllib.test.js', function () {
           Host: hostname,
         }
       }, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
+        assert(!err);
+        assert(res.statusCode === 200);
         // size should be 2107
-        res.size.should.equal(2107);
+        assert(res.size === 2107);
         done();
       });
     });
@@ -255,20 +254,20 @@ describe('test/urllib.test.js', function () {
 
     it('should FollowRedirectError', function (done) {
       urllib.request(host + '/redirect_no_location', {followRedirect: true}, function (err, data) {
-        should.exist(err);
-        err.name.should.equal('FollowRedirectError');
-        err.message.should.containEql('Got statusCode 302 but cannot resolve next location from headers, GET http://127.0.0.1:');
-        data.toString().should.equal('I am 302 body');
+        assert(err);
+        assert(err.name === 'FollowRedirectError');
+        assert(err.message.indexOf('Got statusCode 302 but cannot resolve next location from headers, GET http://127.0.0.1:') >= 0);
+        assert(data.toString() === 'I am 302 body');
         done();
       });
     });
 
     it('should MaxRedirectError', function (done) {
       urllib.request(host + '/loop_redirect', {followRedirect: true}, function (err, data) {
-        should.exist(err);
-        err.name.should.equal('MaxRedirectError');
-        err.message.should.containEql('Exceeded maxRedirects. Probably stuck in a redirect loop ');
-        data.toString().should.equal('Redirect to /loop_redirect');
+        assert(err);
+        assert(err.name === 'MaxRedirectError');
+        assert(err.message.indexOf('Exceeded maxRedirects. Probably stuck in a redirect loop ') >= 0);
+        assert(data.toString() === 'Redirect to /loop_redirect');
         done();
       });
     });
@@ -276,54 +275,54 @@ describe('test/urllib.test.js', function () {
     describe('ConnectionTimeoutError and ResponseTimeoutError', function () {
       it('should connection timeout', function (done) {
         urllib.request('http://npm.taobao.org', { timeout: 1 }, function (err, data, res) {
-          should.exist(err);
-          err.name.should.equal('ConnectionTimeoutError');
-          err.message.should.match(/^Connect timeout for 1ms\, GET http/);
-          err.requestId.should.be.instanceof(Number);
-          err.status.should.equal(-2);
-          should.not.exist(data);
-          should.exist(res);
-          res.status.should.equal(-2);
+          assert(err);
+          assert(err.name === 'ConnectionTimeoutError');
+          assert(err.message.match(/^Connect timeout for 1ms\, GET http/));
+          assert(typeof err.requestId === 'number');
+          assert(err.status === -2);
+          assert(!data);
+          assert(res);
+          assert(res.status === -2);
           done();
         });
       });
 
       it('should response timeout', function (done) {
         urllib.request(host + '/response_timeout', { timeout: 450 }, function (err, data, res) {
-          should.exist(err);
-          err.name.should.equal('ResponseTimeoutError');
-          err.message.should.match(/^Response timeout for 450ms\, GET http/);
-          err.requestId.should.be.instanceof(Number);
-          should.exist(data);
-          data.toString().should.equal('foo');
-          should.exist(res);
-          res.should.status(200);
+          assert(err);
+          assert(err.name === 'ResponseTimeoutError');
+          assert(err.message.match(/^Response timeout for 450ms\, GET http/));
+          assert(typeof err.requestId === 'number');
+          assert(data);
+          assert(data.toString() === 'foo');
+          assert(res);
+          assert(res.statusCode === 200);
           done();
         });
       });
 
       it('can pass two timeout seperately and get connect error', function (done) {
         urllib.request('http://npm.taobao.net', { timeout: [1, 10000] }, function (err, data, res) {
-          should.exist(err);
-          err.name.should.equal('ConnectionTimeoutError');
-          err.message.should.match(/^Connect timeout for 1ms\, GET http/);
-          err.requestId.should.be.instanceof(Number);
-          should.not.exist(data);
-          should.exist(res);
+          assert(err);
+          assert(err.name === 'ConnectionTimeoutError');
+          assert(err.message.match(/^Connect timeout for 1ms\, GET http/));
+          assert(typeof err.requestId === 'number');
+          assert(!data);
+          assert(res);
           done();
         });
       });
 
       it('can pass two timeout seperately and get response error', function(done) {
         urllib.request(host + '/response_timeout', { timeout: [1000, 450] }, function (err, data, res) {
-          should.exist(err);
-          err.name.should.equal('ResponseTimeoutError');
-          err.message.should.match(/^Response timeout for 450ms\, GET http/);
-          err.requestId.should.be.instanceof(Number);
-          should.exist(data);
-          data.toString().should.equal('foo');
-          should.exist(res);
-          res.should.status(200);
+          assert(err);
+          assert(err.name === 'ResponseTimeoutError');
+          assert(err.message.match(/^Response timeout for 450ms\, GET http/));
+          assert(typeof err.requestId === 'number');
+          assert(data);
+          assert(data.toString() === 'foo');
+          assert(res);
+          assert(res.statusCode === 200);
           done();
         });
       });
@@ -331,23 +330,23 @@ describe('test/urllib.test.js', function () {
 
     it('should socket hang up by res.socket.destroy() before `response` event emit', function (done) {
       urllib.request(host + '/error', function (err, data, res) {
-        should.exist(err);
-        err.name.should.equal('ResponseError');
-        err.stack.should.containEql('socket hang up');
-        err.code.should.equal('ECONNRESET');
-        should.not.exist(data);
-        should.exist(res);
+        assert(err);
+        assert(err.name === 'ResponseError');
+        assert(err.stack.indexOf('socket hang up') >= 0);
+        assert(err.code === 'ECONNRESET');
+        assert(!data);
+        assert(res);
         done();
       });
     });
 
     it('should socket hang up by req.abort() before `response` event emit', function (done) {
       var req = urllib.request(host + '/timeout', {timeout: 500}, function (err, data, res) {
-        should.exist(err);
-        err.stack.should.containEql('socket hang up');
-        err.code.should.equal('ECONNRESET');
-        should.not.exist(data);
-        should.exist(res);
+        assert(err);
+        assert(err.stack.indexOf('socket hang up') >= 0);
+        assert(err.code === 'ECONNRESET');
+        assert(!data);
+        assert(res);
         done();
       });
       setTimeout(function () {
@@ -357,12 +356,12 @@ describe('test/urllib.test.js', function () {
 
     it('should handle server socket end("balabal") will error', function (done) {
       urllib.request(host + '/socket.end.error', function (err, data) {
-        should.exist(err);
-        err.name.should.equal('ResponseError');
-        err.code && err.code.should.equal('HPE_INVALID_CHUNK_SIZE');
-        err.message.should.containEql('Parse Error (req "error"), GET http://127.0.0.1:');
-        err.bytesParsed.should.equal(2);
-        should.not.exist(data);
+        assert(err);
+        assert(err.name === 'ResponseError');
+        err.code && assert(err.code === 'HPE_INVALID_CHUNK_SIZE');
+        assert(err.message.indexOf('Parse Error (req "error"), GET http://127.0.0.1:') >= 0);
+        assert(err.bytesParsed === 2);
+        assert(!data);
         done();
       });
     });
@@ -372,16 +371,16 @@ describe('test/urllib.test.js', function () {
         type: 'get',
         data: {
           sql: 'SELECT * from table',
-          data: '呵呵'
+          data: '呵呵',
         }
       };
       urllib.request(host + '/get', params, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
+        assert(!err);
+        assert(res.statusCode === 200);
         var info = urlutil.parse(data.toString(), true);
-        info.pathname.should.equal('/get');
-        info.query.sql.should.equal(params.data.sql);
-        info.query.data.should.equal(params.data.data);
+        assert(info.pathname === '/get');
+        assert(info.query.sql === params.data.sql);
+        assert(info.query.data === params.data.data);
         done();
       });
     });
@@ -390,7 +389,7 @@ describe('test/urllib.test.js', function () {
       var params = {
         data: {
           sql: 'SELECT * from table',
-          data: '呵呵'
+          data: '呵呵',
         }
       };
       var options = {
@@ -398,12 +397,12 @@ describe('test/urllib.test.js', function () {
         port: port,
       };
       urllib.request(options, params, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
+        assert(!err);
+        assert(res.statusCode === 200);
         var info = urlutil.parse(data.toString(), true);
-        info.pathname.should.equal('/get');
-        info.query.sql.should.equal(params.data.sql);
-        info.query.data.should.equal(params.data.data);
+        assert(info.pathname === '/get');
+        assert(info.query.sql === params.data.sql);
+        assert(info.query.data === params.data.data);
         done();
       });
     });
@@ -412,7 +411,7 @@ describe('test/urllib.test.js', function () {
       var params = {
         data: {
           sql: 'SELECT * from table',
-          data: '呵呵'
+          data: '呵呵',
         },
         beforeRequest: function (options) {
           options.path += '&foo=bar';
@@ -423,13 +422,13 @@ describe('test/urllib.test.js', function () {
         port: port,
       };
       urllib.request(options, params, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
+        assert(!err);
+        assert(res.statusCode === 200);
         var info = urlutil.parse(data.toString(), true);
-        info.pathname.should.equal('/get');
-        info.query.sql.should.equal(params.data.sql);
-        info.query.data.should.equal(params.data.data);
-        info.query.foo.should.equal('bar');
+        assert(info.pathname === '/get');
+        assert(info.query.sql === params.data.sql);
+        assert(info.query.data === params.data.data);
+        assert(info.query.foo === 'bar');
         done();
       });
     });
@@ -439,12 +438,12 @@ describe('test/urllib.test.js', function () {
         type: 'get',
         data: {
           'should_not': 'be_covered',
-          'by': 'data'
+          'by': 'data',
         }
       }, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
-        data.toString().should.equal('/get?that=in_path&should_not=be_covered&by=data');
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(data.toString() === '/get?that=in_path&should_not=be_covered&by=data');
         done();
       });
     });
@@ -453,7 +452,7 @@ describe('test/urllib.test.js', function () {
       var params = {
         data: {
           sql: 'SELECT * from table',
-          data: '哈哈'
+          data: '哈哈',
         }
       };
       var options = {
@@ -462,11 +461,11 @@ describe('test/urllib.test.js', function () {
         port: port,
       };
       urllib.request(options, params, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
+        assert(!err);
+        assert(res.statusCode === 200);
         data = querystring.parse(data.toString());
-        data.sql.should.equal(params.data.sql);
-        data.data.should.equal(params.data.data);
+        assert(data.sql === params.data.sql);
+        assert(data.data === params.data.data);
         done();
       });
     });
@@ -478,16 +477,16 @@ describe('test/urllib.test.js', function () {
         type: 'POST',
         data: {
           sql: 'SELECT * from table',
-          data: '哈哈'
+          data: '哈哈',
         }
       };
       var check = function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
-        res.should.header('X-Request-Content-Type', 'application/x-www-form-urlencoded');
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(res.headers['x-request-content-type'] === 'application/x-www-form-urlencoded');
         data = querystring.parse(data.toString());
-        data.sql.should.equal(params1.data.sql);
-        data.data.should.equal(params1.data.data);
+        assert(data.sql === params1.data.sql);
+        assert(data.data === params1.data.data);
         done();
       };
 
@@ -496,7 +495,7 @@ describe('test/urllib.test.js', function () {
         type: 'put',
         data: {
           sql: 'SELECT * from table',
-          data: '哈哈'
+          data: '哈哈',
         }
       };
       urllib.request(host + '/post', params2, check);
@@ -504,7 +503,7 @@ describe('test/urllib.test.js', function () {
         type: 'patch',
         data: {
           sql: 'SELECT * from table',
-          data: '哈哈'
+          data: '哈哈',
         }
       };
       urllib.request(host + '/post', params3, check);
@@ -516,19 +515,19 @@ describe('test/urllib.test.js', function () {
         type: 'POST',
         data: {
           sql: 'SELECT * from table',
-          data: '哈哈'
+          data: '哈哈',
         },
         headers: {
-          'Content-Type': 'test-foo-encode'
+          'Content-Type': 'test-foo-encode',
         }
       };
       urllib.request(host + '/post', params, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
-        res.should.header('X-Request-Content-Type', 'test-foo-encode');
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(res.headers['x-request-content-type'] === 'test-foo-encode');
         data = querystring.parse(data.toString());
-        data.sql.should.equal(params.data.sql);
-        data.data.should.equal(params.data.data);
+        assert(data.sql === params.data.sql);
+        assert(data.data === params.data.data);
         done();
       });
     });
@@ -538,19 +537,19 @@ describe('test/urllib.test.js', function () {
         type: 'POST',
         data: {
           sql: 'SELECT * from table',
-          data: '哈哈'
+          data: '哈哈',
         },
         headers: {
-          'content-type': 'test-foo-encode'
+          'content-type': 'test-foo-encode',
         }
       };
       urllib.request(host + '/post', params, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
-        res.should.header('X-Request-Content-Type', 'test-foo-encode');
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(res.headers['x-request-content-type'] === 'test-foo-encode');
         data = querystring.parse(data.toString());
-        data.sql.should.equal(params.data.sql);
-        data.data.should.equal(params.data.data);
+        assert(data.sql === params.data.sql);
+        assert(data.data === params.data.data);
         done();
       });
     });
@@ -559,11 +558,11 @@ describe('test/urllib.test.js', function () {
       var bigdata = new Buffer(1024 * 1024);
       urllib.request(host + '/post', {
         type: 'post',
-        content: bigdata
+        content: bigdata,
       }, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
-        data.should.length(bigdata.length);
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(data.length === bigdata.length);
         done();
       });
     });
@@ -572,11 +571,11 @@ describe('test/urllib.test.js', function () {
       var bigdata = new Buffer(1024 * 1024);
       urllib.request(host + '/post', {
         type: 'post',
-        data: bigdata
+        data: bigdata,
       }, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
-        data.should.length(bigdata.length);
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(data.length === bigdata.length);
         done();
       });
     });
@@ -585,48 +584,48 @@ describe('test/urllib.test.js', function () {
       var bigdata = new require('buffer').SlowBuffer(1024 * 1024);
       urllib.request(host + '/post', {
         type: 'post',
-        data: bigdata
+        data: bigdata,
       }, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
-        data.should.length(bigdata.length);
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(data.length === bigdata.length);
         done();
       });
     });
 
     it('should handle GET /wrongjson with dataType=json', function (done) {
       urllib.request(host + '/wrongjson', {
-        dataType: 'json'
+        dataType: 'json',
       }, function (err, data, res) {
-        should.exist(err);
-        err.name.should.equal('JSONResponseFormatError');
-        err.message.should.containEql('Unexpected end ');
-        res.should.status(200);
-        data.toString().should.equal('{"foo":""');
+        assert(err);
+        assert(err.name === 'JSONResponseFormatError');
+        assert(err.message.indexOf('Unexpected end ') >= 0);
+        assert(res.statusCode === 200);
+        assert(data.toString() === '{"foo":""');
         done();
       });
     });
 
     it('should handle GET /wrongjson-gbk with dataType=json and data size > 1024', function (done) {
       urllib.request(host + '/wrongjson-gbk', {
-        dataType: 'json'
+        dataType: 'json',
       }, function (err, data, res) {
-        should.exist(err);
-        err.name.should.equal('JSONResponseFormatError');
-        err.message.should.containEql('Unexpected token ');
-        err.message.should.containEql('" ...skip... "');
-        res.should.status(200);
+        assert(err);
+        assert(err.name === 'JSONResponseFormatError');
+        assert(err.message.indexOf('Unexpected token ') >= 0);
+        assert(err.message.indexOf('" ...skip... "') >= 0);
+        assert(res.statusCode === 200);
         done();
       });
     });
 
     it('should support options.dataType=text', function (done) {
       urllib.request(host + '/wrongjson', {
-        dataType: 'text'
+        dataType: 'text',
       }, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
-        data.should.equal('{"foo":""');
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(data === '{"foo":""');
         done();
       });
     });
@@ -635,11 +634,11 @@ describe('test/urllib.test.js', function () {
       urllib.request(host + '/auth', {
         type: 'get',
         dataType: 'json',
-        auth: 'fengmk2:pass'
+        auth: 'fengmk2:pass',
       }, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
-        data.should.eql({user: 'fengmk2', password: 'pass'});
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert.deepEqual(data, {user: 'fengmk2', password: 'pass'});
         done();
       });
     });
@@ -649,16 +648,16 @@ describe('test/urllib.test.js', function () {
         type: 'get',
         dataType: 'json',
       }, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
-        data.should.eql({user: 'fengmk2', password: '123456'});
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert.deepEqual(data, {user: 'fengmk2', password: '123456'});
         done();
       });
     });
 
     describe('mock sockets full', function () {
       var agent = new http.Agent({
-        maxSockets: 1
+        maxSockets: 1,
       });
 
       it('should case timeout after sockets link full', function (done) {
@@ -666,25 +665,25 @@ describe('test/urllib.test.js', function () {
 
         var errCount = 0;
         urllib.request(host + '/timeout', {agent: agent, timeout: 550}, function (err, data) {
-          should.not.exist(err);
-          errCount.should.equal(1);
+          assert(!err);
+          assert(errCount === 1);
           errCount = -1;
-          data.toString().should.equal('timeout 500ms');
+          assert(data.toString() === 'timeout 500ms');
           done();
         });
 
         // this will timeout first
         var req = urllib.request(host + '/timeout', {agent: agent, timeout: 300}, function (err) {
-          should.exist(err);
-          err.noSocket.should.equal(true);
-          err.name.should.equal('SocketAssignTimeoutError');
-          errCount.should.equal(0);
+          assert(err);
+          assert(err.noSocket);
+          assert(err.name === 'SocketAssignTimeoutError');
+          assert(errCount === 0);
           errCount++;
           done();
         });
         var reqs = agent.requests[Object.keys(agent.requests)[0]];
-        reqs.should.length(1);
-        reqs[0].requestId.should.equal(req.requestId);
+        assert(reqs.length === 1);
+        assert(reqs[0].requestId === req.requestId);
       });
     });
 
@@ -719,14 +718,14 @@ describe('test/urllib.test.js', function () {
             httpsAgent: httpsAgent,
             timeout: 25000,
           }, function (err, data, res) {
-            should.not.exist(err);
-            data.should.be.an.instanceof(Buffer);
+            assert(!err);
+            assert(data instanceof Buffer);
             if (res.statusCode !== 200) {
               console.log(res.statusCode, res.headers);
             }
-            res.should.have.header('connection', 'keep-alive');
+            assert(res.headers.connection === 'keep-alive');
             if (index >= 3) {
-              res.keepAliveSocket.should.equal(true);
+              assert(res.keepAliveSocket === true);
             }
             done();
           });
@@ -741,9 +740,9 @@ describe('test/urllib.test.js', function () {
           httpsAgent: httpsAgent,
           timeout: 25000,
         }, function (err, data, res) {
-          should.not.exist(err);
-          data.should.be.an.instanceof(Buffer);
-          res.statusCode.should.equal(200);
+          assert(!err);
+          assert(data instanceof Buffer);
+          assert(res.statusCode === 200);
           // make sure free socket release to free list
           process.nextTick(function () {
             urllib.request(config.npmHttpRegistry + '/npm', {
@@ -751,8 +750,8 @@ describe('test/urllib.test.js', function () {
               httpsAgent: httpsAgent,
               timeout: 1,
             }, function (err) {
-              should.exist(err);
-              err.message.should.containEql('(connected: true, keepalive socket: true, agent status: {"createSocketCount":');
+              assert(err);
+              assert(err.message.indexOf('(connected: true, keepalive socket: true, agent status: {"createSocketCount":') >= 0);
               done();
             });
           });
@@ -767,9 +766,9 @@ describe('test/urllib.test.js', function () {
           httpsAgent: httpsAgent,
           timeout: 25000,
         }, function (err, data, res) {
-          should.not.exist(err);
-          data.should.be.an.instanceof(Buffer);
-          res.statusCode.should.equal(200);
+          assert(!err);
+          assert(data instanceof Buffer);
+          assert(res.statusCode === 200);
           // make sure free socket release to free list
           process.nextTick(function () {
             urllib.request(config.npmRegistry + '/npm', {
@@ -777,8 +776,8 @@ describe('test/urllib.test.js', function () {
               httpsAgent: httpsAgent,
               timeout: 1,
             }, function (err) {
-              should.exist(err);
-              err.message.should.containEql('(connected: true, keepalive socket: true, agent status: {"createSocketCount":');
+              assert(err);
+              assert(err.message.indexOf('(connected: true, keepalive socket: true, agent status: {"createSocketCount":') >= 0);
               done();
             });
           });
@@ -795,10 +794,10 @@ describe('test/urllib.test.js', function () {
         type: 'POST',
         stream: stream
       }, function (err, data, res) {
-        should.not.exist(err);
-        data.should.be.an.instanceof(Buffer);
-        data.should.length(stat.size);
-        res.headers['content-length'].should.equal(String(stat.size));
+        assert(!err);
+        assert(data instanceof Buffer);
+        assert(data.length === stat.size);
+        assert(res.headers['content-length'] === String(stat.size));
         done();
       });
     });
@@ -813,11 +812,11 @@ describe('test/urllib.test.js', function () {
         stream: form
       };
       urllib.request(host + '/stream', args, function (err, data, res) {
-        should.not.exist(err);
+        assert(!err);
         data = data.toString();
-        data.should.containEql('你好urllib\r\n----------------------------');
-        data.should.containEql('Content-Disposition: form-data; name="file"; filename="urllib.test.js"');
-        res.should.status(200);
+        assert(data.indexOf('你好urllib\r\n----------------------------') >= 0);
+        assert(data.indexOf('Content-Disposition: form-data; name="file"; filename="urllib.test.js"') >= 0);
+        assert(res.statusCode === 200);
         done();
       });
     });
@@ -828,11 +827,11 @@ describe('test/urllib.test.js', function () {
         type: 'POST',
         stream: stream
       }, function (err, data, res) {
-        should.exist(err);
-        err.message.should.containEql('ENOENT');
-        err.res.should.equal(res);
-        should.not.exist(data);
-        should.exist(res);
+        assert(err);
+        assert(err.message.indexOf('ENOENT') >= 0);
+        assert(err.res === res);
+        assert(!data);
+        assert(res);
         done();
       });
     });
@@ -849,12 +848,11 @@ describe('test/urllib.test.js', function () {
         writeStream: writeStream,
         timeout: 25000,
       }, function (err, data, res) {
-        should.not.exist(err);
-        should.ok(fs.existsSync(tmpfile));
-        should.ok(data === null);
-        res.should.status(200);
-        fs.statSync(tmpfile).size.should.above(100);
-        // fs.readFileSync(tmpfile, 'utf8').should.equal(fs.readFileSync(__filename, 'utf8'));
+        assert(!err);
+        assert(fs.existsSync(tmpfile));
+        assert(data === null);
+        assert(res.statusCode === 200);
+        assert(fs.statSync(tmpfile).size > 100);
         done();
       });
     });
@@ -874,10 +872,10 @@ describe('test/urllib.test.js', function () {
         followRedirect: true,
         timeout: 25000
       }, function (err, data) {
-        should.not.exist(err);
-        should.ok(fs.existsSync(tmpfile));
-        should.ok(data === null);
-        fs.statSync(tmpfile).size.should.above(0);
+        assert(!err);
+        assert(fs.existsSync(tmpfile));
+        assert(data === null);
+        assert(fs.statSync(tmpfile).size > 0);
         done();
       });
     });
@@ -891,8 +889,8 @@ describe('test/urllib.test.js', function () {
       urllib.request(host + '/writestream', {
         writeStream: writeStream
       }, function (err) {
-        should.exist(err);
-        err.message.should.containEql('ENOENT');
+        assert(err);
+        assert(err.message.indexOf('ENOENT') >= 0);
         done();
       });
     });
@@ -902,17 +900,19 @@ describe('test/urllib.test.js', function () {
       urllib.request(host + '/error', {
         writeStream: writeStream
       }, function (err, data, res) {
-        should.exist(err);
-        err.name.should.equal('ResponseError');
-        err.stack.should.match(/socket hang up/);
-        err.code.should.equal('ECONNRESET');
-        err.message.should.containEql('/error -1 (connected: true, keepalive socket: false)\nheaders: {}');
-        err.res.should.equal(res);
-        should.not.exist(data);
-        should.exist(res);
-        res.should.have.keys('status', 'statusCode', 'headers', 'size', 'rt',
-          'aborted', 'keepAliveSocket', 'data', 'requestUrls', 'timing',
-          'remoteAddress', 'remotePort');
+        assert(err);
+        assert(err.name === 'ResponseError');
+        assert(err.stack.match(/socket hang up/));
+        assert(err.code === 'ECONNRESET');
+        assert(err.message.indexOf('/error -1 (connected: true, keepalive socket: false)\nheaders: {}') >= 0);
+        assert(err.res === res);
+        assert(!data);
+        assert(res);
+        assert.deepEqual(Object.keys(res), [
+          'status', 'statusCode', 'headers', 'size',
+          'aborted', 'rt', 'keepAliveSocket', 'data', 'requestUrls', 'timing',
+          'remoteAddress', 'remotePort',
+        ]);
         done();
       });
     });
@@ -924,9 +924,9 @@ describe('test/urllib.test.js', function () {
         consumeWriteStream: false,
         timeout: 25000,
       }, function (err, data, res) {
-        should.not.exist(err);
-        should.ok(data === null);
-        res.should.status(200);
+        assert(!err);
+        assert(data === null);
+        assert(res.statusCode === 200);
 
         var content = '';
         writeStream
@@ -934,7 +934,7 @@ describe('test/urllib.test.js', function () {
           content += data;
         })
         .on('end', function() {
-          new Buffer(content).length.should.above(100);
+          assert(new Buffer(content).length > 100);
           done();
         });
       });
@@ -947,14 +947,14 @@ describe('test/urllib.test.js', function () {
         timeout: 25000,
         streaming: true
       }, function (err, data, res) {
-        should.not.exist(err);
-        should.not.exist(data);
+        assert(!err);
+        assert(!data);
         var size = 0;
         res.on('data', function (chunk) {
           size += chunk.length;
         });
         res.on('end', function () {
-          size.should.above(0);
+          assert(size > 0);
           done();
         });
       });
@@ -965,13 +965,13 @@ describe('test/urllib.test.js', function () {
         timeout: 25000,
         customResponse: true
       }, function (err, data, res) {
-        should.not.exist(err);
+        assert(!err);
         var size = 0;
         res.on('data', function (chunk) {
           size += chunk.length;
         });
         res.on('end', function () {
-          size.should.above(0);
+          assert(size > 0);
           done();
         });
       });
@@ -982,8 +982,8 @@ describe('test/urllib.test.js', function () {
         timeout: 10000,
         customResponse: true
       }, function (err) {
-        should.exist(err);
-        err.code.should.equal('ENOTFOUND');
+        assert(err);
+        assert(err.code === 'ENOTFOUND');
         done();
       });
     });
@@ -994,16 +994,16 @@ describe('test/urllib.test.js', function () {
         streaming: true,
         followRedirect: true
       }, function (err, data, res) {
-        should.not.exist(err);
-        should.not.exist(data);
-        res.statusCode.should.equal(200);
-        should.not.exist(res.headers.location);
+        assert(!err);
+        assert(!data);
+        assert(res.statusCode === 200);
+        assert(!res.headers.location);
         var size = 0;
         res.on('data', function (chunk) {
           size += chunk.length;
         });
         res.on('end', function () {
-          size.should.above(0);
+          assert(size > 0);
           done();
         });
       });
@@ -1015,14 +1015,14 @@ describe('test/urllib.test.js', function () {
         streaming: true,
         followRedirect: true
       }).then(function (result) {
-        result.status.should.equal(200);
-        result.res.should.be.a.Stream;
+        assert(result.status === 200);
+        assert(result.res instanceof Stream);
         var size = 0;
         result.res.on('data', function (chunk) {
           size += chunk.length;
         });
         result.res.on('end', function () {
-          size.should.above(0);
+          assert(size > 0);
           done();
         });
       }).catch(done);
@@ -1035,8 +1035,8 @@ describe('test/urllib.test.js', function () {
         followRedirect: true,
         timeout: 30000,
       }, function (err, _, res) {
-        should.not.exist(err);
-        res.statusCode.should.equal(200);
+        assert(!err);
+        assert(res.statusCode === 200);
 
         var tmpdir = path.join(os.tmpdir(), 'pedding-ungzip2');
         var gunzip = zlib.createGunzip();
@@ -1065,11 +1065,11 @@ describe('test/urllib.test.js', function () {
         dataType: 'json',
       };
       urllib.request(host + '/json_mirror', params, function (err, serverData, res) {
-        should.not.exist(err);
+        assert(!err);
         serverData.now = new Date(serverData.now);
-        serverData.should.eql(params.data);
-        res.should.status(200);
-        res.headers.should.have.property('content-type', 'application/json');
+        assert.deepEqual(serverData, params.data);
+        assert(res.statusCode === 200);
+        assert(res.headers['content-type'] === 'application/json');
         done();
       });
     });
@@ -1086,11 +1086,11 @@ describe('test/urllib.test.js', function () {
         dataType: 'json',
       };
       urllib.request(host + '/json_mirror', params, function (err, serverData, res) {
-        should.not.exist(err);
+        assert(!err);
         serverData.now = new Date(serverData.now);
-        serverData.should.eql(params.data);
-        res.should.status(200);
-        res.headers.should.have.property('content-type', 'application/json; charset=utf-8');
+        assert.deepEqual(serverData, params.data);
+        assert(res.statusCode === 200);
+        assert(res.headers['content-type'] === 'application/json; charset=utf-8');
         done();
       });
     });
@@ -1107,12 +1107,13 @@ describe('test/urllib.test.js', function () {
         dataType: 'json',
       };
       urllib.request(host + '/json_mirror', params, function (err, serverData, res) {
-        should.not.exist(err);
-        serverData.should.eql({
-          url: '/json_mirror?foo=bar&n1=1&now=', data: ''
+        assert(!err);
+        assert.deepEqual(serverData, {
+          url: '/json_mirror?foo=bar&n1=1&now=',
+          data: '',
         });
-        res.should.status(200);
-        res.headers.should.have.property('content-type', 'application/json');
+        assert(res.statusCode === 200);
+        assert(res.headers['content-type'] === 'application/json');
         done();
       });
     });
@@ -1131,11 +1132,11 @@ describe('test/urllib.test.js', function () {
         dataType: 'json'
       };
       urllib.request(host + '/json_mirror', params, function (err, serverData, res) {
-        should.not.exist(err);
+        assert(!err);
         serverData.now = new Date(serverData.now);
-        serverData.should.eql(params.data);
-        res.should.status(200);
-        res.headers.should.have.property('content-type', 'application/json');
+        assert.deepEqual(serverData, params.data);
+        assert(res.statusCode === 200);
+        assert(res.headers['content-type'] === 'application/json');
         done();
       });
     });
@@ -1152,9 +1153,9 @@ describe('test/urllib.test.js', function () {
         dataType: 'json'
       };
       urllib.request(host + '/json_mirror', params, function (err, serverData, res) {
-        should.not.exist(err);
-        res.should.status(200);
-        res.headers.should.have.property('content-type', 'application/json');
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(res.headers['content-type'] === 'application/json');
         done();
       });
     });
@@ -1167,8 +1168,8 @@ describe('test/urllib.test.js', function () {
           gzip: true,
           timeout: 25000,
         }, function (err, data, res) {
-        should.not.exist(err);
-        res.should.have.header('content-encoding', 'gzip');
+        assert(!err);
+        assert(res.headers['content-encoding'] === 'gzip');
         done();
       });
     });
@@ -1182,8 +1183,8 @@ describe('test/urllib.test.js', function () {
           'accept-encoding': 'gzip'
         }
       }, function (err, data, res) {
-        should.not.exist(err);
-        res.should.have.header('content-encoding', 'gzip');
+        assert(!err);
+        assert(res.headers['content-encoding'] === 'gzip');
         done();
       });
 
@@ -1193,8 +1194,8 @@ describe('test/urllib.test.js', function () {
           'Accept-Encoding': 'gzip'
         }
       }, function (err, data, res) {
-        should.not.exist(err);
-        res.should.have.header('content-encoding', 'gzip');
+        assert(!err);
+        assert(res.headers['content-encoding'] === 'gzip');
         done();
       });
 
@@ -1205,8 +1206,8 @@ describe('test/urllib.test.js', function () {
           'accept-encoding': 'gzip'
         }
       }, function (err, data, res) {
-        should.not.exist(err);
-        res.should.have.header('content-encoding', 'gzip');
+        assert(!err);
+        assert(res.headers['content-encoding'] === 'gzip');
         done();
       });
 
@@ -1214,8 +1215,8 @@ describe('test/urllib.test.js', function () {
         timeout: 25000,
         gzip: true,
       }, function (err, data, res) {
-        should.not.exist(err);
-        res.should.have.header('content-encoding', 'gzip');
+        assert(!err);
+        assert(res.headers['content-encoding'] === 'gzip');
         done();
       });
     });
@@ -1223,9 +1224,9 @@ describe('test/urllib.test.js', function () {
     it('should redirect and gzip', function (done) {
       urllib.request(config.npmWeb + '/pedding',
         {followRedirect: true, gzip: true, timeout: 25000}, function (err, data, res) {
-        should.not.exist(err);
-        res.should.status(200);
-        res.should.have.header('content-encoding', 'gzip');
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(res.headers['content-encoding'] === 'gzip');
         done();
       });
     });
@@ -1234,38 +1235,38 @@ describe('test/urllib.test.js', function () {
       done = pedding(3, done);
       urllib.request(config.npmWeb, {timeout: 30000},
       function (err, data, res) {
-        should.not.exist(err);
-        should.not.exist(res.headers['content-encoding']);
+        assert(!err);
+        assert(!res.headers['content-encoding']);
         done();
       });
 
       urllib.request(config.npmWeb, {gzip: false, timeout: 30000},
       function (err, data, res) {
-        should.not.exist(err);
-        should.not.exist(res.headers['content-encoding']);
+        assert(!err);
+        assert(!res.headers['content-encoding']);
         done();
       });
 
       urllib.request(config.npmWeb, {gzip: true, timeout: 30000},
       function (err, data, res) {
-        should.not.exist(err);
-        res.should.have.header('content-encoding', 'gzip');
+        assert(!err);
+        assert(res.headers['content-encoding'] === 'gzip');
         done();
       });
     });
 
     it('should not ungzip content when server not accept gzip', function (done) {
       urllib.request(host + '/no-gzip', {gzip: true}, function (err, data, res) {
-        should.not.exist(err);
-        should.not.exist(res.headers['content-encoding']);
+        assert(!err);
+        assert(!res.headers['content-encoding']);
         done();
       });
     });
 
     it('should gzip content when server accept gzip', function (done) {
       urllib.request(host + '/gzip', {gzip: true}, function (err, data, res) {
-        should.not.exist(err);
-        res.should.have.header('content-encoding', 'gzip');
+        assert(!err);
+        assert(res.headers['content-encoding'] === 'gzip');
         done();
       });
     });
@@ -1274,9 +1275,9 @@ describe('test/urllib.test.js', function () {
   describe('204 status response', function () {
     it('should not convert json data when status 204', function (done) {
       urllib.request(host + '/204', {dataType: 'json'}, function (err, data, res) {
-        should.not.exist(err);
-        should.not.exist(data);
-        res.should.status(204);
+        assert(!err);
+        assert(!data);
+        assert(res.statusCode === 204);
         done();
       });
     });
@@ -1285,10 +1286,10 @@ describe('test/urllib.test.js', function () {
   describe('user-agent', function () {
     it('should return default user agent', function (done) {
       urllib.request(host + '/ua', {dataType: 'json'}, function (err, data, res) {
-        should.not.exist(err);
-        should.exist(data['user-agent']);
-        data['user-agent'].should.match(/^node\-urllib\/\d+\.\d+\.\d+ Node\.js\/\d+\.\d+\.\d+ \(/);
-        res.should.status(200);
+        assert(!err);
+        assert(data['user-agent']);
+        assert(data['user-agent'].match(/^node\-urllib\/\d+\.\d+\.\d+ Node\.js\/\d+\.\d+\.\d+ \(/));
+        assert(res.statusCode === 200);
         done();
       });
     });
@@ -1296,10 +1297,10 @@ describe('test/urllib.test.js', function () {
     it('should return mock user agent', function (done) {
       urllib.request(host + '/ua', {dataType: 'json', headers: {'user-agent': 'mock agent'}},
       function (err, data, res) {
-        should.not.exist(err);
-        should.exist(data['user-agent']);
-        data['user-agent'].should.equal('mock agent');
-        res.should.status(200);
+        assert(!err);
+        assert(data['user-agent']);
+        assert(data['user-agent'] === 'mock agent');
+        assert(res.statusCode === 200);
         done();
       });
     });
@@ -1307,10 +1308,10 @@ describe('test/urllib.test.js', function () {
     it('should return mock 2 user agent', function (done) {
       urllib.request(host + '/ua', {dataType: 'json', headers: {'User-Agent': 'mock2 agent'}},
       function (err, data, res) {
-        should.not.exist(err);
-        should.exist(data['user-agent']);
-        data['user-agent'].should.equal('mock2 agent');
-        res.should.status(200);
+        assert(!err);
+        assert(data['user-agent']);
+        assert(data['user-agent'] === 'mock2 agent');
+        assert(res.statusCode === 200);
         done();
       });
     });
@@ -1327,23 +1328,23 @@ describe('test/urllib.test.js', function () {
       done = pedding(4, done);
       urllib.on('response', function (info) {
         if (info.req.options.path === '/error') {
-          should.exist(info.error);
-          info.res.status.should.equal(-1);
-          info.req.size.should.equal(0);
-          info.ctx.should.eql({
-            foo: 'error request'
+          assert(info.error);
+          assert(info.res.status === -1);
+          assert(info.req.size >= 0);
+          assert.deepEqual(info.ctx, {
+            foo: 'error request',
           });
         } else {
-          should.not.exist(info.error);
-          info.res.status.should.equal(200);
-          info.req.size.should.equal(7);
-          info.res.size.should.equal(info.req.size);
-          info.req.options.path.should.equal('/stream');
-          info.ctx.should.eql({
-            foo: 'stream request'
+          assert(!info.error);
+          assert(info.res.status === 200);
+          assert(info.req.size === 7);
+          assert(info.res.size === info.req.size);
+          assert(info.req.options.path === '/stream');
+          assert.deepEqual(info.ctx, {
+            foo: 'stream request',
           });
-          info.req.socket.remoteAddress.should.equal('127.0.0.1');
-          info.req.socket.remotePort.should.equal(port);
+          assert(info.req.socket.remoteAddress === '127.0.0.1');
+          assert(info.req.socket.remotePort === port);
         }
         done();
       });
@@ -1353,7 +1354,7 @@ describe('test/urllib.test.js', function () {
           foo: 'error request'
         }
       }, function (err) {
-        should.exist(err);
+        assert(err);
         done();
       });
 
@@ -1364,7 +1365,7 @@ describe('test/urllib.test.js', function () {
           foo: 'stream request'
         }
       }, function (err) {
-        should.not.exist(err);
+        assert(!err);
         done();
       });
     });
@@ -1376,7 +1377,7 @@ describe('test/urllib.test.js', function () {
         info.args.headers['custom-header'] = 'custom-header';
       });
       urllib.on('response', function (info) {
-        info.req.options.headers['custom-header'].should.equal('custom-header');
+        assert(info.req.options.headers['custom-header'] === 'custom-header');
         done();
       });
 
@@ -1385,7 +1386,7 @@ describe('test/urllib.test.js', function () {
           foo: 'error request'
         }
       }, function (err) {
-        should.exist(err);
+        assert(err);
         done();
       });
 
@@ -1396,7 +1397,7 @@ describe('test/urllib.test.js', function () {
           foo: 'stream request'
         }
       }, function (err) {
-        should.not.exist(err);
+        assert(!err);
         done();
       });
     });
@@ -1407,8 +1408,8 @@ describe('test/urllib.test.js', function () {
       urllib.request(host + '/gbk/json', {
         dataType: 'json'
       }, function (err, data, res) {
-        res.should.have.header('content-type', 'application/json;charset=gbk');
-        data.should.eql({
+        assert(res.headers['content-type'] === 'application/json;charset=gbk');
+        assert.deepEqual(data ,{
           hello: '你好'
         });
         done(err);
@@ -1419,8 +1420,8 @@ describe('test/urllib.test.js', function () {
       urllib.request(host + '/gbk/text', {
         dataType: 'text'
       }, function (err, data, res) {
-        res.should.have.header('content-type', 'text/plain;charset=gbk');
-        data.should.equal('你好');
+        assert(res.headers['content-type'] === 'text/plain;charset=gbk');
+        assert(data === '你好');
         done(err);
       });
     });
@@ -1429,8 +1430,8 @@ describe('test/urllib.test.js', function () {
       urllib.request(host + '/errorcharset', {
         dataType: 'text'
       }, function (err, data, res) {
-        res.should.have.header('content-type', 'text/plain;charset=notfound');
-        data.should.eql(new Buffer('你好'));
+        assert(res.headers['content-type'] === 'text/plain;charset=notfound');
+        assert.deepEqual(data, new Buffer('你好'));
         done(err);
       });
     });
@@ -1443,9 +1444,9 @@ describe('test/urllib.test.js', function () {
         dataType: 'json',
         fixJSONCtlChars: true,
       }, function (err, data) {
-        should.not.exist(err);
-        data.should.eql({
-          foo: '\b\f\n\r\tbar\u000e!1!\u0086!2\!\u0000\!3\!\u001f\!4\!\\\!5\!end\\\\'
+        assert(!err);
+        assert.deepEqual(data, {
+          foo: '\b\f\n\r\tbar\u000e!1!\u0086!2\!\u0000\!3\!\u001f\!4\!\\\!5\!end\\\\',
         });
         done();
       });
@@ -1456,10 +1457,10 @@ describe('test/urllib.test.js', function () {
         dataType: 'json',
         // fixJSONCtlChars: false,
       }, function (err, data) {
-        should.exist(err);
-        err.name.should.equal('JSONResponseFormatError');
-        err.message.should.containEql('Unexpected token ');
-        data.should.equal('{"foo":"\b\f\n\r\tbar\u000e!1!\u0086!2!\u0000!3!\u001f!4!\\!5!end\\\\"}');
+        assert(err);
+        assert(err.name === 'JSONResponseFormatError');
+        assert(err.message.indexOf('Unexpected token ') >= 0);
+        assert(data === '{"foo":"\b\f\n\r\tbar\u000e!1!\u0086!2!\u0000!3!\u001f!4!\\!5!end\\\\"}');
         done();
       });
     });
@@ -1467,7 +1468,6 @@ describe('test/urllib.test.js', function () {
   });
 
   describe('args.stream = stream', function() {
-
     it('should post stream', function(done) {
       var form = formstream();
       form.file('file1', __filename);
@@ -1477,19 +1477,18 @@ describe('test/urllib.test.js', function () {
         method: 'post',
         dataType: 'json',
         headers: form.headers(),
-        stream: form
+        stream: form,
       };
 
       var url = 'http://httpbin.org/post';
       urllib.request(url, args, function (err, data, res) {
-        should.not.exist(err);
-        data.files.file1.should.be.a.String;
-        data.form.hello.should.equal('你好urllib');
-        res.status.should.equal(200);
+        assert(!err);
+        assert(typeof data.files.file1 === 'string');
+        assert(data.form.hello === '你好urllib');
+        assert(res.status === 200);
         done();
       });
     }).timeout(30 * 1000);
-
   });
 
   describe('args.dataAsQueryString = true', function() {

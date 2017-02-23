@@ -1,6 +1,6 @@
 'use strict';
 
-var should = require('should');
+var assert = require('assert');
 var config = require('./config');
 var urllib = require('../');
 
@@ -8,21 +8,23 @@ describe('test/urllib_promise.test.js', function () {
   it('should return promise when callback missing', function () {
     return urllib.request(config.npmWeb, {timeout: 20000})
     .then(function (result) {
-      should.exist(result);
-      result.should.have.keys('data', 'status', 'headers', 'res');
-      should.exist(result.data);
-      should.exist(result.res);
-      result.data.should.be.a.Buffer;
-      result.status.should.equal(200);
-      result.res.should.status(200);
-      result.res.should.have.header('connection');
-      result.res.headers.connection.toLowerCase().should.equal('keep-alive');
-      result.res.should.have.keys('status', 'statusCode', 'headers', 'rt',
-        'size', 'aborted', 'keepAliveSocket', 'data', 'requestUrls', 'timing',
-        'remoteAddress', 'remotePort');
-      result.res.status.should.equal(200);
-      result.res.rt.should.above(0);
-      result.res.size.should.above(0);
+      assert(result);
+      assert(Object.keys(result), [ 'data', 'status', 'headers', 'res' ]);
+      assert(result.data);
+      assert(result.res);
+      assert(result.data instanceof Buffer);
+      assert(result.status === 200);
+      assert(result.res.statusCode === 200);
+      assert(result.res.headers.connection.toLowerCase() === 'keep-alive');
+      assert.deepEqual(Object.keys(result.res), [
+        'status', 'statusCode', 'headers',
+        'size', 'aborted', 'rt',
+        'keepAliveSocket', 'data', 'requestUrls', 'timing',
+        'remoteAddress', 'remotePort',
+      ]);
+      assert(result.res.status === 200);
+      assert(result.res.rt > 0);
+      assert(result.res.size > 0);
     });
   });
 
@@ -34,12 +36,11 @@ describe('test/urllib_promise.test.js', function () {
       timeout: 20000
     })
     .then(function (result) {
-      should.exist(result.data);
-      should.exist(result.res);
-      result.data.should.be.a.Buffer;
-      result.res.should.status(200);
-      result.res.should.have.header('connection');
-      result.res.headers.connection.toLowerCase().should.equal('keep-alive');
+      assert(result.data);
+      assert(result.res);
+      assert(result.data instanceof Buffer);
+      assert(result.res.statusCode === 200);
+      assert(result.res.headers.connection.toLowerCase() === 'keep-alive');
     });
   });
 
@@ -53,12 +54,14 @@ describe('test/urllib_promise.test.js', function () {
     .then(function () {
       throw new Error('should not run this');
     }).catch(function (err) {
-      should.exist(err);
-      err.code.should.equal('ECONNREFUSED');
-      err.status.should.equal(-1);
-      err.headers.should.eql({});
-      err.res.should.have.keys('status', 'statusCode', 'headers', 'rt', 'size', 'aborted',
-        'keepAliveSocket', 'data', 'requestUrls', 'timing', 'remoteAddress', 'remotePort');
+      assert(err);
+      assert(err.code === 'ECONNREFUSED');
+      assert(err.status === -1);
+      assert.deepEqual(err.headers, {});
+      assert.deepEqual(Object.keys(err.res), [
+        'status', 'statusCode', 'headers', 'size', 'aborted', 'rt',
+        'keepAliveSocket', 'data', 'requestUrls', 'timing', 'remoteAddress', 'remotePort',
+      ]);
     });
   });
 });
