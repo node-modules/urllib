@@ -1,4 +1,12 @@
 
+2.21.0 / 2017-02-27
+==================
+
+  * fix: should pass options to httpclient2 (#249)
+  * test: fix Promise not defined on 0.10
+  * test: use assert instead of should
+  * feat: add retry delay on httpclient2
+
 2.20.0 / 2017-02-06
 ==================
 
