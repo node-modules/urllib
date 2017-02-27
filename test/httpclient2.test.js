@@ -171,7 +171,7 @@ describe('test/httpclient2.test.js', function () {
     });
     client.request(url, {
       timeout: 25000,
-    }).then(function(result) {
+    }).then(function() {
       // console.log(result.headers);
       // sleep a while to make sure socket release to free queue
       return sleep(1);
@@ -179,7 +179,7 @@ describe('test/httpclient2.test.js', function () {
       return client.request(url, {
         timeout: 25000,
       });
-    }).then(function(result) {
+    }).then(function() {
       // console.log(result.headers);
       assert(isKeepAlive.length === 2);
       assert(isKeepAlive[0] === false);
