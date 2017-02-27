@@ -3,6 +3,8 @@
 var http = require('http');
 var assert = require('assert');
 var muk = require('muk');
+var assert = require('assert');
+var KeepAliveAgent = require('agentkeepalive');
 var config = require('./config');
 var mockUrllib = require('../lib/urllib');
 var urllib = require('..');
@@ -156,6 +158,36 @@ describe('test/httpclient2.test.js', function () {
     });
   });
 
+  it('should support keepalive', function(done) {
+    var client = new HttpClient({
+      httpsAgent: new KeepAliveAgent.HttpsAgent({ keepAlive: true }),
+      agent: new KeepAliveAgent({ keepAlive: true }),
+    });
+
+    var isKeepAlive = [];
+    var url = config.npmRegistry + '/pedding/latest';
+    client.on('response', function(info) {
+      isKeepAlive.push(info.res.keepAliveSocket);
+    });
+    client.request(url, {
+      timeout: 25000,
+    }).then(function() {
+      // console.log(result.headers);
+      // sleep a while to make sure socket release to free queue
+      return sleep(1);
+    }).then(function() {
+      return client.request(url, {
+        timeout: 25000,
+      });
+    }).then(function() {
+      // console.log(result.headers);
+      assert(isKeepAlive.length === 2);
+      assert(isKeepAlive[0] === false);
+      assert(isKeepAlive[1] === true);
+      done();
+    }).catch(done);
+  });
+
   describe('when callback throw error', function() {
     var listeners;
     before(function() {
@@ -181,3 +213,14 @@ describe('test/httpclient2.test.js', function () {
     });
   });
 });
+
+var _Promise;
+function sleep(ms) {
+  if (!_Promise) {
+    _Promise = require('any-promise');
+  }
+
+  return new _Promise(function(resolve) {
+    setTimeout(resolve, ms);
+  });
+}
