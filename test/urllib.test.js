@@ -839,10 +839,6 @@ describe('test/urllib.test.js', function () {
 
   describe('args.writeStream', function () {
     var tmpfile = path.join(process.env.TMPDIR || __dirname, 'urllib_writestream.tmp' + process.version);
-    afterEach(function() {
-      fs.unlinkSync(tmpfile);
-    });
-
     it('should store data writeStream with https', function (done) {
       done = pedding(2, done);
       var writeStream = fs.createWriteStream(tmpfile);
