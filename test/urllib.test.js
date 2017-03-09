@@ -857,10 +857,12 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should timeout emit error', function (done) {
+      done = pedding(2, done);
       var writeStream = fs.createWriteStream(tmpfile);
-      urllib.request('https://httpbin.org/bytes/1024000000', {
+      writeStream.on('close', done);
+      urllib.request(host + '/bigfile', {
         writeStream: writeStream,
-        timeout: 3000,
+        timeout: 100,
       }, function (err, data, res) {
         assert(err, 'data is ' + (data && data.toString()));
         assert(err.name === 'ResponseTimeoutError');
