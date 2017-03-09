@@ -862,7 +862,7 @@ describe('test/urllib.test.js', function () {
         writeStream: writeStream,
         timeout: 3000,
       }, function (err, data, res) {
-        assert(err, `response status ${res.statusCode}`);
+        assert(err, 'data is ' + (data && data.toString()));
         assert(err.name === 'ResponseTimeoutError');
         assert(!data);
         assert(res);
