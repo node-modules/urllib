@@ -858,7 +858,7 @@ describe('test/urllib.test.js', function () {
 
     it('should timeout emit error', function (done) {
       var writeStream = fs.createWriteStream(tmpfile);
-      urllib.request('https://httpbin.org/bytes/10240000', {
+      urllib.request('https://httpbin.org/bytes/1024000000', {
         writeStream: writeStream,
         timeout: 3000,
       }, function (err, data, res) {
