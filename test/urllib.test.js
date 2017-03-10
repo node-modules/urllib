@@ -856,7 +856,7 @@ describe('test/urllib.test.js', function () {
       });
     });
 
-    it.only('should timeout emit error', function (done) {
+    it('should timeout emit error', function (done) {
       var writeStream = fs.createWriteStream(tmpfile);
       urllib.request(host + '/bigfile', {
         writeStream: writeStream,
