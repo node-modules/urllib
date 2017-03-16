@@ -839,7 +839,6 @@ describe('test/urllib.test.js', function () {
 
   describe('args.writeStream', function () {
     var tmpfile = path.join(process.env.TMPDIR || __dirname, 'urllib_writestream.tmp' + process.version);
-
     it('should store data writeStream with https', function (done) {
       done = pedding(2, done);
       var writeStream = fs.createWriteStream(tmpfile);
@@ -853,6 +852,20 @@ describe('test/urllib.test.js', function () {
         assert(data === null);
         assert(res.statusCode === 200);
         assert(fs.statSync(tmpfile).size > 100);
+        done();
+      });
+    });
+
+    it('should timeout emit error', function (done) {
+      var writeStream = fs.createWriteStream(tmpfile);
+      urllib.request(host + '/bigfile', {
+        writeStream: writeStream,
+        timeout: 100,
+      }, function (err, data, res) {
+        assert(err, 'data is ' + (data && data.toString()));
+        assert(err.name === 'ResponseTimeoutError');
+        assert(!data);
+        assert(res);
         done();
       });
     });

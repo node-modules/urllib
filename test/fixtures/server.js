@@ -154,6 +154,8 @@ var server = http.createServer(function (req, res) {
       return res.end(JSON.stringify({
         url: req.url,
       }));
+    } else if (req.url === '/bigfile') {
+      return res.end(new Buffer(1024 * 1024 * 100));
     }
 
     var url = req.url.split('?');
