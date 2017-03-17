@@ -5,9 +5,47 @@ var querystring = require('querystring');
 var fs = require('fs');
 var zlib = require('zlib');
 var iconv = require('iconv-lite');
+var Busboy = require('busboy');
 
 var server = http.createServer(function (req, res) {
-  // req.headers['user-agent'].should.match(/^node\-urllib\/\d+\.\d+\.\d+ node\//);
+  if (req.url === '/multipart') {
+    var busboy = new Busboy({ headers: req.headers });
+    var result = {
+      files: {},
+      form: {},
+      headers: req.headers,
+      url: req.url,
+    };
+    busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+      console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
+      var size = 0;
+      file.on('data', function(data) {
+        console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+        size += data.length;
+      });
+      file.on('end', function() {
+        console.log('File [' + fieldname + '] Finished');
+        result.files[fieldname] = {
+          filename: filename,
+          encoding: encoding,
+          mimetype: mimetype,
+          size: size,
+        };
+      });
+    });
+    busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
+      console.log('Field [' + fieldname + ']: value: %j', val);
+      result.form[fieldname] = val;
+    });
+    busboy.on('finish', function() {
+      console.log('Done parsing form!');
+      res.statusCode = 200;
+      res.end(JSON.stringify(result));
+    });
+    req.pipe(busboy);
+    return;
+  }
+
   var chunks  = [];
   var size = 0;
   req.on('data', function (buf) {

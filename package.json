@@ -43,6 +43,7 @@
     "agentkeepalive": "^2.2.0",
     "autod": "*",
     "bluebird": "*",
+    "busboy": "^0.2.14",
     "co": "*",
     "coffee": "1",
     "formstream": "^1.1.0",
