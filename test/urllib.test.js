@@ -1493,10 +1493,9 @@ describe('test/urllib.test.js', function () {
         stream: form,
       };
 
-      var url = 'http://httpbin.org/post';
-      urllib.request(url, args, function (err, data, res) {
+      urllib.request(host+ '/multipart', args, function (err, data, res) {
         assert(!err);
-        assert(typeof data.files.file1 === 'string');
+        assert(typeof data.files.file1.filename === 'string');
         assert(data.form.hello === '你好urllib');
         assert(res.status === 200);
         done();
