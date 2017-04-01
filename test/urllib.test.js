@@ -1122,7 +1122,7 @@ describe('test/urllib.test.js', function () {
       });
     });
 
-    it('should not auto convert data to json string when method = get', function (done) {
+    it('should convert data to ISO string with qs when method === GET', function (done) {
       var params = {
         method: 'get',
         data: {
@@ -1136,7 +1136,7 @@ describe('test/urllib.test.js', function () {
       urllib.request(host + '/json_mirror', params, function (err, serverData, res) {
         assert(!err);
         assert.deepEqual(serverData, {
-          url: '/json_mirror?foo=bar&n1=1&now=',
+          url: '/json_mirror?foo=bar&n1=1&now=' + encodeURIComponent(params.data.now.toISOString()),
           data: '',
         });
         assert(res.statusCode === 200);
