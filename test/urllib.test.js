@@ -2,7 +2,7 @@
 
 var assert = require('assert');
 var http = require('http');
-var querystring = require('querystring');
+var qs = require('qs');
 var urlutil = require('url');
 var pedding = require('pedding');
 var fs = require('fs');
@@ -463,7 +463,7 @@ describe('test/urllib.test.js', function () {
       urllib.request(options, params, function (err, data, res) {
         assert(!err);
         assert(res.statusCode === 200);
-        data = querystring.parse(data.toString());
+        data = qs.parse(data.toString());
         assert(data.sql === params.data.sql);
         assert(data.data === params.data.data);
         done();
@@ -484,7 +484,7 @@ describe('test/urllib.test.js', function () {
         assert(!err);
         assert(res.statusCode === 200);
         assert(res.headers['x-request-content-type'] === 'application/x-www-form-urlencoded');
-        data = querystring.parse(data.toString());
+        data = qs.parse(data.toString());
         assert(data.sql === params1.data.sql);
         assert(data.data === params1.data.data);
         done();
@@ -509,6 +509,20 @@ describe('test/urllib.test.js', function () {
       urllib.request(host + '/post', params3, check);
     });
 
+    it('should post data with form type support cascade', function (done) {
+      var params = {
+        type: 'POST',
+        data: {
+          foo: { bar: 'foo' },
+        },
+      };
+      urllib.request(host + '/post', params, function (err, data) {
+        assert(!err);
+        assert.deepEqual(params.data, qs.parse(data.toString()));
+        done();
+      });
+    });
+
     it('should post data with custom Content-Type "test-foo-encode"',
     function (done) {
       var params = {
@@ -525,7 +539,7 @@ describe('test/urllib.test.js', function () {
         assert(!err);
         assert(res.statusCode === 200);
         assert(res.headers['x-request-content-type'] === 'test-foo-encode');
-        data = querystring.parse(data.toString());
+        data = qs.parse(data.toString());
         assert(data.sql === params.data.sql);
         assert(data.data === params.data.data);
         done();
@@ -547,7 +561,7 @@ describe('test/urllib.test.js', function () {
         assert(!err);
         assert(res.statusCode === 200);
         assert(res.headers['x-request-content-type'] === 'test-foo-encode');
-        data = querystring.parse(data.toString());
+        data = qs.parse(data.toString());
         assert(data.sql === params.data.sql);
         assert(data.data === params.data.data);
         done();
@@ -1108,7 +1122,7 @@ describe('test/urllib.test.js', function () {
       });
     });
 
-    it('should not auto convert data to json string when method = get', function (done) {
+    it('should convert data to ISO string with qs when method === GET', function (done) {
       var params = {
         method: 'get',
         data: {
@@ -1122,7 +1136,7 @@ describe('test/urllib.test.js', function () {
       urllib.request(host + '/json_mirror', params, function (err, serverData, res) {
         assert(!err);
         assert.deepEqual(serverData, {
-          url: '/json_mirror?foo=bar&n1=1&now=',
+          url: '/json_mirror?foo=bar&n1=1&now=' + encodeURIComponent(params.data.now.toISOString()),
           data: '',
         });
         assert(res.statusCode === 200);
