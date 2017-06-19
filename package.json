@@ -23,7 +23,7 @@
   },
   "scripts": {
     "test": "npm run lint && mocha -R spec -t 30000 -r intelli-espower-loader test/*.test.js",
-    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- -t 30000 -r intelli-espower-loader test/*.test.js",
+    "test-cov": "nyc -r text-summary -r lcov npm test",
     "ci": "npm run lint && npm run test-cov",
     "lint": "jshint .",
     "autod": "autod -w --prefix '^' -t test -e examples"
@@ -49,10 +49,10 @@
     "coffee": "1",
     "formstream": "^1.1.0",
     "intelli-espower-loader": "^1.0.1",
-    "istanbul": "*",
     "jshint": "*",
     "mocha": "*",
     "muk": "^0.4.0",
+    "nyc": "^11.0.2",
     "pedding": "^1.1.0",
     "power-assert": "^1.4.2",
     "semver": "5",

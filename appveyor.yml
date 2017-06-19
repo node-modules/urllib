@@ -4,13 +4,17 @@ environment:
     - nodejs_version: '0.12'
     - nodejs_version: '4'
     - nodejs_version: '6'
-    - nodejs_version: '7'
+    - nodejs_version: '8'
 
 install:
   - ps: Install-Product node $env:nodejs_version
-  - npm i npm && node_modules\.bin\npm i
+  - npm i npm
+  - node_modules\.bin\npm i
 
 test_script:
-  - npm run ci
+  - node_modules\.bin\npm run ci
+
+after_test:
+  - node_modules\.bin\npm i codecov && codecov
 
 build: off
