@@ -8,13 +8,12 @@ environment:
 
 install:
   - ps: Install-Product node $env:nodejs_version
-  - npm i npm
-  - node_modules\.bin\npm i
+  - npm i
 
 test_script:
-  - node_modules\.bin\npm run ci
+  - npm run ci
 
 after_test:
-  - node_modules\.bin\npm i codecov && codecov
+  - npm i codecov && codecov
 
 build: off
