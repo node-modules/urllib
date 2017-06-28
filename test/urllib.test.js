@@ -1205,7 +1205,7 @@ describe('test/urllib.test.js', function () {
 
   describe('gzip content', function () {
     it('should auto accept and decode gzip response content', function (done) {
-      urllib.request('https://www.baidu.com/',
+      urllib.request('http://httpbin.org/gzip',
         {
           gzip: true,
           timeout: 25000,
