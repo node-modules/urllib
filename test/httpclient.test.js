@@ -18,6 +18,47 @@ describe('test/httpclient.test.js', function () {
     });
   });
 
+  it('should create HttpClient with defaultArgs', function(done) {
+    var client = new urllib.HttpClient({
+      defaultArgs: {
+        timeout: 1,
+      },
+    });
+    done = pedding(2, done);
+    client.request(config.npmRegistry + '/pedding/*', function(err) {
+      assert(err);
+      assert(err.name === 'ConnectionTimeoutError');
+      assert(err.message.indexOf('Connect timeout for 1ms') > -1);
+
+      client.request(config.npmRegistry + '/pedding/*', {
+        dataType: 'json',
+        timeout: 25000,
+      }, function(err, data, res) {
+        assert(!err);
+        assert(data.name === 'pedding');
+        assert(res.statusCode === 200);
+        done();
+      });
+    });
+
+    // requestThunk()
+    client.requestThunk(config.npmRegistry + '/pedding/*')(function(err) {
+      assert(err);
+      assert(err.name === 'ConnectionTimeoutError');
+      assert(err.message.indexOf('Connect timeout for 1ms') > -1);
+
+      client.requestThunk(config.npmRegistry + '/pedding/*', {
+        dataType: 'json',
+        timeout: 25000,
+      })(function(err, result) {
+        assert(!err);
+        assert(result.data.name === 'pedding');
+        assert(result.res.statusCode === 200);
+        done();
+      });
+    });
+  });
+
   it('should requestThunk()', function (done) {
     done = pedding(2, done);
     var client = urllib.create({

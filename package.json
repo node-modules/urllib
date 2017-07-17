@@ -22,7 +22,8 @@
     "url": "git://github.com/node-modules/urllib.git"
   },
   "scripts": {
-    "test": "npm run lint && mocha -R spec -t 30000 -r intelli-espower-loader test/*.test.js",
+    "test-local": "mocha -t 30000 -r intelli-espower-loader test/*.test.js",
+    "test": "npm run lint && npm run test-local",
     "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- -t 30000 -r intelli-espower-loader test/*.test.js",
     "ci": "npm run lint && npm run test-cov",
     "lint": "jshint .",
@@ -38,7 +39,8 @@
     "humanize-ms": "^1.2.0",
     "iconv-lite": "^0.4.15",
     "qs": "^6.4.0",
-    "statuses": "^1.3.1"
+    "statuses": "^1.3.1",
+    "utility": "^1.12.0"
   },
   "devDependencies": {
     "agentkeepalive": "^2.2.0",
