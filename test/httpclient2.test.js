@@ -1,5 +1,6 @@
 'use strict';
 
+var pedding = require('pedding');
 var http = require('http');
 var assert = require('assert');
 var muk = require('muk');
@@ -186,6 +187,46 @@ describe('test/httpclient2.test.js', function () {
       assert(isKeepAlive[1] === true);
       done();
     }).catch(done);
+  });
+
+  it('should create HttpClient2 with defaultArgs', function(done) {
+    var client = new urllib.HttpClient2({
+      defaultArgs: {
+        timeout: 1,
+      },
+    });
+    done = pedding(2, done);
+    client.request(config.npmRegistry + '/pedding/*').catch(function(err) {
+      assert(err);
+      assert(err.name === 'ConnectionTimeoutError');
+      assert(err.message.indexOf('Connect timeout for 1ms') > -1);
+
+      client.request(config.npmRegistry + '/pedding/*', {
+        dataType: 'json',
+        timeout: 25000,
+      }).then(function(result) {
+        assert(result.data.name === 'pedding');
+        assert(result.res.statusCode === 200);
+        done();
+      });
+    });
+
+    // requestThunk()
+    client.requestThunk(config.npmRegistry + '/pedding/*')(function(err) {
+      assert(err);
+      assert(err.name === 'ConnectionTimeoutError');
+      assert(err.message.indexOf('Connect timeout for 1ms') > -1);
+
+      client.requestThunk(config.npmRegistry + '/pedding/*', {
+        dataType: 'json',
+        timeout: 25000,
+      })(function(err, result) {
+        assert(!err);
+        assert(result.data.name === 'pedding');
+        assert(result.res.statusCode === 200);
+        done();
+      });
+    });
   });
 
   describe('when callback throw error', function() {
