@@ -5,9 +5,7 @@ node_js:
   - '0.12'
   - '4'
   - '6'
-  - '7'
-install:
-  - npm i npm && npm i
+  - '8'
 script:
   - npm run ci
 after_script:

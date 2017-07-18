@@ -236,20 +236,21 @@ describe('test/httpclient2.test.js', function () {
       process.removeAllListeners('uncaughtException');
     });
     after(function() {
+      process.removeAllListeners('uncaughtException');
       listeners.forEach(function(listener) {
         process.on('uncaughtException', listener);
       });
     });
 
-    it('should requestThunk()', function (done) {
-      process.once('uncaughtException', function(err) {
-        assert(err.message === 'callback error');
-        done();
+    it('should requestThunk()', function(done) {
+      process.once('uncaughtException', function() {
+        throw new Error('should not fire uncaughtException');
       });
       client.requestThunk(config.npmRegistry + '/pedding/*', {
-        timeout: 25000,
-      })(function () {
-        throw new Error('callback error');
+        timeout: 10000,
+      })(function() {
+        setTimeout(done, 500);
+        throw new Error('mock callback error');
       });
     });
   });
