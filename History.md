@@ -1,4 +1,10 @@
 
+2.23.0 / 2017-07-18
+==================
+
+  * test: skip test.webdav.org test cases
+  * feat: add defaultArgs on HttpClient
+
 2.22.0 / 2017-04-10
 ==================
 
