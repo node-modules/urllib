@@ -2,3 +2,4 @@ node_modules/
 coverage/
 .git/
 test/fixtures/server.js
+examples/
