@@ -1,7 +1,6 @@
 'use strict';
 
 var assert = require('assert');
-var httpProxy = require('http-proxy');
 var urllib = require('..');
 var proxy = require('./fixtures/reverse-proxy');
 
@@ -25,6 +24,7 @@ describe('test/proxy.test.js', function() {
   it('should proxy http work', function(done) {
     urllib.request(testUrl.replace('https', 'http') + '/pedding/latest', {
       dataType: 'json',
+      enableProxy: true,
       proxy: proxyUrl,
     }, function(err, data, res) {
       assert(!err);
@@ -37,6 +37,7 @@ describe('test/proxy.test.js', function() {
   it('should proxy https work', function(done) {
     urllib.request(testUrl + '/pedding/latest', {
       dataType: 'json',
+      enableProxy: true,
       proxy: proxyUrl,
     }, function(err, data, res) {
       assert(!err);

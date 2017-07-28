@@ -160,6 +160,8 @@ httpclient.request('http://nodejs.org', function (err, body) {
     - ***streaming*** Boolean - let you get the `res` object when request  connected, default `false`. alias `customResponse`
     - ***gzip*** Boolean - Accept gzip response content and auto decode it, default is `false`.
     - ***timing*** Boolean - Enable timing or not, default is `false`.
+    - ***enableProxy*** Boolean - Enable proxy request, efault is `false`.
+    - ***proxy*** String | Object - proxy agent uri or options, default is `null`.
 - ***callback(err, data, res)*** Function - Optional callback.
     - **err** Error - Would be `null` if no error accured.
     - **data** Buffer | Object - The data responsed. Would be a Buffer if `dataType` is set to `text` or an JSON parsed into Object if it's set to `json`.
@@ -324,6 +326,7 @@ Support both `http` and `https` protocol.
 
 ```js
 urllib.request('https://twitter.com/', {
+  enableProxy: true,
   proxy: 'http://localhost:8008',
 }, (err, data, res) => {
   console.log(res.status, res.headers);

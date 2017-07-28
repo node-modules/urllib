@@ -1,8 +1,8 @@
 'use strict';
 
-var urllib = require('../');
+var urllib = require('..');
 
-var url = process.argv[2] || 'https://twitter.com';
+var url = process.argv[2] || 'https://api.twitter.com/1.1/help/configuration.json';
 console.log('timing: %s', url);
 
 var count = 2;
@@ -12,9 +12,9 @@ function request(index) {
     return;
   }
   urllib.request(url, {
-    data: { wd: 'nodejs' },
     timing: true,
-    proxy: 'http://localhost:8123'
+    enableProxy: true,
+    proxy: 'http://localhost:8123',
   }, function (err, data, res) {
     if (err) {
       console.log(err);
@@ -23,6 +23,7 @@ function request(index) {
     console.log('No#%d: %s, keepalive: %s, content size: %d, headers: %j',
       index, res.statusCode, res.keepAliveSocket, data && data.length, res.headers);
     console.log(res.timing);
+    // console.log(data && data.toString());
     index++;
     setImmediate(request.bind(null, index));
   });

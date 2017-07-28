@@ -11,7 +11,7 @@ var proxy = httpProxy.createServer();
 var server = http.createServer(function (req, res) {
   console.log('request: Receiving reverse proxy http request for:' + req.url);
 
-  proxy.web(req, res, {target: req.url, secure: false});
+  proxy.web(req, res, { target: 'http://' + req.headers.host, secure: false });
 });
 
 server.on('connect', function (req, socket) {

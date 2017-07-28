@@ -3,5 +3,7 @@ coverage/
 .git/
 test/fixtures/server.js
 examples/
+
 # copy files
 lib/get_proxy_from_uri.js
+test/fixtures/reverse-proxy.js
