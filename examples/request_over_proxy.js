@@ -14,7 +14,7 @@ function request(index) {
   urllib.request(url, {
     timing: true,
     enableProxy: true,
-    proxy: 'http://localhost:8123',
+    proxy: process.env.http_proxy || 'http://localhost:8123',
   }, function (err, data, res) {
     if (err) {
       console.log(err);
