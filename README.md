@@ -322,6 +322,8 @@ options extends from urllib, besides below
 
 Support both `http` and `https` protocol.
 
+**Notice: Only support on Node.js >= 4.0.0**
+
 ### Programming
 
 ```js
