@@ -114,6 +114,28 @@ describe('test/urllib.test.js', function () {
         done();
       });
     });
+    it('should not modify args', function (done) {
+      var DEFAULT_HEADER = {
+        'content-type': 'application-json',
+      };
+      var options = {
+        headers: DEFAULT_HEADER,
+        timeout: 25000,
+      };
+      urllib.request(config.npmRegistry + '/pedding/*', options,
+      function (err, data, res) {
+        assert(!err);
+        assert(Buffer.isBuffer(data));
+        assert(res.statusCode === 200);
+        assert.deepEqual(options, {
+          headers: {
+            'content-type': 'application-json',
+          },
+          timeout: 25000,
+        });
+        done();
+      });
+    });
 
     it('should request https with port success', function (done) {
       urllib.request(config.npmRegistry + ':443/pedding/*', {
