@@ -1509,6 +1509,23 @@ describe('test/urllib.test.js', function () {
 
   });
 
+  describe('options.fixJSONCtlChars = function', function () {
+    it('should fix json string with custom function', function (done) {
+      urllib.request(host + '/json_with_t', {
+        dataType: 'json',
+        fixJSONCtlChars: function(str) {
+          return str.replace(/\t/g, '\\t');
+        },
+      }, function (err, data) {
+        assert(!err);
+        assert.deepEqual(data, {
+          foo: 'ba\tr\t\t',
+        });
+        done();
+      });
+    });
+  });
+
   describe('args.stream = stream', function() {
     it('should post stream', function(done) {
       var form = formstream();
