@@ -1,4 +1,10 @@
 
+2.25.0 / 2017-09-08
+==================
+
+**features**
+  * [[`95cabd6`](http://github.com/node-modules/urllib/commit/95cabd650ffb4996819570dea2518dea875d8452)] - feat: support custom fixJSONCtlChars function (#264) (fengmk2 <<fengmk2@gmail.com>>)
+
 2.24.0 / 2017-07-31
 ==================
 
