@@ -160,7 +160,7 @@ httpclient.request('http://nodejs.org', function (err, body) {
     - ***streaming*** Boolean - let you get the `res` object when request  connected, default `false`. alias `customResponse`
     - ***gzip*** Boolean - Accept gzip response content and auto decode it, default is `false`.
     - ***timing*** Boolean - Enable timing or not, default is `false`.
-    - ***enableProxy*** Boolean - Enable proxy request, efault is `false`.
+    - ***enableProxy*** Boolean - Enable proxy request, default is `false`.
     - ***proxy*** String | Object - proxy agent uri or options, default is `null`.
 - ***callback(err, data, res)*** Function - Optional callback.
     - **err** Error - Would be `null` if no error accured.
