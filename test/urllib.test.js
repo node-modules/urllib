@@ -1205,7 +1205,7 @@ describe('test/urllib.test.js', function () {
 
   describe('gzip content', function () {
     it('should auto accept and decode gzip response content', function (done) {
-      urllib.request('https://www.baidu.com/',
+      urllib.request('https://www.alipay.com/',
         {
           gzip: true,
           timeout: 25000,
@@ -1563,6 +1563,39 @@ describe('test/urllib.test.js', function () {
         assert(data.url === '/delete-params?foo=bar');
         done();
       });
+    });
+  });
+
+  describe('args.tracer', function() {
+    var urllib = require('../').create();
+
+    it('should transmit tracer to response', function(done) {
+      var tracer;
+
+      urllib.on('request', function(options) {
+        tracer = options.tracer;
+      });
+
+      urllib.on('response', function(options) {
+        tracer = options.tracer;
+      });
+
+      urllib.request('http://www.baidu.com', {
+        method: 'GET',
+        tracer: {
+          id: '1111',
+        },
+      }, function(err, data) {
+        assert(!err);
+        setTimeout(function() {
+          assert(tracer.id === '2222');
+          done();
+        });
+      });
+
+      assert(tracer.id === '1111');
+      // change tracer content
+      tracer.id = '2222';
     });
   });
 });
