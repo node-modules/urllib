@@ -55,7 +55,7 @@
     "intelli-espower-loader": "^1.0.1",
     "istanbul": "*",
     "jshint": "*",
-    "mocha": "*",
+    "mocha": "3",
     "muk": "^0.4.0",
     "pedding": "^1.1.0",
     "power-assert": "^1.4.2",
