@@ -104,13 +104,17 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should request https success', function (done) {
+      var headers = {};
       urllib.request(config.npmRegistry + '/pedding/*', {
         timeout: 25000,
+        headers: headers,
       },
       function (err, data, res) {
         assert(!err);
         assert(Buffer.isBuffer(data));
         assert(res.statusCode === 200);
+        // don't touch headers
+        assert.deepEqual(headers, {});
         done();
       });
     });
