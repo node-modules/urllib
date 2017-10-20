@@ -1,4 +1,13 @@
 
+2.25.1 / 2017-10-20
+==================
+
+**fixes**
+  * [[`ac9bc64`](http://github.com/node-modules/urllib/commit/ac9bc645149ffa5d9a1e8450ba00721a92d18f13)] - fix: don't change args.headers (#267) (fengmk2 <<fengmk2@gmail.com>>)
+
+**others**
+  * [[`b798546`](http://github.com/node-modules/urllib/commit/b798546ef240de7a4dbe8ba5feb05536a4912b1b)] - docs: fixed spelling mistake (#266) (Axes <<whxaxes@qq.com>>)
+
 2.25.0 / 2017-09-08
 ==================
 
