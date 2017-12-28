@@ -1,4 +1,10 @@
 
+2.25.2 / 2017-12-28
+==================
+
+**fixes**
+  * [[`2df6906`](http://github.com/node-modules/urllib/commit/2df6906d188bc53aa2d24efa0d318e52cccf9d78)] - fix: make sure request event url should be a string (#270) (hui <<kangpangpang@gmail.com>>)
+
 2.25.1 / 2017-10-20
 ==================
 
