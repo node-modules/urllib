@@ -1209,7 +1209,7 @@ describe('test/urllib.test.js', function () {
 
   describe('gzip content', function () {
     it('should auto accept and decode gzip response content', function (done) {
-      urllib.request('https://www.baidu.com/',
+      urllib.request('https://www.google.com',
         {
           gzip: true,
           timeout: 25000,
@@ -1443,6 +1443,28 @@ describe('test/urllib.test.js', function () {
           foo: 'stream request'
         }
       }, function (err) {
+        assert(!err);
+        done();
+      });
+    });
+
+    it('should listen request url, when request url is object', function (done) {
+      done = pedding(3, done);
+      var requestUrl = 'https://cn.bing.com/search?q=nodejs';
+
+      urllib.on('request', function (info) {
+        assert(info.url === requestUrl);
+        done();
+      });
+
+      urllib.on('response', function (info) {
+        assert(info.req.url === requestUrl);
+        done();
+      });
+
+      var urlObj = urlutil.parse(requestUrl);
+
+      urllib.request(urlObj, function (err) {
         assert(!err);
         done();
       });
