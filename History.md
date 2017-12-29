@@ -1,4 +1,10 @@
 
+2.25.3 / 2017-12-29
+==================
+
+**fixes**
+  * [[`e3df75e`](http://github.com/node-modules/urllib/commit/e3df75e249f67c943ac42d61abd1649291ba5f74)] - fix: res.requestUrls should be string array (#271) (hui <<kangpangpang@gmail.com>>)
+
 2.25.2 / 2017-12-28
 ==================
 
