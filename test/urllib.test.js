@@ -1448,7 +1448,7 @@ describe('test/urllib.test.js', function () {
       });
     });
 
-    it('should listen request url, when request url is object', function (done) {
+    it('should listen request url is string, when request url is object', function (done) {
       done = pedding(3, done);
       var requestUrl = 'https://cn.bing.com/search?q=nodejs';
 
@@ -1459,6 +1459,7 @@ describe('test/urllib.test.js', function () {
 
       urllib.on('response', function (info) {
         assert(info.req.url === requestUrl);
+        assert(info.res.requestUrls[0] === requestUrl);
         done();
       });
 
