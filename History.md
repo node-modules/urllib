@@ -1,4 +1,10 @@
 
+2.25.4 / 2018-01-18
+==================
+
+**fixes**
+  * [[`9c496a0`](http://github.com/node-modules/urllib/commit/9c496a0510ee17f72129e1298cf310a8b1aee327)] - fix: Changed to "new (require('proxy-agent'))(proxy)" (#273) (Nick Ng <<nick-ng@users.noreply.github.com>>)
+
 2.25.3 / 2017-12-29
 ==================
 
