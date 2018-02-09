@@ -44,6 +44,7 @@
     "utility": "^1.12.0"
   },
   "devDependencies": {
+    "@types/node": "^8.9.1",
     "agentkeepalive": "^2.2.0",
     "autod": "*",
     "bluebird": "*",
