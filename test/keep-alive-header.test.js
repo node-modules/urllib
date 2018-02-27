@@ -8,6 +8,7 @@ var urllib = require('..');
 describe('test/keep-alive-header.test.js', function() {
   let port;
   let server;
+  let timer;
   before(function(done) {
     server = http.createServer(function(req, res) {
       if (server.keepAliveTimeout) {
@@ -23,6 +24,9 @@ describe('test/keep-alive-header.test.js', function() {
       port = server.address().port;
       done(err);
     });
+  });
+  after(function() {
+    clearInterval(timer);
   });
 
   it('should handle Keep-Alive header and not throw reset error', function(done) {
@@ -49,7 +53,7 @@ describe('test/keep-alive-header.test.js', function() {
       });
     }
 
-    setInterval(request, server.keepAliveTimeout);
+    timer = setInterval(request, server.keepAliveTimeout);
     request();
   });
 });
