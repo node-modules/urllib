@@ -6,13 +6,13 @@ var Agent = require('agentkeepalive');
 var urllib = require('..');
 
 describe('test/keep-alive-header.test.js', function() {
-  let port;
-  let server;
-  let timer;
+  var port;
+  var server;
+  var timer;
   before(function(done) {
     server = http.createServer(function(req, res) {
       if (server.keepAliveTimeout) {
-        res.setHeader('Keep-Alive', `timeout=${parseInt(server.keepAliveTimeout / 1000)}`);
+        res.setHeader('Keep-Alive', 'timeout=' + parseInt(server.keepAliveTimeout / 1000));
       }
       res.end('Hello World, ' + req.connection.remotePort);
     });
@@ -30,11 +30,11 @@ describe('test/keep-alive-header.test.js', function() {
   });
 
   it('should handle Keep-Alive header and not throw reset error', function(done) {
-    const keepaliveAgent = new Agent({
+    var keepaliveAgent = new Agent({
       keepAlive: true,
     });
 
-    let count = 0;
+    var count = 0;
     function request() {
       count++;
       urllib.request('http://127.0.0.1:' + port + '/foo', {
