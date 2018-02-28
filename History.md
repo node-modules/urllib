@@ -1,4 +1,10 @@
 
+2.26.0 / 2018-02-28
+==================
+
+**features**
+  * [[`d6e7c58`](http://github.com/node-modules/urllib/commit/d6e7c58b3688d415091ddc0c845b7cb8d57e20cc)] - feat: support Keep-Alive Header (#275) (fengmk2 <<fengmk2@gmail.com>>)
+
 2.25.4 / 2018-01-18
 ==================
 
