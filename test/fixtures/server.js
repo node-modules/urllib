@@ -113,6 +113,14 @@ var server = http.createServer(function (req, res) {
     } else if (req.url === '/redirect_no_location') {
       res.statusCode = 302;
       return res.end('I am 302 body');
+    } else if (req.url === '/redirect_to_ip') {
+      res.statusCode = 302;
+      res.setHeader('Location', 'http://10.10.10.10/');
+      return res.end('Redirect to http://10.10.10.10/');
+    } else if (req.url === '/redirect_to_domain') {
+      res.statusCode = 302;
+      res.setHeader('Location', 'https://www.google.com/');
+      return res.end('Redirect to https://www.google.com/');
     } else if (req.url === '/204') {
       res.statusCode = 204;
       return res.end();

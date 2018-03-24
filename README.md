@@ -162,6 +162,8 @@ httpclient.request('http://nodejs.org', function (err, body) {
     - ***timing*** Boolean - Enable timing or not, default is `false`.
     - ***enableProxy*** Boolean - Enable proxy request, default is `false`.
     - ***proxy*** String | Object - proxy agent uri or options, default is `null`.
+    - ***lookup*** Function - Custom DNS lookup function, default is `dns.lookup`. Require node >= 4.0.0(for http protocol) and node >=8(for https protocol)
+    - ***checkAddress*** Function: optional, check request address to protect from SSRF and similar attacks. It relays on `lookup` and have require same node version.
 - ***callback(err, data, res)*** Function - Optional callback.
     - **err** Error - Would be `null` if no error accured.
     - **data** Buffer | Object - The data responsed. Would be a Buffer if `dataType` is set to `text` or an JSON parsed into Object if it's set to `json`.

@@ -14,6 +14,8 @@ var zlib = require('zlib');
 var os = require('os');
 var through = require('through2');
 var Stream = require('stream');
+var muk = require('muk'); // muk support more node versions than mm
+var dns = require('dns');
 var server = require('./fixtures/server');
 var config = require('./config');
 var urllib = require('../');
@@ -29,6 +31,8 @@ describe('test/urllib.test.js', function () {
       done();
     });
   });
+
+  afterEach(muk.restore);
 
   after(function (done) {
     setTimeout(function () {
@@ -1592,4 +1596,96 @@ describe('test/urllib.test.js', function () {
       });
     });
   });
+
+  // only test checkAddress in node 8+
+  if (parseInt(process.version.slice(1)) >= 8) {
+    describe('args.checkAddress', function() {
+      it('should throw error when request address illegal', function(done) {
+        urllib.request('http://10.10.10.10/foo/bar', {
+          checkAddress: function(address) {
+            return address !== '10.10.10.10';
+          },
+        }, function (err) {
+          assert(err.name === 'IllegalAddressError');
+          assert(err.message.includes('illegal address'));
+          done();
+        });
+      });
+
+      it('should throw error when follow redirect and redirect address illegal', function(done) {
+        urllib.request(host + '/redirect_to_ip', {
+          checkAddress: function(address) {
+            return address !== '10.10.10.10';
+          },
+          followRedirect: true,
+        }, function (err) {
+          assert(err.name === 'IllegalAddressError');
+          assert(err.message.includes('illegal address'));
+          done();
+        });
+      });
+
+      it('should work with domain', function(done) {
+        muk(dns, 'lookup', function (host, opts, callback) {
+          callback(null, '10.10.10.10');
+        });
+        urllib.request('http://www.baidu.com/redirect_to_ip', {
+          checkAddress: function(address) {
+            return address !== '10.10.10.10';
+          },
+        }, function (err) {
+          assert(err.name === 'IllegalAddressError');
+          assert(err.message.includes('illegal address'));
+          done();
+        });
+      });
+
+      it('should work with domain and redirect', function(done) {
+        muk(dns, 'lookup', function (host, opts, callback) {
+          callback(null, '10.10.10.10');
+        });
+        urllib.request(host + '/redirect_to_domain', {
+          checkAddress: function(address) {
+            return address !== '10.10.10.10';
+          },
+          followRedirect: true,
+        }, function (err) {
+          assert(err.name === 'IllegalAddressError');
+          assert(err.message.includes('illegal address'));
+          done();
+        });
+      });
+
+      it('should work with custom lookup', function(done) {
+        urllib.request('http://www.baidu.com/redirect_to_domain', {
+          checkAddress: function(address) {
+            return address !== '10.10.10.10';
+          },
+          lookup: function(host, options, callback) {
+            callback(null, '10.10.10.10');
+          },
+        }, function (err) {
+          assert(err.name === 'IllegalAddressError');
+          assert(err.message.includes('illegal address'));
+          done();
+        });
+      });
+
+      it('should work with domain and redirect', function(done) {
+        urllib.request(host + '/redirect_to_domain', {
+          checkAddress: function(address) {
+            return address !== '10.10.10.10';
+          },
+          lookup: function(host, options, callback) {
+            callback(null, '10.10.10.10');
+          },
+          followRedirect: true,
+        }, function (err) {
+          assert(err.name === 'IllegalAddressError');
+          assert(err.message.includes('illegal address'));
+          done();
+        });
+      });
+    });
+  }
 });
