@@ -1,4 +1,10 @@
 
+2.27.0 / 2018-03-26
+==================
+
+**features**
+  * [[`a6c93fd`](http://github.com/node-modules/urllib/commit/a6c93fd07e75e45c6eda09c732d0b72ff5dc9199)] - feat: support args.checkAddress (#279) (Yiyu He <<dead_horse@qq.com>>)
+
 2.26.0 / 2018-02-28
 ==================
 
