@@ -1,7 +1,6 @@
 sudo: false
 language: node_js
 node_js:
-  - '0.10'
   - '0.12'
   - '4'
   - '6'
@@ -12,8 +11,6 @@ env:
   - AGENT_VERSION=3
 matrix:
   exclude:
-    - node_js: '0.10'
-      env: AGENT_VERSION=3
     - node_js: '0.12'
       env: AGENT_VERSION=3
     - node_js: '4'
