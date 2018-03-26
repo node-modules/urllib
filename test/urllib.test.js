@@ -1612,6 +1612,18 @@ describe('test/urllib.test.js', function () {
         });
       });
 
+      it('should throw error when request address is ip v6', function(done) {
+        urllib.request('http://2001:0DB8:02de:0000:0000:0000:0000:0e13/foo/bar', {
+          checkAddress: function(address, family) {
+            return family !== 6;
+          },
+        }, function (err) {
+          assert(err.name === 'IllegalAddressError');
+          assert(err.message.includes('illegal address'));
+          done();
+        });
+      });
+
       it('should throw error when follow redirect and redirect address illegal', function(done) {
         urllib.request(host + '/redirect_to_ip', {
           checkAddress: function(address) {
@@ -1663,6 +1675,21 @@ describe('test/urllib.test.js', function () {
           },
           lookup: function(host, options, callback) {
             callback(null, '10.10.10.10');
+          },
+        }, function (err) {
+          assert(err.name === 'IllegalAddressError');
+          assert(err.message.includes('illegal address'));
+          done();
+        });
+      });
+
+      it('should work with custom lookup and v6', function(done) {
+        urllib.request('http://www.baidu.com/redirect_to_domain', {
+          checkAddress: function(address, family) {
+            return family !== 6;
+          },
+          lookup: function(host, options, callback) {
+            callback(null, '10.10.10.10', 6);
           },
         }, function (err) {
           assert(err.name === 'IllegalAddressError');
