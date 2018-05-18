@@ -176,6 +176,10 @@ var server = http.createServer(function (req, res) {
       res.setHeader('Content-Encoding', 'gzip');
       fs.createReadStream(__filename).pipe(zlib.createGzip()).pipe(res);
       return;
+    } else if (req.url.indexOf('/deflate') === 0) {
+      res.setHeader('Content-Encoding', 'deflate');
+      fs.createReadStream(__filename).pipe(zlib.createDeflate()).pipe(res);
+      return;
     } else if (req.url === '/ua') {
       res.end(JSON.stringify(req.headers));
       return;

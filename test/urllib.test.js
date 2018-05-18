@@ -1317,6 +1317,16 @@ describe('test/urllib.test.js', function () {
       urllib.request(host + '/gzip', {gzip: true}, function (err, data, res) {
         assert(!err);
         assert(res.headers['content-encoding'] === 'gzip');
+        assert(data.indexOf('createServer') > 0);
+        done();
+      });
+    });
+
+    it('should deflate content when server accept deflate', function (done) {
+      urllib.request(host + '/deflate', {gzip: true}, function (err, data, res) {
+        assert(!err);
+        assert(res.headers['content-encoding'] === 'deflate');
+        assert(data.indexOf('createServer') > 0);
         done();
       });
     });
