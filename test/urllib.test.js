@@ -109,7 +109,7 @@ describe('test/urllib.test.js', function () {
 
     it('should request https success', function (done) {
       var headers = {};
-      urllib.request(config.npmRegistry + '/pedding/*', {
+      urllib.request(config.npmRegistry + '/pedding/latest', {
         timeout: 25000,
         headers: headers,
       },
@@ -124,7 +124,7 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should request https with port success', function (done) {
-      urllib.request(config.npmRegistry + ':443/pedding/*', {
+      urllib.request(config.npmRegistry + ':443/pedding/latest', {
         timeout: 25000,
       },
       function (err, data, res) {
@@ -136,7 +136,7 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should request https with rejectUnauthorized:false success', function (done) {
-      urllib.request(config.npmRegistry + '/pedding/*', {
+      urllib.request(config.npmRegistry + '/pedding/latest', {
         timeout: 25000,
         rejectUnauthorized: false,
       },
@@ -150,7 +150,7 @@ describe('test/urllib.test.js', function () {
 
     it('should request https disable httpsAgent work', function (done) {
       done = pedding(2, done);
-      urllib.request(config.npmRegistry + '/pedding/*', {
+      urllib.request(config.npmRegistry + '/pedding/latest', {
         httpsAgent: false,
         timeout: 25000,
       },
@@ -161,7 +161,7 @@ describe('test/urllib.test.js', function () {
         done();
       });
 
-      urllib.request(config.npmRegistry + '/pedding/*', {
+      urllib.request(config.npmRegistry + '/pedding/latest', {
         agent: false,
         timeout: 25000,
       },
@@ -174,7 +174,7 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should include res.data', function (done) {
-      urllib.request(config.npmRegistry + '/pedding/*', {timeout: 25000},
+      urllib.request(config.npmRegistry + '/pedding/latest', {timeout: 25000},
       function (err, data, res) {
         assert(!err);
         assert(Buffer.isBuffer(data));
@@ -185,7 +185,7 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should alias curl() work', function (done) {
-      urllib.curl(config.npmHttpRegistry + '/pedding/*', {timeout: 25000},
+      urllib.curl(config.npmHttpRegistry + '/pedding/latest', {timeout: 25000},
       function (err, data, res) {
         assert(!err);
         assert(Buffer.isBuffer(data));
