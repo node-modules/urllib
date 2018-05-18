@@ -49,7 +49,7 @@ describe('test/httpclient2.test.js', function () {
   });
 
   it('should requestThunk()', function (done) {
-    client.requestThunk(config.npmRegistry + '/pedding/*', {
+    client.requestThunk(config.npmRegistry + '/pedding/latest', {
       timeout: 25000,
     })(function (err, result) {
       assert(!err);
@@ -196,12 +196,12 @@ describe('test/httpclient2.test.js', function () {
       },
     });
     done = pedding(2, done);
-    client.request(config.npmRegistry + '/pedding/*').catch(function(err) {
+    client.request(config.npmRegistry + '/pedding/latest').catch(function(err) {
       assert(err);
       assert(err.name === 'ConnectionTimeoutError');
       assert(err.message.indexOf('Connect timeout for 1ms') > -1);
 
-      client.request(config.npmRegistry + '/pedding/*', {
+      client.request(config.npmRegistry + '/pedding/latest', {
         dataType: 'json',
         timeout: 25000,
       }).then(function(result) {
@@ -212,12 +212,12 @@ describe('test/httpclient2.test.js', function () {
     });
 
     // requestThunk()
-    client.requestThunk(config.npmRegistry + '/pedding/*')(function(err) {
+    client.requestThunk(config.npmRegistry + '/pedding/latest')(function(err) {
       assert(err);
       assert(err.name === 'ConnectionTimeoutError');
       assert(err.message.indexOf('Connect timeout for 1ms') > -1);
 
-      client.requestThunk(config.npmRegistry + '/pedding/*', {
+      client.requestThunk(config.npmRegistry + '/pedding/latest', {
         dataType: 'json',
         timeout: 25000,
       })(function(err, result) {
@@ -246,7 +246,7 @@ describe('test/httpclient2.test.js', function () {
       process.once('uncaughtException', function() {
         throw new Error('should not fire uncaughtException');
       });
-      client.requestThunk(config.npmRegistry + '/pedding/*', {
+      client.requestThunk(config.npmRegistry + '/pedding/latest', {
         timeout: 10000,
       })(function() {
         setTimeout(done, 500);

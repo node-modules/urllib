@@ -8,7 +8,7 @@ var urllib = require('../');
 describe('test/httpclient.test.js', function () {
   it('should request without args work', function (done) {
     var client = urllib.create();
-    client.request(config.npmRegistry + '/pedding/*', {
+    client.request(config.npmRegistry + '/pedding/latest', {
       timeout: 25000,
     }, function (err, data, res) {
       assert(!err);
@@ -25,12 +25,12 @@ describe('test/httpclient.test.js', function () {
       },
     });
     done = pedding(2, done);
-    client.request(config.npmRegistry + '/pedding/*', function(err) {
+    client.request(config.npmRegistry + '/pedding/latest', function(err) {
       assert(err);
       assert(err.name === 'ConnectionTimeoutError');
       assert(err.message.indexOf('Connect timeout for 1ms') > -1);
 
-      client.request(config.npmRegistry + '/pedding/*', {
+      client.request(config.npmRegistry + '/pedding/latest', {
         dataType: 'json',
         timeout: 25000,
       }, function(err, data, res) {
@@ -42,12 +42,12 @@ describe('test/httpclient.test.js', function () {
     });
 
     // requestThunk()
-    client.requestThunk(config.npmRegistry + '/pedding/*')(function(err) {
+    client.requestThunk(config.npmRegistry + '/pedding/latest')(function(err) {
       assert(err);
       assert(err.name === 'ConnectionTimeoutError');
       assert(err.message.indexOf('Connect timeout for 1ms') > -1);
 
-      client.requestThunk(config.npmRegistry + '/pedding/*', {
+      client.requestThunk(config.npmRegistry + '/pedding/latest', {
         dataType: 'json',
         timeout: 25000,
       })(function(err, result) {
@@ -67,7 +67,7 @@ describe('test/httpclient.test.js', function () {
     });
     assert(client.hasCustomAgent === true);
     assert(client.hasCustomHttpsAgent === true);
-    client.requestThunk(config.npmRegistry + '/pedding/*', {
+    client.requestThunk(config.npmRegistry + '/pedding/latest', {
       timeout: 25000,
     })(function (err, result) {
       assert(!err);
@@ -76,7 +76,7 @@ describe('test/httpclient.test.js', function () {
       done();
     });
 
-    client.requestThunk(config.npmRegistry + '/pedding/*', {
+    client.requestThunk(config.npmRegistry + '/pedding/latest', {
       timeout: 25000,
     })(function (err, result) {
       assert(!err);
@@ -90,7 +90,7 @@ describe('test/httpclient.test.js', function () {
     var client = urllib.create();
     assert(client.hasCustomAgent === false);
     assert(client.hasCustomHttpsAgent === false);
-    client.curl(config.npmRegistry + '/pedding/*', {
+    client.curl(config.npmRegistry + '/pedding/latest', {
       timeout: 25000
     }, function (err, result, res) {
       assert(!err);
@@ -124,7 +124,7 @@ describe('test/httpclient.test.js', function () {
       reqMeta.starttime = Date.now();
       done();
     });
-    client.request(config.npmRegistry + '/pedding/*', {
+    client.request(config.npmRegistry + '/pedding/latest', {
       timeout: 25000,
       ctx: {
         foo: 'bar',
@@ -154,7 +154,7 @@ describe('test/httpclient.test.js', function () {
       });
       done();
     });
-    client.request(config.npmRegistry + '/pedding/*', {
+    client.request(config.npmRegistry + '/pedding/latest', {
       timeout: 25000,
       ctx: {
         foo: 'bar',
