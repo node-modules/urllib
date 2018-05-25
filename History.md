@@ -1,4 +1,13 @@
 
+2.28.0 / 2018-05-25
+==================
+
+**features**
+  * [[`c0221ff`](http://github.com/node-modules/urllib/commit/c0221ff08934519bacbcf96660f126d5d6279c02)] - feat: support deflate compress for response (#283) (iSayme <<isaymeorg@gmail.com>>)
+
+**others**
+  * [[`60ea1f6`](http://github.com/node-modules/urllib/commit/60ea1f653a29e0c8949fb3be5d82fe1fddf2a0f3)] - test: update url, the /:package/* not avalable anymore (#284) (iSayme <<isaymeorg@gmail.com>>)
+
 2.27.0 / 2018-03-26
 ==================
 
