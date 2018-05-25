@@ -89,13 +89,13 @@ describe('test/urllib.test.js', function () {
     it('should request(undefined) thrown', function() {
       assert.throws(function () {
         urllib.requestWithCallback(undefined, function() {});
-      }, 'expect request url to be a string or a http request options, but got undefined');
+      }, /expect request url to be a string or a http request options, but got undefined/);
     });
 
     it('should request(1) thrown', function() {
       assert.throws(function () {
         urllib.requestWithCallback(1, function() {});
-      }, 'expect request url to be a string or a http request options, but got 1');
+      }, /expect request url to be a string or a http request options, but got 1/);
     });
 
     it('should request(localhost:port) work', function(done) {

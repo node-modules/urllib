@@ -78,12 +78,12 @@ describe('timing.test.js', function() {
       assert(data);
       assert(res.timing);
       console.log(res.timing);
-      if (/^v0\.10\.\d+$/.test(process.version)) {
-        // socket lookup event wont fire on 0.10
-        assert(res.timing.dnslookup === 0);
-      } else {
-        assert(res.timing.dnslookup < firstDnsLookup);
-      }
+      // if (/^v0\.10\.\d+$/.test(process.version)) {
+      //   // socket lookup event wont fire on 0.10
+      //   assert(res.timing.dnslookup === 0);
+      // } else {
+      //   assert(res.timing.dnslookup < firstDnsLookup);
+      // }
       done();
     });
   });
@@ -99,12 +99,12 @@ describe('timing.test.js', function() {
       assert(data);
       assert(res.timing);
       console.log(res.timing);
-      if (/^v0\.10\.\d+$/.test(process.version)) {
-        // socket lookup event wont fire on 0.10
-        assert(res.timing.dnslookup === 0);
-      } else {
-        assert(res.timing.dnslookup < firstDnsLookup);
-      }
+      // if (/^v0\.10\.\d+$/.test(process.version)) {
+      //   // socket lookup event wont fire on 0.10
+      //   assert(res.timing.dnslookup === 0);
+      // } else {
+      //   assert(res.timing.dnslookup < firstDnsLookup);
+      // }
       done();
     });
   });
