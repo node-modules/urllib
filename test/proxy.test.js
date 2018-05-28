@@ -6,7 +6,7 @@ var proxy = require('./fixtures/reverse-proxy');
 var isNode010 = /^v0\.10\.\d+$/.test(process.version);
 var isNode012 = /^v0\.12\.\d+$/.test(process.version);
 
-var testUrl = process.env.CI ? 'https://registry.npmjs.org' : 'https://registry.cnpmjs.org';
+var testUrl = process.env.CI ? 'https://registry.npmjs.com' : 'https://r.cnpmjs.org';
 
 if (!isNode010 && !isNode012) {
   describe('test/proxy.test.js', function() {
