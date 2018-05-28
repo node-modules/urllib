@@ -185,7 +185,7 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should alias curl() work', function (done) {
-      urllib.curl(config.npmHttpRegistry + '/pedding/1.0.0', {timeout: 25000},
+      urllib.curl(config.npmRegistry + '/pedding/1.0.0', {timeout: 25000},
       function (err, data, res) {
         assert(!err);
         assert(Buffer.isBuffer(data));
@@ -739,12 +739,12 @@ describe('test/urllib.test.js', function () {
       var urls = [
         config.npmRegistry + '/byte',
         config.npmWeb,
-        config.npmHttpRegistry + '/pedding',
+        config.npmRegistry + '/pedding',
 
         config.npmWeb + '/package/byte',
         config.npmRegistry + '/pedding',
         config.npmWeb + '/package/pedding',
-        config.npmHttpRegistry + '/byte',
+        config.npmRegistry + '/byte',
       ];
 
       urls.forEach(function (url, index) {
@@ -783,7 +783,7 @@ describe('test/urllib.test.js', function () {
           assert(res.statusCode === 200);
           // make sure free socket release to free list
           process.nextTick(function () {
-            urllib.request(config.npmHttpRegistry + '/npm/6.1.0', {
+            urllib.request(config.npmHttpRegistry + '/npm', {
               agent: agent,
               httpsAgent: httpsAgent,
               timeout: 1,
