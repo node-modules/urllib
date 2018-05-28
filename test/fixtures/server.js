@@ -46,6 +46,10 @@ var server = http.createServer(function (req, res) {
     return;
   }
 
+  if (req.url === '/block') {
+    return;
+  }
+
   var chunks  = [];
   var size = 0;
   req.on('data', function (buf) {
