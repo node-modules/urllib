@@ -185,10 +185,11 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should alias curl() work', function (done) {
-      urllib.curl(config.npmHttpRegistry + '/pedding/latest', {timeout: 25000},
+      urllib.curl(config.npmHttpRegistry + '/pedding/1.0.0', {timeout: 25000},
       function (err, data, res) {
         assert(!err);
         assert(Buffer.isBuffer(data));
+        console.log(res.headers);
         assert(res.statusCode === 200);
         done();
       });
@@ -367,7 +368,7 @@ describe('test/urllib.test.js', function () {
         assert(err);
         assert(err.name === 'ResponseError');
         err.code && assert(err.code === 'HPE_INVALID_CHUNK_SIZE');
-        assert(err.message.indexOf('Parse Error (req "error"), GET http://127.0.0.1:') >= 0);
+        assert(err.message.indexOf('Parse Error, GET http://127.0.0.1:') >= 0);
         assert(err.bytesParsed === 2);
         assert(!data);
         done();
@@ -772,7 +773,7 @@ describe('test/urllib.test.js', function () {
       it('should request http timeout', function (done) {
         var agent = this.agent;
         var httpsAgent = this.httpsAgent;
-        urllib.request(config.npmHttpRegistry + '/byte', {
+        urllib.request(config.npmHttpRegistry + '/byte/2.0.0', {
           agent: agent,
           httpsAgent: httpsAgent,
           timeout: 25000,
@@ -782,7 +783,7 @@ describe('test/urllib.test.js', function () {
           assert(res.statusCode === 200);
           // make sure free socket release to free list
           process.nextTick(function () {
-            urllib.request(config.npmHttpRegistry + '/npm', {
+            urllib.request(config.npmHttpRegistry + '/npm/6.1.0', {
               agent: agent,
               httpsAgent: httpsAgent,
               timeout: 1,

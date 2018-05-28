@@ -1,9 +1,9 @@
 'use strict';
 
 var assert = require('assert');
-var urllib = require('..');
 var fs = require('fs');
 var path = require('path');
+var urllib = require('..');
 var server = require('./fixtures/server');
 
 var isNode012 = /^v0\.12\.\d+$/.test(process.version);

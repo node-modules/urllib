@@ -25,12 +25,13 @@ if (!isNode010 && !isNode012) {
     });
 
     it('should proxy http work', function(done) {
-      urllib.request(testUrl.replace('https', 'http') + '/pedding/latest', {
+      urllib.request(testUrl.replace('https', 'http') + '/pedding/1.0.0', {
         dataType: 'json',
         enableProxy: true,
         proxy: proxyUrl,
       }, function(err, data, res) {
         assert(!err);
+        console.log(res.headers);
         assert(data.name === 'pedding');
         assert(res.status === 200);
         done();
