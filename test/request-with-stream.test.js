@@ -72,7 +72,7 @@ describe('request-with-stream.test.js', function() {
       setTimeout(function() {
         assert(streamClosed);
         done();
-      }, 1);
+      }, 100);
     });
   });
 
