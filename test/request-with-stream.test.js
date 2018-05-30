@@ -75,4 +75,30 @@ describe('request-with-stream.test.js', function() {
       }, 1);
     });
   });
+
+  it('should handle writeStream when writeStream emit error', function(done) {
+    var tmpfile = path.join(__dirname, '.tmpnotexists/.tmp.txt.notexists');
+    var writeStream = fs.createWriteStream(tmpfile);
+    var args = {
+      method: 'POST',
+      writeStream: writeStream,
+      timeout: 1000,
+    };
+    var streamError = false;
+    writeStream.on('error', function(err) {
+      streamError = true;
+      console.log('writeStream error fired: %s', err);
+    });
+    urllib.request('http://localhost:' + port + '/response_timeout_10s', args, function(err, res) {
+      assert(err);
+      assert(err.name === 'Error');
+      assert(err.code === 'ENOENT');
+      assert(err.message.indexOf('ENOENT: no such file or directory, open') === 0);
+      assert(!res);
+      setTimeout(function() {
+        assert(streamError);
+        done();
+      }, 1);
+    });
+  });
 });
