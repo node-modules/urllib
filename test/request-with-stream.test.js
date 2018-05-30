@@ -47,7 +47,7 @@ describe('request-with-stream.test.js', function() {
       setTimeout(function() {
         assert(streamClosed);
         done();
-      }, 0);
+      }, 100);
     });
   });
 
@@ -98,7 +98,7 @@ describe('request-with-stream.test.js', function() {
       setTimeout(function() {
         assert(streamError);
         done();
-      }, 1);
+      }, 100);
     });
   });
 });
