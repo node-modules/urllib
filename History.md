@@ -1,4 +1,13 @@
 
+2.28.1 / 2018-06-01
+==================
+
+**fixes**
+  * [[`6bc31b9`](http://github.com/node-modules/urllib/commit/6bc31b9af77bbf5c4acab7e430116b071160b6d5)] - fix: use pump to close request stream (#287) (fengmk2 <<fengmk2@gmail.com>>)
+
+**others**
+  * [[`8087683`](http://github.com/node-modules/urllib/commit/8087683710118088891a580666b149181e1cab86)] - test: add node 10 support (#285) (fengmk2 <<fengmk2@gmail.com>>)
+
 2.28.0 / 2018-05-25
 ==================
 
