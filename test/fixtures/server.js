@@ -46,6 +46,10 @@ var server = http.createServer(function (req, res) {
     return;
   }
 
+  if (req.url === '/block') {
+    return;
+  }
+
   var chunks  = [];
   var size = 0;
   req.on('data', function (buf) {
@@ -63,6 +67,11 @@ var server = http.createServer(function (req, res) {
       return setTimeout(function () {
         res.end('timeout 700ms');
       }, 700);
+    } else if (req.url === '/response_timeout_10s') {
+      res.write('foo');
+      return setTimeout(function () {
+        res.end('timeout 10000ms');
+      }, 10000);
     } else if (req.url === '/error') {
       return res.destroy();
     } else if (req.url === '/socket.destroy') {
