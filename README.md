@@ -280,6 +280,8 @@ Response is normal object, it contains:
 * `timing`: timing object if timing enable.
 * `remoteAddress`: http server ip address
 * `remotePort`: http server ip port
+* `socketHandledRequests`: socket already handled request count
+* `socketHandledResponses`: socket already handled response count
 
 #### Response: `res.aborted`
 

@@ -44,9 +44,12 @@ describe('test/keep-alive-header.test.js', function() {
       }, function(err, text, res) {
         assert(!err);
         assert(res.status === 200);
-        console.log('[%s] status: %s, text: %s, headers: %j', count, text, res.status, res.headers);
+        console.log('[%s] status: %s, text: %s, headers: %j, %s, %s',
+          count, text, res.status, res.headers, res.socketHandledRequests, res.socketHandledResponses);
         assert(res.headers.connection === 'keep-alive');
         assert(res.headers['keep-alive'] === 'timeout=1');
+        assert(res.socketHandledRequests <= count);
+        assert(res.socketHandledResponses <= count);
         if (count > 5) {
           done();
         }
