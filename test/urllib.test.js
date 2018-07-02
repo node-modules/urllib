@@ -846,6 +846,10 @@ describe('test/urllib.test.js', function () {
           assert(!err);
           assert(data instanceof Buffer);
           assert(res.statusCode === 200);
+          assert(res.socketHandledRequests >= 1);
+          assert(res.socketHandledResponses >= 1);
+          var lastSocketHandledRequests = res.socketHandledRequests;
+          var lastSocketHandledResponses = res.socketHandledResponses;
           // make sure free socket release to free list
           process.nextTick(function () {
             urllib.request(config.npmRegistry + '/npm', {
@@ -854,6 +858,10 @@ describe('test/urllib.test.js', function () {
               timeout: 1,
             }, function (err) {
               assert(err);
+              console.log(err.message);
+              assert(err.res.socketHandledRequests === lastSocketHandledRequests + 1);
+              // socketHandledResponses should not change
+              assert(err.res.socketHandledResponses === lastSocketHandledResponses);
               assert(err.message.indexOf('(connected: true, keepalive socket: true, agent status: {"createSocketCount":') >= 0);
               done();
             });
