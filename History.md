@@ -1,4 +1,10 @@
 
+2.29.0 / 2018-07-03
+==================
+
+**features**
+  * [[`4ca0c48`](http://github.com/node-modules/urllib/commit/4ca0c486699ff9e7e8b59f381a963a1133b59a96)] - feat: add socket handled request and response count (#288) (fengmk2 <<fengmk2@gmail.com>>)
+
 2.28.1 / 2018-06-01
 ==================
 
