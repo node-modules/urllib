@@ -858,7 +858,6 @@ describe('test/urllib.test.js', function () {
               timeout: 1,
             }, function (err) {
               assert(err);
-              console.log(err.message);
               assert(err.res.socketHandledRequests === lastSocketHandledRequests + 1);
               // socketHandledResponses should not change
               assert(err.res.socketHandledResponses === lastSocketHandledResponses);
