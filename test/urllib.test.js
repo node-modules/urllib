@@ -770,6 +770,43 @@ describe('test/urllib.test.js', function () {
         });
       });
 
+      it('should keepAlive with same socket and count socketHandledRequests and socketHandledResponses', function(done) {
+        var url = config.npmRegistry + '/pedding/latest';
+        var KeepAliveAgent = require('agentkeepalive');
+        var agent = new KeepAliveAgent({
+          keepAlive: true,
+        });
+        var httpsAgent = new KeepAliveAgent.HttpsAgent({
+          keepAlive: true,
+        });
+        var index = 0;
+        function request() {
+          index++;
+          urllib.request(url, {
+            agent: agent,
+            httpsAgent: httpsAgent,
+            timeout: 25000,
+          }, function (err, data, res) {
+            assert(!err);
+            assert(data instanceof Buffer);
+            if (res.statusCode !== 200) {
+              console.log(res.statusCode, res.headers);
+            }
+            assert(res.headers.connection === 'keep-alive');
+            if (index > 1) {
+              assert(res.keepAliveSocket === true);
+            }
+            assert(res.socketHandledRequests === index);
+            assert(res.socketHandledResponses === index);
+            if (index === 5) {
+              return done();
+            }
+            setTimeout(request, 10);
+          });
+        }
+        request();
+      });
+
       it('should request http timeout', function (done) {
         var agent = this.agent;
         var httpsAgent = this.httpsAgent;
@@ -790,6 +827,8 @@ describe('test/urllib.test.js', function () {
             }, function (err) {
               assert(err);
               assert(err.message.indexOf('(connected: true, keepalive socket: true, agent status: {"createSocketCount":') >= 0);
+              assert(err.message.indexOf(', socketHandledRequests: ') >= 0);
+              assert(err.message.indexOf(', socketHandledResponses: ') >= 0);
               done();
             });
           });
@@ -807,6 +846,10 @@ describe('test/urllib.test.js', function () {
           assert(!err);
           assert(data instanceof Buffer);
           assert(res.statusCode === 200);
+          assert(res.socketHandledRequests >= 1);
+          assert(res.socketHandledResponses >= 1);
+          var lastSocketHandledRequests = res.socketHandledRequests;
+          var lastSocketHandledResponses = res.socketHandledResponses;
           // make sure free socket release to free list
           process.nextTick(function () {
             urllib.request(config.npmRegistry + '/npm', {
@@ -815,6 +858,9 @@ describe('test/urllib.test.js', function () {
               timeout: 1,
             }, function (err) {
               assert(err);
+              assert(err.res.socketHandledRequests === lastSocketHandledRequests + 1);
+              // socketHandledResponses should not change
+              assert(err.res.socketHandledResponses === lastSocketHandledResponses);
               assert(err.message.indexOf('(connected: true, keepalive socket: true, agent status: {"createSocketCount":') >= 0);
               done();
             });
@@ -955,7 +1001,7 @@ describe('test/urllib.test.js', function () {
         assert(err.name === 'ResponseError');
         assert(err.stack.match(/socket hang up/));
         assert(err.code === 'ECONNRESET');
-        assert(err.message.indexOf('/error -1 (connected: true, keepalive socket: false)\nheaders: {}') >= 0);
+        assert(err.message.indexOf('/error -1 (connected: true, keepalive socket: false, socketHandledRequests: 1, socketHandledResponses: 0)\nheaders: {}') >= 0);
         assert(err.res === res);
         assert(!data);
         assert(res);
@@ -963,6 +1009,7 @@ describe('test/urllib.test.js', function () {
           'status', 'statusCode', 'headers', 'size',
           'aborted', 'rt', 'keepAliveSocket', 'data', 'requestUrls', 'timing',
           'remoteAddress', 'remotePort',
+          'socketHandledRequests', 'socketHandledResponses',
         ]);
         done();
       });
