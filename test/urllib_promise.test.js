@@ -62,6 +62,7 @@ describe('test/urllib_promise.test.js', function () {
       assert.deepEqual(Object.keys(err.res), [
         'status', 'statusCode', 'headers', 'size', 'aborted', 'rt',
         'keepAliveSocket', 'data', 'requestUrls', 'timing', 'remoteAddress', 'remotePort',
+        'socketHandledRequests', 'socketHandledResponses',
       ]);
     });
   });
