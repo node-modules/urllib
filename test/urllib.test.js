@@ -1001,7 +1001,7 @@ describe('test/urllib.test.js', function () {
         assert(err.name === 'ResponseError');
         assert(err.stack.match(/socket hang up/));
         assert(err.code === 'ECONNRESET');
-        assert(err.message.indexOf('/error -1 (connected: true, keepalive socket: false)\nheaders: {}') >= 0);
+        assert(err.message.indexOf('/error -1 (connected: true, keepalive socket: false, socketHandledRequests: 1, socketHandledResponses: 0)\nheaders: {}') >= 0);
         assert(err.res === res);
         assert(!data);
         assert(res);
@@ -1009,6 +1009,7 @@ describe('test/urllib.test.js', function () {
           'status', 'statusCode', 'headers', 'size',
           'aborted', 'rt', 'keepAliveSocket', 'data', 'requestUrls', 'timing',
           'remoteAddress', 'remotePort',
+          'socketHandledRequests', 'socketHandledResponses',
         ]);
         done();
       });

@@ -21,6 +21,7 @@ describe('test/urllib_promise.test.js', function () {
         'size', 'aborted', 'rt',
         'keepAliveSocket', 'data', 'requestUrls', 'timing',
         'remoteAddress', 'remotePort',
+        'socketHandledRequests', 'socketHandledResponses',
       ]);
       assert(result.res.status === 200);
       assert(result.res.rt > 0);
