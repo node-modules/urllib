@@ -217,6 +217,10 @@ var server = http.createServer(function (req, res) {
       }));
     } else if (req.url === '/bigfile') {
       return res.end(new Buffer(1024 * 1024 * 100));
+    } else if (req.url === '/headers/accept') {
+      return res.end(JSON.stringify({
+        accept: req.headers.accept,
+      }));
     }
 
     var url = req.url.split('?');
