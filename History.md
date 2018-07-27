@@ -1,4 +1,10 @@
 
+2.29.1 / 2018-07-26
+==================
+
+**fixes**
+  * [[`ab39245`](http://github.com/node-modules/urllib/commit/ab39245ecb8d75f56b559c193b26c4a19e7bbbfe)] - fix: keep exists accept header on dataType = json (#289) (fengmk2 <<fengmk2@gmail.com>>)
+
 2.29.0 / 2018-07-03
 ==================
 
