@@ -693,6 +693,31 @@ describe('test/urllib.test.js', function () {
       });
     });
 
+    it('should auto set accept headers when dataType = json and accept not exists', function(done) {
+      urllib.request(host + '/headers/accept', {
+        dataType: 'json',
+      }, function (err, data, res) {
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(data.accept === 'application/json');
+        done();
+      });
+    });
+
+    it('should keep exists accept headers when dataType = json', function(done) {
+      urllib.request(host + '/headers/accept', {
+        dataType: 'json',
+        headers: {
+          accept: 'foo/json',
+        },
+      }, function (err, data, res) {
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(data.accept === 'foo/json');
+        done();
+      });
+    });
+
     describe('mock sockets full', function () {
       var agent = new http.Agent({
         maxSockets: 1,
@@ -1267,6 +1292,19 @@ describe('test/urllib.test.js', function () {
           timeout: 25000,
         }, function (err, data, res) {
         assert(!err);
+        assert(res.headers['content-encoding'] === 'gzip');
+        done();
+      });
+    });
+
+    it('should throw on error gzip content', function (done) {
+      urllib.request(host + '/error-gzip',
+        {
+          gzip: true,
+          timeout: 25000,
+        }, function (err, data, res) {
+        assert(err);
+        assert(err.name === 'UnzipError');
         assert(res.headers['content-encoding'] === 'gzip');
         done();
       });

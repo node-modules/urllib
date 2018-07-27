@@ -181,6 +181,10 @@ var server = http.createServer(function (req, res) {
     } else if (req.url.indexOf('/no-gzip') === 0) {
       fs.createReadStream(__filename).pipe(res);
       return;
+    } else if (req.url.indexOf('/error-gzip') === 0) {
+      res.setHeader('Content-Encoding', 'gzip');
+      fs.createReadStream(__filename).pipe(res);
+      return;
     } else if (req.url.indexOf('/gzip') === 0) {
       res.setHeader('Content-Encoding', 'gzip');
       fs.createReadStream(__filename).pipe(zlib.createGzip()).pipe(res);
@@ -217,6 +221,10 @@ var server = http.createServer(function (req, res) {
       }));
     } else if (req.url === '/bigfile') {
       return res.end(new Buffer(1024 * 1024 * 100));
+    } else if (req.url === '/headers/accept') {
+      return res.end(JSON.stringify({
+        accept: req.headers.accept,
+      }));
     }
 
     var url = req.url.split('?');
