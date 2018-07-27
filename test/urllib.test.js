@@ -1297,6 +1297,19 @@ describe('test/urllib.test.js', function () {
       });
     });
 
+    it('should throw on error gzip content', function (done) {
+      urllib.request(host + '/error-gzip',
+        {
+          gzip: true,
+          timeout: 25000,
+        }, function (err, data, res) {
+        assert(err);
+        assert(err.name === 'UnzipError');
+        assert(res.headers['content-encoding'] === 'gzip');
+        done();
+      });
+    });
+
     it('should auto accept and custom decode gzip response content', function (done) {
       done = pedding(4, done);
 
