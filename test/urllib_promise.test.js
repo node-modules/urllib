@@ -50,7 +50,8 @@ describe('test/urllib_promise.test.js', function () {
       data: {
         q: 'foo'
       },
-      timeout: 20000
+      timeout: 20000,
+      trace: true
     })
     .then(function () {
       throw new Error('should not run this');
@@ -58,6 +59,7 @@ describe('test/urllib_promise.test.js', function () {
       assert(err);
       assert(err.code === 'ECONNREFUSED');
       assert(err.status === -1);
+      assert(err.stack.indexOf('--------------------') > 0);
       assert.deepEqual(err.headers, {});
       assert.deepEqual(Object.keys(err.res), [
         'status', 'statusCode', 'headers', 'size', 'aborted', 'rt',

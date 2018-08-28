@@ -48,6 +48,7 @@
   "devDependencies": {
     "agentkeepalive": "^3.4.0",
     "autod": "*",
+    "benchmark": "^2.1.4",
     "bluebird": "*",
     "busboy": "^0.2.14",
     "co": "*",
@@ -57,6 +58,7 @@
     "intelli-espower-loader": "^1.0.1",
     "istanbul": "*",
     "jshint": "*",
+    "microtime": "^2.1.8",
     "mocha": "3",
     "muk": "^0.5.3",
     "pedding": "^1.1.0",
