@@ -1,4 +1,13 @@
 
+2.30.0 / 2018-09-26
+==================
+
+**features**
+  * [[`b760530`](http://github.com/node-modules/urllib/commit/b76053020923f4d99a1c93cf2e16e0c5ba10bacf)] - feat: implement trace option like mysql client (#290) (killa <<killa123@126.com>>)
+
+**others**
+  * [[`5e80ee8`](http://github.com/node-modules/urllib/commit/5e80ee8f3e8992da98b0a270de5a9298627841c7)] - test: run ci on azure-pipelines (#292) (azure-pipelines[bot] <<azure-pipelines[bot]@users.noreply.github.com>>)
+
 2.29.1 / 2018-07-26
 ==================
 
