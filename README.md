@@ -2,6 +2,7 @@
 
 [![NPM version][npm-image]][npm-url]
 [![build status][travis-image]][travis-url]
+[![Build Status](https://dev.azure.com/eggjs/egg/_apis/build/status/node-modules.urllib)](https://dev.azure.com/eggjs/egg/_build/latest?definitionId=7)
 [![appveyor build status][appveyor-image]][appveyor-url]
 [![Test coverage][codecov-image]][codecov-url]
 [![David deps][david-image]][david-url]
