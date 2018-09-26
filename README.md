@@ -2,7 +2,7 @@
 
 [![NPM version][npm-image]][npm-url]
 [![build status][travis-image]][travis-url]
-[![appveyor build status][appveyor-image]][appveyor-url]
+[![Build Status](https://dev.azure.com/eggjs/egg/_apis/build/status/node-modules.urllib)](https://dev.azure.com/eggjs/egg/_build/latest?definitionId=7)
 [![Test coverage][codecov-image]][codecov-url]
 [![David deps][david-image]][david-url]
 [![Known Vulnerabilities][snyk-image]][snyk-url]
@@ -12,8 +12,6 @@
 [npm-url]: https://npmjs.org/package/urllib
 [travis-image]: https://img.shields.io/travis/node-modules/urllib.svg?style=flat-square
 [travis-url]: https://travis-ci.org/node-modules/urllib
-[appveyor-image]: https://ci.appveyor.com/api/projects/status/wpnl7r1llxyruja9?svg=true
-[appveyor-url]: https://ci.appveyor.com/project/eggjs/urllib-54ds2
 [codecov-image]: https://codecov.io/gh/node-modules/urllib/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/node-modules/urllib
 [david-image]: https://img.shields.io/david/node-modules/urllib.svg?style=flat-square
