@@ -11,6 +11,8 @@ var agent = new http.Agent({
   timeout: 5000,
 });
 
+// start your nginx listen 8080 with hello,world
+
 function request(trace, deferred) {
   urllib.request('http://127.0.0.1:8080', {
     timeout: 20000,

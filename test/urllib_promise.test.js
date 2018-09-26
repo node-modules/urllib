@@ -68,4 +68,30 @@ describe('test/urllib_promise.test.js', function () {
       ]);
     });
   });
+
+  describe('disable trace',function () {
+    it('should not with long stack trace', function () {
+      return urllib.request('http://127.0.0.1:11', {
+        data: {
+          q: 'foo'
+        },
+        timeout: 20000,
+        trace: false
+      })
+        .then(function () {
+          throw new Error('should not run this');
+        }).catch(function (err) {
+          assert(err);
+          assert(err.code === 'ECONNREFUSED');
+          assert(err.status === -1);
+          assert(err.stack.indexOf('--------------------') < 0);
+          assert.deepEqual(err.headers, {});
+          assert.deepEqual(Object.keys(err.res), [
+            'status', 'statusCode', 'headers', 'size', 'aborted', 'rt',
+            'keepAliveSocket', 'data', 'requestUrls', 'timing', 'remoteAddress', 'remotePort',
+            'socketHandledRequests', 'socketHandledResponses',
+          ]);
+        });
+    });
+  });
 });
