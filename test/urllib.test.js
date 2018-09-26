@@ -10,12 +10,12 @@ var path = require('path');
 var formstream = require('formstream');
 var coffee = require('coffee');
 var tar = require('tar');
-var zlib = require('zlib');
 var os = require('os');
 var through = require('through2');
 var Stream = require('stream');
 var muk = require('muk'); // muk support more node versions than mm
 var dns = require('dns');
+var mkdirp = require('mkdirp');
 var server = require('./fixtures/server');
 var config = require('./config');
 var urllib = require('../');
@@ -1162,15 +1162,17 @@ describe('test/urllib.test.js', function () {
         assert(res.statusCode === 200);
 
         var tmpdir = path.join(os.tmpdir(), 'pedding-ungzip2');
-        var gunzip = zlib.createGunzip();
-        gunzip.on('error', done);
-        var extracter = tar.Extract({ path: tmpdir });
-        extracter.on('error', done);
-        extracter.on('end', function () {
-          console.log('version %s', require(path.join(tmpdir, 'package/package.json')).version);
+        mkdirp.sync(tmpdir);
+        res.pipe(tar.x({
+          C: tmpdir,
+        })
+        .on('error', done)
+        .on('end', function() {
+          var version = require(path.join(tmpdir, 'package/package.json')).version;
+          console.log('version %s', version);
+          assert(version === '1.0.0');
           done();
-        });
-        res.pipe(gunzip).pipe(extracter);
+        }));
       });
     });
   });
