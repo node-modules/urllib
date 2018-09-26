@@ -362,6 +362,21 @@ https_proxy=https://localhost:8008
 $ http_proxy=http://localhost:8008 node index.js
 ```
 
+### Trace
+If set trace true, error stack will contains full call stack, like
+```
+Error: connect ECONNREFUSED 127.0.0.1:11
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1113:14)
+    --------------------
+    at ~/workspace/urllib/lib/urllib.js:150:13
+    at new Promise (<anonymous>)
+    at Object.request (~/workspace/urllib/lib/urllib.js:149:10)
+    at Context.<anonymous> (~/workspace/urllib/test/urllib_promise.test.js:49:19)
+    ....
+```
+
+When open the trace, urllib may have poor perfomance, please consider carefully.
+
 ## TODO
 
 * [ ] Support component
