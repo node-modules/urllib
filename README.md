@@ -164,6 +164,7 @@ httpclient.request('http://nodejs.org', function (err, body) {
     - ***proxy*** String | Object - proxy agent uri or options, default is `null`.
     - ***lookup*** Function - Custom DNS lookup function, default is `dns.lookup`. Require node >= 4.0.0(for http protocol) and node >=8(for https protocol)
     - ***checkAddress*** Function: optional, check request address to protect from SSRF and similar attacks. It receive tow arguments(`ip` and `family`) and should return true or false to identified the address is legal or not. It rely on `lookup` and have the same version requirement.
+    - ***trace*** Boolean - Enable capture stack include call site of library entrance, default is `false`.
 - ***callback(err, data, res)*** Function - Optional callback.
     - **err** Error - Would be `null` if no error accured.
     - **data** Buffer | Object - The data responsed. Would be a Buffer if `dataType` is set to `text` or an JSON parsed into Object if it's set to `json`.
@@ -360,6 +361,21 @@ https_proxy=https://localhost:8008
 ```bash
 $ http_proxy=http://localhost:8008 node index.js
 ```
+
+### Trace
+If set trace true, error stack will contains full call stack, like
+```
+Error: connect ECONNREFUSED 127.0.0.1:11
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1113:14)
+    --------------------
+    at ~/workspace/urllib/lib/urllib.js:150:13
+    at new Promise (<anonymous>)
+    at Object.request (~/workspace/urllib/lib/urllib.js:149:10)
+    at Context.<anonymous> (~/workspace/urllib/test/urllib_promise.test.js:49:19)
+    ....
+```
+
+When open the trace, urllib may have poor perfomance, please consider carefully.
 
 ## TODO
 

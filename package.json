@@ -48,6 +48,7 @@
   "devDependencies": {
     "agentkeepalive": "^3.4.0",
     "autod": "*",
+    "benchmark": "^2.1.4",
     "bluebird": "*",
     "busboy": "^0.2.14",
     "co": "*",
