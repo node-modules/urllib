@@ -144,6 +144,10 @@ var server = http.createServer(function (req, res) {
     } else if (req.url.indexOf('/get') === 0) {
       res.writeHeader(200);
       return res.end(req.url);
+    } else if (req.url.indexOf('/headers') === 0) {
+      res.setHeader('content-type', 'application/json');
+      res.writeHeader(200);
+      return res.end(JSON.stringify(req.headers));
     } else if (req.url === '/wrongjson') {
       res.writeHeader(200);
       return res.end(new Buffer('{"foo":""'));
