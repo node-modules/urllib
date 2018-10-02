@@ -1440,6 +1440,16 @@ describe('test/urllib.test.js', function () {
       });
     });
 
+    it('should return no user agent if user-agent header is set to null', function (done) {
+      urllib.request(host + '/ua', {dataType: 'json', headers: {'user-agent': null}}, function (err, data, res) {
+        console.log('data = ', data);
+        assert(!err);
+        assert(!data['user-agent']);
+        assert(res.statusCode === 200);
+        done();
+      });
+    });
+
     it('should return mock user agent', function (done) {
       urllib.request(host + '/ua', {dataType: 'json', headers: {'user-agent': 'mock agent'}},
       function (err, data, res) {
