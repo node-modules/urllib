@@ -252,6 +252,21 @@ describe('test/urllib.test.js', function () {
       });
     });
 
+    it('should omit any header that is explicitly set to null', function (done) {
+      urllib.request(host + '/headers', {
+        headers: {
+          DNT: null
+        },
+        dataType: 'json'
+      }, function(err, data, res) {
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(!data.dnt);
+        assert(!data.DNT);
+        done();
+      });
+    });
+
     if (process.platform !== 'win32') {
       it('should redirect with writeStream and make sure res resume', function (done) {
         coffee.fork(path.join(__dirname, 'redirect.js'))
