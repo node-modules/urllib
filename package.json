@@ -46,7 +46,7 @@
     "utility": "^1.12.0"
   },
   "devDependencies": {
-    "agentkeepalive": "^3.4.0",
+    "agentkeepalive": "^4.0.0",
     "autod": "*",
     "benchmark": "^2.1.4",
     "bluebird": "*",

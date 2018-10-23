@@ -9,14 +9,21 @@ node_js:
 env:
   - AGENT_VERSION=2
   - AGENT_VERSION=3
+  - AGENT_VERSION=4
 matrix:
   exclude:
     - node_js: '0.12'
       env: AGENT_VERSION=3
+    - node_js: '0.12'
+      env: AGENT_VERSION=4
     - node_js: '4'
       env: AGENT_VERSION=2
+    - node_js: '4'
+      env: AGENT_VERSION=4
     - node_js: '6'
       env: AGENT_VERSION=2
+    - node_js: '6'
+      env: AGENT_VERSION=4
     - node_js: '8'
       env: AGENT_VERSION=2
     - node_js: '10'

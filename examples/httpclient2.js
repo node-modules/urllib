@@ -1,7 +1,7 @@
 'use strict';
 
 var HttpClient = require('../').HttpClient;
-var Agent = require('agentkeepalive');
+var HttpAgent = require('agentkeepalive');
 var HttpsAgent = require('agentkeepalive').HttpsAgent;
 
 tryHttpclient(HttpClient, 'urllib1');
@@ -12,7 +12,7 @@ function tryHttpclient(HttpClient, name) {
     method: 'HEAD',
     timeout: 10000,
   };
-  var agent = new Agent({
+  var httpAgent = new HttpAgent({
     timeout: 60000,
     freeSocketKeepAliveTimeout: 30000,
   });
@@ -20,9 +20,9 @@ function tryHttpclient(HttpClient, name) {
     timeout: 60000,
     freeSocketKeepAliveTimeout: 30000,
   });
-  var urllib = new HttpClient({ agent: agent, httpsAgent: httpsAgent });
+  var urllib = new HttpClient({ agent: httpAgent, httpsAgent: httpsAgent });
   urllib.on('response', function(info) {
-    console.log(name, agent, agent.getCurrentStatus());
+    console.log(name, httpAgent, httpAgent.getCurrentStatus());
     console.log(name, httpsAgent, httpsAgent.getCurrentStatus());
     console.log(name, info.res.keepAliveSocket);
   });
