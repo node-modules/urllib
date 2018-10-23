@@ -1,4 +1,11 @@
 
+2.31.0 / 2018-10-24
+==================
+
+**features**
+  * [[`28c38d2`](http://github.com/node-modules/urllib/commit/28c38d2451d85669decfdaf16ea07eaf958d41eb)] - feat: support agentkeepalive@4 (#297) (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`c79eefc`](http://github.com/node-modules/urllib/commit/c79eefc9843fb6a2aeb9e728ed4f8f912e8866ad)] - feat: Do not set User-Agent if the header is explicitly set to null (GP <<exchequer598@gmail.com>>)
+
 2.30.0 / 2018-09-26
 ==================
 
