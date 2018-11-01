@@ -1,4 +1,11 @@
 
+2.31.1 / 2018-11-01
+==================
+
+**fixes**
+  * [[`83fc316`](http://github.com/node-modules/urllib/commit/83fc3165aa477bd7b034c075ae133a52627fc12b)] - fix: Omit the 'Accept-Encoding' header if it is explicitly set to 'null' (#298) (GP ✅ <<exchequer598@gmail.com>>)
+  * [[`36c24c3`](http://github.com/node-modules/urllib/commit/36c24c3f54b6115c178540803a9ffae733bba063)] - fix: should autofix socket timeout by request.timeout (#300) (fengmk2 <<fengmk2@gmail.com>>)
+
 2.31.0 / 2018-10-24
 ==================
 
