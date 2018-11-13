@@ -1,4 +1,10 @@
 
+2.31.2 / 2018-11-13
+==================
+
+**fixes**
+  * [[`227618a`](http://github.com/node-modules/urllib/commit/227618ad0ceef68b409ba7ec9328bdcaba513b3e)] - fix: allow agent set to null (#301) (fengmk2 <<fengmk2@gmail.com>>)
+
 2.31.1 / 2018-11-01
 ==================
 
