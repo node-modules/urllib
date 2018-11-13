@@ -75,10 +75,8 @@ describe('test/urllib.test.js', function () {
   });
 
   describe('request()', function () {
-
     it('should request(host-only) work', function(done) {
-      var host = urlutil.parse('http://r.cnpmjs.org').host;
-      urllib.request(host, { timeout: 30000 }, function(err, data, res) {
+      urllib.request('127.0.0.1:' + port, function(err, data, res) {
         assert(!err);
         assert(data instanceof Buffer);
         assert(res.statusCode === 200);
@@ -758,7 +756,7 @@ describe('test/urllib.test.js', function () {
         done = pedding(2, done);
 
         var errCount = 0;
-        urllib.request(host + '/timeout', {agent: agent, timeout: 550}, function (err, data) {
+        urllib.request(host + '/timeout', {agent: agent, timeout: 1000}, function (err, data) {
           assert(!err);
           assert(errCount === 1);
           errCount = -1;
@@ -1073,7 +1071,7 @@ describe('test/urllib.test.js', function () {
 
     it('should end when writeStream is not consumed', function(done) {
       var writeStream = through();
-      urllib.request('https://registry.cnpmjs.org', {
+      urllib.request(host, {
         writeStream: writeStream,
         consumeWriteStream: false,
         timeout: 25000,
@@ -1088,7 +1086,7 @@ describe('test/urllib.test.js', function () {
           content += data;
         })
         .on('end', function() {
-          assert(new Buffer(content).length > 100);
+          assert(content.length > 80);
           done();
         });
       });

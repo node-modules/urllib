@@ -189,6 +189,66 @@ describe('test/httpclient2.test.js', function () {
     }).catch(done);
   });
 
+  it('should support agent = null', function(done) {
+    var client = new HttpClient({
+      httpsAgent: null,
+      agent: null,
+    });
+
+    var isKeepAlive = [];
+    var url = config.npmRegistry + '/pedding/latest';
+    client.on('response', function(info) {
+      isKeepAlive.push(info.res.keepAliveSocket);
+    });
+    client.request(url, {
+      timeout: 25000,
+    }).then(function() {
+      // console.log(result.headers);
+      // sleep a while to make sure socket release to free queue
+      return sleep(1);
+    }).then(function() {
+      return client.request(url, {
+        timeout: 25000,
+      });
+    }).then(function() {
+      // console.log(result.headers);
+      assert(isKeepAlive.length === 2);
+      assert(isKeepAlive[0] === false);
+      assert(isKeepAlive[1] === false);
+      done();
+    }).catch(done);
+  });
+
+  it('should support agent = false', function(done) {
+    var client = new HttpClient({
+      httpsAgent: false,
+      agent: false,
+    });
+
+    var isKeepAlive = [];
+    var url = config.npmRegistry + '/pedding/latest';
+    client.on('response', function(info) {
+      isKeepAlive.push(info.res.keepAliveSocket);
+    });
+    client.request(url, {
+      timeout: 25000,
+    }).then(function() {
+      // console.log(result.headers);
+      // sleep a while to make sure socket release to free queue
+      return sleep(1);
+    }).then(function() {
+      return client.request(url, {
+        timeout: 25000,
+      });
+    }).then(function() {
+      // console.log(result.headers);
+      assert(isKeepAlive.length === 2);
+      assert(isKeepAlive[0] === false);
+      assert(isKeepAlive[1] === false);
+      done();
+    }).catch(done);
+  });
+
   it('should create HttpClient2 with defaultArgs', function(done) {
     var client = new urllib.HttpClient2({
       defaultArgs: {

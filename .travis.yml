@@ -6,6 +6,7 @@ node_js:
   - '6'
   - '8'
   - '10'
+  - '11'
 env:
   - AGENT_VERSION=2
   - AGENT_VERSION=3
@@ -28,6 +29,10 @@ matrix:
       env: AGENT_VERSION=2
     - node_js: '10'
       env: AGENT_VERSION=2
+    - node_js: '11'
+      env: AGENT_VERSION=2
+    - node_js: '11'
+      env: AGENT_VERSION=3
 before_install:
   - sed -i.bak '/"agentkeepalive":/d' package.json
 script:
