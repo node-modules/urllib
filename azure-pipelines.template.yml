@@ -38,10 +38,10 @@ jobs:
       displayName: Set ENV
 
   - script: |
-      npm i   
+      npm i
     displayName: 'Install Packages'
   - script: |
-      npm run ci
+      npm run ci-azure-pipelines
     displayName: 'Build & Unit Test'
   - ${{ if ne(parameters.name, 'windows') }}:
     - script: |

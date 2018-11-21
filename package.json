@@ -12,7 +12,7 @@
     "https"
   ],
   "author": "fengmk2 <fengmk2@gmail.com> (https://fengmk2.com)",
-  "homepage": "http://github.com/node-modules/urllib",
+  "homepage": "https://github.com/node-modules/urllib",
   "main": "lib/index.js",
   "files": [
     "lib"
@@ -24,8 +24,10 @@
   "scripts": {
     "test-local": "mocha -t 30000 -r intelli-espower-loader test/*.test.js",
     "test": "npm run lint && npm run test-local",
-    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- -t 30000 -r intelli-espower-loader test/*.test.js --reporter mocha-junit-reporter --reporter-options mochaFile=./TEST-RESULTS.xml",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- -t 30000 -r intelli-espower-loader test/*.test.js",
+    "test-cov-with-junit": "npm run test-cov -- --reporter mocha-junit-reporter --reporter-options mochaFile=./TEST-RESULTS.xml",
     "ci": "npm run lint && npm run test-cov",
+    "ci-azure-pipelines": "npm run lint && npm run test-cov-with-junit",
     "lint": "jshint .",
     "autod": "autod -w --prefix '^' -t test -e examples"
   },
