@@ -38,7 +38,7 @@ jobs:
       displayName: Set ENV
 
   - script: |
-      npm i
+      npm i   
     displayName: 'Install Packages'
   - script: |
       npm run ci
@@ -47,3 +47,14 @@ jobs:
     - script: |
         npm i codecov && codecov
       displayName: 'Report Coverage'
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: '**/TEST-RESULTS.xml'
+      testRunTitle: 'Test results for JavaScript'
+
+  - task: PublishCodeCoverageResults@1
+    inputs: 
+      codeCoverageTool: Cobertura
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
+      reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage'
