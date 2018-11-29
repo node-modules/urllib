@@ -1,4 +1,14 @@
 
+2.31.3 / 2018-11-30
+==================
+
+**fixes**
+  * [[`98a1622`](http://github.com/node-modules/urllib/commit/98a16225aa21b37c2bfbfe318fe1803eedbd2d0c)] - fix: ensure timeout error is handled when request with stream (#305) (Yiyu He <<dead_horse@qq.com>>)
+
+**others**
+  * [[`2bb86c0`](http://github.com/node-modules/urllib/commit/2bb86c0fe1f34cf8d12e397158e714a86f697093)] - test: only use junit report on azure-pipelines (#304) (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`bd869c7`](http://github.com/node-modules/urllib/commit/bd869c704387d3159ca50bf1976c6c70358b3ee4)] - test: Publish test results to Azure Pipelines (#303) (Rishav Sharan <<rishav.sharan@microsoft.com>>)
+
 2.31.2 / 2018-11-13
 ==================
 
