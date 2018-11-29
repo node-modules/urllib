@@ -171,6 +171,12 @@ var server = http.createServer(function (req, res) {
       }
       res.end();
       return;
+    } else if (req.url === '/stream-timeout') {
+      setTimeout(function() {
+        res.write('response timeout');
+        res.end();
+      }, 1000);
+      return;
     } else if (req.url.indexOf('/json_mirror') === 0) {
       res.setHeader('Content-Type', req.headers['content-type'] || 'application/json');
       if (req.method === 'GET') {
