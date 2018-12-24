@@ -88,7 +88,7 @@ describe('test/urllib_promise.test.js', function () {
           assert(err.stack.indexOf('--------------------') < 0);
           assert.deepEqual(err.headers, {});
           assert.deepEqual(Object.keys(err.res), [
-            'status', 'statusCode', 'headers', 'size', 'aborted', 'rt',
+            'status', 'statusCode', 'statusMessage', 'headers', 'size', 'aborted', 'rt',
             'keepAliveSocket', 'data', 'requestUrls', 'timing', 'remoteAddress', 'remotePort',
             'socketHandledRequests', 'socketHandledResponses',
           ]);
