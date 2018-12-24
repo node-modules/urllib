@@ -1078,7 +1078,7 @@ describe('test/urllib.test.js', function () {
         assert(!data);
         assert(res);
         assert.deepEqual(Object.keys(res), [
-          'status', 'statusCode', 'headers', 'size',
+          'status', 'statusCode', 'statusMessage', 'headers', 'size',
           'aborted', 'rt', 'keepAliveSocket', 'data', 'requestUrls', 'timing',
           'remoteAddress', 'remotePort',
           'socketHandledRequests', 'socketHandledResponses',
