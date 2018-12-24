@@ -272,6 +272,7 @@ Response is normal object, it contains:
 * `status` or `statusCode`: response status code.
   * `-1` meaning some network error like `ENOTFOUND`
   * `-2` meaning ConnectionTimeoutError
+* `statusMessage`: response status message.
 * `headers`: response http headers, default is `{}`
 * `size`: response size
 * `aborted`: response was aborted or not
