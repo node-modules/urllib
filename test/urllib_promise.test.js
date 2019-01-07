@@ -15,9 +15,10 @@ describe('test/urllib_promise.test.js', function () {
       assert(result.data instanceof Buffer);
       assert(result.status === 200);
       assert(result.res.statusCode === 200);
+      assert(result.res.statusMessage === 'OK');
       assert(result.res.headers.connection.toLowerCase() === 'keep-alive');
       assert.deepEqual(Object.keys(result.res), [
-        'status', 'statusCode', 'headers',
+        'status', 'statusCode', 'statusMessage', 'headers',
         'size', 'aborted', 'rt',
         'keepAliveSocket', 'data', 'requestUrls', 'timing',
         'remoteAddress', 'remotePort',
@@ -62,7 +63,7 @@ describe('test/urllib_promise.test.js', function () {
       assert(err.stack.indexOf('--------------------') > 0);
       assert.deepEqual(err.headers, {});
       assert.deepEqual(Object.keys(err.res), [
-        'status', 'statusCode', 'headers', 'size', 'aborted', 'rt',
+        'status', 'statusCode', 'statusMessage', 'headers', 'size', 'aborted', 'rt',
         'keepAliveSocket', 'data', 'requestUrls', 'timing', 'remoteAddress', 'remotePort',
         'socketHandledRequests', 'socketHandledResponses',
       ]);
@@ -87,7 +88,7 @@ describe('test/urllib_promise.test.js', function () {
           assert(err.stack.indexOf('--------------------') < 0);
           assert.deepEqual(err.headers, {});
           assert.deepEqual(Object.keys(err.res), [
-            'status', 'statusCode', 'headers', 'size', 'aborted', 'rt',
+            'status', 'statusCode', 'statusMessage', 'headers', 'size', 'aborted', 'rt',
             'keepAliveSocket', 'data', 'requestUrls', 'timing', 'remoteAddress', 'remotePort',
             'socketHandledRequests', 'socketHandledResponses',
           ]);

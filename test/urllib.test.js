@@ -61,6 +61,7 @@ describe('test/urllib.test.js', function () {
       assert(!error);
       assert(data instanceof Buffer);
       assert(res.statusCode === 200);
+      assert(res.statusMessage === 'OK');
       done();
     });
   });
@@ -115,6 +116,7 @@ describe('test/urllib.test.js', function () {
         assert(!err);
         assert(Buffer.isBuffer(data));
         assert(res.statusCode === 200);
+        assert(res.statusMessage === 'OK');
         // don't touch headers
         assert.deepEqual(headers, {});
         done();
@@ -1076,7 +1078,7 @@ describe('test/urllib.test.js', function () {
         assert(!data);
         assert(res);
         assert.deepEqual(Object.keys(res), [
-          'status', 'statusCode', 'headers', 'size',
+          'status', 'statusCode', 'statusMessage', 'headers', 'size',
           'aborted', 'rt', 'keepAliveSocket', 'data', 'requestUrls', 'timing',
           'remoteAddress', 'remotePort',
           'socketHandledRequests', 'socketHandledResponses',
