@@ -1,4 +1,10 @@
 
+2.32.0 / 2019-01-07
+==================
+
+**features**
+  * [[`a42445e`](http://github.com/node-modules/urllib/commit/a42445edfcaa17b9840afa8b4e06d1928d58ab53)] - feat: Expose status message from original Response (#306) (GP ✅ <<exchequer598@gmail.com>>)
+
 2.31.3 / 2018-11-30
 ==================
 
