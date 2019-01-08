@@ -12,7 +12,7 @@ describe('typescript.test.js', function() {
   var cwd = path.join(__dirname, 'typescript');
 
   before(function(done) {
-    coffee.spawn('tsc', { cwd })
+    coffee.spawn('tsc', { cwd: cwd })
       .debug()
       .expect('code', 0)
       .end(done);
@@ -22,7 +22,7 @@ describe('typescript.test.js', function() {
   });
 
   it('run test', function(done) {
-    coffee.spawn('mocha', [ 'index.js' ], { cwd })
+    coffee.spawn('mocha', [ 'index.js' ], { cwd: cwd })
       .debug()
       .expect('code', 0)
       .end(done);
