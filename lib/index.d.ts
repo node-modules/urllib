@@ -237,27 +237,31 @@ export const agent: http.Agent;
  */
 export const httpsAgent: https.Agent;
 
-export class HttpClient extends EventEmitter {
-  constructor(options?: RequestOptions);
-
+export class HttpClient<O = RequestOptions> extends EventEmitter {
   request<T>(url: string | url.URL): Promise<HttpClientResponse<T>>;
-  request<T>(url: string | url.URL, options: RequestOptions): Promise<HttpClientResponse<T>>;
+  request<T>(url: string | url.URL, options: O): Promise<HttpClientResponse<T>>;
   request<T>(url: string | url.URL, callback: Callback<T>): void;
-  request<T>(url: string | url.URL, options: RequestOptions, callback: Callback<T>): void;
+  request<T>(url: string | url.URL, options: O, callback: Callback<T>): void;
 
+  curl<T>(url: string | url.URL, options: O): Promise<HttpClientResponse<T>>;
   curl<T>(url: string | url.URL): Promise<HttpClientResponse<T>>;
-  curl<T>(url: string | url.URL, options: RequestOptions): Promise<HttpClientResponse<T>>;
   curl<T>(url: string | url.URL, callback: Callback<T>): void;
-  curl<T>(url: string | url.URL, options: RequestOptions, callback: Callback<T>): void;
+  curl<T>(url: string | url.URL, options: O, callback: Callback<T>): void;
 
-  requestThunk(url: string | url.URL, options?: RequestOptions): (callback: (...args: any[]) => void) => void;
+  requestThunk(url: string | url.URL, options?: O): (callback: (...args: any[]) => void) => void;
+}
+
+export interface RequestOptions2 extends RequestOptions {
+  retry?: number;
+  retryDelay?: number;
+  isRetry?: (res: HttpClientResponse<any>) => boolean;
 }
 
 /**
  * request method only return a promise,
  * compatible with async/await and generator in co.
  */
-export class HttpClient2 extends HttpClient {}
+export class HttpClient2 extends HttpClient<RequestOptions2> {}
 
 /**
  * Create a HttpClient instance.

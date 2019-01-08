@@ -70,7 +70,12 @@ describe('typescript', () => {
       httpclient = new HttpClient2();
     });
     it('request return promise', async () => {
-      const res = await httpclient.request<Buffer>(url);
+      const res = await httpclient.request<Buffer>(url, {
+        retry: 1,
+        isRetry(res) {
+          return res.status === 500;
+        },
+      });
       assert(res.data.toString() === 'done');
       assert(res.status === 200);
     });
