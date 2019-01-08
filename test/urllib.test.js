@@ -977,6 +977,23 @@ describe('test/urllib.test.js', function () {
       });
     });
 
+    it('should upload file with formstream and response streaming timeout', function (done) {
+      var form = formstream();
+      form.file('file', __filename);
+      form.field('hello', '你好urllib');
+      var args = {
+        type: 'POST',
+        headers: form.headers(),
+        stream: form,
+        streaming: true,
+        timeout: 100,
+      };
+      urllib.request(host + '/stream-timeout', args, function (err) {
+        assert(err.name === 'ResponseTimeoutError');
+        done();
+      });
+    });
+
     it('should post not exists file stream', function (done) {
       var stream = fs.createReadStream(__filename + 'abc');
       urllib.request(host + '/stream', {
@@ -1218,16 +1235,6 @@ describe('test/urllib.test.js', function () {
           done();
         });
         res.pipe(gunzip).pipe(extracter);
-      });
-    });
-
-    it('should got error when timeout', function (done) {
-      urllib.request(host + '/stream-timeout', {
-        timeout: 200,
-        streaming: true
-      }, function (err) {
-        assert(err.name === 'ResponseTimeoutError');
-        done();
       });
     });
   });
