@@ -1220,6 +1220,16 @@ describe('test/urllib.test.js', function () {
         res.pipe(gunzip).pipe(extracter);
       });
     });
+
+    it('should got error when timeout', function (done) {
+      urllib.request(host + '/stream-timeout', {
+        timeout: 200,
+        streaming: true
+      }, function (err) {
+        assert(err.name === 'ResponseTimeoutError');
+        done();
+      });
+    });
   });
 
   describe('application/json content-type request', function () {
