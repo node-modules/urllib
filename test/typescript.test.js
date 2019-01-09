@@ -12,7 +12,7 @@ describe('typescript.test.js', function() {
   var cwd = path.join(__dirname, 'typescript');
 
   before(function(done) {
-    coffee.spawn('node', [ path.join(__dirname, '../node_modules/typescript/bin/tsc') ], { cwd: cwd })
+    coffee.spawn('node', [ require.resolve('typescript/bin/tsc') ], { cwd: cwd })
       .debug()
       .expect('code', 0)
       .end(done);
@@ -21,8 +21,8 @@ describe('typescript.test.js', function() {
     fs.unlinkSync(path.join(cwd, 'index.js'));
   });
 
-  it.only('run test', function(done) {
-    coffee.spawn('mocha', [ 'index.js' ], { cwd: cwd })
+  it('run test', function(done) {
+    coffee.spawn('node', [ require.resolve('mocha/bin/mocha'), 'index.js' ], { cwd: cwd })
       .debug()
       .expect('code', 0)
       .end(done);
