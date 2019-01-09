@@ -5,12 +5,14 @@ import { Readable, Writable } from 'stream';
 import { EventEmitter } from 'events';
 import { LookupFunction } from 'net';
 
+export type HttpMethod = "GET" | "POST" | "DELETE" | "PUT" | "HEAD" | "OPTIONS" | "PATCH" | "TRACE" | "CONNECT";
+
 export as namespace urllib;
 export interface RequestOptions {
   /** Request method, defaults to GET. Could be GET, POST, DELETE or PUT. Alias 'type'. */
-  method?: "GET" | "POST" | "DELETE" | "PUT" | "HEAD" | "OPTIONS" | "PATCH" | "TRACE" | "CONNECT";
+  method?: HttpMethod;
   /** Alias method  */
-  type?: "GET" | "POST" | "DELETE" | "PUT" | "HEAD" | "OPTIONS" | "PATCH" | "TRACE" | "CONNECT";
+  type?: HttpMethod;
   /** Data to be sent. Will be stringify automatically. */
   data?: any;
   /** Force convert data to query string. */
