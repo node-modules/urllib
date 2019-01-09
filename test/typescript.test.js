@@ -12,7 +12,7 @@ describe('typescript.test.js', function() {
   var cwd = path.join(__dirname, 'typescript');
 
   before(function(done) {
-    coffee.spawn('tsc', { cwd: cwd })
+    coffee.spawn('node', [ path.join(__dirname, '../node_modules/typescript/bin/tsc') ], { cwd: cwd })
       .debug()
       .expect('code', 0)
       .end(done);
