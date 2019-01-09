@@ -224,7 +224,7 @@ export const agent: http.Agent;
  */
 export const httpsAgent: https.Agent;
 
-export class HttpClient<O = RequestOptions> extends EventEmitter {
+export class HttpClient<O extends RequestOptions = RequestOptions> extends EventEmitter {
   request<T = any>(url: string | url.URL): Promise<HttpClientResponse<T>>;
   request<T = any>(url: string | url.URL, options: O): Promise<HttpClientResponse<T>>;
   request<T = any>(url: string | url.URL, callback: Callback<T>): void;
