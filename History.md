@@ -1,4 +1,13 @@
 
+2.33.0 / 2019-01-09
+==================
+
+**features**
+  * [[`a5df9d5`](http://github.com/node-modules/urllib/commit/a5df9d5257a8d18dd0d71f7c76aff7f6464e9484)] - feat: add typescript definition (#308) (Haoliang Gao <<sakura9515@gmail.com>>)
+
+**others**
+  * [[`47ad864`](http://github.com/node-modules/urllib/commit/47ad864eba92a1e0f5a730adad6e8582af3fdbd8)] - test: add test case for streaming timeout (#307) (Yiyu He <<dead_horse@qq.com>>)
+
 2.32.0 / 2019-01-07
 ==================
 
