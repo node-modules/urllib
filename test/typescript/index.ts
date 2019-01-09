@@ -4,7 +4,7 @@ import {
   requestWithCallback,
   requestThunk,
   HttpClient,
-  HttpClient2
+  HttpClient2,
 } from '../../lib';
 import * as http from 'http';
 import * as assert from 'assert';
@@ -33,10 +33,12 @@ describe('typescript', () => {
       method: 'POST',
       headers: {
         'context-type': 'application/json',
+        'x-custom': 'custom',
       },
     });
     assert(res.data.toString() === 'done');
     assert(res.status === 200);
+    assert(!res.headers['x-custom']);
   });
 
   describe('HttpClient', function() {

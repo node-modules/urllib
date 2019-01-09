@@ -1,14 +1,13 @@
 import * as https from 'https';
 import * as http from 'http';
+import { IncomingHttpHeaders, OutgoingHttpHeaders } from 'http';
 import * as url from 'url';
 import { Readable, Writable } from 'stream';
 import { EventEmitter } from 'events';
 import { LookupFunction } from 'net';
 
+export { IncomingHttpHeaders, OutgoingHttpHeaders };
 export type HttpMethod = "GET" | "POST" | "DELETE" | "PUT" | "HEAD" | "OPTIONS" | "PATCH" | "TRACE" | "CONNECT";
-export type HttpHeader = {
-  [key: string]: number | string | string[] | undefined;
-};
 
 export as namespace urllib;
 export interface RequestOptions {
@@ -49,7 +48,7 @@ export interface RequestOptions {
   /** Fix the control characters (U+0000 through U+001F) before JSON parse response. Default is false. */
   fixJSONCtlChars?: boolean;
   /** Request headers. */
-  headers?: HttpHeader;
+  headers?: IncomingHttpHeaders;
   /**
    * Request timeout in milliseconds for connecting phase and response receiving phase.
    * Defaults to exports.
@@ -129,7 +128,7 @@ export interface RequestOptions {
 export interface HttpClientResponse<T> {
   data: T;
   status: number;
-  headers:  HttpHeader;
+  headers:  OutgoingHttpHeaders;
   res: http.IncomingMessage;
 }
 
