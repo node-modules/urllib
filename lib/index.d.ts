@@ -6,6 +6,9 @@ import { EventEmitter } from 'events';
 import { LookupFunction } from 'net';
 
 export type HttpMethod = "GET" | "POST" | "DELETE" | "PUT" | "HEAD" | "OPTIONS" | "PATCH" | "TRACE" | "CONNECT";
+export type HttpHeader = {
+  [key: string]: number | string | string[] | undefined;
+};
 
 export as namespace urllib;
 export interface RequestOptions {
@@ -46,7 +49,7 @@ export interface RequestOptions {
   /** Fix the control characters (U+0000 through U+001F) before JSON parse response. Default is false. */
   fixJSONCtlChars?: boolean;
   /** Request headers. */
-  headers?: { [key: string]: any };
+  headers?: HttpHeader;
   /**
    * Request timeout in milliseconds for connecting phase and response receiving phase.
    * Defaults to exports.
@@ -126,27 +129,10 @@ export interface RequestOptions {
 export interface HttpClientResponse<T> {
   data: T;
   status: number;
-  headers:  {
-    [key: string]: number | string | string[] | undefined;
-  };
+  headers:  HttpHeader;
   res: http.IncomingMessage;
 }
 
-// status: statusCode,
-// statusCode: statusCode,
-// statusMessage: statusMessage,
-// headers: headers,
-// size: responseSize,
-// aborted: responseAborted,
-// rt: requestUseTime,
-// keepAliveSocket: keepAliveSocket,
-// data: data,
-// requestUrls: args.requestUrls,
-// timing: timing,
-// remoteAddress: remoteAddress,
-// remotePort: remotePort,
-// socketHandledRequests: socketHandledRequests,
-// socketHandledResponses: socketHandledResponses,
 
 /**
  * @param data Outgoing message

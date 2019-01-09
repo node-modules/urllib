@@ -29,7 +29,12 @@ describe('typescript', () => {
   });
 
   it('curl', async () => {
-    const res = await curl<Buffer>(url, { method: 'POST' });
+    const res = await curl<Buffer>(url, {
+      method: 'POST',
+      headers: {
+        'context-type': 'application/json',
+      },
+    });
     assert(res.data.toString() === 'done');
     assert(res.status === 200);
   });
