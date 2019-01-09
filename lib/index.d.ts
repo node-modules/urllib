@@ -164,31 +164,31 @@ export type Callback<T> = (err: Error, data: T, res: http.IncomingMessage) => vo
  *
  * @param url The URL to request, either a String or a Object that return by url.parse.
  */
-export function request<T>(url: string | url.URL, options?: RequestOptions): Promise<HttpClientResponse<T>>;
+export function request<T = any>(url: string | url.URL, options?: RequestOptions): Promise<HttpClientResponse<T>>;
 /**
  * @param url The URL to request, either a String or a Object that return by url.parse.
  */
-export function request<T>(url: string | url.URL, callback: Callback<T>): void;
+export function request<T = any>(url: string | url.URL, callback: Callback<T>): void;
 /**
  * @param url The URL to request, either a String or a Object that return by url.parse.
  */
-export function request<T>(url: string | url.URL, options: RequestOptions, callback: Callback<T>): void;
+export function request<T = any>(url: string | url.URL, options: RequestOptions, callback: Callback<T>): void;
 
 /**
  * Handle request with a callback.
  * @param url The URL to request, either a String or a Object that return by url.parse.
  */
-export function requestWithCallback<T>(url: string | url.URL, callback: Callback<T>): void;
+export function requestWithCallback<T = any>(url: string | url.URL, callback: Callback<T>): void;
 /**
  * @param url The URL to request, either a String or a Object that return by url.parse.
  */
-export function requestWithCallback<T>(url: string | url.URL, options: RequestOptions, callback: Callback<T>): void;
+export function requestWithCallback<T = any>(url: string | url.URL, options: RequestOptions, callback: Callback<T>): void;
 
 /**
  * yield urllib.requestThunk(url, args)
  * @param url The URL to request, either a String or a Object that return by url.parse.
  */
-export function requestThunk<T>(url: string | url.URL, options?: RequestOptions): (callback: Callback<T>) => void;
+export function requestThunk<T = any>(url: string | url.URL, options?: RequestOptions): (callback: Callback<T>) => void;
 
 /**
  * alias to request.
@@ -204,15 +204,15 @@ export function requestThunk<T>(url: string | url.URL, options?: RequestOptions)
  * @param url The URL to request, either a String or a Object that return by url.parse.
  * @param options Optional, @see RequestOptions.
  */
-export function curl<T>(url: string | url.URL, options?: RequestOptions): Promise<HttpClientResponse<T>>;
+export function curl<T = any>(url: string | url.URL, options?: RequestOptions): Promise<HttpClientResponse<T>>;
 /**
  * @param url The URL to request, either a String or a Object that return by url.parse.
  */
-export function curl<T>(url: string | url.URL, callback: Callback<T>): void;
+export function curl<T = any>(url: string | url.URL, callback: Callback<T>): void;
 /**
  * @param url The URL to request, either a String or a Object that return by url.parse.
  */
-export function curl<T>(url: string | url.URL, options: RequestOptions, callback: Callback<T>): void;
+export function curl<T = any>(url: string | url.URL, options: RequestOptions, callback: Callback<T>): void;
 /**
  * The default request timeout(in milliseconds).
  */
@@ -238,15 +238,15 @@ export const agent: http.Agent;
 export const httpsAgent: https.Agent;
 
 export class HttpClient<O = RequestOptions> extends EventEmitter {
-  request<T>(url: string | url.URL): Promise<HttpClientResponse<T>>;
-  request<T>(url: string | url.URL, options: O): Promise<HttpClientResponse<T>>;
-  request<T>(url: string | url.URL, callback: Callback<T>): void;
-  request<T>(url: string | url.URL, options: O, callback: Callback<T>): void;
+  request<T = any>(url: string | url.URL): Promise<HttpClientResponse<T>>;
+  request<T = any>(url: string | url.URL, options: O): Promise<HttpClientResponse<T>>;
+  request<T = any>(url: string | url.URL, callback: Callback<T>): void;
+  request<T = any>(url: string | url.URL, options: O, callback: Callback<T>): void;
 
-  curl<T>(url: string | url.URL, options: O): Promise<HttpClientResponse<T>>;
-  curl<T>(url: string | url.URL): Promise<HttpClientResponse<T>>;
-  curl<T>(url: string | url.URL, callback: Callback<T>): void;
-  curl<T>(url: string | url.URL, options: O, callback: Callback<T>): void;
+  curl<T = any>(url: string | url.URL, options: O): Promise<HttpClientResponse<T>>;
+  curl<T = any>(url: string | url.URL): Promise<HttpClientResponse<T>>;
+  curl<T = any>(url: string | url.URL, callback: Callback<T>): void;
+  curl<T = any>(url: string | url.URL, options: O, callback: Callback<T>): void;
 
   requestThunk(url: string | url.URL, options?: O): (callback: (...args: any[]) => void) => void;
 }

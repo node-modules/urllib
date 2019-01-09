@@ -14,7 +14,11 @@ describe('typescript', () => {
   let server;
   before(function(done) {
     server = http.createServer(function(req, res) {
-      res.write('done');
+      if (req.url === '/json') {
+        res.write(JSON.stringify({ a: 1 }));
+      } else {
+        res.write('done');
+      }
       res.statusCode = 200;
       res.end();
     });
@@ -61,6 +65,12 @@ describe('typescript', () => {
         assert(res.statusCode === 200);
         done(err);
       });
+    });
+
+    it('request without generic', async () => {
+      const res = await httpclient.request(url + '/json', { dataType: 'json' });
+      assert(res.data.a === 1);
+      assert(res.status === 200);
     });
   });
 

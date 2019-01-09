@@ -5,7 +5,7 @@ var path = require('path');
 var coffee = require('coffee');
 
 describe('typescript.test.js', function() {
-  if (parseInt(process.versions.node) < 4) {
+  if (parseInt(process.versions.node) < 8) {
     return;
   }
 
@@ -21,7 +21,7 @@ describe('typescript.test.js', function() {
     fs.unlinkSync(path.join(cwd, 'index.js'));
   });
 
-  it('run test', function(done) {
+  it.only('run test', function(done) {
     coffee.spawn('mocha', [ 'index.js' ], { cwd: cwd })
       .debug()
       .expect('code', 0)
