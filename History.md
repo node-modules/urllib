@@ -1,4 +1,10 @@
 
+2.33.1 / 2019-03-21
+==================
+
+**fixes**
+  * [[`f8091ce`](http://github.com/node-modules/urllib/commit/f8091ce41885178f4a1b50d6daf79a77bdead9f0)] - fix: cancel connect timer when done is called (Daniel Wang <<danielwpz@gmail.com>>)
+
 2.33.0 / 2019-01-09
 ==================
 
