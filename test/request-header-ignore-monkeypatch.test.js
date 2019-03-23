@@ -4,7 +4,7 @@ var assert = require('assert');
 var urllib = require('..');
 var server = require('./fixtures/server');
 
-describe.only('test/request-header-ignore-monkeypatch.test.js', function() {
+describe('test/request-header-ignore-monkeypatch.test.js', function() {
   var host = 'http://127.0.0.1:';
   var port;
 
