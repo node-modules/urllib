@@ -388,6 +388,8 @@ When open the trace, urllib may have poor perfomance, please consider carefully.
 * [√] Support `Accept-Encoding=gzip` by `options.gzip = true`
 * [√] Support [Digest access authentication](http://en.wikipedia.org/wiki/Digest_access_authentication)
 
+<!-- GITCONTRIBUTOR_START -->
+
 ## Contributors
 
 |[<img src="https://avatars0.githubusercontent.com/u/156269?v=4" width="100px;"/><br/><sub><b>fengmk2</b></sub>](https://github.com/fengmk2)<br/>|[<img src="https://avatars3.githubusercontent.com/u/985607?v=4" width="100px;"/><br/><sub><b>dead-horse</b></sub>](https://github.com/dead-horse)<br/>|[<img src="https://avatars2.githubusercontent.com/u/288288?v=4" width="100px;"/><br/><sub><b>xingrz</b></sub>](https://github.com/xingrz)<br/>|[<img src="https://avatars3.githubusercontent.com/u/327019?v=4" width="100px;"/><br/><sub><b>JacksonTian</b></sub>](https://github.com/JacksonTian)<br/>|[<img src="https://avatars3.githubusercontent.com/u/543405?v=4" width="100px;"/><br/><sub><b>ibigbug</b></sub>](https://github.com/ibigbug)<br/>|[<img src="https://avatars1.githubusercontent.com/u/14790466?v=4" width="100px;"/><br/><sub><b>greenkeeperio-bot</b></sub>](https://github.com/greenkeeperio-bot)<br/>|
@@ -407,4 +409,3 @@ This project follows the git-contributor [spec](https://github.com/xudafeng/git-
 
 
 [bluebird]: https://github.com/petkaantonov/bluebird
-<!-- GITCONTRIBUTOR_START -->
