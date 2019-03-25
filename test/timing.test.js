@@ -30,7 +30,7 @@ describe('timing.test.js', function() {
         assert(res.timing.dnslookup === 0);
       } else {
         assert(res.timing.requestSent > 0);
-        assert(res.timing.dnslookup > 0);
+        assert(res.timing.dnslookup >= 0);
       }
       assert(res.timing.waiting > 0);
       assert(res.timing.contentDownload > 0);
