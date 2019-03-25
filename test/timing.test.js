@@ -30,7 +30,7 @@ describe('timing.test.js', function() {
         // socket lookup event wont fire on 0.10
         assert(res.timing.dnslookup === 0);
       } else {
-        assert(res.timing.requestSent > 0);
+        assert(res.timing.requestSent >= 0);
         assert(res.timing.dnslookup >= 0);
       }
       assert(res.timing.waiting > 0);
