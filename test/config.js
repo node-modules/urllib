@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = process.env.CI ? {
-  // npmjs.com do not support gzip now
   npmWeb: 'https://www.npmjs.com',
   npmRegistry: 'https://registry.npmjs.com',
   npmHttpRegistry: 'http://registry.npmjs.com',
