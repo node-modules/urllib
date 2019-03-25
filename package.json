@@ -26,9 +26,7 @@
     "test-local": "mocha -t 30000 -r intelli-espower-loader test/*.test.js",
     "test": "npm run lint && npm run test-local",
     "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- -t 30000 -r intelli-espower-loader test/*.test.js",
-    "test-cov-with-junit": "npm run test-cov -- --reporter mocha-junit-reporter --reporter-options mochaFile=./TEST-RESULTS.xml",
     "ci": "npm run lint && npm run test-cov",
-    "ci-azure-pipelines": "npm run lint && npm run test-cov-with-junit",
     "lint": "jshint .",
     "autod": "autod -w --prefix '^' -t test -e examples",
     "contributor": "git-contributor"
@@ -66,7 +64,6 @@
     "istanbul": "*",
     "jshint": "*",
     "mocha": "3",
-    "mocha-junit-reporter": "^1.18.0",
     "muk": "^0.5.3",
     "pedding": "^1.1.0",
     "power-assert": "^1.4.2",
