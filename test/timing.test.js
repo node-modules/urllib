@@ -6,11 +6,12 @@ var pedding = require('pedding');
 var HttpsAgent = require('agentkeepalive').HttpsAgent;
 var httpsAgent = new HttpsAgent({ keepAlive: true });
 var urllib = require('..');
+var config = require('./config');
 
 describe('timing.test.js', function() {
   var firstDnsLookup;
   it('should get timing data', function(done) {
-    urllib.request('https://r.cnpmjs.org/urllib', {
+    urllib.request(config.npmRegistry + '/urllib', {
       timing: true,
       timeout: 10000,
       httpsAgent: httpsAgent,
@@ -39,7 +40,7 @@ describe('timing.test.js', function() {
 
       // keepalive request again should be faster
       setImmediate(function() {
-        urllib.request('https://r.cnpmjs.org/urllib', {
+        urllib.request(config.npmRegistry + '/urllib', {
           timing: true,
           timeout: 10000,
           httpsAgent: httpsAgent,
@@ -69,7 +70,7 @@ describe('timing.test.js', function() {
   });
 
   it('should dns cache on https', function(done) {
-    urllib.request('https://r.cnpmjs.org/urllib', {
+    urllib.request(config.npmRegistry + '/urllib', {
       timing: true,
       timeout: 10000,
       // disable keepalive
@@ -90,7 +91,7 @@ describe('timing.test.js', function() {
   });
 
   it('should dns cache on http', function(done) {
-    urllib.request('http://r.cnpmjs.org/urllib', {
+    urllib.request(config.npmRegistry + '/urllib', {
       timing: true,
       timeout: 10000,
       // disable keepalive
@@ -113,14 +114,14 @@ describe('timing.test.js', function() {
   // FIXME: why https request not support options.lookup
   it.skip('should custom dns lookup work on https', function(done) {
     done = pedding(2, done);
-    urllib.request('https://r.cnpmjs.org/urllib', {
+    urllib.request(config.npmRegistry + '/urllib', {
       timing: true,
       timeout: 10000,
       // disable keepalive
       httpsAgent: false,
       lookup: function foo(host, dnsopts, callback) {
         setTimeout(function() {
-          assert(host === 'r.cnpmjs.org');
+          // assert(host === 'r.cnpmjs.org');
           dns.lookup(host, dnsopts, callback);
           done();
         }, 123);
@@ -142,7 +143,7 @@ describe('timing.test.js', function() {
 
   it('should custom dns lookup work on http', function(done) {
     done = pedding(2, done);
-    urllib.request('http://r.cnpmjs.org/urllib', {
+    urllib.request(config.npmRegistry + '/urllib', {
       timing: true,
       timeout: 10000,
       // disable keepalive
@@ -150,7 +151,7 @@ describe('timing.test.js', function() {
       lookup: function foo(host, dnsopts, callback) {
         console.log('custom dns lookup %s, %j', host, dnsopts);
         setTimeout(function() {
-          assert(host === 'r.cnpmjs.org');
+          // assert(host === 'r.cnpmjs.org');
           dns.lookup(host, dnsopts, callback);
           done();
         }, 123);
