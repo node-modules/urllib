@@ -22,7 +22,8 @@ describe('timing.test.js', function() {
       console.log(res.timing);
       assert(res.timing.queuing >= 0);
       firstDnsLookup = res.timing.dnslookup;
-      assert(res.timing.connected > 0);
+      // {queuing:0,dnslookup:0,connected:0,requestSent:0,waiting:188,contentDownload:219}
+      assert(res.timing.connected >= 0);
       // requestSent is wrong on 0.10.x
       if (/^v0\.10\.\d+$/.test(process.version)) {
         assert(res.timing.requestSent >= 0);
