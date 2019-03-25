@@ -54,7 +54,7 @@ describe('timing.test.js', function() {
           assert(res2.timing.contentDownload > 0);
           // requestSent is wrong on 0.10.x
           if (!/^v0\.10\.\d+$/.test(process.version)) {
-            assert(res2.timing.requestSent < res.timing.requestSent);
+            assert(res2.timing.requestSent <= res.timing.requestSent);
           }
 
           // connected and dnslookup should be 0
