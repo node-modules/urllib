@@ -26,7 +26,7 @@ describe('test/request-header-ignore-monkeypatch.test.js', function() {
 
   it('should only use headers owner properties', function(done) {
     Object.prototype.noop = function () {};
-    const headers = {
+    var headers = {
       'content-type': 'application/json',
       charset: 'utf-8',
     };
