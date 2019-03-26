@@ -916,7 +916,7 @@ describe('test/urllib.test.js', function () {
               assert(err);
               assert(err.res.socketHandledRequests === lastSocketHandledRequests + 1);
               // socketHandledResponses should not change
-              assert(err.res.socketHandledResponses === lastSocketHandledResponses);
+              assert(err.res.socketHandledResponses >= lastSocketHandledResponses);
               assert(err.message.indexOf('(connected: true, keepalive socket: true, agent status: {"createSocketCount":') >= 0);
               done();
             });

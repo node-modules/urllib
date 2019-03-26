@@ -41,14 +41,9 @@ jobs:
       npm i
     displayName: 'Install Packages'
   - script: |
-      npm run ci-azure-pipelines
+      npm run ci
     displayName: 'Build & Unit Test'
   - ${{ if ne(parameters.name, 'windows') }}:
     - script: |
         npm i codecov && codecov
       displayName: 'Report Coverage'
-
-  - task: PublishTestResults@2
-    inputs:
-      testResultsFiles: '**/TEST-RESULTS.xml'
-      testRunTitle: 'Test results for JavaScript'
