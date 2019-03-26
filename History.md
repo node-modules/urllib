@@ -1,4 +1,10 @@
 
+2.33.2 / 2019-03-26
+==================
+
+**fixes**
+  * [[`a2a8a1d`](http://github.com/node-modules/urllib/commit/a2a8a1de8088f1a1b6f96de9e9c2cee408bc165b)] - fix: only copy enumerable and ownProperty value of args.headers (#313) (fengmk2 <<fengmk2@gmail.com>>)
+
 2.33.1 / 2019-03-21
 ==================
 
