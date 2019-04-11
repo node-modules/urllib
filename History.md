@@ -1,4 +1,10 @@
 
+2.33.3 / 2019-04-11
+==================
+
+**others**
+  * [[`e08f71a`](http://github.com/node-modules/urllib/commit/e08f71af8c261318289d056260a156eca9d6a274)] - upgrade: proxy-agent@3.1.0 (#315) (薛定谔的猫 <<weiran.zsd@outlook.com>>)
+
 2.33.2 / 2019-03-26
 ==================
 
