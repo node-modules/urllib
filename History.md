@@ -1,4 +1,11 @@
 
+2.33.4 / 2019-05-06
+==================
+
+**fixes**
+  * [[`1f9566c`](http://github.com/node-modules/urllib/commit/1f9566c3dbb0be02e895647ced2d8eba06ce28aa)] - fix: don't parse URL on node 4 (#321) (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`3384e53`](http://github.com/node-modules/urllib/commit/3384e53e8447a5cb06402a43d07d7eb19a24bb62)] - fix: normalize url with WHATWG URL to solve #319 (#320) (Chen Yangjian <<252317+cyjake@users.noreply.github.com>>)
+
 2.33.3 / 2019-04-11
 ==================
 
