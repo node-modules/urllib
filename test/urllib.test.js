@@ -16,6 +16,7 @@ var through = require('through2');
 var Stream = require('stream');
 var muk = require('muk'); // muk support more node versions than mm
 var dns = require('dns');
+var semver = require('semver');
 var server = require('./fixtures/server');
 var config = require('./config');
 var urllib = require('../');
