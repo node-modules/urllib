@@ -312,6 +312,14 @@ describe('test/urllib.test.js', function () {
       });
     });
 
+    it('should normalize url', function (done) {
+      urllib.request(config.npmHttpRegistry + '/pedding/./1.0.0', function (err, data, res) {
+        assert.equal(err, null);
+        assert.equal(res.statusCode, 200);
+        done(err);
+      });
+    });
+
     describe('ConnectionTimeoutError and ResponseTimeoutError', function () {
       it('should connection timeout', function (done) {
         urllib.request('http://npm.taobao.org', { timeout: 1 }, function (err, data, res) {
@@ -1354,6 +1362,7 @@ describe('test/urllib.test.js', function () {
         {
           gzip: true,
           timeout: 25000,
+          followRedirect: true
         }, function (err, data, res) {
         assert(!err);
         assert(res.headers['content-encoding'] === 'gzip');
@@ -1783,7 +1792,7 @@ describe('test/urllib.test.js', function () {
       });
 
       it('should throw error when request address is ip v6', function(done) {
-        urllib.request('http://2001:0DB8:02de:0000:0000:0000:0000:0e13/foo/bar', {
+        urllib.request('http://[2001:0DB8:02de:0000:0000:0000:0000:0e13]/foo/bar', {
           checkAddress: function(address, family) {
             return family !== 6;
           },
