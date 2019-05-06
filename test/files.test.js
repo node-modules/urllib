@@ -31,7 +31,9 @@ describe('test/files.test.js', function() {
       files: __filename,
       dataType: 'json',
     }, function(err, result, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       // console.log(result)
       assert(result.headers['content-type'].indexOf('multipart/form-data;') === 0);
       assert(res.status === 200);
@@ -46,7 +48,9 @@ describe('test/files.test.js', function() {
       files: fs.createReadStream(__filename),
       dataType: 'json',
     }, function(err, result, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       assert(result.headers['content-type'].indexOf('multipart/form-data;') === 0);
       assert(res.status === 200);
       assert(result.files.file.filename === 'files.test.js');
@@ -60,7 +64,9 @@ describe('test/files.test.js', function() {
       files: fs.readFileSync(__filename),
       dataType: 'json',
     }, function(err, result, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       assert(result.headers['content-type'].indexOf('multipart/form-data;') === 0);
       assert(res.status === 200);
       assert(result.files.file.filename === 'bufferfile0');
@@ -74,7 +80,9 @@ describe('test/files.test.js', function() {
       files: [ __filename, fs.createReadStream(__filename), fs.readFileSync(__filename) ],
       dataType: 'json',
     }, function(err, result, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       assert(result.headers['content-type'].indexOf('multipart/form-data;') === 0);
       assert(res.status === 200);
       assert(result.files.file.filename === 'files.test.js');
@@ -95,7 +103,11 @@ describe('test/files.test.js', function() {
       },
       dataType: 'json',
     }, function(err, result, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
+      assert(result.headers['content-type'].indexOf('multipart/form-data;') === 0);
+      assert(res.status === 200);
       assert(result.files.file.filename === 'files.test.js');
       assert(result.files.file.mimetype === 'application/javascript');
       assert.deepEqual(result.form, {
@@ -116,7 +128,9 @@ describe('test/files.test.js', function() {
       },
       dataType: 'json',
     }, function(err, result, res) {
-      if (err) return done(err);
+      if (err) {
+        return done(err);
+      }
       assert(result.headers['content-type'].indexOf('multipart/form-data;') === 0);
       assert(res.status === 200);
       assert(result.files.uploadfile.filename === 'files.test.js');
