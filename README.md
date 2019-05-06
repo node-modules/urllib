@@ -295,6 +295,27 @@ var req = urllib.request('http://my.server.com/upload', {
 });
 ```
 
+#### Options: `options.stream`
+
+Uploads a file with [formstream](https://github.com/node-modules/formstream):
+
+```js
+var urllib = require('urllib');
+var formstream = require('formstream');
+
+var form = formstream();
+form.file('file', __filename);
+form.field('hello', '你好urllib');
+
+var req = urllib.request('http://my.server.com/upload', {
+  method: 'POST',
+  headers: form.headers(),
+  stream: form
+}, function (err, data, res) {
+  // upload finished
+});
+```
+
 ### Response Object
 
 Response is normal object, it contains:
