@@ -123,6 +123,7 @@ httpclient.request('http://nodejs.org', function (err, body) {
     - ***content*** String | [Buffer](http://nodejs.org/api/buffer.html) - Manually set the content of payload. If set, `data` will be ignored.
     - ***stream*** [stream.Readable](http://nodejs.org/api/stream.html#stream_class_stream_readable) - Stream to be pipe to the remote. If set, `data` and `content` will be ignored.
     - ***writeStream*** [stream.Writable](http://nodejs.org/api/stream.html#stream_class_stream_writable) - A writable stream to be piped by the response stream. Responding data will be write to this stream and `callback` will be called with `data` set `null` after finished writing.
+    - ***files*** {Array<ReadStream|Buffer|String> | Object | ReadStream | Buffer | String - The files will send with `multipart/form-data` format, base on `formstream`. If `method` not set, will use `POST` method by default.
     - ***consumeWriteStream*** [true] - consume the writeStream, invoke the callback after writeStream close.
     - ***contentType*** String - Type of request data. Could be `json`. If it's `json`, will auto set `Content-Type: application/json` header.
     - ***nestedQuerystring*** Boolean - urllib default use querystring to stringify form data which don't support nested object, will use [qs](https://github.com/ljharb/qs) instead of querystring to support nested object by set this option to true.
@@ -244,22 +245,51 @@ urllib.request('http://example.com', {
 });
 ```
 
-#### Options: `options.stream`
+#### Options: `options.files`
 
-Uploads a file with [formstream](https://github.com/node-modules/formstream):
+Upload a file with a `hello` field.
 
 ```js
-var urllib = require('urllib');
-var formstream = require('formstream');
-
-var form = formstream();
-form.file('file', __filename);
-form.field('hello', '你好urllib');
+var urllib = request('urllib');
 
 var req = urllib.request('http://my.server.com/upload', {
-  method: 'POST',
-  headers: form.headers(),
-  stream: form
+  files: __filename,
+  data: {
+    hello: 'hello urllib',
+  },
+}, function (err, data, res) {
+  // upload finished
+});
+```
+
+Upload multi files with a `hello` field.
+
+```js
+var urllib = request('urllib');
+
+var req = urllib.request('http://my.server.com/upload', {
+  files: [
+    __filename,
+    fs.createReadStream(__filename),
+    Buffer.from('mock file content'),
+  ],
+  data: {
+    hello: 'hello urllib with multi files',
+  },
+}, function (err, data, res) {
+  // upload finished
+});
+```
+
+Custom file field name with `uploadfile`.
+
+```js
+var urllib = request('urllib');
+
+var req = urllib.request('http://my.server.com/upload', {
+  files: {
+    uploadfile: __filename,
+  },
 }, function (err, data, res) {
   // upload finished
 });
