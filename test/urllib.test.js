@@ -10,6 +10,7 @@ var path = require('path');
 var formstream = require('formstream');
 var coffee = require('coffee');
 var tar = require('tar');
+var mkdirp = require('mkdirp');
 var zlib = require('zlib');
 var os = require('os');
 var through = require('through2');
@@ -1238,9 +1239,10 @@ describe('test/urllib.test.js', function () {
         assert(res.statusCode === 200);
 
         var tmpdir = path.join(os.tmpdir(), 'pedding-ungzip2');
+        mkdirp.sync(tmpdir);
         var gunzip = zlib.createGunzip();
         gunzip.on('error', done);
-        var extracter = tar.Extract({ path: tmpdir });
+        var extracter = tar.x({ cwd: tmpdir });
         extracter.on('error', done);
         extracter.on('end', function () {
           console.log('version %s', require(path.join(tmpdir, 'package/package.json')).version);
