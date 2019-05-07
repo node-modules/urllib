@@ -1,4 +1,13 @@
 
+2.34.0 / 2019-05-07
+==================
+
+**features**
+  * [[`11f5d34`](http://github.com/node-modules/urllib/commit/11f5d34ea3d8aafbda4f3f5345d6dcfe7e20daa2)] - feat: support multipart/form-data by default (#322) (fengmk2 <<fengmk2@gmail.com>>)
+
+**others**
+  * [[`3c24781`](http://github.com/node-modules/urllib/commit/3c2478100f8490a0fd6f4c49772c682d38fcf43e)] - chore: update contributors (fengmk2 <<fengmk2@gmail.com>>)
+
 2.33.4 / 2019-05-06
 ==================
 
