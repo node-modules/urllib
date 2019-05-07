@@ -143,4 +143,33 @@ describe('test/files.test.js', function() {
       done();
     });
   });
+
+  it('should upload same field name between files and data', function(done) {
+    urllib.request(url, {
+      files: {
+        uploadfile: __filename,
+        foo: fs.createReadStream(__filename),
+      },
+      data: {
+        hello: 'hello world',
+        foo: 'bar',
+      },
+      dataType: 'json',
+    }, function(err, result, res) {
+      if (err) {
+        return done(err);
+      }
+      assert(result.headers['content-type'].indexOf('multipart/form-data;') === 0);
+      assert(res.status === 200);
+      assert(result.files.uploadfile.filename === 'files.test.js');
+      assert(result.files.uploadfile.mimetype === 'application/javascript');
+      assert(result.files.foo.filename === 'files.test.js');
+      assert(result.files.foo.mimetype === 'application/javascript');
+      assert.deepEqual(result.form, {
+        hello: 'hello world',
+        foo: 'bar',
+      });
+      done();
+    });
+  });
 });
