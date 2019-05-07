@@ -38,7 +38,7 @@ var server = http.createServer(function (req, res) {
       result.form[fieldname] = val;
     });
     busboy.on('finish', function() {
-      console.log('Done parsing form!');
+      console.log('[%s] Done parsing form!', req.method);
       res.statusCode = 200;
       res.end(JSON.stringify(result));
     });
