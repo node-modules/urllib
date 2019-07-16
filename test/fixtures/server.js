@@ -235,6 +235,10 @@ var server = http.createServer(function (req, res) {
       return res.end(JSON.stringify({
         accept: req.headers.accept,
       }));
+    } else if (req.url === '/headers/xml') {
+      return res.end(JSON.stringify({
+        'content-type': req.headers['content-type']
+      }))
     }
 
     var url = req.url.split('?');

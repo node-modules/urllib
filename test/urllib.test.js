@@ -524,19 +524,30 @@ describe('test/urllib.test.js', function () {
     });
 
     it('can post xml', function(done){
-      var params = {
+      var options = {
+        method: 'POST',
         content: '<xml></xml>',
         contentType: 'application/xml'
       };
-      var options = {
-        path: '/post',
-        method: 'post',
-        port: port
-      };
-      urllib.request(options, params, function(err, data, res){
+      urllib.request(host + '/post', options, function(err, data, res){
         assert(!err);
         assert(res.statusCode === 200);
         assert(data.toString() === '<xml></xml>');
+
+        done();
+      });
+    });
+
+    it('should auto set content-type header for application/xml request', function(done){
+      var options = {
+        method: 'POST',
+        content: '<xml></xml>',
+        contentType: 'application/xml'
+      };
+      urllib.request(host + '/headers/xml', options, function(err, data, res){
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(JSON.parse(data.toString())['content-type'] === 'application/xml');
 
         done();
       });
