@@ -354,7 +354,7 @@ describe('test/urllib.test.js', function () {
         });
       });
 
-      it('can pass two timeout seperately and get connect error', function (done) {
+      it('can pass two timeout separately and get connect error', function (done) {
         urllib.request('http://npm.taobao.net', { timeout: [1, 10000] }, function (err, data, res) {
           assert(err);
           assert(err.name === 'ConnectionTimeoutError');
@@ -366,7 +366,7 @@ describe('test/urllib.test.js', function () {
         });
       });
 
-      it('can pass two timeout seperately and get response error', function(done) {
+      it('can pass two timeout separately and get response error', function(done) {
         urllib.request(host + '/response_timeout', { timeout: [1000, 450] }, function (err, data, res) {
           assert(err);
           assert(err.name === 'ResponseTimeoutError');
@@ -519,6 +519,25 @@ describe('test/urllib.test.js', function () {
         data = querystring.parse(data.toString());
         assert(data.sql === params.data.sql);
         assert(data.data === params.data.data);
+        done();
+      });
+    });
+
+    it('can post xml', function(done){
+      var params = {
+        content: '<xml></xml>',
+        contentType: 'application/xml'
+      };
+      var options = {
+        path: '/post',
+        method: 'post',
+        port: port
+      };
+      urllib.request(options, params, function(err, data, res){
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(data.toString() === '<xml></xml>');
+
         done();
       });
     });
