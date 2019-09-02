@@ -1,4 +1,13 @@
 
+2.34.1 / 2019-09-02
+==================
+
+**fixes**
+  * [[`3da9339`](http://github.com/node-modules/urllib/commit/3da9339aacf4aa59c17b40ff1793d320bc9d9f61)] - fix: rejectUnauthorized under Node.js 12 (#328) (Khaidi Chu <<i@2333.moe>>)
+
+**others**
+  * [[`061f600`](http://github.com/node-modules/urllib/commit/061f60075249c136b1ca7e1e2519dae25cb9e55d)] - test: add a test case for posting xml data to reflect #69 (#324) (Jeff <<jeff.tian@outlook.com>>)
+
 2.34.0 / 2019-05-07
 ==================
 
