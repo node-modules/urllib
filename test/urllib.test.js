@@ -412,7 +412,7 @@ describe('test/urllib.test.js', function () {
         assert(err);
         assert(err.name === 'ResponseError');
         err.code && assert(err.code === 'HPE_INVALID_CHUNK_SIZE');
-        assert(err.message.indexOf('Parse Error, GET http://127.0.0.1:') >= 0);
+        assert(/Parse Error.*GET http:\/\/127\.0\.0\.1:/.test(err.message) >= 0);
         assert(err.bytesParsed === 2);
         assert(!data);
         done();
