@@ -35,7 +35,7 @@ export interface RequestOptions {
     * The files will send with multipart/form-data format, base on formstream.
     * If method not set, will use POST method by default.
     */
-  files?: Array<ReadStream | Buffer | String> | Object | ReadStream | Buffer | String;
+  files?: Array<ReadStream | Buffer | string> | object | ReadStream | Buffer | string;
   /** Type of request data.Could be json.If it's json, will auto set Content-Type: application/json header. */
   contentType?: string;
   /**
