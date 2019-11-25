@@ -111,6 +111,12 @@ describe('typescript', () => {
       assert(res.status === 200);
     });
 
+    it('request return promise with `files` options', async ()=>{
+      const res = await request(url, { files: Buffer.from('mock file content') });
+      assert(res.data.toString() === 'done')
+      assert(res.status === 200)
+    });
+
     it('request with callback', done => {
       request<Buffer>(url, function(err, data, res) {
         assert(data.toString() === 'done');

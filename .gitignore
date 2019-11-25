@@ -4,3 +4,4 @@ node_modules/
 coverage/
 test/.tmp*
 examples/request_over_proxy_tmp.js
+.idea
