@@ -1,4 +1,10 @@
 
+2.34.2 / 2019-12-09
+==================
+
+**fixes**
+  * [[`67d5b1c`](http://github.com/node-modules/urllib/commit/67d5b1c35dc302778aa4b992ea4998fe427e3cc8)] - fix: index.d.ts (#334) (Daniels.Sun <<better.sunjian@gmail.com>>)
+
 2.34.1 / 2019-09-02
 ==================
 
