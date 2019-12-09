@@ -31,6 +31,11 @@ export interface RequestOptions {
   writeStream?: Writable;
   /** consume the writeStream, invoke the callback after writeStream close. */
   consumeWriteStream?: boolean;
+  /** 
+    * The files will send with multipart/form-data format, base on formstream.
+    * If method not set, will use POST method by default.
+    */
+  files?: Array<Readable | Buffer | string> | object | Readable | Buffer | string;
   /** Type of request data.Could be json.If it's json, will auto set Content-Type: application/json header. */
   contentType?: string;
   /**
