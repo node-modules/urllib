@@ -781,6 +781,27 @@ describe('test/urllib.test.js', function () {
       });
     });
 
+    it('should only set one content-length', function (done) {
+      urllib.request(host + '/headers', {
+        method: 'post',
+        dataType: 'json',
+        headers: {
+          'content-length': '10',
+        },
+        data: {
+          foo: 'bar11111111111111',
+        },
+        beforeRequest(options) {
+          assert(options.headers['content-length'] === '21');
+          assert(!options.headers['Content-Length']);
+        }
+      }, function (err, data, res) {
+        assert(!err);
+        assert(res.statusCode === 200);
+        done();
+      });
+    });
+
     describe('mock sockets full', function () {
       var agent = new http.Agent({
         maxSockets: 1,
