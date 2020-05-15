@@ -58,6 +58,7 @@
     "busboy": "^0.2.14",
     "co": "*",
     "coffee": "1",
+    "egg-ci": "^1.15.0",
     "git-contributor": "^1.0.10",
     "http-proxy": "^1.16.2",
     "intelli-espower-loader": "^1.0.1",
@@ -75,6 +76,13 @@
   },
   "engines": {
     "node": ">= 0.10.0"
+  },
+  "ci": {
+    "type": "github",
+    "os": {
+      "github": "linux, windows, macos"
+    },
+    "version": "6, 8, 10, 12, 14"
   },
   "license": "MIT"
 }
