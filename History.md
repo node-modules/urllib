@@ -1,4 +1,14 @@
 
+2.35.0 / 2020-05-15
+==================
+
+**features**
+  * [[`47c21bd`](http://github.com/node-modules/urllib/commit/47c21bd93648080589bdc6528d9e9cf3e0489951)] - feat: change header to lowercase (#337) (TZ | 天猪 <<atian25@qq.com>>)
+
+**fixes**
+  * [[`8f2ca64`](http://github.com/node-modules/urllib/commit/8f2ca648608995d140d0ca3873ef728bdbd4ee41)] - fix: need to handle response data on close event (#340) (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`175ad2b`](http://github.com/node-modules/urllib/commit/175ad2b3e17196626c701ef72396dd6932d14c7a)] - fix: res.socket is null in node-v14.x (#339) (hyj1991 <<yeekwanvong@gmail.com>>)
+
 2.34.2 / 2019-12-09
 ==================
 
