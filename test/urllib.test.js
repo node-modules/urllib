@@ -318,9 +318,9 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should normalize url', function (done) {
-      urllib.request(config.npmHttpRegistry + '/pedding/./1.0.0', function (err, data, res) {
-        assert.equal(err, null);
-        assert.equal(res.statusCode, 200);
+      urllib.request(config.npmRegistry + '/pedding/./1.0.0', function (err, data, res) {
+        assert(!err);
+        assert(res.statusCode === 200);
         done(err);
       });
     });
@@ -656,7 +656,7 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should post big data with params.content', function (done) {
-      var bigdata = new Buffer(1024 * 1024);
+      var bigdata = Buffer.alloc(1024 * 1024);
       urllib.request(host + '/post', {
         type: 'post',
         content: bigdata,
@@ -669,7 +669,7 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should post big data with params.data', function (done) {
-      var bigdata = new Buffer(1024 * 1024);
+      var bigdata = Buffer.alloc(1024 * 1024);
       urllib.request(host + '/post', {
         type: 'post',
         data: bigdata,
@@ -1217,20 +1217,21 @@ describe('test/urllib.test.js', function () {
       });
     });
 
-    it('custom the response data should ok when req error', function (done) {
+    it('custom the response data should ok when req error: domain invalid', function (done) {
       urllib.request('https://no-exist/fengmk2/urllib', {
         timeout: 10000,
         customResponse: true
       }, function (err) {
         assert(err);
-        assert(err.code === 'ENOTFOUND');
+        console.log(err);
+        // EAI_AGAIN on node >= 14
+        assert(err.code === 'ENOTFOUND' || err.code === 'EAI_AGAIN');
         done();
       });
     });
 
     it('should follow redirect', function (done) {
-      urllib.request(config.npmWeb + '/pedding', {
-        timeout: 25000,
+      urllib.request(host + '/302-to-200', {
         streaming: true,
         followRedirect: true
       }, function (err, data, res) {
@@ -1250,7 +1251,7 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should work with promise', function (done) {
-      urllib.request(config.npmWeb + '/pedding', {
+      urllib.request(host + '/302-to-200', {
         timeout: 30000,
         streaming: true,
         followRedirect: true
@@ -1477,8 +1478,11 @@ describe('test/urllib.test.js', function () {
     });
 
     it('should redirect and gzip', function (done) {
-      urllib.request(config.npmWeb + '/pedding',
-        {followRedirect: true, gzip: true, timeout: 25000}, function (err, data, res) {
+      urllib.request(host + '/302-to-gzip', {
+        followRedirect: true,
+        gzip: true,
+        timeout: 25000,
+      }, function (err, data, res) {
         assert(!err);
         assert(res.statusCode === 200);
         assert(res.headers['content-encoding'] === 'gzip');
@@ -1729,7 +1733,7 @@ describe('test/urllib.test.js', function () {
         dataType: 'text'
       }, function (err, data, res) {
         assert(res.headers['content-type'] === 'text/plain;charset=notfound');
-        assert.deepEqual(data, new Buffer('你好'));
+        assert.deepEqual(data, Buffer.from('你好'));
         done(err);
       });
     });

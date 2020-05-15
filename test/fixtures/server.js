@@ -107,6 +107,14 @@ var server = http.createServer(function (req, res) {
       res.statusCode = 302;
       res.setHeader('Location', '/204');
       return res.end('Redirect to /204');
+    } else if (req.url === '/302-to-200') {
+      res.statusCode = 302;
+      res.setHeader('Location', '/200');
+      return res.end('Redirect to /200');
+    } else if (req.url === '/302-to-gzip') {
+      res.statusCode = 302;
+      res.setHeader('Location', '/gzip');
+      return res.end('Redirect to /gzip');
     } else if (req.url === '/301') {
       res.statusCode = 301;
       res.setHeader('Location', '/204');
@@ -150,7 +158,8 @@ var server = http.createServer(function (req, res) {
       return res.end(JSON.stringify(req.headers));
     } else if (req.url === '/wrongjson') {
       res.writeHeader(200);
-      return res.end(new Buffer('{"foo":""'));
+      var data = Buffer.from('{"foo":""');
+      return res.end(data);
     } else if (req.url === '/wrongjson-gbk') {
       res.setHeader('content-type', 'application/json; charset=gbk');
       res.writeHeader(200);
@@ -159,7 +168,9 @@ var server = http.createServer(function (req, res) {
       var s = fs.createReadStream(__filename);
       return s.pipe(res);
     } else if (req.url === '/auth') {
-      var auth = new Buffer(req.headers.authorization.split(' ')[1], 'base64').toString().split(':');
+      var h = req.headers.authorization.split(' ')[1];
+      var data = Buffer.from(h, 'base64');
+      var auth = data.toString().split(':');
       res.writeHeader(200);
       return res.end(JSON.stringify({user: auth[0], password: auth[1]}));
     } else if (req.url === '/stream') {
@@ -218,19 +229,19 @@ var server = http.createServer(function (req, res) {
       res.setHeader('Content-Type', 'text/plain;charset=notfound');
       return res.end('你好');
     } else if (req.url === '/json_with_controls_unicode') {
-      return res.end(new Buffer('{"foo":"\b\f\n\r\tbar\u000e!1!\u0086!2!\u0000!3!\u001F!4!\u005C!5!end\u005C\\"}'));
+      return res.end(Buffer.from('{"foo":"\b\f\n\r\tbar\u000e!1!\u0086!2!\u0000!3!\u001F!4!\u005C!5!end\u005C\\"}'));
     } else if (req.url === '/json_with_t') {
-      return res.end(new Buffer('{"foo":"ba\tr\t\t"}'));
+      return res.end(Buffer.from('{"foo":"ba\tr\t\t"}'));
     } else if (req.url === '/u0001.json') {
       res.setHeader('content-type', 'application/json; charset=gbk');
-      return res.end(new Buffer(require('./u0001.json').data));
+      return res.end(Buffer.from(require('./u0001.json').data));
     } else if (req.method === 'DELETE' && req.url.indexOf('/delete-params') === 0) {
       res.setHeader('Content-Type', 'application/json');
       return res.end(JSON.stringify({
         url: req.url,
       }));
     } else if (req.url === '/bigfile') {
-      return res.end(new Buffer(1024 * 1024 * 100));
+      return res.end(Buffer.alloc(1024 * 1024 * 100));
     } else if (req.url === '/headers/accept') {
       return res.end(JSON.stringify({
         accept: req.headers.accept,

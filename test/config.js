@@ -5,7 +5,7 @@ module.exports = process.env.CI ? {
   npmRegistry: 'https://registry.npmjs.com',
   npmHttpRegistry: 'http://registry.npmjs.com',
 } : {
-  npmWeb: 'https://npm.taobao.org',
+  npmWeb: 'https://developer.aliyun.com/mirror/npm',
   npmRegistry: 'https://registry.npm.taobao.org',
   npmHttpRegistry: 'http://registry.npm.taobao.org',
 };

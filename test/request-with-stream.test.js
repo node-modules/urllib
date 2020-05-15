@@ -28,7 +28,7 @@ describe('test/request-with-stream.test.js', function() {
   it('should close stream when request timeout', function(done) {
     done = pedding(2, done);
     var tmpfile = path.join(__dirname, '.tmp.txt');
-    var buf = Buffer.alloc && Buffer.alloc(10 * 1024 * 1024) || new Buffer(10 * 1024 * 1024);
+    var buf = Buffer.alloc(10 * 1024 * 1024);
     fs.writeFileSync(tmpfile, buf);
     var stream = fs.createReadStream(tmpfile);
     var args = {

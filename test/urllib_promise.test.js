@@ -15,7 +15,7 @@ describe('test/urllib_promise.test.js', function () {
       assert(result.data instanceof Buffer);
       assert(result.status === 200);
       assert(result.res.statusCode === 200);
-      assert(result.res.statusMessage === 'OK');
+      assert(result.res.status === 200);
       assert(result.res.headers.connection.toLowerCase() === 'keep-alive');
       assert.deepEqual(Object.keys(result.res), [
         'status', 'statusCode', 'statusMessage', 'headers',
