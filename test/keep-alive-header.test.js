@@ -41,13 +41,16 @@ describe('test/keep-alive-header.test.js', function() {
     });
 
     var count = 0;
-    function request() {
+    function request(retry) {
       count++;
       urllib.request(host + '/foo', {
         method: 'GET',
         agent: keepaliveAgent,
         dataType: 'text',
       }, function(err, text, res) {
+        if (err && err.code === 'ECONNRESET' && !retry) {
+          return request(true);
+        }
         assert(!err);
         assert(res.status === 200);
         console.log('[%s] status: %s, text: %s, headers: %j, %s, %s',
