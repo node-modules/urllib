@@ -3,17 +3,15 @@
 var assert = require('assert');
 var dns = require('dns');
 var urlresolve = require('url').resolve;
-var config = require('./config');
 var urllib = require('../');
 
 describe('test/redirect.test.js', function() {
   it('should redirect `location: /package/pedding` with headers.Host', function(done) {
-    var domain = config.npmWeb.replace('https://', '');
-    var url = config.npmWeb + '/pedding';
+    var url = 'https://r.cnpmjs.org/pedding/-/pedding-1.1.0.tgz';
     urllib.request(url, {
       timeout: 30000,
       headers: {
-        Host: domain,
+        Host: 'r.cnpmjs.org',
       },
       followRedirect: true,
     }, function(err, data, res) {
