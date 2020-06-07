@@ -16,6 +16,7 @@ var os = require('os');
 var through = require('through2');
 var Stream = require('stream');
 var muk = require('muk'); // muk support more node versions than mm
+var spy = require('spy');
 var dns = require('dns');
 var semver = require('semver');
 var server = require('./fixtures/server');
@@ -610,7 +611,7 @@ describe('test/urllib.test.js', function () {
       });
     });
 
-    it('should post data with custom Content-Type "test-foo-encode"',
+  it('should post data with custom Content-Type "test-foo-encode"',
     function (done) {
       var params = {
         type: 'POST',
@@ -1821,6 +1822,55 @@ describe('test/urllib.test.js', function () {
       }, function(err, data) {
         assert(!err);
         assert(data.url === '/delete-params?foo=bar');
+        done();
+      });
+    });
+  });
+
+  describe('headers', function () {
+    it('should send lower case by default', function (done) {
+      var stub = spy(http, 'request');
+      urllib.request(host + '/headers', {
+        headers: {
+          'Case-Key': 'case',
+          'lower-key': 'lower',
+        },
+        dataType: 'json'
+      }, function(err, data, res) {
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(data['case-key'] === 'case');
+        assert(data['lower-key'] === 'lower');
+        assert(!data['Case-key']);
+
+        var headers = stub.calls[0].arguments[0].headers;
+        assert(headers['case-key'] === 'case');
+        assert(!headers['Case-Key']);
+        stub.restore();
+        done();
+      });
+    });
+
+    it('should send origin case', function (done) {
+      var stub = spy(http, 'request');
+      urllib.request(host + '/headers', {
+        headers: {
+          'Case-Key': 'case',
+          'lower-key': 'lower',
+        },
+        keepHeaderCase: true,
+        dataType: 'json'
+      }, function(err, data, res) {
+        assert(!err);
+        assert(res.statusCode === 200);
+        assert(data['case-key'] === 'case');
+        assert(data['lower-key'] === 'lower');
+        assert(!data['Case-key']);
+
+        var headers = stub.calls[0].arguments[0].headers;
+        assert(headers['Case-Key'] === 'case');
+        assert(!headers['case-key']);
+        stub.restore();
         done();
       });
     });
