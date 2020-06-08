@@ -1,4 +1,13 @@
 
+2.36.0 / 2020-06-08
+==================
+
+**fixes**
+  * [[`15c4170`](http://github.com/node-modules/urllib/commit/15c4170beab4404b0576caa01e199f445c476b7d)] - fix: allow to keep origin header key case (#344) (TZ | 天猪 <<atian25@qq.com>>)
+
+**others**
+  * [[`31c03b8`](http://github.com/node-modules/urllib/commit/31c03b853ae5db00c7223c0a1a545dfcf0b07aa5)] - chore: Update and rename LICENSE.txt to LICENSE (#343) (Yuxiang LIU <<david-khala@hotmail.com>>)
+
 2.35.0 / 2020-05-15
 ==================
 
