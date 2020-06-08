@@ -70,6 +70,7 @@
     "pedding": "^1.1.0",
     "power-assert": "^1.4.2",
     "semver": "5",
+    "spy": "^1.0.0",
     "tar": "^4.4.8",
     "through2": "^2.0.3",
     "typescript": "^3.2.2"
