@@ -1832,20 +1832,23 @@ describe('test/urllib.test.js', function () {
       var stub = spy(http, 'request');
       urllib.request(host + '/headers', {
         headers: {
-          'Case-Key': 'case',
+          'Case-Key': 'case1',
+          'CASE-KEY': 'case2',
           'lower-key': 'lower',
         },
         dataType: 'json'
       }, function(err, data, res) {
         assert(!err);
         assert(res.statusCode === 200);
-        assert(data['case-key'] === 'case');
+        assert(data['case-key'] === 'case2');
         assert(data['lower-key'] === 'lower');
         assert(!data['Case-key']);
+        assert(!data['CASE-KEY']);
 
         var headers = stub.calls[0].arguments[0].headers;
-        assert(headers['case-key'] === 'case');
+        assert(headers['case-key'] === 'case2');
         assert(!headers['Case-Key']);
+        assert(!headers['CASE-KEY']);
         stub.restore();
         done();
       });
@@ -1855,7 +1858,8 @@ describe('test/urllib.test.js', function () {
       var stub = spy(http, 'request');
       urllib.request(host + '/headers', {
         headers: {
-          'Case-Key': 'case',
+          'Case-Key': 'case1',
+          'CASE-KEY': 'case2',
           'lower-key': 'lower',
         },
         keepHeaderCase: true,
@@ -1863,12 +1867,14 @@ describe('test/urllib.test.js', function () {
       }, function(err, data, res) {
         assert(!err);
         assert(res.statusCode === 200);
-        assert(data['case-key'] === 'case');
+        assert(data['case-key'] === 'case2');
         assert(data['lower-key'] === 'lower');
         assert(!data['Case-key']);
+        assert(!data['CASE-KEY']);
 
         var headers = stub.calls[0].arguments[0].headers;
-        assert(headers['Case-Key'] === 'case');
+        assert(headers['CASE-KEY'] === 'case2');
+        assert(!headers['Case-Key']);
         assert(!headers['case-key']);
         stub.restore();
         done();
