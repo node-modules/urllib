@@ -54,6 +54,8 @@ export interface RequestOptions {
   fixJSONCtlChars?: boolean;
   /** Request headers. */
   headers?: IncomingHttpHeaders;
+  /** by default will convert header keys to lowercase */
+  keepHeaderCase?: boolean;
   /**
    * Request timeout in milliseconds for connecting phase and response receiving phase.
    * Defaults to exports.
