@@ -1,4 +1,10 @@
 
+2.36.1 / 2020-06-09
+==================
+
+**others**
+  * [[`35eecc0`](http://github.com/node-modules/urllib/commit/35eecc021f55e324b2520f91a032a33517d94f29)] - chore: add type declaration for RequestOptions#keepHeaderCase (#345) (William <<willizm.cn@gmail.com>>)
+
 2.36.0 / 2020-06-08
 ==================
 
