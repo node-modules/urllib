@@ -2,6 +2,9 @@
 
 var pedding = require('pedding');
 var http = require('http');
+var path = require('path');
+var os = require('os');
+var fs = require('fs');
 var assert = require('assert');
 var muk = require('muk');
 var assert = require('assert');
@@ -314,6 +317,24 @@ describe('test/httpclient2.test.js', function () {
       });
     });
   });
+
+  it.skip('should support writeStream', function(done) {
+    const tmpdir = os.tmpdir();
+    const tmpfile = path.join(tmpdir, Date.now() + '.txt');
+    client.request('http://127.0.0.1:12345/500', {
+      timeout: 25000,
+      retry: 2,
+      writeStream: fs.createWriteStream(tmpfile)
+    }).then(function (result) {
+      console.log(result);
+      assert(fs.existsSync(tmpfile));
+      const c = fs.readFileSync(tmpfile, 'utf8');
+      console.log(c);
+
+      done();
+    }).catch(done);
+  });
+
 });
 
 var _Promise;
