@@ -374,6 +374,10 @@ options extends from urllib, besides below
 - ***retryDelay*** Number - wait a delay(ms) between retries.
 - ***isRetry*** Function - determine whether retry, a response object as the first argument. it will retry when status >= 500 by default. Request error is not included.
 
+#### Warning
+
+It's not supported by using retry and writeStream, because the retry request can't stop the stream which is consuming.
+
 ## Proxy
 
 Support both `http` and `https` protocol.
