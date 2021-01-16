@@ -461,7 +461,7 @@ This project follows the git-contributor [spec](https://github.com/xudafeng/git-
 
 ## License
 
-[MIT](LICENSE.txt)
+[MIT](LICENSE)
 
 
 [bluebird]: https://github.com/petkaantonov/bluebird
