@@ -83,7 +83,7 @@
     "os": {
       "github": "linux, windows, macos"
     },
-    "version": "6, 8, 10, 12, 14"
+    "version": "8, 10, 12, 14"
   },
   "license": "MIT"
 }
