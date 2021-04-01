@@ -1740,6 +1740,36 @@ describe('test/urllib.test.js', function () {
     });
   });
 
+  if (process.platform !== 'win32') {
+    describe('options.socketPath', function() {
+      let srv;
+      let socketPath;
+      beforeEach(function (done) {
+        socketPath = path.join(os.tmpdir(), `urllib-${Date.now()}.sock`);
+        srv = http.createServer(function (req, resp) {
+          resp.end(req.url);
+        });
+        srv.listen(socketPath, function() {
+          done();
+        });
+      });
+
+      this.afterEach(function() {
+        srv.close();
+      });
+
+      it('should request socket path', function (done) {
+        urllib.request('/ping?hello=world', {
+          socketPath,
+        }, function (err, data) {
+          assert(!err);
+          assert.strictEqual(data.toString(), '/?hello=world');
+          done();
+        });
+      });
+    });
+  }
+
   describe('options.fixJSONCtlChars = true | false', function () {
 
     it('should auto fix json control characters', function (done) {
