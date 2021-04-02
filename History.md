@@ -1,4 +1,16 @@
 
+2.37.0 / 2021-04-02
+==================
+
+**features**
+  * [[`2acf75b`](http://github.com/node-modules/urllib/commit/2acf75b75050667f7341e6990078e0330e704af1)] - feat: add unix domain socket file support (#352) (Khaidi Chu <<i@2333.moe>>)
+
+**others**
+  * [[`f2a42d1`](http://github.com/node-modules/urllib/commit/f2a42d19d2236979c16eea13c229839e5a78b381)] - chore: LICENSE link typo (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`28a0152`](http://github.com/node-modules/urllib/commit/28a0152c0ae5d4470d88b8122724b6228b48b319)] - chore: update contributors (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`5674670`](http://github.com/node-modules/urllib/commit/56746704d61116d99846d94480d223a9e3c42913)] - test: add socket checker test case (#341) (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`d953ec0`](http://github.com/node-modules/urllib/commit/d953ec0e55ec28d553a24c5cf0fcb64715e7c8f9)] - test: add testcase for using retry and writeStream in HttpClient2 (#350) (Haoliang Gao <<sakura9515@gmail.com>>)
+
 2.36.1 / 2020-06-09
 ==================
 
