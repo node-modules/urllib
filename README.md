@@ -165,6 +165,7 @@ httpclient.request('http://nodejs.org', function (err, body) {
     - ***lookup*** Function - Custom DNS lookup function, default is `dns.lookup`. Require node >= 4.0.0(for http protocol) and node >=8(for https protocol)
     - ***checkAddress*** Function: optional, check request address to protect from SSRF and similar attacks. It receive tow arguments(`ip` and `family`) and should return true or false to identified the address is legal or not. It rely on `lookup` and have the same version requirement.
     - ***trace*** Boolean - Enable capture stack include call site of library entrance, default is `false`.
+    - ***socketPath*** String - optional Unix Domain Socket. (Refer to [Node.js Document](https://nodejs.org/dist/latest-v14.x/docs/api/http.html#http_http_request_options_callback))
 - ***callback(err, data, res)*** Function - Optional callback.
     - **err** Error - Would be `null` if no error accured.
     - **data** Buffer | Object - The data responsed. Would be a Buffer if `dataType` is set to `text` or an JSON parsed into Object if it's set to `json`.

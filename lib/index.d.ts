@@ -130,6 +130,10 @@ export interface RequestOptions {
    * It rely on lookup and have the same version requirement.
    */
   checkAddress?: (ip: string, family: number | string) => boolean;
+  /**
+   * UNIX domain socket path. (Windows is not supported)
+   */
+  socketPath?: string;
 }
 
 export interface HttpClientResponse<T> {
