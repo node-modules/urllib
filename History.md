@@ -1,4 +1,10 @@
 
+2.37.1 / 2021-04-15
+==================
+
+**others**
+  * [[`d50afda`](http://github.com/node-modules/urllib/commit/d50afda91befff75f044a1ad83689f7a459c5d32)] - Update proxy-agent to v4 to resolve vulnerability (#355) (Chad McElligott <<chad.mcelligott@gmail.com>>)
+
 2.37.0 / 2021-04-02
 ==================
 
