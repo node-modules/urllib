@@ -9,7 +9,7 @@ var isNode012 = /^v0\.12\.\d+$/.test(process.version);
 var testUrl = process.env.CI ? 'https://registry.npmjs.com' : 'https://registry.npm.taobao.org';
 
 if (!isNode010 && !isNode012) {
-  describe.only('test/proxy.test.js', function() {
+  describe('test/proxy.test.js', function() {
     var port;
     var proxyUrl;
     before(function(done) {
