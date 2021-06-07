@@ -1,4 +1,10 @@
 
+2.37.2 / 2021-06-07
+==================
+
+**fixes**
+  * [[`04734a1`](http://github.com/node-modules/urllib/commit/04734a13e146da501f4e38333d5de9f9bbb259d1)] - fix: 🐛 should trigger response event when follow redirect (#361) (Hongcai Deng <<admin@dhchouse.com>>)
+
 2.37.1 / 2021-04-15
 ==================
 
