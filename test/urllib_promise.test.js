@@ -38,7 +38,6 @@ describe('test/urllib_promise.test.js', function () {
       timeout: 20000
     })
     .then(function (result) {
-      console.dir(result);
       assert(result.data);
       assert(result.res);
       assert(result.data instanceof Buffer);
