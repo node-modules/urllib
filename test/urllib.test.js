@@ -1704,6 +1704,33 @@ describe('test/urllib.test.js', function () {
         done();
       });
     });
+
+    it('should trigger req/res in pair when followRedirect', function (done) {
+      done = pedding(5, done);
+      var redirected = false;
+      urllib.on('request', function (info) {
+        info.args.headers = info.args.headers || {};
+        info.args.headers['custom-header'] = 'custom-header';
+        done();
+      });
+      urllib.on('response', function (info) {
+        if (info.req.options.path === '/302-to-200') {
+          redirected = true;
+        }
+        assert(info.req.options.headers['custom-header'] === 'custom-header');
+        assert(redirected);
+        done();
+      });
+
+      urllib.request(host + '/302-to-200', {
+        followRedirect: true,
+        ctx: {
+          foo: 'error request'
+        }
+      }, function () {
+        done();
+      });
+    });
   });
 
   describe('charset support', function () {

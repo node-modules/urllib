@@ -70,7 +70,7 @@ describe('test/files.test.js', function() {
       assert(result.headers['content-type'].indexOf('multipart/form-data;') === 0);
       assert(res.status === 200);
       assert(result.files.file.filename === 'bufferfile0');
-      assert(result.files.file.mimetype === 'application/octet-stream');
+      assert(result.files.file.mimetype === 'text/plain');
       done();
     });
   });
@@ -90,7 +90,7 @@ describe('test/files.test.js', function() {
       assert(result.files.file1.filename === 'files.test.js');
       assert(result.files.file1.mimetype === 'application/javascript');
       assert(result.files.file2.filename === 'bufferfile2');
-      assert(result.files.file2.mimetype === 'application/octet-stream');
+      assert(result.files.file2.mimetype === 'text/plain');
       done();
     });
   });
