@@ -1715,6 +1715,8 @@ describe('test/urllib.test.js', function () {
       });
       urllib.on('response', function (info) {
         if (info.req.options.path === '/302-to-200') {
+          assert(info.res.status === 302);
+          assert(info.res.statusCode === 302);
           redirected = true;
         }
         assert(info.req.options.headers['custom-header'] === 'custom-header');
