@@ -1,4 +1,10 @@
 
+2.37.3 / 2021-07-05
+==================
+
+**fixes**
+  * [[`b730a6c`](http://github.com/node-modules/urllib/commit/b730a6cdc0465bea1c08d50bfa3b5e95bd17b31f)] - fix: 🐛 redirect status code (#363) (Hongcai Deng <<admin@dhchouse.com>>)
+
 2.37.2 / 2021-06-07
 ==================
 
