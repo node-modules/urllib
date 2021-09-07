@@ -1,4 +1,13 @@
 
+2.37.4 / 2021-09-07
+==================
+
+**fixes**
+  * [[`1e6622a`](http://github.com/node-modules/urllib/commit/1e6622a571b3e6f72c5f187a224bddedcbc382cf)] - fix: upgrade proxy-agent to fix the security vulnerability. (#368) (hyj1991 <<yeekwanvong@gmail.com>>)
+
+**others**
+  * [[`ae27498`](http://github.com/node-modules/urllib/commit/ae2749811e40262da8bf2641599b066344fa6b05)] - docs: notes contentType's value (#349) (changzhi <<changzhiwin@gmail.com>>)
+
 2.37.3 / 2021-07-05
 ==================
 
