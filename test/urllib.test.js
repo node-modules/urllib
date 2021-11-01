@@ -924,6 +924,7 @@ describe('test/urllib.test.js', function () {
           agent: agent,
           httpsAgent: httpsAgent,
           timeout: 25000,
+          followRedirect: true,
         }, function (err, data, res) {
           assert(!err);
           assert(data instanceof Buffer);
@@ -934,6 +935,7 @@ describe('test/urllib.test.js', function () {
               agent: agent,
               httpsAgent: httpsAgent,
               timeout: 1,
+              followRedirect: true,
             }, function (err) {
               assert(err);
               assert(err.message.indexOf('(connected: true, keepalive socket: true, agent status: {"createSocketCount":') >= 0);
