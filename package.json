@@ -23,7 +23,7 @@
     "url": "git://github.com/node-modules/urllib.git"
   },
   "scripts": {
-    "tsd": "tsd",
+    "tsd": "node test/tsd.js",
     "test-local": "mocha -t 30000 -r intelli-espower-loader test/*.test.js",
     "test": "npm run lint && npm run test-local",
     "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- -t 30000 -r intelli-espower-loader test/*.test.js",
