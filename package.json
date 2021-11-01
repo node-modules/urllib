@@ -23,10 +23,11 @@
     "url": "git://github.com/node-modules/urllib.git"
   },
   "scripts": {
+    "tsd": "tsd",
     "test-local": "mocha -t 30000 -r intelli-espower-loader test/*.test.js",
     "test": "npm run lint && npm run test-local",
     "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- -t 30000 -r intelli-espower-loader test/*.test.js",
-    "ci": "npm run lint && npm run test-cov",
+    "ci": "npm run lint && npm run tsd && npm run test-cov",
     "lint": "jshint .",
     "autod": "autod -w --prefix '^' -t test -e examples",
     "contributor": "git-contributor"
@@ -73,7 +74,8 @@
     "spy": "^1.0.0",
     "tar": "^4.4.8",
     "through2": "^2.0.3",
-    "typescript": "^3.2.2"
+    "tsd": "^0.18.0",
+    "typescript": "^4.4.4"
   },
   "engines": {
     "node": ">= 0.10.0"
@@ -83,7 +85,7 @@
     "os": {
       "github": "linux, windows, macos"
     },
-    "version": "8, 10, 12, 14"
+    "version": "8, 10, 12, 14, 16"
   },
   "license": "MIT"
 }
