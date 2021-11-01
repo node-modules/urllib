@@ -140,7 +140,7 @@ describe('test/urllib.test.js', function () {
 
     if (semver.satisfies(process.version, '< 12.0.0')) {
       // FXIME: not support rejectUnauthorized = false on Node.js >= 12.0.0
-      it('should request https with rejectUnauthorized:false success', function (done) {
+      it.skip('should request https with rejectUnauthorized:false success', function (done) {
         urllib.request(config.npmRegistry + '/pedding/latest', {
           timeout: 25000,
           rejectUnauthorized: false,
@@ -924,6 +924,7 @@ describe('test/urllib.test.js', function () {
           agent: agent,
           httpsAgent: httpsAgent,
           timeout: 25000,
+          followRedirect: true,
         }, function (err, data, res) {
           assert(!err);
           assert(data instanceof Buffer);
@@ -934,6 +935,7 @@ describe('test/urllib.test.js', function () {
               agent: agent,
               httpsAgent: httpsAgent,
               timeout: 1,
+              followRedirect: true,
             }, function (err) {
               assert(err);
               assert(err.message.indexOf('(connected: true, keepalive socket: true, agent status: {"createSocketCount":') >= 0);

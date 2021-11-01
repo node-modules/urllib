@@ -1,21 +1,15 @@
 # urllib
 
 [![NPM version][npm-image]][npm-url]
-[![build status][travis-image]][travis-url]
-[![Build Status](https://dev.azure.com/eggjs/egg/_apis/build/status/node-modules.urllib)](https://dev.azure.com/eggjs/egg/_build/latest?definitionId=7)
+[![Node.js CI](https://github.com/node-modules/urllib/actions/workflows/nodejs.yml/badge.svg)](https://github.com/node-modules/urllib/actions/workflows/nodejs.yml)
 [![Test coverage][codecov-image]][codecov-url]
-[![David deps][david-image]][david-url]
 [![Known Vulnerabilities][snyk-image]][snyk-url]
 [![npm download][download-image]][download-url]
 
 [npm-image]: https://img.shields.io/npm/v/urllib.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/urllib
-[travis-image]: https://img.shields.io/travis/node-modules/urllib.svg?style=flat-square
-[travis-url]: https://travis-ci.org/node-modules/urllib
 [codecov-image]: https://codecov.io/gh/node-modules/urllib/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/node-modules/urllib
-[david-image]: https://img.shields.io/david/node-modules/urllib.svg?style=flat-square
-[david-url]: https://david-dm.org/node-modules/urllib
 [snyk-image]: https://snyk.io/test/npm/urllib/badge.svg?style=flat-square
 [snyk-url]: https://snyk.io/test/npm/urllib
 [download-image]: https://img.shields.io/npm/dm/urllib.svg?style=flat-square
