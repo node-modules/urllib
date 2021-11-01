@@ -140,7 +140,7 @@ describe('test/urllib.test.js', function () {
 
     if (semver.satisfies(process.version, '< 12.0.0')) {
       // FXIME: not support rejectUnauthorized = false on Node.js >= 12.0.0
-      it('should request https with rejectUnauthorized:false success', function (done) {
+      it.skip('should request https with rejectUnauthorized:false success', function (done) {
         urllib.request(config.npmRegistry + '/pedding/latest', {
           timeout: 25000,
           rejectUnauthorized: false,

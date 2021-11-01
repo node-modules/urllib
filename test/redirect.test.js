@@ -7,11 +7,11 @@ var urllib = require('../');
 
 describe('test/redirect.test.js', function() {
   it('should redirect `location: /package/pedding` with headers.Host', function(done) {
-    var url = 'https://r.cnpmjs.org/pedding/-/pedding-1.1.0.tgz';
+    var url = 'https://registry.npmmirror.com/pedding/-/pedding-1.1.0.tgz';
     urllib.request(url, {
       timeout: 30000,
       headers: {
-        Host: 'r.cnpmjs.org',
+        Host: 'registry.npmmirror.com',
       },
       followRedirect: true,
     }, function(err, data, res) {
@@ -24,8 +24,7 @@ describe('test/redirect.test.js', function() {
   });
 
   it('should redirect `location: http://other-domain` with headers.Host', function(done) {
-    // https://r.cnpmjs.org/pedding/download/pedding-1.0.0.tgz
-    var domain = 'cnpmjs.org';
+    var domain = 'npmjs.com';
     dns.lookup(domain, function(err, address) {
       if (err) {
         return done(err);
@@ -48,7 +47,7 @@ describe('test/redirect.test.js', function() {
   });
 
   it('should use formatRedirectUrl', function(done) {
-    var url = 'https://cnpmjs.org/pedding';
+    var url = 'https://npmjs.com/pedding';
     urllib.request(url, {
       timeout: 30000,
       followRedirect: true,
