@@ -140,7 +140,19 @@ export interface HttpClientResponse<T> {
   data: T;
   status: number;
   headers:  OutgoingHttpHeaders;
-  res: http.IncomingMessage;
+  res: http.IncomingMessage & {
+    /**
+     * https://eggjs.org/en/core/httpclient.html#timing-boolean
+     */
+    timing?: {
+      queuing: number;
+      dnslookup: number;
+      connected: number;
+      requestSent: number;
+      waiting: number;
+      contentDownload: number;
+    }
+  };
 }
 
 
