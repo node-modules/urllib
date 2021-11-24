@@ -1,4 +1,11 @@
 
+2.38.0 / 2021-11-24
+==================
+
+**others**
+  * [[`6d19f99`](http://github.com/node-modules/urllib/commit/6d19f99f6490df67832d1d2a9c39743c0de1cbd5)] - tsd: add timing interface (#375) (弘树@阿里 <<dickeylth@users.noreply.github.com>>)
+  * [[`9c9c65b`](http://github.com/node-modules/urllib/commit/9c9c65b0e8344c1a30c157628a675440b8a616c1)] - test: check TypeScript type definitions (#373) (fengmk2 <<fengmk2@gmail.com>>)
+
 2.37.4 / 2021-09-07
 ==================
 
