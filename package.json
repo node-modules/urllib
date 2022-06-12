@@ -1,6 +1,6 @@
 {
   "name": "urllib",
-  "version": "2.38.1",
+  "version": "3.0.0-alpha.0",
   "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more.",
   "keywords": [
     "urllib",
@@ -11,7 +11,7 @@
     "request",
     "https"
   ],
-  "author": "fengmk2 <fengmk2@gmail.com> (https://fengmk2.com)",
+  "author": "fengmk2 <fengmk2@gmail.com> (https://github.com/fengmk2)",
   "homepage": "https://github.com/node-modules/urllib",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -78,14 +78,13 @@
     "typescript": "^4.4.4"
   },
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">= 14.14.0"
   },
   "ci": {
-    "type": "github",
-    "os": {
-      "github": "linux, windows, macos"
-    },
-    "version": "8, 10, 12, 14, 16"
+    "version": "14, 16, 18"
+  },
+  "publishConfig": {
+    "tag": "next"
   },
   "license": "MIT"
 }
