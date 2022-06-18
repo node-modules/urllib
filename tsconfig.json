@@ -23,8 +23,8 @@
     "lib": [
       "ESNext"
     ],
-    "outDir": "./dist",
     "composite": true,
+    "outDir": "./dist",
     "types": [
       "node",
       "jest",

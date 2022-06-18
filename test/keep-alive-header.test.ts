@@ -1,34 +1,32 @@
-'use strict';
-
-import assert from 'assert';
+import assert from 'assert/strict';
 import { setTimeout } from 'timers/promises';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 
 describe('keep-alive-header.test.ts', () => {
   const keepAliveTimeout = 1000;
-  let _server: any;
+  let close: any;
   let _url: string;
   beforeAll(async () => {
-    const { server, url } = await startServer({ keepAliveTimeout });
-    _server = server;
+    const { closeServer, url } = await startServer({ keepAliveTimeout });
+    close = closeServer;
     _url = url;
   });
 
-  afterAll(() => {
-    _server.closeAllConnections && _server.closeAllConnections();
-    _server.close();
+  afterAll(async () => {
+    await close();
   });
 
   it('should handle Keep-Alive header and not throw reset error', async () => {
     let count = 0;
-    while (count < 6) {
+    const max = process.env.CI ? 10 : 2;
+    while (count < max) {
       count++;
       const response = await urllib.request(_url);
       assert.equal(response.status, 200);
       // console.log(response.headers);
-      assert(response.headers.connection === 'keep-alive');
-      assert(response.headers['keep-alive'] === 'timeout=1');
+      assert.equal(response.headers.connection, 'keep-alive');
+      assert.equal(response.headers['keep-alive'], 'timeout=1');
       await setTimeout(keepAliveTimeout);
     }
   });

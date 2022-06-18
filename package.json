@@ -15,7 +15,7 @@
   ],
   "author": "fengmk2 <fengmk2@gmail.com> (https://github.com/fengmk2)",
   "homepage": "https://github.com/node-modules/urllib",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
   "files": [
     "dist",
     "src"
@@ -26,8 +26,8 @@
   },
   "scripts": {
     "lint": "eslint src test --ext .ts",
-    "build": "npm run build:dist && node -p \"require('.')\"",
-    "build:dist": "tsc --version && tsc -p ./tsconfig.build.json",
+    "build": "npm run build:dist && node test/cjs/index.js",
+    "build:dist": "tsc --version && rm -rf ./dist *.tsbuildinfo && tsc -p ./tsconfig.build.json",
     "test": "tsc --version && jest --coverage",
     "ci": "npm run lint && npm run test && npm run build",
     "contributor": "git-contributor"
@@ -36,16 +36,20 @@
     "content-type": "^1.0.2",
     "default-user-agent": "^1.0.0",
     "digest-header": "^0.0.1",
-    "formstream": "^1.1.0",
+    "formdata-node": "^4.3.3",
     "humanize-ms": "^1.2.0",
     "iconv-lite": "^0.4.15",
     "ip": "^1.1.5",
+    "mime-types": "^2.1.35",
     "tslib": "^2.4.0",
     "undici": "^5.4.0"
   },
   "devDependencies": {
+    "@types/busboy": "^1.5.0",
     "@types/default-user-agent": "^1.0.0",
     "@types/jest": "28",
+    "@types/mime-types": "^2.1.1",
+    "busboy": "^1.6.0",
     "coffee": "5",
     "egg-ci": "2",
     "eslint": "^8.17.0",

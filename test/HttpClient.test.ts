@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'assert/strict';
 import { HttpClient } from '../src/HttpClient';
 
 describe('HttpClient.test.ts', () => {
