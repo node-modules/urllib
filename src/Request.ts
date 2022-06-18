@@ -7,13 +7,13 @@ export type RequestURL = string | URL;
 
 export type RequestOptions = {
   /** Request method, defaults to GET. Could be GET, POST, DELETE or PUT. Alias 'type'. */
-  method?: HttpMethod;
+  method?: HttpMethod | Lowercase<HttpMethod>;
   /** Data to be sent. Will be stringify automatically. */
   data?: any;
   /** Force convert data to query string. */
   dataAsQueryString?: boolean;
   /** Manually set the content of payload. If set, data will be ignored. */
-  content?: string | Buffer;
+  content?: string | Buffer | Readable;
   /** Stream to be pipe to the remote. If set, data and content will be ignored. */
   stream?: Readable;
   /**
@@ -28,14 +28,9 @@ export type RequestOptions = {
     * The files will send with multipart/form-data format, base on formstream.
     * If method not set, will use POST method by default.
     */
-  files?: Array<Readable | Buffer | string> | object | Readable | Buffer | string;
+  files?: Array<Readable | Buffer | string> | Record<string, Readable | Buffer | string> | Readable | Buffer | string;
   /** Type of request data, could be 'json'. If it's 'json', will auto set Content-Type: 'application/json' header. */
   contentType?: string;
-  /**
-   * urllib default use querystring to stringify form data which don't support nested object,
-   * will use qs instead of querystring to support nested object by set this option to true.
-   */
-  nestedQuerystring?: boolean;
   /**
    * Type of response data. Could be text or json.
    * If it's text, the callbacked data would be a String.

@@ -1,19 +1,18 @@
-import assert from 'assert';
+import assert from 'assert/strict';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 
 describe('options.method.test.ts', () => {
-  let _server: any;
+  let close: any;
   let _url: string;
   beforeAll(async () => {
-    const { server, url } = await startServer();
-    _server = server;
+    const { closeServer, url } = await startServer();
+    close = closeServer;
     _url = url;
   });
 
-  afterAll(() => {
-    _server.closeAllConnections && _server.closeAllConnections();
-    _server.close();
+  afterAll(async () => {
+    await close();
   });
 
   it('should default set method GET', async () => {
