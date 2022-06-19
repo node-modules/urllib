@@ -30,7 +30,7 @@ describe('options.data.test.ts', () => {
     assert.equal(response.data.method, 'GET');
     assert(response.url.startsWith(_url));
     assert(!response.redirected);
-    // console.log(response.data);
+    // console.log(response.headers);
     assert.equal(response.data.url, '/?sql=SELECT+*+from+table&data=%E5%93%88%E5%93%88');
     const url = new URL(response.data.href);
     assert.equal(url.searchParams.get('sql'), 'SELECT * from table');

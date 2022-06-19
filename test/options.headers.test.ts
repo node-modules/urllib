@@ -32,4 +32,23 @@ describe('options.headers.test.ts', () => {
     assert.equal(data.headers['x-upper-case'], 'orginal value');
     assert.equal(url, _url);
   });
+
+  it('should send lower case by default', async () => {
+    const response = await urllib.request(_url, {
+      headers: {
+        'Case-Key': 'case1',
+        'CASE-KEY': 'case2',
+        'CASE-KEy': 'case3,case33',
+        'lower-key': 'lower',
+      },
+      dataType: 'json'
+    });
+    assert.equal(response.status, 200);
+    // diff from urllib@2, urllib@3 will keep all same key header values
+    // assert.equal(response.data.headers['case-key'], 'case2');
+    assert.equal(response.data.headers['case-key'], 'case1, case2, case3,case33');
+    assert.equal(response.data.headers['lower-key'], 'lower');
+    assert.equal(response.data.headers['Case-key'], undefined);
+    assert.equal(response.data.headers['CASE-KEY'], undefined);
+  });
 });
