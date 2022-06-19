@@ -6,3 +6,6 @@ test/.tmp*
 package-lock.json
 dist/
 *.tsbuildinfo
+src/**/*.js
+src/**/*.js.map
+src/**/*.d.ts

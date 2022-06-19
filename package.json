@@ -15,9 +15,22 @@
   ],
   "author": "fengmk2 <fengmk2@gmail.com> (https://github.com/fengmk2)",
   "homepage": "https://github.com/node-modules/urllib",
-  "main": "./dist/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./src/esm/index.d.ts",
+        "default": "./src/esm/index.js"
+      },
+      "require": {
+        "types": "./src/cjs/index.d.ts",
+        "default": "./src/cjs/index.js"
+      }
+    }
+  },
+  "types": "./src/esm/index.d.ts",
+  "main": "./src/cjs/index.js",
   "files": [
-    "dist",
     "src"
   ],
   "repository": {
@@ -25,12 +38,15 @@
     "url": "git://github.com/node-modules/urllib.git"
   },
   "scripts": {
-    "lint": "eslint src test --ext .ts",
-    "build": "npm run build:dist && node test/cjs/index.js",
-    "build:dist": "tsc --version && rm -rf ./dist *.tsbuildinfo && tsc -p ./tsconfig.build.json",
+    "lint": "eslint src --ext .ts",
+    "build": "npm run build:dist",
+    "build:cjs": "tsc -p ./tsconfig.build.cjs.json && cd test/cjs && rm -rf node_modules && npm link ../.. && node index.js",
+    "build:esm": "tsc -p ./tsconfig.build.esm.json && node ./scripts/esm_import_fix.js && cd test/esm && rm -rf node_modules && npm link ../.. && node index.js",
+    "build:dist": "tsc --version && npm run build:cjs && npm run build:esm",
     "test": "tsc --version && jest --coverage",
     "ci": "npm run lint && npm run test && npm run build",
-    "contributor": "git-contributor"
+    "contributor": "git-contributor",
+    "prepack": "rm -rf src/*.tsbuildinfo"
   },
   "dependencies": {
     "content-type": "^1.0.2",
