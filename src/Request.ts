@@ -5,6 +5,9 @@ export type HttpMethod = 'GET' | 'POST' | 'DELETE' | 'PUT' | 'HEAD' | 'OPTIONS' 
 
 export type RequestURL = string | URL;
 
+export type FixJSONCtlCharsHandler = (data: string) => string;
+export type FixJSONCtlChars = boolean | FixJSONCtlCharsHandler;
+
 export type RequestOptions = {
   /** Request method, defaults to GET. Could be GET, POST, DELETE or PUT. Alias 'type'. */
   method?: HttpMethod | Lowercase<HttpMethod>;
@@ -14,7 +17,9 @@ export type RequestOptions = {
   dataAsQueryString?: boolean;
   /** Manually set the content of payload. If set, data will be ignored. */
   content?: string | Buffer | Readable;
-  /** Stream to be pipe to the remote. If set, data and content will be ignored. */
+  /** Stream to be pipe to the remote. If set, data and content will be ignored.
+   * Alias to `content` on Readable
+   */
   stream?: Readable;
   /**
    * A writable stream to be piped by the response stream.
@@ -46,7 +51,7 @@ export type RequestOptions = {
    */
   streaming?: boolean;
   /** Fix the control characters (U+0000 through U+001F) before JSON parse response. Default is false. */
-  fixJSONCtlChars?: boolean;
+  fixJSONCtlChars?: FixJSONCtlChars;
   /** Request headers. */
   headers?: Record<string, string>;
   /**

@@ -2,14 +2,15 @@ import { EventEmitter } from 'events';
 import { debuglog } from 'util';
 import { Readable, isReadable } from 'stream';
 import { Blob } from 'buffer';
+import { createReadStream } from 'fs';
 import { basename } from 'path';
 import {
   fetch, RequestInit, Headers, FormData,
 } from 'undici';
-import { fileFromPath } from 'formdata-node/file-from-path';
 import createUserAgent from 'default-user-agent';
 import mime from 'mime-types';
 import { RequestURL, RequestOptions } from './Request';
+import { parseJSON } from './utils';
 
 const debug = debuglog('urllib');
 
@@ -110,10 +111,7 @@ export class HttpClient extends EventEmitter {
 
     try {
       const headers = new Headers(args.headers ?? {});
-      // don't set user-agent
-      const disableUserAgent = args.headers &&
-        (args.headers['User-Agent'] === null || args.headers['user-agent'] === null);
-      if (!disableUserAgent && !headers.has('user-agent')) {
+      if (!headers.has('user-agent')) {
         // need to set user-agent
         headers.set('user-agent', HEADER_USER_AGENT);
       }
@@ -131,6 +129,10 @@ export class HttpClient extends EventEmitter {
       }
 
       const isGETOrHEAD = requestOptions.method === 'GET' || requestOptions.method === 'HEAD';
+      // alias to args.content
+      if (args.stream && !args.content) {
+        args.content = args.stream;
+      }
 
       if (args.files) {
         if (isGETOrHEAD) {
@@ -164,7 +166,8 @@ export class HttpClient extends EventEmitter {
             // const fileName = encodeURIComponent(basename(file));
             // formData.append(field, await fileFromPath(file, `utf-8''${fileName}`, { type: mime.lookup(fileName) || '' }));
             const fileName = basename(file);
-            formData.append(field, await fileFromPath(file, fileName, { type: mime.lookup(fileName) || '' }));
+            const fileReader = createReadStream(file);
+            formData.append(field, new BlobFromStream(fileReader, mime.lookup(fileName) || ''), fileName);
           } else if (Buffer.isBuffer(file)) {
             formData.append(field, new Blob([ file ]), `bufferfile${index}`);
           } else if (file instanceof Readable || isReadable(file as any)) {
@@ -242,7 +245,8 @@ export class HttpClient extends EventEmitter {
         if (requestOptions.method === 'HEAD') {
           data = {};
         } else {
-          data = await response.json();
+          data = await response.text();
+          data = parseJSON(data, args.fixJSONCtlChars);
         }
       } else {
         // buffer

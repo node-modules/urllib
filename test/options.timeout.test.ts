@@ -27,15 +27,16 @@ describe('options.timeout.test.ts', () => {
     });
   });
 
-  it('should timeout 500ms throw error', async () => {
+  it('should timeout 50ms throw error', async () => {
     await assert.rejects(async () => {
-      await urllib.request(`${_url}?timeout=510`, {
-        timeout: [ 1, 500 ],
+      const response = await urllib.request(`${_url}?timeout=1000`, {
+        timeout: [ 1, 50 ],
       });
+      console.log(response.status, response.headers, response.data);
     }, (err: any) => {
       // console.log(err);
       assert.equal(err.name, 'HttpClientRequestTimeoutError');
-      assert.equal(err.message, 'Request timeout for 500 ms');
+      assert.equal(err.message, 'Request timeout for 50 ms');
       assert.equal(err.res.status, -1);
       assert.equal(err.cause.name, 'AbortError');
       return true;

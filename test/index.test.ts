@@ -50,5 +50,21 @@ describe('index.test.ts', () => {
         return true;
       });
     });
+
+    it('should handle server socket end("balabal") will error', async () => {
+      await assert.rejects(async () => {
+        await urllib.request(`${_url}socket.end.error`);
+      }, (err: any) => {
+        // console.error(err);
+        assert.equal(err.res.status, 200);
+        assert.equal(err.name, 'TypeError');
+        assert.equal(err.message, 'terminated');
+        assert.equal(err.cause.name, 'HTTPParserError');
+        assert.equal(err.cause.message, 'Invalid character in chunk size');
+        assert.equal(err.cause.code, 'HPE_INVALID_CHUNK_SIZE');
+        assert.equal(err.cause.data, 'labala');
+        return true;
+      });
+    });
   });
 });

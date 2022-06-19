@@ -83,8 +83,8 @@ describe('options.dataType.test.ts', () => {
       });
     }, (err: any) => {
       // console.error(err);
-      assert.equal(err.name, 'SyntaxError');
-      assert.equal(err.message, 'Unexpected end of JSON input');
+      assert.equal(err.name, 'JSONResponseFormatError');
+      assert.equal(err.message, 'Unexpected end of JSON input (data json format: "{\\"foo\\":\\"\\"")');
       assert.equal(err.res.status, 200);
       assert.equal(err.res.headers['content-type'], 'application/json');
       assert.equal(err.res.size, 9);
@@ -99,6 +99,21 @@ describe('options.dataType.test.ts', () => {
     assert.equal(response.status, 200);
     assert.equal(response.headers['content-type'], 'application/json');
     assert.equal(response.data, '{"foo":""');
+  });
+
+  it('should handle GET /wrongjson-gbk with dataType=json and data size > 1024', async () => {
+    await assert.rejects(async () => {
+      await urllib.request(`${_url}wrongjson-gbk`, {
+        dataType: 'json',
+      });
+    }, (err: any) => {
+      // console.error(err);
+      assert.equal(err.name, 'JSONResponseFormatError');
+      assert.match(err.message, /\" \.\.\.skip\.\.\. \"/);
+      assert.equal(err.res.status, 200);
+      assert.equal(err.res.headers['content-type'], 'application/json');
+      return true;
+    });
   });
 
   it('should work with dataType = stream', async () => {
