@@ -29,9 +29,9 @@ npm install urllib --save
 ### TypeScript and ESM
 
 ```js
-import urllib from 'urllib';
+import { request } from 'urllib';
 
-const { data, res } = await urllib.request('http://cnodejs.org/');
+const { data, res } = await request('http://cnodejs.org/');
 // result: { data: Buffer, res: Response }
 console.log('status: %s, body size: %d, headers: %j', res.statusCode, data.length, res.headers);
 ```
@@ -39,9 +39,9 @@ console.log('status: %s, body size: %d, headers: %j', res.statusCode, data.lengt
 ### CommonJS
 
 ```js
-const urllib = require('urllib');
+const { request } = require('urllib');
 
-const { data, res } = await urllib.request('http://cnodejs.org/');
+const { data, res } = await request('http://cnodejs.org/');
 // result: { data: Buffer, res: Response }
 console.log('status: %s, body size: %d, headers: %j', res.statusCode, data.length, res.headers);
 ```
@@ -137,7 +137,7 @@ console.log('status: %s, body size: %d, headers: %j', res.statusCode, data.lengt
 When making a request:
 
 ```js
-await urllib.request('https://example.com', {
+await request('https://example.com', {
   method: 'GET',
   data: {
     'a': 'hello',
@@ -162,7 +162,7 @@ for example making a `Content-Type: application/json` request.
 Notes that if you want to send a JSON body, you should stringify it yourself:
 
 ```js
-await urllib.request('https://example.com', {
+await request('https://example.com', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -190,7 +190,7 @@ Content-Type: application/json
 This exmaple can use `options.data` with `application/json` content type:
 
 ```js
-await urllib.request('https://example.com', {
+await request('https://example.com', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -207,7 +207,7 @@ await urllib.request('https://example.com', {
 Upload a file with a `hello` field.
 
 ```js
-await urllib.request('https://example.com/upload', {
+await request('https://example.com/upload', {
   method: 'POST',
   files: __filename,
   data: {
@@ -219,7 +219,7 @@ await urllib.request('https://example.com/upload', {
 Upload multi files with a `hello` field.
 
 ```js
-await urllib.request('https://example.com/upload', {
+await request('https://example.com/upload', {
   method: 'POST',
   files: [
     __filename,
@@ -235,7 +235,7 @@ await urllib.request('https://example.com/upload', {
 Custom file field name with `uploadfile`.
 
 ```js
-await urllib.request('https://example.com/upload', {
+await request('https://example.com/upload', {
   method: 'POST',
   files: {
     uploadfile: __filename,
@@ -254,7 +254,7 @@ const form = formstream();
 form.file('file', __filename);
 form.field('hello', '你好urllib');
 
-await urllib.request('https://example.com/upload', {
+await request('https://example.com/upload', {
   method: 'POST',
   headers: form.headers(),
   stream: form,
@@ -301,7 +301,7 @@ createServer((req, res) => {
   });
 }).listen(2022);
 
-const { data, res } = await urllib.request('http://127.0.0.1:2022/socket.end');
+const { data, res } = await request('http://127.0.0.1:2022/socket.end');
 assert.equal(data.toString(), 'foo haha\nfoo haha 2');
 assert(res.aborted);
 ```
@@ -321,45 +321,6 @@ options extends from urllib, besides below
 #### Warning
 
 It's not supported by using retry and writeStream, because the retry request can't stop the stream which is consuming.
-
-## Proxy (Drop support)
-
-Support both `http` and `https` protocol.
-
-**Notice: Only support on Node.js >= 4.0.0**
-
-### Programming
-
-```js
-urllib.request('https://twitter.com/', {
-  enableProxy: true,
-  proxy: 'http://localhost:8008',
-}, (err, data, res) => {
-  console.log(res.status, res.headers);
-});
-```
-
-### System environment variable
-
-- http
-
-```bash
-HTTP_PROXY=http://localhost:8008
-http_proxy=http://localhost:8008
-```
-
-- https
-
-```bash
-HTTP_PROXY=http://localhost:8008
-http_proxy=http://localhost:8008
-HTTPS_PROXY=https://localhost:8008
-https_proxy=https://localhost:8008
-```
-
-```bash
-http_proxy=http://localhost:8008 node index.js
-```
 
 ### Trace
 
@@ -385,7 +346,7 @@ When open the trace, urllib may have poor perfomance, please consider carefully.
 - ✅ Auto redirect handle
 - ✅ https & self-signed certificate
 - ✅ Connection timeout & Response timeout
-- ✅ Support `Accept-Encoding=gzip` by `options.gzip = true`
+- ✅ Support `Accept-Encoding=gzip` by default
 - ✅ Support [Digest access authentication](http://en.wikipedia.org/wiki/Digest_access_authentication)
 
 <!-- GITCONTRIBUTOR_START -->
