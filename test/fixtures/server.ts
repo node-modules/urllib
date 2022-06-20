@@ -4,6 +4,7 @@ import { createReadStream } from 'fs';
 import { setTimeout } from 'timers/promises';
 import busboy from 'busboy';
 import iconv from 'iconv-lite';
+import { readableToBytes } from '../utils';
 
 export async function startServer(options?: {
   keepAliveTimeout?: number;
@@ -14,6 +15,7 @@ export async function startServer(options?: {
       res.setHeader('Keep-Alive', 'timeout=' + server.keepAliveTimeout / 1000);
     }
     const urlObject = new URL(req.url!, `http://${req.headers.host}`);
+    const pathname = urlObject.pathname;
     res.setHeader('X-Foo', 'bar');
     res.setHeader('x-href', urlObject.href);
     res.setHeader('x-method', req.method ?? '');
@@ -24,38 +26,47 @@ export async function startServer(options?: {
       await setTimeout(parseInt(timeout));
     }
 
-    if (req.url === '/wrongjson') {
+    if (pathname === '/mock-bytes') {
+      const size = urlObject.searchParams.get('size') ?? '1024';
+      const bytes = Buffer.alloc(parseInt(size));
+      res.end(bytes);
+      return;
+    }
+
+    if (pathname === '/wrongjson') {
       res.setHeader('content-type', 'application/json');
       return res.end(Buffer.from('{"foo":""'));
     }
 
-    if (req.url === '/html') {
+    if (pathname === '/html') {
       res.setHeader('content-type', 'text/html');
       return res.end('<h1>hello</h1>');
     }
 
-    if (req.url === '/redirect') {
+    if (pathname === '/redirect') {
       res.setHeader('Location', '/redirect-to-url');
       res.statusCode = 302;
-      return res.end();
+      return res.end('Redirect to /redirect-to-url');
     }
-    if (req.url === '/redirect-301') {
+    if (pathname === '/redirect-301') {
       res.setHeader('Location', '/redirect-301-to-url');
       res.statusCode = 301;
-      return res.end();
+      return res.end('Redirect to /redirect-301-to-url');
     }
-    if (req.url === '/redirect-full') {
-      res.setHeader('Location', `http://${req.headers.host}/redirect-full-to-url`);
+    if (pathname === '/redirect-full') {
+      const url = `http://${req.headers.host}/redirect-full-to-url`;
+      res.setHeader('Location', url);
       res.statusCode = 302;
-      return res.end();
+      return res.end(`Redirect to ${url}`);
     }
-    if (req.url === '/redirect-full-301') {
-      res.setHeader('Location', `http://${req.headers.host}/redirect-full-301-to-url`);
+    if (pathname === '/redirect-full-301') {
+      const url = `http://${req.headers.host}/redirect-full-301-to-url`;
+      res.setHeader('Location', url);
       res.statusCode = 301;
-      return res.end();
+      return res.end(`Redirect to ${url}`);
     }
 
-    if (req.url === '/socket.end.error') {
+    if (pathname === '/socket.end.error') {
       res.write('foo haha\n');
       await setTimeout(200);
       res.write('foo haha 2');
@@ -64,49 +75,49 @@ export async function startServer(options?: {
       return;
     }
     
-    if (req.url === '/wrongjson-gbk') {
+    if (pathname === '/wrongjson-gbk') {
       res.setHeader('content-type', 'application/json');
       createReadStream(__filename).pipe(res);
       return
     }
-    if (req.url === '/json_with_controls_unicode') {
+    if (pathname === '/json_with_controls_unicode') {
       return res.end(Buffer.from('{"foo":"\b\f\n\r\tbar\u000e!1!\u0086!2!\u0000!3!\u001F!4!\u005C!5!end\u005C\\"}'));
     }
-    if (req.url === '/json_with_t') {
+    if (pathname === '/json_with_t') {
       return res.end(Buffer.from('{"foo":"ba\tr\t\t"}'));
     }
-    if (req.url === '/gbk/json') {
+    if (pathname === '/gbk/json') {
       res.setHeader('Content-Type', 'application/json;charset=gbk');
       const content = iconv.encode(JSON.stringify({ hello: '你好' }), 'gbk');
       return res.end(content);
     }
-    if (req.url === '/gbk/text') {
+    if (pathname === '/gbk/text') {
       res.setHeader('Content-Type', 'text/plain;charset=gbk');
       const content = iconv.encode('你好', 'gbk');
       return res.end(content);
     }
-    if (req.url === '/errorcharset') {
+    if (pathname === '/errorcharset') {
       res.setHeader('Content-Type', 'text/plain;charset=notfound');
       return res.end('你好');
     }
 
-    if (req.url === '/deflate') {
+    if (pathname === '/deflate') {
       res.setHeader('Content-Encoding', 'deflate');
       createReadStream(__filename).pipe(createDeflate()).pipe(res);
       return;
     }
-    if (req.url === '/gzip') {
+    if (pathname === '/gzip') {
       res.setHeader('Content-Encoding', 'gzip');
       createReadStream(__filename).pipe(createGzip()).pipe(res);
       return;
     }
-    if (req.url === '/error-gzip') {
+    if (pathname === '/error-gzip') {
       res.setHeader('Content-Encoding', 'gzip');
       createReadStream(__filename).pipe(res);
       return;
     }
 
-    if (req.url === '/multipart' && (req.method === 'POST' || req.method === 'PUT')) {
+    if (pathname === '/multipart' && (req.method === 'POST' || req.method === 'PUT')) {
       const bb = busboy({ headers: req.headers });
       const result = {
         method: req.method,
@@ -146,29 +157,27 @@ export async function startServer(options?: {
       return;
     }
 
-    if (req.url === '/raw') {
+    if (pathname === '/raw') {
       req.pipe(res);
       return;
     }
 
-    let requestBody;
-    const chunks = [];
+    let requestBody: any;
+    let requestBytes: Buffer = Buffer.from('');
     if (req.method !== 'GET' && req.method !== 'HEAD') {
-      for await (const chunk of req) {
-        chunks.push(chunk);
-      }
+      requestBytes = await readableToBytes(req);
     }
 
     if (req.headers['content-type']?.startsWith('application/x-www-form-urlencoded')) {
-      const searchParams = new URLSearchParams(Buffer.concat(chunks).toString());
+      const searchParams = new URLSearchParams(requestBytes.toString());
       requestBody = {};
       for (const [ field, value ] of searchParams.entries()) {
         requestBody[field] = value;
       }
     } else if (req.headers['content-type']?.startsWith('application/json')) {
-      requestBody = JSON.parse(Buffer.concat(chunks).toString());
+      requestBody = JSON.parse(requestBytes.toString());
     } else {
-      requestBody = Buffer.concat(chunks).toString();
+      requestBody = requestBytes.toString();
     }
     res.writeHead(200, {
       'Content-Type': 'application/json',

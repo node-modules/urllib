@@ -1,7 +1,8 @@
 import assert from 'assert/strict';
-import { isReadable } from 'stream';
+import { ReadableStream } from 'stream/web';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
+import { readableToBytes } from './utils';
 
 describe('options.dataType.test.ts', () => {
   let close: any;
@@ -122,27 +123,22 @@ describe('options.dataType.test.ts', () => {
     });
     assert.equal(response.status, 200);
     assert.equal(response.headers['content-type'], 'application/json');
-    assert(isReadable(response.data));
-    const chunks = [];
-    for await (const chunk of response.data) {
-      chunks.push(chunk);
-    }
-    const jsonString = Buffer.concat(chunks).toString();
+    assert(response.res);
+    const bytes = await readableToBytes(response.res as ReadableStream);
+    const jsonString = bytes.toString();
     assert.equal(JSON.parse(jsonString).method, 'GET');
   });
 
-  it('should work with streaming = true', async () => {
+  it('should work with streaming = true, alias to data = stream', async () => {
     const response = await urllib.request(_url, {
       streaming: true,
     });
     assert.equal(response.status, 200);
     assert.equal(response.headers['content-type'], 'application/json');
-    assert(isReadable(response.data));
-    const chunks = [];
-    for await (const chunk of response.data) {
-      chunks.push(chunk);
-    }
-    const jsonString = Buffer.concat(chunks).toString();
+    assert(response.res);
+    assert(response.res);
+    const bytes = await readableToBytes(response.res as ReadableStream);
+    const jsonString = bytes.toString();
     assert.equal(JSON.parse(jsonString).method, 'GET');
   });
 });

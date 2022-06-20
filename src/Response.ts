@@ -1,20 +1,39 @@
-import { OutgoingHttpHeaders, IncomingMessage } from 'http';
+import { ReadableStream } from 'stream/web';
 
-export interface HttpClientResponse<T> {
-  data: T;
+export type HttpClientResponseMeta = {
   status: number;
-  headers: OutgoingHttpHeaders;
-  res: IncomingMessage & {
-    /**
-     * https://eggjs.org/en/core/httpclient.html#timing-boolean
-     */
-    timing?: {
-      queuing: number;
-      dnslookup: number;
-      connected: number;
-      requestSent: number;
-      waiting: number;
-      contentDownload: number;
-    }
+  statusCode: number;
+  statusMessage: string;
+  headers: Record<string, string>;
+  size: number;
+  aborted: boolean;
+  rt: number;
+  keepAliveSocket: boolean;
+  requestUrls: string[],
+  /**
+   * https://eggjs.org/en/core/httpclient.html#timing-boolean
+   */
+  timing: {
+    contentDownload: number;
   };
-}
+  // remoteAddress: remoteAddress,
+  // remotePort: remotePort,
+  // socketHandledRequests: socketHandledRequests,
+  // socketHandledResponses: socketHandledResponses,
+};
+
+export type ReadableStreamWithMeta = ReadableStream & {
+  status: number;
+  statusCode: number;
+  statusMessage: string;
+  headers: Record<string, string>;
+};
+
+export type HttpClientResponse = {
+  data: any;
+  status: number;
+  headers: Record<string, string>;
+  url: string;
+  redirected: boolean;
+  res: ReadableStreamWithMeta | HttpClientResponseMeta;
+};
