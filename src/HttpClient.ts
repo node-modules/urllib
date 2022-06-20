@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import { debuglog } from 'util';
 import { Readable, isReadable } from 'stream';
+import { pipeline } from 'stream/promises';
 import { Blob } from 'buffer';
 import { createReadStream } from 'fs';
 import { basename } from 'path';
@@ -10,6 +11,7 @@ import {
 import createUserAgent from 'default-user-agent';
 import mime from 'mime-types';
 import { RequestURL, RequestOptions } from './Request';
+import { HttpClientResponseMeta, HttpClientResponse, ReadableStreamWithMeta } from './Response';
 import { parseJSON } from './utils';
 
 const debug = debuglog('urllib');
@@ -77,7 +79,7 @@ export class HttpClient extends EventEmitter {
     const requestStartTime = Date.now();
     // keep urllib createCallbackResponse style
     const resHeaders: Record<string, string> = {};
-    const res = {
+    const res: HttpClientResponseMeta = {
       status: -1,
       statusCode: -1,
       statusMessage: '',
@@ -90,10 +92,6 @@ export class HttpClient extends EventEmitter {
       timing: {
         contentDownload: 0,
       },
-      // remoteAddress: remoteAddress,
-      // remotePort: remotePort,
-      // socketHandledRequests: socketHandledRequests,
-      // socketHandledResponses: socketHandledResponses,
     };
 
     let requestTimeout = 5000;
@@ -236,9 +234,17 @@ export class HttpClient extends EventEmitter {
         res.size = parseInt(res.headers['content-length']);
       }
 
-      let data: any;
+      let data: any = null;
+      let responseBodyStream: ReadableStreamWithMeta | undefined;
       if (args.streaming || args.dataType === 'stream') {
-        data = response.body;
+        responseBodyStream = Object.assign(response.body!, {
+          status: res.status,
+          statusCode: res.statusCode,
+          statusMessage: res.statusMessage,
+          headers: res.headers,
+        });
+      } else if (args.writeStream) {
+        await pipeline(response.body!, args.writeStream);
       } else if (args.dataType === 'text') {
         data = await response.text();
       } else if (args.dataType === 'json') {
@@ -254,14 +260,15 @@ export class HttpClient extends EventEmitter {
       }
       res.rt = res.timing.contentDownload = Date.now() - requestStartTime;
 
-      return {
+      const clientResponse: HttpClientResponse = {
         status: res.status,
         data,
         headers: res.headers,
         url: response.url,
         redirected: response.redirected,
-        res,
+        res: responseBodyStream ?? res,
       };
+      return clientResponse;
     } catch (e: any) {
       let err = e;
       if (requestTimeoutController.signal.aborted) {

@@ -747,24 +747,6 @@ describe('test/urllib.test.js', function () {
   });
 
   describe('args.streaming = true', function () {
-    it('should got streaming the response', function (done) {
-      urllib.request(config.npmWeb, {
-        timeout: 25000,
-        streaming: true
-      }, function (err, data, res) {
-        assert(!err);
-        assert(!data);
-        var size = 0;
-        res.on('data', function (chunk) {
-          size += chunk.length;
-        });
-        res.on('end', function () {
-          assert(size > 0);
-          done();
-        });
-      });
-    });
-
     it('should work with alias name customResponse', function (done) {
       urllib.request(config.npmWeb, {
         timeout: 25000,
