@@ -1,0 +1,69 @@
+import { strict as assert } from 'assert';
+import urllib from '../src';
+import { startServer } from './fixtures/server';
+
+describe('options.gzip.test.ts', () => {
+  let close: any;
+  let _url: string;
+  beforeAll(async () => {
+    const { closeServer, url } = await startServer();
+    close = closeServer;
+    _url = url;
+  });
+
+  afterAll(async () => {
+    await close();
+  });
+
+  it('should handle gzip text response on gzip = true', async () => {
+    const { status, headers, data } = await urllib.request(`${_url}gzip`, {
+      dataType: 'text',
+      gzip: true,
+    });
+    assert.equal(status, 200);
+    const requestHeaders = JSON.parse(headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], 'gzip, deflate');
+    assert.equal(headers['content-encoding'], 'gzip');
+    assert.equal(typeof data, 'string');
+    assert.match(data, /const server = createServer/);
+  });
+
+  it('should handle gzip text response on gzip = false', async () => {
+    const { status, headers, data } = await urllib.request(`${_url}gzip`, {
+      dataType: 'text',
+      gzip: false,
+    });
+    assert.equal(status, 200);
+    const requestHeaders = JSON.parse(headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], undefined);
+    assert.equal(headers['content-encoding'], 'gzip');
+    assert.equal(typeof data, 'string');
+    assert.match(data, /const server = createServer/);
+  });
+
+  it('should handle gzip json response on gzip = true', async () => {
+    const { status, headers, data } = await urllib.request(`${_url}?content-encoding=gzip`, {
+      dataType: 'json',
+      gzip: true,
+    });
+    assert.equal(status, 200);
+    const requestHeaders = JSON.parse(headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], 'gzip, deflate');
+    assert.equal(headers['content-encoding'], 'gzip');
+    assert.equal(data.headers['accept-encoding'], 'gzip, deflate');
+    assert.equal(data.method, 'GET');
+  });
+
+  it('should handle gzip json response on gzip = false', async () => {
+    const { status, headers, data } = await urllib.request(`${_url}?content-encoding=gzip`, {
+      dataType: 'json',
+      gzip: false,
+    });
+    assert.equal(status, 200);
+    const requestHeaders = JSON.parse(headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], undefined);
+    assert.equal(headers['content-encoding'], 'gzip');
+    assert.equal(data.headers['accept-encoding'], undefined);
+    assert.equal(data.method, 'GET');
+  });
+});

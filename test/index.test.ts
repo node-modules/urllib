@@ -1,4 +1,4 @@
-import assert from 'assert/strict';
+import { strict as assert } from 'assert';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 
@@ -17,9 +17,7 @@ describe('index.test.ts', () => {
 
   describe('urllib.request()', () => {
     it('should work', async () => {
-      const response = await urllib.request(`${_url}html`, {
-        timeout: [ 1, 10000 ],
-      });
+      const response = await urllib.request(`${_url}html`);
       assert.equal(response.status, 200);
       assert.equal(response.headers['content-type'], 'text/html');
       assert(response.headers.date);
@@ -28,9 +26,7 @@ describe('index.test.ts', () => {
     });
 
     it('should work with URL object', async () => {
-      const response = await urllib.request(new URL(`${_url}html`), {
-        timeout: [ 1, 10000 ],
-      });
+      const response = await urllib.request(new URL(`${_url}html`));
       assert.equal(response.status, 200);
       assert.equal(response.headers['content-type'], 'text/html');
       assert(response.headers.date);
@@ -44,9 +40,8 @@ describe('index.test.ts', () => {
       }, (err: any) => {
         // console.error(err);
         assert.equal(err.res.status, -1);
-        assert.equal(err.name, 'TypeError');
-        assert.equal(err.message, 'fetch failed');
-        assert.equal(err.cause.message, 'Error: getaddrinfo ENOTFOUND www.npmjs-not-exists.com');
+        assert.equal(err.name, 'Error');
+        assert.equal(err.message, 'getaddrinfo ENOTFOUND www.npmjs-not-exists.com');
         // err.status and err.headers
         assert.equal(err.status, -1);
         assert(err.headers);
@@ -60,12 +55,10 @@ describe('index.test.ts', () => {
       }, (err: any) => {
         // console.error(err);
         assert.equal(err.res.status, 200);
-        assert.equal(err.name, 'TypeError');
-        assert.equal(err.message, 'terminated');
-        assert.equal(err.cause.name, 'HTTPParserError');
-        assert.equal(err.cause.message, 'Invalid character in chunk size');
-        assert.equal(err.cause.code, 'HPE_INVALID_CHUNK_SIZE');
-        assert.equal(err.cause.data, 'labala');
+        assert.equal(err.name, 'HTTPParserError');
+        assert.equal(err.message, 'Invalid character in chunk size');
+        assert.equal(err.code, 'HPE_INVALID_CHUNK_SIZE');
+        assert.equal(err.data, 'labala');
         return true;
       });
     });

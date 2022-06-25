@@ -1,11 +1,10 @@
-import assert from 'assert/strict';
+import { strict as assert } from 'assert';
 import { createWriteStream } from 'fs';
 import { join } from 'path';
 import { stat } from 'fs/promises';
-import { setTimeout } from 'timers/promises';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
-import { createTempfile } from './utils';
+import { createTempfile, sleep } from './utils';
 
 describe('options.writeStream.test.ts', () => {
   let close: any;
@@ -64,7 +63,7 @@ describe('options.writeStream.test.ts', () => {
       assert.equal(writeStream.destroyed, true);
       return true;
     });
-    await setTimeout(30);
+    await sleep(30);
     // writeStream close
     assert.equal(writeStream.destroyed, true);
     assert.equal(writeStreamClosed, true);

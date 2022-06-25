@@ -1,7 +1,14 @@
 import { Readable, Writable } from 'stream';
 import { LookupFunction } from 'net';
+import { IncomingHttpHeaders } from 'http';
+import type {
+  HttpMethod as UndiciHttpMethod,
+} from 'undici/types/dispatcher';
+import type {
+  HttpClientResponse,
+} from './Response';
 
-export type HttpMethod = 'GET' | 'POST' | 'DELETE' | 'PUT' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'TRACE' | 'CONNECT';
+export type HttpMethod = UndiciHttpMethod;
 
 export type RequestURL = string | URL;
 
@@ -53,7 +60,7 @@ export type RequestOptions = {
   /** Fix the control characters (U+0000 through U+001F) before JSON parse response. Default is false. */
   fixJSONCtlChars?: FixJSONCtlChars;
   /** Request headers. */
-  headers?: Record<string, string>;
+  headers?: IncomingHttpHeaders;
   /**
    * Request timeout in milliseconds for connecting phase and response receiving phase.
    * Defaults to exports.
@@ -118,4 +125,7 @@ export type RequestOptions = {
    * It rely on lookup and have the same version requirement.
    */
   checkAddress?: (ip: string, family: number | string) => boolean;
+  retry?: number;
+  retryDelay?: number;
+  isRetry?: (response: HttpClientResponse) => boolean;
 };

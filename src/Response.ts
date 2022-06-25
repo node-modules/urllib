@@ -1,16 +1,15 @@
-import { ReadableStream } from 'stream/web';
 import { Readable } from 'stream';
+import { IncomingHttpHeaders } from 'http';
 
 export type HttpClientResponseMeta = {
   status: number;
   statusCode: number;
-  statusMessage: string;
-  headers: Record<string, string>;
+  headers: IncomingHttpHeaders;
   size: number;
   aborted: boolean;
   rt: number;
   keepAliveSocket: boolean;
-  requestUrls: string[],
+  requestUrls: string[];
   /**
    * https://eggjs.org/en/core/httpclient.html#timing-boolean
    */
@@ -23,18 +22,18 @@ export type HttpClientResponseMeta = {
   // socketHandledResponses: socketHandledResponses,
 };
 
-export type ReadableStreamWithMeta = (Readable | ReadableStream) & {
+export type ReadableWithMeta = Readable & {
   status: number;
   statusCode: number;
-  statusMessage: string;
-  headers: Record<string, string>;
+  headers: IncomingHttpHeaders;
 };
 
 export type HttpClientResponse = {
-  data: any;
+  data: any
   status: number;
-  headers: Record<string, string>;
+  headers: IncomingHttpHeaders;
   url: string;
   redirected: boolean;
-  res: ReadableStreamWithMeta | HttpClientResponseMeta;
+  requestUrls: string[];
+  res: ReadableWithMeta | HttpClientResponseMeta;
 };

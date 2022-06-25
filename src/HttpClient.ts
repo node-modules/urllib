@@ -1,17 +1,20 @@
 import { EventEmitter } from 'events';
 import { debuglog } from 'util';
-import { Readable, isReadable } from 'stream';
-import { pipeline } from 'stream/promises';
+import zlib from 'zlib';
 import { Blob } from 'buffer';
-import { createReadStream } from 'fs';
+import { Readable, isReadable, pipeline, promises as streamPromise } from 'stream';
 import { basename } from 'path';
+import { createReadStream } from 'fs';
+import { IncomingHttpHeaders } from 'http';
 import {
-  fetch, RequestInit, Headers, FormData,
+  FormData,
+  request as undiciRequest,
+  Dispatcher,
 } from 'undici';
 import createUserAgent from 'default-user-agent';
 import mime from 'mime-types';
-import { RequestURL, RequestOptions } from './Request';
-import { HttpClientResponseMeta, HttpClientResponse, ReadableStreamWithMeta } from './Response';
+import { RequestURL, RequestOptions, HttpMethod } from './Request';
+import { HttpClientResponseMeta, HttpClientResponse, ReadableWithMeta } from './Response';
 import { parseJSON } from './utils';
 
 const debug = debuglog('urllib');
@@ -19,6 +22,8 @@ const debug = debuglog('urllib');
 export type ClientOptions = {
   defaultArgs?: RequestOptions;
 };
+
+type UndiciRquestOptions = Omit<Dispatcher.RequestOptions, 'origin' | 'path' | 'method'> & Partial<Pick<Dispatcher.RequestOptions, 'method'>>;
 
 // https://github.com/octet-stream/form-data
 class BlobFromStream {
@@ -78,7 +83,7 @@ export class HttpClient extends EventEmitter {
     };
     const requestStartTime = Date.now();
     // keep urllib createCallbackResponse style
-    const resHeaders: Record<string, string> = {};
+    const resHeaders: IncomingHttpHeaders = {};
     const res: HttpClientResponseMeta = {
       status: -1,
       statusCode: -1,
@@ -88,42 +93,57 @@ export class HttpClient extends EventEmitter {
       aborted: false,
       rt: 0,
       keepAliveSocket: true,
-      requestUrls: [ url.toString() ],
+      requestUrls: [],
       timing: {
         contentDownload: 0,
       },
     };
 
-    let requestTimeout = 5000;
+    let headersTimeout = 5000;
+    let bodyTimeout = 5000;
     if (args.timeout) {
       if (Array.isArray(args.timeout)) {
-        requestTimeout = args.timeout[args.timeout.length - 1] ?? requestTimeout;
+        headersTimeout = args.timeout[0] ?? headersTimeout;
+        bodyTimeout = args.timeout[1] ?? bodyTimeout;
       } else {
-        requestTimeout = args.timeout;
+        headersTimeout = bodyTimeout = args.timeout;
       }
     }
 
-    const requestTimeoutController = new AbortController();
-    const requestTimerId = setTimeout(() => requestTimeoutController.abort(), requestTimeout);
-    const method = (args.method ?? 'GET').toUpperCase();
+    const method = (args.method ?? 'GET').toUpperCase() as HttpMethod;
+    const headers: IncomingHttpHeaders = {};
+    if (args.headers) {
+      // convert headers to lower-case
+      for (const name in args.headers) {
+        headers[name.toLowerCase()] = args.headers[name];
+      }
+    }
+    // hidden user-agent
+    const hiddenUserAgent = 'user-agent' in headers && !headers['user-agent'];
+    if (hiddenUserAgent) {
+      delete headers['user-agent'];
+    } else if (!headers['user-agent']) {
+      // need to set user-agent
+      headers['user-agent'] = HEADER_USER_AGENT;
+    }
+    if (args.dataType === 'json' && !headers.accept) {
+      headers.accept = 'application/json';
+    }
+    if (args.gzip) {
+      headers['accept-encoding'] = 'gzip, deflate';
+    }
 
     try {
-      const headers = new Headers(args.headers ?? {});
-      if (!headers.has('user-agent')) {
-        // need to set user-agent
-        headers.set('user-agent', HEADER_USER_AGENT);
-      }
-      if (args.dataType === 'json' && !headers.has('accept')) {
-        headers.set('accept', 'application/json');
-      }
-
-      const requestOptions: RequestInit = {
+      const requestOptions: UndiciRquestOptions = {
         method,
         keepalive: true,
-        signal: requestTimeoutController.signal,
+        maxRedirections: args.maxRedirects ?? 10,
+        headersTimeout,
+        bodyTimeout,
+        headers,
       };
       if (args.followRedirect === false) {
-        requestOptions.redirect = 'manual';
+        requestOptions.maxRedirections = 0;
       }
 
       const isGETOrHEAD = requestOptions.method === 'GET' || requestOptions.method === 'HEAD';
@@ -164,8 +184,8 @@ export class HttpClient extends EventEmitter {
             // const fileName = encodeURIComponent(basename(file));
             // formData.append(field, await fileFromPath(file, `utf-8''${fileName}`, { type: mime.lookup(fileName) || '' }));
             const fileName = basename(file);
-            const fileReader = createReadStream(file);
-            formData.append(field, new BlobFromStream(fileReader, mime.lookup(fileName) || ''), fileName);
+            const fileReadable = createReadStream(file);
+            formData.append(field, new BlobFromStream(fileReadable, mime.lookup(fileName) || ''), fileName);
           } else if (Buffer.isBuffer(file)) {
             formData.append(field, new Blob([ file ]), `bufferfile${index}`);
           } else if (file instanceof Readable || isReadable(file as any)) {
@@ -176,14 +196,13 @@ export class HttpClient extends EventEmitter {
         requestOptions.body = formData;
       } else if (args.content) {
         if (!isGETOrHEAD) {
-          if (isReadable(args.content as Readable)) {
-            // disable keepalive
-            requestOptions.keepalive = false;
-          }
           // handle content
           requestOptions.body = args.content;
           if (args.contentType) {
-            headers.set('content-type', args.contentType);
+            headers['content-type'] = args.contentType;
+          }
+          if (typeof args.content === 'string' && !headers['content-type']) {
+            headers['content-type'] = 'text/plain;charset=UTF-8';
           }
         }
       } else if (args.data) {
@@ -198,98 +217,118 @@ export class HttpClient extends EventEmitter {
           }
         } else {
           if (isStringOrBufferOrReadable) {
-            if (isReadable(args.data as Readable)) {
-              // disable keepalive
-              requestOptions.keepalive = false;
-            }
             requestOptions.body = args.data;
           } else {
             if (args.contentType === 'json'
               || args.contentType === 'application/json'
-              || headers.get('content-type')?.startsWith('application/json')) {
+              || headers['content-type']?.startsWith('application/json')) {
               requestOptions.body = JSON.stringify(args.data);
-              if (!headers.has('content-type')) {
-                headers.set('content-type', 'application/json');
+              if (!headers['content-type']) {
+                headers['content-type'] = 'application/json';
               }
             } else {
-              requestOptions.body = new URLSearchParams(args.data);
+              headers['content-type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+              requestOptions.body = new URLSearchParams(args.data).toString();
             }
           }
         }
       }
 
-      debug('%s %s, headers: %j, timeout: %s', requestOptions.method, url, headers, requestTimeout);
-      requestOptions.headers = headers;
+      debug('%s %s, headers: %j, timeout: %s,%s',
+        requestOptions.method, url, headers, headersTimeout, bodyTimeout);
+      const response = await undiciRequest(requestUrl, requestOptions);
+      const context = response.context as { history: URL[] };
+      let lastUrl = '';
+      if (context?.history) {
+        for (const urlObject of context?.history) {
+          res.requestUrls.push(urlObject.href);
+          lastUrl = urlObject.href;
+        }
+      } else {
+        res.requestUrls.push(requestUrl.href);
+        lastUrl = requestUrl.href;
+      }
+      const contentEncoding = response.headers['content-encoding'];
+      const isCompressContent = contentEncoding === 'gzip' || contentEncoding === 'deflate';
 
-      const response = await fetch(requestUrl, requestOptions);
-      for (const [ name, value ] of response.headers) {
-        res.headers[name] = value;
-      }
-      res.status = res.statusCode = response.status;
-      res.statusMessage = response.statusText;
-      if (response.redirected) {
-        res.requestUrls.push(response.url);
-      }
+      res.headers = response.headers;
+      res.status = res.statusCode = response.statusCode;
+      // res.statusMessage = response.statusText;
+      // if (response.redirected) {
+      //   res.requestUrls.push(response.url);
+      // }
       if (res.headers['content-length']) {
         res.size = parseInt(res.headers['content-length']);
       }
 
       let data: any = null;
-      let responseBodyStream: ReadableStreamWithMeta | undefined;
+      let responseBodyStream: ReadableWithMeta | undefined;
       if (args.streaming || args.dataType === 'stream') {
         const meta = {
           status: res.status,
           statusCode: res.statusCode,
-          statusMessage: res.statusMessage,
           headers: res.headers,
         };
-        if (typeof Readable.fromWeb === 'function') {
-          responseBodyStream = Object.assign(Readable.fromWeb(response.body!), meta);
+        if (isCompressContent) {
+          const decoder = contentEncoding === 'gzip' ? zlib.createGunzip() : zlib.createInflate();
+          responseBodyStream = Object.assign(pipeline(response.body, decoder), meta);
         } else {
-          responseBodyStream = Object.assign(response.body!, meta);
+          responseBodyStream = Object.assign(response.body, meta);
         }
       } else if (args.writeStream) {
-        await pipeline(response.body!, args.writeStream);
-      } else if (args.dataType === 'text') {
-        data = await response.text();
-      } else if (args.dataType === 'json') {
-        if (requestOptions.method === 'HEAD') {
-          data = {};
+        if (isCompressContent) {
+          const decoder = contentEncoding === 'gzip' ? zlib.createGunzip() : zlib.createInflate();
+          await streamPromise.pipeline(response.body, decoder, args.writeStream);
         } else {
-          data = await response.text();
-          if (data.length === 0) {
-            data = null;
-          } else {
-            data = parseJSON(data, args.fixJSONCtlChars);
-          }
+          await streamPromise.pipeline(response.body, args.writeStream);
         }
       } else {
         // buffer
-        data = Buffer.from(await response.arrayBuffer());
+        data = Buffer.from(await response.body.arrayBuffer());
+        if (isCompressContent) {
+          try {
+            data = contentEncoding === 'gzip' ? zlib.gunzipSync(data) : zlib.inflateSync(data);
+          } catch (err: any) {
+            if (err.name === 'Error') {
+              err.name = 'UnzipError';
+            }
+            throw err;
+          }
+        }
+        if (args.dataType === 'text') {
+          data = data.toString();
+        } else if (args.dataType === 'json') {
+          if (data.length === 0) {
+            data = null;
+          } else {
+            data = parseJSON(data.toString(), args.fixJSONCtlChars);
+          }
+        }
       }
       res.rt = res.timing.contentDownload = Date.now() - requestStartTime;
 
       const clientResponse: HttpClientResponse = {
-        status: res.status,
         data,
+        status: res.status,
         headers: res.headers,
-        url: response.url,
-        redirected: response.redirected,
+        url: lastUrl,
+        redirected: res.requestUrls.length > 1,
+        requestUrls: res.requestUrls,
         res: responseBodyStream ?? res,
       };
       return clientResponse;
     } catch (e: any) {
+      debug('throw error: %s', e);
       let err = e;
-      if (requestTimeoutController.signal.aborted) {
-        err = new HttpClientRequestTimeoutError(requestTimeout, { cause: e });
+      if (err.name === 'HeadersTimeoutError') {
+        err = new HttpClientRequestTimeoutError(headersTimeout, { cause: e });
+      } else if (err.name === 'BodyTimeoutError') {
+        err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: e });
       }
-      err.res = res;
       err.status = res.status;
       err.headers = res.headers;
-      // console.error(err);
+      err.res = res;
       throw err;
-    } finally {
-      clearTimeout(requestTimerId);
     }
   }
 }

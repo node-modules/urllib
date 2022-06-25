@@ -1,4 +1,4 @@
-import assert from 'assert/strict';
+import { strict as assert } from 'assert';
 import path from 'path';
 import fs from 'fs/promises';
 import { createReadStream } from 'fs';

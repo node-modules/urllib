@@ -1,28 +1,40 @@
 import { Socket } from 'net';
 import { createServer, Server } from 'http';
-import { createDeflate, createGzip } from 'zlib';
+import { createDeflate, createGzip, gzipSync } from 'zlib';
 import { createReadStream } from 'fs';
-import { setTimeout } from 'timers/promises';
 import busboy from 'busboy';
 import iconv from 'iconv-lite';
-import { readableToBytes } from '../utils';
+import { readableToBytes, sleep } from '../utils';
+
+const requestsPerSocket = Symbol('requestsPerSocket');
 
 export async function startServer(options?: {
   keepAliveTimeout?: number;
 }): Promise<{ server: Server, url: string, closeServer: any }> {
   const server = createServer(async (req, res) => {
     const startTime = Date.now();
+    req.socket[requestsPerSocket] = (req.socket[requestsPerSocket] || 0) + 1;
     if (server.keepAliveTimeout) {
       res.setHeader('Keep-Alive', 'timeout=' + server.keepAliveTimeout / 1000);
     }
     const urlObject = new URL(req.url!, `http://${req.headers.host}`);
     const pathname = urlObject.pathname;
+    res.setHeader('x-requests-persocket', req.socket[requestsPerSocket]);
+    res.setHeader('x-requests-socket-port', req.socket.remotePort!);
     res.setHeader('X-Foo', 'bar');
     res.setHeader('x-href', urlObject.href);
     res.setHeader('x-method', req.method ?? '');
     res.setHeader('x-request-headers', JSON.stringify(req.headers));
 
     if (pathname === '/block') {
+      return;
+    }
+
+    if (pathname === '/mock-status') {
+      const statusText = urlObject.searchParams.get('status') ?? '200';
+      const statusCode = parseInt(statusText);
+      res.statusCode = statusCode;
+      res.end(`Mock status ${statusCode}`);
       return;
     }
 
@@ -33,7 +45,7 @@ export async function startServer(options?: {
       const bytes = Buffer.alloc(parseInt(size));
       if (timeout) {
         res.write(bytes);
-        await setTimeout(parseInt(timeout));
+        await sleep(parseInt(timeout));
         res.end();
       } else {
         res.end(bytes);
@@ -42,7 +54,7 @@ export async function startServer(options?: {
     }
 
     if (timeout) {
-      await setTimeout(parseInt(timeout));
+      await sleep(parseInt(timeout));
     }
 
     if (pathname === '/wrongjson') {
@@ -80,9 +92,9 @@ export async function startServer(options?: {
 
     if (pathname === '/socket.end.error') {
       res.write('foo haha\n');
-      await setTimeout(200);
+      await sleep(200);
       res.write('foo haha 2');
-      await setTimeout(200);
+      await sleep(200);
       res.socket!.end('balabala');
       return;
     }
@@ -191,17 +203,22 @@ export async function startServer(options?: {
     } else {
       requestBody = requestBytes.toString();
     }
-    res.writeHead(200, {
-      'Content-Type': 'application/json',
-      'x-rt': `${Date.now() - startTime}`,
-    });
-    res.end(JSON.stringify({
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('x-rt', `${Date.now() - startTime}`);
+    const responseBody = JSON.stringify({
       method: req.method,
       url: req.url,
       href: urlObject.href,
       headers: req.headers,
       requestBody,
-    }));
+    });
+    const contentEncoding = urlObject.searchParams.get('content-encoding');
+    if (contentEncoding === 'gzip') {
+      res.setHeader('content-encoding', contentEncoding);
+      return res.end(gzipSync(responseBody));
+    }
+    res.end(responseBody);
   });
   if (options?.keepAliveTimeout) {
     server.keepAliveTimeout = options.keepAliveTimeout;
@@ -226,7 +243,7 @@ export async function startServer(options?: {
           if (hasCloseAllConnections) {
             (server as any).closeAllConnections();
           } else {
-            console.log('Closing %d http connections', connections.length);
+            // console.log('Closing %d http connections', connections.length);
             for (const connection of connections) {
               connection.destroy();
             }

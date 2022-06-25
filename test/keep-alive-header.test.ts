@@ -1,10 +1,10 @@
-import assert from 'assert/strict';
-import { setTimeout } from 'timers/promises';
+import { strict as assert } from 'assert';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
+import { sleep } from './utils';
 
 describe('keep-alive-header.test.ts', () => {
-  const keepAliveTimeout = 1000;
+  const keepAliveTimeout = 2000;
   let close: any;
   let _url: string;
   beforeAll(async () => {
@@ -22,12 +22,33 @@ describe('keep-alive-header.test.ts', () => {
     const max = process.env.CI ? 10 : 2;
     while (count < max) {
       count++;
-      const response = await urllib.request(_url);
+      let response = await urllib.request(_url);
       assert.equal(response.status, 200);
       // console.log(response.headers);
       assert.equal(response.headers.connection, 'keep-alive');
-      assert.equal(response.headers['keep-alive'], 'timeout=1');
-      await setTimeout(keepAliveTimeout);
+      assert.equal(response.headers['keep-alive'], 'timeout=2');
+      response = await urllib.request(_url);
+      assert.equal(response.status, 200);
+      // console.log(response.headers);
+      assert.equal(response.headers.connection, 'keep-alive');
+      assert.equal(response.headers['keep-alive'], 'timeout=2');
+      response = await urllib.request(_url);
+      assert.equal(response.status, 200);
+      // console.log(response.headers);
+      assert.equal(response.headers.connection, 'keep-alive');
+      assert.equal(response.headers['keep-alive'], 'timeout=2');
+      response = await urllib.request(_url);
+      assert.equal(response.status, 200);
+      // console.log(response.headers);
+      assert.equal(response.headers.connection, 'keep-alive');
+      assert.equal(response.headers['keep-alive'], 'timeout=2');
+      response = await urllib.request(_url);
+      assert.equal(response.status, 200);
+      // console.log(response.headers);
+      assert.equal(response.headers.connection, 'keep-alive');
+      assert.equal(response.headers['keep-alive'], 'timeout=2');
+      assert(parseInt(response.headers['x-requests-persocket'] as string) > 1);
+      await sleep(keepAliveTimeout);
     }
   });
 });

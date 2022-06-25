@@ -1,5 +1,4 @@
-import assert from 'assert/strict';
-import { setTimeout } from 'timers/promises';
+import { strict as assert } from 'assert';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 
@@ -33,7 +32,17 @@ describe('keep-alive-header.test.ts', () => {
     });
     assert.equal(response.status, 200);
     // console.log(response.data.headers);
-    assert.equal(response.data.headers['user-agent'], '');
+    assert.equal(response.data.headers['user-agent'], undefined);
+  });
+
+  it('should return no user agent if user-agent header is set undefined',  async () => {
+    const response = await urllib.request(_url, {
+      dataType: 'json',
+      headers: {'user-agent': undefined},
+    });
+    assert.equal(response.status, 200);
+    // console.log(response.data.headers);
+    assert.equal(response.data.headers['user-agent'], undefined);
   });
 
   it('should return mock user agent',  async () => {
