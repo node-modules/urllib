@@ -1,28 +1,36 @@
 import assert from 'assert/strict';
-import { join } from 'path';
 import { createWriteStream } from 'fs';
-import { rm, stat } from 'fs/promises';
-import { tmpdir } from 'os';
-import { randomUUID } from 'crypto';
+import { join } from 'path';
+import { stat } from 'fs/promises';
+import { setTimeout } from 'timers/promises';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
+import { createTempfile } from './utils';
 
 describe('options.writeStream.test.ts', () => {
   let close: any;
   let _url: string;
-  let tmpfile = join(tmpdir(), randomUUID());
+  let tmpfile: string;
+  let cleanup: any;
   beforeAll(async () => {
     const { closeServer, url } = await startServer();
     close = closeServer;
     _url = url;
   });
-
   afterAll(async () => {
     await close();
-    await rm(tmpfile, { force: true });
   });
 
-  it('should same response to writeStream', async () => {
+  beforeEach(async () => {
+    const item = await createTempfile();
+    tmpfile = item.tmpfile;
+    cleanup = item.cleanup;
+  });
+  afterEach(async () => {
+    await cleanup();
+  });
+
+  it('should save response to writeStream', async () => {
     const writeStream = createWriteStream(tmpfile);
     const response = await urllib.request(`${_url}mock-bytes?size=1024123`, {
       writeStream,
@@ -34,5 +42,56 @@ describe('options.writeStream.test.ts', () => {
     assert.equal(response.headers['content-length'], '1024123');
     const stats = await stat(tmpfile);
     assert.equal(stats.size, 1024123);
+  });
+
+  it('should close writeStream when request timeout', async () => {
+    const writeStream = createWriteStream(tmpfile);
+    assert.equal(writeStream.destroyed, false);
+    let writeStreamClosed = false;
+    writeStream.on('close', () => {
+      writeStreamClosed = true;
+      // console.log('writeStreamClosed');
+    });
+    await assert.rejects(async () => {
+      await urllib.request(`${_url}mock-bytes?size=1024&timeout=200`, {
+        writeStream,
+        timeout: 100,
+      });
+    }, (err: any) => {
+      assert.equal(err.name, 'HttpClientRequestTimeoutError');
+      assert.equal(err.message, 'Request timeout for 100 ms');
+      // writeStream should be close before request error fire
+      assert.equal(writeStream.destroyed, true);
+      return true;
+    });
+    await setTimeout(30);
+    // writeStream close
+    assert.equal(writeStream.destroyed, true);
+    assert.equal(writeStreamClosed, true);
+  });
+
+  it('should throw request error when writeStream error', async () => {
+    const tmpfile = join(__dirname, 'not-exists-dir', 'foo.txt');
+    const writeStream = createWriteStream(tmpfile);
+    let writeStreamError = false;
+    writeStream.on('error', () => {
+      writeStreamError = true;
+      // console.log('writeStreamError');
+    });
+    await assert.rejects(async () => {
+      await urllib.request(_url, {
+        writeStream,
+        timeout: 100,
+      });
+    }, (err: any) => {
+      // console.error(err);
+      assert.equal(err.name, 'Error');
+      assert.equal(err.code, 'ENOENT');
+      assert.match(err.message, /no such file or directory/);
+      assert.equal(writeStream.destroyed, true);
+      return true;
+    });
+    assert.equal(writeStream.destroyed, true);
+    assert.equal(writeStreamError, true);
   });
 });
