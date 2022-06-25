@@ -1,3 +1,4 @@
+import { Socket } from 'net';
 import { createServer, Server } from 'http';
 import { createDeflate, createGzip } from 'zlib';
 import { createReadStream } from 'fs';
@@ -21,16 +22,27 @@ export async function startServer(options?: {
     res.setHeader('x-method', req.method ?? '');
     res.setHeader('x-request-headers', JSON.stringify(req.headers));
 
-    const timeout = urlObject.searchParams.get('timeout');
-    if (timeout) {
-      await setTimeout(parseInt(timeout));
+    if (pathname === '/block') {
+      return;
     }
+
+    const timeout = urlObject.searchParams.get('timeout');
 
     if (pathname === '/mock-bytes') {
       const size = urlObject.searchParams.get('size') ?? '1024';
       const bytes = Buffer.alloc(parseInt(size));
-      res.end(bytes);
+      if (timeout) {
+        res.write(bytes);
+        await setTimeout(parseInt(timeout));
+        res.end();
+      } else {
+        res.end(bytes);
+      }
       return;
+    }
+
+    if (timeout) {
+      await setTimeout(parseInt(timeout));
     }
 
     if (pathname === '/wrongjson') {
@@ -195,6 +207,15 @@ export async function startServer(options?: {
     server.keepAliveTimeout = options.keepAliveTimeout;
   }
 
+  // handle active connection on Node.js 16
+  const hasCloseAllConnections = !!(server as any).closeAllConnections;
+  const connections: Socket[] = [];
+  if (!hasCloseAllConnections) {
+    server.on('connection', connection => {
+      connections.push(connection);
+    });
+  }
+
   return new Promise(resolve => {
     server.listen(0, () => {
       const address: any = server.address();
@@ -202,7 +223,14 @@ export async function startServer(options?: {
         url: `http://127.0.0.1:${address.port}/`,
         server,
         closeServer() {
-          (server as any).closeAllConnections && (server as any).closeAllConnections();
+          if (hasCloseAllConnections) {
+            (server as any).closeAllConnections();
+          } else {
+            console.log('Closing %d http connections', connections.length);
+            for (const connection of connections) {
+              connection.destroy();
+            }
+          }
           return new Promise(resolve => {
             server.close(resolve);
           });
