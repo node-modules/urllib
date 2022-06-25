@@ -1,4 +1,5 @@
 import { ReadableStream } from 'stream/web';
+import { Readable } from 'stream';
 
 export type HttpClientResponseMeta = {
   status: number;
@@ -22,7 +23,7 @@ export type HttpClientResponseMeta = {
   // socketHandledResponses: socketHandledResponses,
 };
 
-export type ReadableStreamWithMeta = ReadableStream & {
+export type ReadableStreamWithMeta = (Readable | ReadableStream) & {
   status: number;
   statusCode: number;
   statusMessage: string;
