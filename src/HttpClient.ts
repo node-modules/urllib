@@ -252,7 +252,11 @@ export class HttpClient extends EventEmitter {
           data = {};
         } else {
           data = await response.text();
-          data = parseJSON(data, args.fixJSONCtlChars);
+          if (data.length === 0) {
+            data = null;
+          } else {
+            data = parseJSON(data, args.fixJSONCtlChars);
+          }
         }
       } else {
         // buffer
@@ -275,6 +279,8 @@ export class HttpClient extends EventEmitter {
         err = new HttpClientRequestTimeoutError(requestTimeout, { cause: e });
       }
       err.res = res;
+      err.status = res.status;
+      err.headers = res.headers;
       // console.error(err);
       throw err;
     } finally {

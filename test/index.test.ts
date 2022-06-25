@@ -47,6 +47,9 @@ describe('index.test.ts', () => {
         assert.equal(err.name, 'TypeError');
         assert.equal(err.message, 'fetch failed');
         assert.equal(err.cause.message, 'Error: getaddrinfo ENOTFOUND www.npmjs-not-exists.com');
+        // err.status and err.headers
+        assert.equal(err.status, -1);
+        assert(err.headers);
         return true;
       });
     });
