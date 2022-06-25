@@ -237,12 +237,17 @@ export class HttpClient extends EventEmitter {
       let data: any = null;
       let responseBodyStream: ReadableStreamWithMeta | undefined;
       if (args.streaming || args.dataType === 'stream') {
-        responseBodyStream = Object.assign(response.body!, {
+        const meta = {
           status: res.status,
           statusCode: res.statusCode,
           statusMessage: res.statusMessage,
           headers: res.headers,
-        });
+        };
+        if (typeof Readable.fromWeb === 'function') {
+          responseBodyStream = Object.assign(Readable.fromWeb(response.body!), meta);
+        } else {
+          responseBodyStream = Object.assign(response.body!, meta);
+        }
       } else if (args.writeStream) {
         await pipeline(response.body!, args.writeStream);
       } else if (args.dataType === 'text') {

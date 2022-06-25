@@ -1,7 +1,7 @@
 import assert from 'assert/strict';
 import { createReadStream } from 'fs';
 import { writeFile } from 'fs/promises';
-import { setTimeout } from 'timers/promises';
+import pEvent from 'p-event';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 import { createTempfile } from './utils';
@@ -50,27 +50,23 @@ describe('options.stream.test.ts', () => {
     await writeFile(tmpfile, Buffer.alloc(10 * 1024 * 1024));
     const stream = createReadStream(tmpfile);
     assert.equal(stream.destroyed, false);
-    let streamClosed = false;
-    stream.on('close', () => {
-      streamClosed = true;
-      // console.error('streamClosed');
-    });
-    await assert.rejects(async () => {
-      await urllib.request(`${_url}block`, {
-        method: 'post',
-        timeout: 100,
-        stream,
-      });  
-    }, (err: any) => {
-      assert.equal(err.name, 'HttpClientRequestTimeoutError');
-      assert.equal(err.message, 'Request timeout for 100 ms');
-      // stream should be close after request error fire
-      assert.equal(stream.destroyed, false);
-      return true;
-    });
-    await setTimeout(100);
+    await Promise.all([
+      assert.rejects(async () => {
+        await urllib.request(`${_url}block`, {
+          method: 'post',
+          timeout: 100,
+          stream,
+        });  
+      }, (err: any) => {
+        assert.equal(err.name, 'HttpClientRequestTimeoutError');
+        assert.equal(err.message, 'Request timeout for 100 ms');
+        // stream should be close after request error fire
+        assert.equal(stream.destroyed, false);
+        return true;
+      }),
+      pEvent(stream, 'close'),
+    ]);
     // stream close
-    assert.equal(streamClosed, true);
     assert.equal(stream.destroyed, true);
   });
 
@@ -92,7 +88,7 @@ describe('options.stream.test.ts', () => {
       assert.equal(err.message, 'fetch failed');
       assert.equal(stream.destroyed, true);
       return true;
-    });
+    }),
     assert.equal(stream.destroyed, true);
     assert.equal(streamError, true);
   });
