@@ -75,12 +75,10 @@ describe('options.writeStream.test.ts', () => {
     let writeStreamError = false;
     writeStream.on('error', () => {
       writeStreamError = true;
-      // console.log('writeStreamError');
     });
     await assert.rejects(async () => {
       await urllib.request(_url, {
         writeStream,
-        timeout: 100,
       });
     }, (err: any) => {
       // console.error(err);
