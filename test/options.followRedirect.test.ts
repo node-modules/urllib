@@ -1,4 +1,4 @@
-import assert from 'assert/strict';
+import { strict as assert } from 'assert';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 
@@ -17,20 +17,18 @@ describe('options.followRedirect.test.js', () => {
 
   it('should redirect `location: /redirect-to-url`', async () => {
     const requestURL = `${_url}redirect`;
-    const { data, res, redirected, url } = await urllib.request(requestURL, {
+    const response = await urllib.request(requestURL, {
       followRedirect: true,
     });
-    // console.log(res.headers);
-    assert.equal(res.statusCode, 200);
-    assert((data as Buffer).length > 100);
-    assert(redirected);
-    assert.equal(url, `${_url}redirect-to-url`);
-    // assert(res.requestUrls.length > 1);
+    assert.equal(response.res.statusCode, 200);
+    assert((response.data as Buffer).length > 100);
+    assert.equal(response.url, `${_url}redirect-to-url`);
+    assert.equal(response.requestUrls.length, 2);
   });
 
   it('should redirect `location: /redirect-full-to-url`', async () => {
     const requestURL = `${_url}redirect-full`;
-    const { data, res, redirected, url } = await urllib.request(requestURL, {
+    const { data, res, redirected, url, requestUrls } = await urllib.request(requestURL, {
       followRedirect: true,
     });
     // console.log(res.headers);
@@ -38,12 +36,12 @@ describe('options.followRedirect.test.js', () => {
     assert((data as Buffer).length > 100);
     assert(redirected);
     assert.equal(url, `${_url}redirect-full-to-url`);
-    // assert(res.requestUrls.length > 1);
+    assert.equal(requestUrls.length, 2);
   });
 
   it('should redirect `location: /redirec-full-301-to-url`', async () => {
     const requestURL = `${_url}redirect-full-301`;
-    const { data, res, redirected, url } = await urllib.request(requestURL, {
+    const { data, res, redirected, url, requestUrls } = await urllib.request(requestURL, {
       followRedirect: true,
     });
     // console.log(res.headers);
@@ -51,7 +49,7 @@ describe('options.followRedirect.test.js', () => {
     assert((data as Buffer).length > 100);
     assert(redirected);
     assert.equal(url, `${_url}redirect-full-301-to-url`);
-    // assert(res.requestUrls.length > 1);
+    assert.equal(requestUrls.length, 2);
   });
 
   it('should disable auto redirect', async () => {

@@ -1,4 +1,4 @@
-import assert from 'assert/strict';
+import { strict as assert } from 'assert';
 import { createReadStream } from 'fs';
 import { writeFile } from 'fs/promises';
 import pEvent from 'p-event';
@@ -50,6 +50,7 @@ describe('options.stream.test.ts', () => {
     await writeFile(tmpfile, Buffer.alloc(10 * 1024 * 1024));
     const stream = createReadStream(tmpfile);
     assert.equal(stream.destroyed, false);
+
     await Promise.all([
       assert.rejects(async () => {
         await urllib.request(`${_url}block`, {
@@ -58,10 +59,11 @@ describe('options.stream.test.ts', () => {
           stream,
         });  
       }, (err: any) => {
+        // console.error(err);
         assert.equal(err.name, 'HttpClientRequestTimeoutError');
         assert.equal(err.message, 'Request timeout for 100 ms');
         // stream should be close after request error fire
-        assert.equal(stream.destroyed, false);
+        assert.equal(stream.destroyed, true);
         return true;
       }),
       pEvent(stream, 'close'),
@@ -83,9 +85,9 @@ describe('options.stream.test.ts', () => {
         stream,
       });  
     }, (err: any) => {
-      // console.error(err);
-      assert.equal(err.name, 'TypeError');
-      assert.equal(err.message, 'fetch failed');
+      console.error(err);
+      assert.equal(err.name, 'Error');
+      assert.match(err.message, /no such file or directory/);
       assert.equal(stream.destroyed, true);
       return true;
     }),

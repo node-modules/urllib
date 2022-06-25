@@ -1,6 +1,5 @@
-import assert from 'assert/strict';
-import { isReadable } from 'stream';
-import { ReadableStream } from 'stream/web';
+import { strict as assert } from 'assert';
+import { isReadable, Readable } from 'stream';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 import { readableToBytes } from './utils';
@@ -25,7 +24,6 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.status, 200);
     assert.equal(response.res.status, 200);
     assert.equal(response.res.statusCode, 200);
-    assert.equal(response.res.statusMessage, 'OK');
     assert.equal(response.headers['content-type'], 'application/json');
     assert.equal(response.res.headers['content-type'], 'application/json');
     assert.equal(response.res.headers, response.headers);
@@ -33,7 +31,7 @@ describe('options.streaming.test.ts', () => {
     // console.log(response.res);
     assert(isReadable(response.res as any));
     assert.equal(response.res.status, 200);
-    const bytes = await readableToBytes(response.res as ReadableStream);
+    const bytes = await readableToBytes(response.res as Readable);
     const data = JSON.parse(bytes.toString());
     assert.equal(data.method, 'GET');
     assert.equal(data.url, '/streaming_testing');
@@ -49,7 +47,7 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.data, null);
     // console.log(response.headers);
     assert(isReadable(response.res as any));
-    const bytes = await readableToBytes(response.res as ReadableStream);
+    const bytes = await readableToBytes(response.res as Readable);
     assert.equal(bytes.length, 1024102400);
   });
 });

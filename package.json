@@ -1,5 +1,5 @@
 {
-  "name": "urllib",
+  "name": "urllib-next",
   "version": "3.0.0-alpha.1",
   "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more. Base undici fetch API.",
   "keywords": [
@@ -78,10 +78,10 @@
     "typescript": "4"
   },
   "engines": {
-    "node": ">= 16.5.0"
+    "node": ">= 14.0.0"
   },
   "ci": {
-    "version": "16, 18"
+    "version": "14, 16, 18"
   },
   "publishConfig": {
     "tag": "next"

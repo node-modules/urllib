@@ -1,4 +1,4 @@
-import assert from 'assert/strict';
+import { strict as assert } from 'assert';
 import { createReadStream } from 'fs';
 import { Readable } from 'stream';
 import urllib from '../src';
@@ -51,7 +51,7 @@ describe('options.data.test.ts', () => {
     assert.equal(response.headers['x-method'], 'HEAD');
     assert(response.url.startsWith(_url));
     assert(!response.redirected);
-    const url = new URL(response.headers['x-href']);
+    const url = new URL(response.headers['x-href'] as string);
     assert.equal(url.searchParams.get('sql'), 'SELECT * from table');
     assert.equal(url.searchParams.get('data'), '哈哈');
   });

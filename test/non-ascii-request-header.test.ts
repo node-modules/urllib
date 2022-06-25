@@ -1,4 +1,4 @@
-import assert from 'assert/strict';
+import { strict as assert } from 'assert';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 
@@ -16,11 +16,13 @@ describe('non-ascii-request-header.test.ts', () => {
     await close();
   });
 
-  it('should error when request headers contain non ascii', async () => {
+  it.skip('should error when request headers contain non ascii', async () => {
     await assert.rejects(async () => {
-      await urllib.request(_url, {
+      const r = await urllib.request(_url, {
         headers: { 'x-test': '中文' },
+        dataType: 'json',
       });
+      console.log(r);
     }, (err: any) => {
       // console.error(err);
       assert.equal(err.name, 'TypeError');
@@ -30,5 +32,15 @@ describe('non-ascii-request-header.test.ts', () => {
       assert.equal(err.res.status, -1);
       return true;
     });
+  });
+
+  it('should ignore request headers contain non ascii', async () => {
+    const response = await urllib.request(_url, {
+      headers: { 'x-test': '中文' },
+      dataType: 'json',
+    });
+    // console.log(response);
+    assert.equal(response.status, 200);
+    assert.equal(response.data.headers['x-test'], '-\x87');
   });
 });

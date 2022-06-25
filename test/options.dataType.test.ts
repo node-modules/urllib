@@ -1,5 +1,5 @@
-import assert from 'assert/strict';
-import { ReadableStream } from 'stream/web';
+import { strict as assert } from 'assert';
+import { Readable } from 'stream';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 import { readableToBytes } from './utils';
@@ -132,7 +132,7 @@ describe('options.dataType.test.ts', () => {
     assert.equal(response.status, 200);
     assert.equal(response.headers['content-type'], 'application/json');
     assert(response.res);
-    const bytes = await readableToBytes(response.res as ReadableStream);
+    const bytes = await readableToBytes(response.res as Readable);
     const jsonString = bytes.toString();
     assert.equal(JSON.parse(jsonString).method, 'GET');
   });
@@ -145,7 +145,7 @@ describe('options.dataType.test.ts', () => {
     assert.equal(response.headers['content-type'], 'application/json');
     assert(response.res);
     assert(response.res);
-    const bytes = await readableToBytes(response.res as ReadableStream);
+    const bytes = await readableToBytes(response.res as Readable);
     const jsonString = bytes.toString();
     assert.equal(JSON.parse(jsonString).method, 'GET');
   });
