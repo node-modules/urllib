@@ -64,6 +64,14 @@ describe('options.dataType.test.ts', () => {
     assert.equal(response.data.method, 'GET');
   });
 
+  it('should ignore json parse when response empty', async () => {
+    const response = await urllib.request(`${_url}mock-bytes?size=0`, {
+      dataType: 'json',
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.data, null);
+  });
+
   it('should keep exists accept headers when dataType = json', async () => {
     const response = await urllib.request(_url, {
       dataType: 'json',

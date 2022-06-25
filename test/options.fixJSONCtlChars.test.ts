@@ -36,6 +36,8 @@ describe('options.fixJSONCtlChars.test.ts', () => {
       assert.equal(err.name, 'JSONResponseFormatError');
       // console.error(err);
       assert.match(err.message, /Unexpected token/);
+      assert.equal(err.status, 200);
+      assert.equal(err.headers['x-method'], 'GET');
       return true;
     });
   });
