@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { createReadStream } from 'fs';
-import { writeFile } from 'fs/promises';
+import { writeFile, readFile } from 'fs/promises';
 import pEvent from 'p-event';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
@@ -42,8 +42,13 @@ describe('options.stream.test.ts', () => {
     assert.equal(response.headers['content-type'], 'application/json');
     assert.equal(response.data.method, 'POST');
     // console.log(response.data);
-    assert.equal(response.data.headers['transfer-encoding'], 'chunked');
+    // not exists on Node.js
+    if (response.data.headers['transfer-encoding']) {
+      assert.equal(response.data.headers['transfer-encoding'], 'chunked');
+    }
     assert.match(response.data.requestBody, /it\('should post with stream', async \(\) => {/);
+    const raw = await readFile(__filename, 'utf-8');
+    assert.equal(response.data.requestBody, raw);
   });
 
   it('should close request stream when request timeout', async () => {
@@ -62,7 +67,7 @@ describe('options.stream.test.ts', () => {
         // console.error(err);
         assert.equal(err.name, 'HttpClientRequestTimeoutError');
         assert.equal(err.message, 'Request timeout for 100 ms');
-        assert.equal(err.cause.name, 'HeadersTimeoutError');
+        err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
         // stream should be close after request error fire
         assert.equal(stream.destroyed, true);
         return true;

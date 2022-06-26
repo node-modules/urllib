@@ -1,5 +1,5 @@
 {
-  "name": "urllib-next",
+  "name": "urllib",
   "version": "3.0.0-alpha.1",
   "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more. Base undici fetch API.",
   "keywords": [
@@ -54,6 +54,8 @@
   "dependencies": {
     "default-user-agent": "^1.0.0",
     "digest-header": "^0.0.1",
+    "form-data-encoder": "^1.7.2",
+    "formdata-node": "^4.3.3",
     "ip": "^1.1.5",
     "mime-types": "^2.1.35",
     "undici": "^5.4.0"
