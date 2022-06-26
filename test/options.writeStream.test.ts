@@ -94,4 +94,19 @@ describe('options.writeStream.test.ts', () => {
       assert.equal(writeStreamError, true);
     });
   }
+
+  it('should end writeStream when server error', async () => {
+    const writeStream = createWriteStream(tmpfile);
+    await assert.rejects(async () => {
+      await urllib.request(`${_url}error`, {
+        writeStream,
+      });
+    }, (err: any) => {
+      // console.error(err);
+      assert.equal(err.name, 'SocketError');
+      assert.equal(err.code, 'UND_ERR_SOCKET');
+      assert.equal(err.message, 'other side closed');
+      return true;
+    });
+  });
 });

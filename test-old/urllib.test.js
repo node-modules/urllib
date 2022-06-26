@@ -698,52 +698,6 @@ describe('test/urllib.test.js', function () {
         done();
       });
     });
-
-    it('should end writeStream when server error', function (done) {
-      var writeStream = fs.createWriteStream(tmpfile);
-      urllib.request(host + '/error', {
-        writeStream: writeStream
-      }, function (err, data, res) {
-        assert(err);
-        assert(err.name === 'ResponseError');
-        assert(err.stack.match(/socket hang up/));
-        assert(err.code === 'ECONNRESET');
-        assert(err.message.indexOf('/error -1 (connected: true, keepalive socket: false, socketHandledRequests: 1, socketHandledResponses: 0)\nheaders: {}') >= 0);
-        assert(err.res === res);
-        assert(!data);
-        assert(res);
-        assert.deepEqual(Object.keys(res), [
-          'status', 'statusCode', 'statusMessage', 'headers', 'size',
-          'aborted', 'rt', 'keepAliveSocket', 'data', 'requestUrls', 'timing',
-          'remoteAddress', 'remotePort',
-          'socketHandledRequests', 'socketHandledResponses',
-        ]);
-        done();
-      });
-    });
-
-    it('should end when writeStream is not consumed', function(done) {
-      var writeStream = through();
-      urllib.request(host, {
-        writeStream: writeStream,
-        consumeWriteStream: false,
-        timeout: 25000,
-      }, function (err, data, res) {
-        assert(!err);
-        assert(data === null);
-        assert(res.statusCode === 200);
-
-        var content = '';
-        writeStream
-        .on('data', function(data) {
-          content += data;
-        })
-        .on('end', function() {
-          assert(content.length > 80);
-          done();
-        });
-      });
-    });
   });
 
   describe('args.streaming = true', function () {

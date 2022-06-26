@@ -32,6 +32,8 @@ describe('options.timeout.test.ts', () => {
       }
      
       assert.equal(err.res.status, -1);
+      assert(err.res.rt > 10, `actual ${err.res.rt}`);
+      assert.equal(typeof err.res.rt, 'number');
       return true;
     });
   });

@@ -20,12 +20,12 @@ export type RequestOptions = {
   method?: HttpMethod | Lowercase<HttpMethod>;
   /** Data to be sent. Will be stringify automatically. */
   data?: any;
-  /** Force convert data to query string. */
-  dataAsQueryString?: boolean;
   /** Manually set the content of payload. If set, data will be ignored. */
   content?: string | Buffer | Readable;
-  /** Stream to be pipe to the remote. If set, data and content will be ignored.
-   * Alias to `content` on Readable
+  /**
+   * @deprecated
+   * Stream to be pipe to the remote. If set, data and content will be ignored.
+   * Alias to `content = Readable`
    */
   stream?: Readable;
   /**
@@ -34,8 +34,6 @@ export type RequestOptions = {
    * will be called with data set null after finished writing.
    */
   writeStream?: Writable;
-  /** consume the writeStream, invoke the callback after writeStream close. */
-  consumeWriteStream?: boolean;
   /**
     * The files will send with multipart/form-data format, base on formstream.
     * If method not set, will use POST method by default.
@@ -48,15 +46,21 @@ export type RequestOptions = {
    * If it's text, the callbacked data would be a String.
    * If it's json, the data of callback would be a parsed JSON Object
    * and will auto set Accept: 'application/json' header.
-   * Default is buffer.
+   * Default is 'buffer'.
    */
   dataType?: 'text' | 'json' | 'buffer' | 'stream';
   /**
+   * @deprecated
    * Let you get the res object when request connected, default false.
    * If set to true, `data` will be response readable stream.
-   * Equal to `dataType = 'stream'`
+   * Alias to `dataType = 'stream'`
    */
   streaming?: boolean;
+  /**
+   * @deprecated
+   * Alias to `dataType = 'stream'`
+   */
+  customResponse?: boolean;
   /** Fix the control characters (U+0000 through U+001F) before JSON parse response. Default is false. */
   fixJSONCtlChars?: FixJSONCtlChars;
   /** Request headers. */
@@ -100,9 +104,7 @@ export type RequestOptions = {
   passphrase?: string;
   /** A string describing the ciphers to use or exclude. */
   ciphers?: string;
-  /** The SSL method to use, e.g.SSLv3_method to force SSL version 3. */
-  secureProtocol?: string;
-  /** follow HTTP 3xx responses as redirects. defaults to false. */
+  /** follow HTTP 3xx responses as redirects. defaults to true. */
   followRedirect?: boolean;
   /** The maximum number of redirects to follow, defaults to 10. */
   maxRedirects?: number;
@@ -110,7 +112,12 @@ export type RequestOptions = {
   formatRedirectUrl?: (a: any, b: any) => void;
   /** Before request hook, you can change every thing here. */
   beforeRequest?: (...args: any[]) => void;
-  /** Accept `br, gzip` response content and auto decode it, default is false. */
+  /** Accept `gzip, br` response content and auto decode it, default is false. */
+  compressed?: boolean;
+  /**
+   * @deprecated
+   * Alias to compressed
+   * */
   gzip?: boolean;
   /** Enable timing or not, default is false. */
   timing?: boolean;
@@ -125,8 +132,16 @@ export type RequestOptions = {
    * It rely on lookup and have the same version requirement.
    */
   checkAddress?: (ip: string, family: number | string) => boolean;
-  /** Auto retry times on 5xx response, default is 0. Don't work on streaming request */
+  /**
+   * Auto retry times on 5xx response, default is 0. Don't work on streaming request
+   * It's not supported by using retry and writeStream, because the retry request can't stop the stream which is consuming.
+   **/
   retry?: number;
+  /** Wait a delay(ms) between retries */
   retryDelay?: number;
+  /**
+   * Determine whether retry, a response object as the first argument.
+   * It will retry when status >= 500 by default. Request error is not included.
+   */
   isRetry?: (response: HttpClientResponse) => boolean;
 };

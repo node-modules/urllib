@@ -1,11 +1,18 @@
 import { EventEmitter } from 'events';
 import { debuglog } from 'util';
-import { createGunzip, createBrotliDecompress, gunzipSync, brotliDecompressSync } from 'zlib';
+import {
+  createGunzip,
+  createBrotliDecompress,
+  gunzipSync,
+  brotliDecompressSync,
+} from 'zlib';
 import { Blob } from 'buffer';
-import { Readable, isReadable as isReadableNative, pipeline, promises as streamPromise } from 'stream';
+import { Readable, pipeline } from 'stream';
+import stream from 'stream';
 import { basename } from 'path';
 import { createReadStream } from 'fs';
 import { IncomingHttpHeaders } from 'http';
+import { performance } from 'perf_hooks';
 import {
   FormData as FormDataNative,
   request as undiciRequest,
@@ -22,18 +29,22 @@ import { parseJSON, sleep } from './utils';
 
 const FormData = FormDataNative ?? FormDataNode;
 // impl isReadable on Node.js 14
-const isReadable = isReadableNative ?? function isReadable(stream: any) {
+const isReadable = stream.isReadable ?? function isReadable(stream: any) {
   return stream && typeof stream.read === 'function';
 };
 // impl promise pipeline on Node.js 14
-const pipelinePromise = streamPromise?.pipeline ?? function pipeline(source: any, target: any) {
+const pipelinePromise = stream.promises?.pipeline ?? function pipeline(...args: any[]) {
   return new Promise<void>((resolve, reject) => {
-    pump(source, target, (err?: Error) => {
+    pump(...args, (err?: Error) => {
       if (err) return reject(err);
       resolve();
     });
   });
 };
+
+function noop() {
+  // noop
+}
 
 const debug = debuglog('urllib');
 
@@ -88,6 +99,10 @@ function defaultIsRetry(response: HttpClientResponse) {
   return response.status >= 500;
 }
 
+function performanceTime(startTime: number) {
+  return Math.floor((performance.now() - startTime) * 1000) / 1000;
+}
+
 type RequestContext = {
   retries: number;
 };
@@ -116,13 +131,12 @@ export class HttpClient extends EventEmitter {
       retries: 0,
       ...requestContext,
     };
-    const requestStartTime = Date.now();
+    const requestStartTime = performance.now();
     // keep urllib createCallbackResponse style
     const resHeaders: IncomingHttpHeaders = {};
     const res: HttpClientResponseMeta = {
       status: -1,
       statusCode: -1,
-      statusMessage: '',
       headers: resHeaders,
       size: 0,
       aborted: false,
@@ -161,10 +175,18 @@ export class HttpClient extends EventEmitter {
       // need to set user-agent
       headers['user-agent'] = HEADER_USER_AGENT;
     }
+    // Alias to dataType = 'stream'
+    if (args.streaming || args.customResponse) {
+      args.dataType = 'stream';
+    }
     if (args.dataType === 'json' && !headers.accept) {
       headers.accept = 'application/json';
     }
-    if (args.gzip && !headers['accept-encoding']) {
+    // gzip alias to compressed
+    if (args.gzip && args.compressed !== false) {
+      args.compressed = true;
+    }
+    if (args.compressed && !headers['accept-encoding']) {
       headers['accept-encoding'] = 'gzip, br';
     }
     if (requestContext.retries > 0) {
@@ -299,7 +321,7 @@ export class HttpClient extends EventEmitter {
         lastUrl = requestUrl.href;
       }
       const contentEncoding = response.headers['content-encoding'];
-      const isCompressContent = contentEncoding === 'gzip' || contentEncoding === 'br';
+      const isCompressedContent = contentEncoding === 'gzip' || contentEncoding === 'br';
 
       res.headers = response.headers;
       res.status = res.statusCode = response.statusCode;
@@ -309,7 +331,7 @@ export class HttpClient extends EventEmitter {
 
       let data: any = null;
       let responseBodyStream: ReadableWithMeta | undefined;
-      if (args.streaming || args.dataType === 'stream') {
+      if (args.dataType === 'stream') {
         // streaming mode will disable retry
         args.retry = 0;
         const meta = {
@@ -317,17 +339,17 @@ export class HttpClient extends EventEmitter {
           statusCode: res.statusCode,
           headers: res.headers,
         };
-        if (isCompressContent) {
+        if (isCompressedContent) {
           // gzip or br
           const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
-          responseBodyStream = Object.assign(pipeline(response.body, decoder), meta);
+          responseBodyStream = Object.assign(pipeline(response.body, decoder, noop), meta);
         } else {
           responseBodyStream = Object.assign(response.body, meta);
         }
       } else if (args.writeStream) {
         // streaming mode will disable retry
         args.retry = 0;
-        if (isCompressContent) {
+        if (isCompressedContent) {
           const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
           await pipelinePromise(response.body, decoder, args.writeStream);
         } else {
@@ -336,7 +358,7 @@ export class HttpClient extends EventEmitter {
       } else {
         // buffer
         data = Buffer.from(await response.body.arrayBuffer());
-        if (isCompressContent) {
+        if (isCompressedContent) {
           try {
             data = contentEncoding === 'gzip' ? gunzipSync(data) : brotliDecompressSync(data);
           } catch (err: any) {
@@ -356,7 +378,7 @@ export class HttpClient extends EventEmitter {
           }
         }
       }
-      res.rt = res.timing.contentDownload = Date.now() - requestStartTime;
+      res.rt = res.timing.contentDownload = performanceTime(requestStartTime);
 
       const clientResponse: HttpClientResponse = {
         data,
@@ -391,6 +413,11 @@ export class HttpClient extends EventEmitter {
       err.status = res.status;
       err.headers = res.headers;
       err.res = res;
+      // make sure requestUrls not empty
+      if (res.requestUrls.length === 0) {
+        res.requestUrls.push(requestUrl.href);
+      }
+      res.rt = res.timing.contentDownload = performanceTime(requestStartTime);
       throw err;
     }
   }

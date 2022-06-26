@@ -59,7 +59,7 @@
     "ip": "^1.1.5",
     "mime-types": "^2.1.35",
     "pump": "^3.0.0",
-    "undici": "^5.4.0"
+    "undici": "^5.6.0"
   },
   "devDependencies": {
     "@types/busboy": "^1.5.0",
@@ -76,7 +76,6 @@
     "iconv-lite": "^0.6.3",
     "jest": "28",
     "jest-summary-reporter": "^0.0.2",
-    "p-event": "^4.2.0",
     "ts-jest": "28",
     "tslib": "^2.4.0",
     "typescript": "4"
