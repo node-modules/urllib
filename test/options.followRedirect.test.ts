@@ -26,6 +26,42 @@ describe('options.followRedirect.test.js', () => {
     assert.equal(response.requestUrls.length, 2);
   });
 
+  it('should followRedirect is true and maxRedirects default up to 10', async () => {
+    const requestURL = `${_url}redirect-deadlock`;
+    const response = await urllib.request(requestURL, {
+      dataType: 'text',
+    });
+    assert.equal(response.res.statusCode, 302);
+    assert.equal(response.url, `${_url}redirect-deadlock`);
+    assert.equal(response.requestUrls.length, 11);
+    assert.equal(response.data, 'Redirect to /redirect-deadlock');
+  });
+
+  it('should maxRedirects=1 work', async () => {
+    const requestURL = `${_url}redirect-deadlock`;
+    const response = await urllib.request(requestURL, {
+      maxRedirects: 1,
+      dataType: 'text',
+    });
+    assert.equal(response.res.statusCode, 302);
+    assert.equal(response.url, `${_url}redirect-deadlock`);
+    assert.equal(response.requestUrls.length, 2);
+    assert.equal(response.data, 'Redirect to /redirect-deadlock');
+    assert.deepEqual(response.requestUrls, [ `${_url}redirect-deadlock`, `${_url}redirect-deadlock` ]);
+  });
+
+  it('should maxRedirects=0 work', async () => {
+    const requestURL = `${_url}redirect-deadlock`;
+    const response = await urllib.request(requestURL, {
+      maxRedirects: 0,
+      dataType: 'text',
+    });
+    assert.equal(response.res.statusCode, 302);
+    assert.equal(response.url, `${_url}redirect-deadlock`);
+    assert.equal(response.data, 'Redirect to /redirect-deadlock');
+    assert.deepEqual(response.requestUrls, [ `${_url}redirect-deadlock` ]);
+  });
+
   it('should redirect `location: /redirect-full-to-url`', async () => {
     const requestURL = `${_url}redirect-full`;
     const { data, res, redirected, url, requestUrls } = await urllib.request(requestURL, {

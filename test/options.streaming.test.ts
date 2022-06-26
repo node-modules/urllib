@@ -50,4 +50,17 @@ describe('options.streaming.test.ts', () => {
     const bytes = await readableToBytes(response.res as Readable);
     assert.equal(bytes.length, 1024102400);
   });
+
+  it('should customResponse alias to streaming', async () => {
+    const response = await urllib.request(`${_url}mock-bytes?size=1024102400`, {
+      customResponse: true,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-type'], undefined);
+    assert.equal(response.data, null);
+    // console.log(response.headers);
+    isReadable && assert(isReadable(response.res as any));
+    const bytes = await readableToBytes(response.res as Readable);
+    assert.equal(bytes.length, 1024102400);
+  });
 });

@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import { createReadStream } from 'fs';
 import { writeFile, readFile } from 'fs/promises';
-import pEvent from 'p-event';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 import { createTempfile } from './utils';
@@ -51,60 +50,48 @@ describe('options.stream.test.ts', () => {
     assert.equal(response.data.requestBody, raw);
   });
 
-  // FIXME: https://github.com/nodejs/undici/pull/1515 wait for new version publish
-  it.skip('should close 1KB request stream when request timeout', async () => {
+  it('should close 1KB request stream when request timeout', async () => {
     await writeFile(tmpfile, Buffer.alloc(1024));
     const stream = createReadStream(tmpfile);
     assert.equal(stream.destroyed, false);
 
-    await Promise.all([
-      assert.rejects(async () => {
-        await urllib.request(`${_url}block`, {
-          method: 'post',
-          timeout: 100,
-          stream,
-        });  
-      }, (err: any) => {
-        // console.error(err);
-        assert.equal(err.name, 'HttpClientRequestTimeoutError');
-        assert.equal(err.message, 'Request timeout for 100 ms');
-        err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
-        // stream should be close after request error fire
-        assert.equal(stream.destroyed, true);
-        return true;
-      }),
-      pEvent(stream, 'error'),
-    ]);
-    // stream close
-    assert.equal(stream.destroyed, true);
+    await  assert.rejects(async () => {
+      await urllib.request(`${_url}block`, {
+        method: 'post',
+        timeout: 100,
+        stream,
+      });
+    }, (err: any) => {
+      // console.error(err);
+      assert.equal(err.name, 'HttpClientRequestTimeoutError');
+      assert.equal(err.message, 'Request timeout for 100 ms');
+      err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
+      // stream should be close after request error fire
+      assert.equal(stream.destroyed, true);
+      return true;
+    });
   });
 
-  // FIXME: https://github.com/nodejs/undici/pull/1515 wait for new version publish
-  it.skip('should close 10MB size request stream when request timeout', async () => {
+  it('should close 10MB size request stream when request timeout', async () => {
     await writeFile(tmpfile, Buffer.alloc(10 * 1024 * 1024));
     const stream = createReadStream(tmpfile);
     assert.equal(stream.destroyed, false);
 
-    await Promise.all([
-      assert.rejects(async () => {
-        await urllib.request(`${_url}block`, {
-          method: 'post',
-          timeout: 100,
-          stream,
-        });  
-      }, (err: any) => {
-        // console.error(err);
-        assert.equal(err.name, 'HttpClientRequestTimeoutError');
-        assert.equal(err.message, 'Request timeout for 100 ms');
-        err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
-        // stream should be close after request error fire
-        assert.equal(stream.destroyed, true);
-        return true;
-      }),
-      pEvent(stream, 'error'),
-    ]);
-    // stream close
-    assert.equal(stream.destroyed, true);
+    await assert.rejects(async () => {
+      await urllib.request(`${_url}block`, {
+        method: 'post',
+        timeout: 100,
+        stream,
+      });
+    }, (err: any) => {
+      // console.error(err);
+      assert.equal(err.name, 'HttpClientRequestTimeoutError');
+      assert.equal(err.message, 'Request timeout for 100 ms');
+      err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
+      // stream should be close after request error fire
+      assert.equal(stream.destroyed, true);
+      return true;
+    });
   });
 
   it('should throw request error when stream error', async () => {
@@ -124,7 +111,7 @@ describe('options.stream.test.ts', () => {
       assert.match(err.message, /no such file or directory/);
       assert.equal(stream.destroyed, true);
       return true;
-    }),
+    });
     assert.equal(stream.destroyed, true);
     assert.equal(streamError, true);
   });

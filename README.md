@@ -79,18 +79,14 @@ console.log('status: %s, body size: %d, headers: %j', res.statusCode, data.lengt
 - ***options*** Object - Optional
   - ***method*** String - Request method, defaults to `GET`. Could be `GET`, `POST`, `DELETE` or `PUT`. Alias 'type'.
   - ***data*** Object - Data to be sent. Will be stringify automatically.
-  - ***dataAsQueryString*** Boolean - Force convert `data` to query string.
   - ***content*** String | [Buffer](http://nodejs.org/api/buffer.html) - Manually set the content of payload. If set, `data` will be ignored.
   - ***stream*** [stream.Readable](http://nodejs.org/api/stream.html#stream_class_stream_readable) - Stream to be pipe to the remote. If set, `data` and `content` will be ignored.
   - ***writeStream*** [stream.Writable](http://nodejs.org/api/stream.html#stream_class_stream_writable) - A writable stream to be piped by the response stream. Responding data will be write to this stream and `callback` will be called with `data` set `null` after finished writing.
   - ***files*** {Array<ReadStream|Buffer|String> | Object | ReadStream | Buffer | String - The files will send with `multipart/form-data` format, base on `formstream`. If `method` not set, will use `POST` method by default.
-  - ***consumeWriteStream*** [true] - consume the writeStream, invoke the callback after writeStream close.
   - ***contentType*** String - Type of request data. Could be `json` (**Notes**: not use `application/json` here). If it's `json`, will auto set `Content-Type: application/json` header.
-  - ***nestedQuerystring*** Boolean - urllib default use querystring to stringify form data which don't support nested object, will use [qs](https://github.com/ljharb/qs) instead of querystring to support nested object by set this option to true.
   - ***dataType*** String - Type of response data. Could be `text` or `json`. If it's `text`, the `callback`ed `data` would be a String. If it's `json`, the `data` of callback would be a parsed JSON Object and will auto set `Accept: application/json` header. Default `callback`ed `data` would be a `Buffer`.
   - **fixJSONCtlChars** Boolean - Fix the control characters (U+0000 through U+001F) before JSON parse response. Default is `false`.
   - ***headers*** Object - Request headers.
-  - ***keepHeaderCase*** Boolean - by default will convert header keys to lowercase
   - ***timeout*** Number | Array - Request timeout in milliseconds for connecting phase and response receiving phase. Defaults to `exports.TIMEOUT`, both are 5s. You can use `timeout: 5000` to tell urllib use same timeout on two phase or set them seperately such as `timeout: [3000, 5000]`, which will set connecting timeout to 3s and response 5s.
   - ***auth*** String - `username:password` used in HTTP Basic Authorization.
   - ***digestAuth*** String - `username:password` used in HTTP [Digest Authorization](http://en.wikipedia.org/wiki/Digest_access_authentication).
@@ -120,17 +116,8 @@ console.log('status: %s, body size: %d, headers: %j', res.statusCode, data.lengt
   - ***streaming*** Boolean - let you get the `res` object when request  connected, default `false`. alias `customResponse`
   - ***gzip*** Boolean - Accept `gzip, br` response content and auto decode it, default is `false`.
   - ***timing*** Boolean - Enable timing or not, default is `false`.
-  - ***enableProxy*** Boolean - Enable proxy request, default is `false`.
-  - ***proxy*** String | Object - proxy agent uri or options, default is `null`.
   - ***lookup*** Function - Custom DNS lookup function, default is `dns.lookup`. Require node >= 4.0.0(for http protocol) and node >=8(for https protocol)
   - ***checkAddress*** Function: optional, check request address to protect from SSRF and similar attacks. It receive tow arguments(`ip` and `family`) and should return true or false to identified the address is legal or not. It rely on `lookup` and have the same version requirement.
-  - ***trace*** Boolean - Enable capture stack include call site of library entrance, default is `false`.
-  - ***socketPath*** String - optional Unix Domain Socket. (Refer to [Node.js Document](https://nodejs.org/dist/latest-v14.x/docs/api/http.html#http_http_request_options_callback))
-
-#### Returns
-
-- **data** Buffer | Object - The data responsed. Would be a Buffer if `dataType` is set to `text` or an JSON parsed into Object if it's set to `json`.
-- **res** [http.IncomingMessage](http://nodejs.org/api/http.html#http_http_incomingmessage) - The response.
 
 #### Options: `options.data`
 
@@ -150,14 +137,14 @@ For `GET` request, `data` will be stringify to query string, e.g. `http://exampl
 
 For others like `POST`, `PATCH` or `PUT` request,
 in defaults, the `data` will be stringify into `application/x-www-form-urlencoded` format
-if `Content-Type` header is not set.
+if `content-type` header is not set.
 
-If `Content-type` is `application/json`, the `data` will be `JSON.stringify` to JSON data format.
+If `content-type` is `application/json`, the `data` will be `JSON.stringify` to JSON data format.
 
 #### Options: `options.content`
 
 `options.content` is useful when you wish to construct the request body by yourself,
-for example making a `Content-Type: application/json` request.
+for example making a `content-type: application/json` request.
 
 Notes that if you want to send a JSON body, you should stringify it yourself:
 
@@ -178,8 +165,8 @@ It would make a HTTP request like:
 
 ```http
 POST / HTTP/1.1
-Host: example.com
-Content-Type: application/json
+host: example.com
+content-type: application/json
 
 {
   "a": "hello",
@@ -193,7 +180,7 @@ This exmaple can use `options.data` with `application/json` content type:
 await request('https://example.com', {
   method: 'POST',
   headers: {
-    'Content-Type': 'application/json'
+    'content-type': 'application/json'
   },
   data: {
     a: 'hello',
@@ -268,7 +255,6 @@ Response is normal object, it contains:
 - `status` or `statusCode`: response status code.
   - `-1` meaning some network error like `ENOTFOUND`
   - `-2` meaning ConnectionTimeoutError
-- `statusMessage`: response status message.
 - `headers`: response http headers, default is `{}`
 - `size`: response size
 - `aborted`: response was aborted or not
@@ -306,39 +292,6 @@ assert.equal(data.toString(), 'foo haha\nfoo haha 2');
 assert(res.aborted);
 ```
 
-### HttpClient2
-
-HttpClient2 base on HttpClient.
-
-#### Options
-
-options extends from urllib, besides below
-
-- ***retry*** Number - a retry count, when get an error, it will request again until reach the retry count.
-- ***retryDelay*** Number - wait a delay(ms) between retries.
-- ***isRetry*** Function - determine whether retry, a response object as the first argument. it will retry when status >= 500 by default. Request error is not included.
-
-#### Warning
-
-It's not supported by using retry and writeStream, because the retry request can't stop the stream which is consuming.
-
-### Trace
-
-If set trace true, error stack will contains full call stack, like
-
-```
-Error: connect ECONNREFUSED 127.0.0.1:11
-    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1113:14)
-    --------------------
-    at ~/workspace/urllib/lib/urllib.js:150:13
-    at new Promise (<anonymous>)
-    at Object.request (~/workspace/urllib/lib/urllib.js:149:10)
-    at Context.<anonymous> (~/workspace/urllib/test/urllib_promise.test.js:49:19)
-    ....
-```
-
-When open the trace, urllib may have poor perfomance, please consider carefully.
-
 ## TODO
 
 - ❎ Support Proxy
@@ -346,7 +299,6 @@ When open the trace, urllib may have poor perfomance, please consider carefully.
 - ✅ Auto redirect handle
 - ✅ https & self-signed certificate
 - ✅ Connection timeout & Response timeout
-- ✅ Support `Accept-Encoding: gzip, br` by default
 - ✅ Support [Digest access authentication](http://en.wikipedia.org/wiki/Digest_access_authentication)
 
 <!-- GITCONTRIBUTOR_START -->

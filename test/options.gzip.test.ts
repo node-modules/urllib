@@ -92,4 +92,32 @@ describe('options.gzip.test.ts', () => {
     assert.equal(data.headers['accept-encoding'], undefined);
     assert.equal(data.method, 'GET');
   });
+
+  it('should use compressed = false event gzip = true', async () => {
+    const { status, headers, data } = await urllib.request(`${_url}?content-encoding=gzip`, {
+      dataType: 'json',
+      gzip: true,
+      compressed: false,
+    });
+    assert.equal(status, 200);
+    const requestHeaders = JSON.parse(headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], undefined);
+    assert.equal(headers['content-encoding'], 'gzip');
+    assert.equal(data.headers['accept-encoding'], undefined);
+    assert.equal(data.method, 'GET');
+  });
+
+  it('should use compressed = true event gzip = false', async () => {
+    const { status, headers, data } = await urllib.request(`${_url}?content-encoding=gzip`, {
+      dataType: 'json',
+      gzip: false,
+      compressed: true,
+    });
+    assert.equal(status, 200);
+    const requestHeaders = JSON.parse(headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], 'gzip, br');
+    assert.equal(headers['content-encoding'], 'gzip');
+    assert.equal(data.headers['accept-encoding'], 'gzip, br');
+    assert.equal(data.method, 'GET');
+  });
 });

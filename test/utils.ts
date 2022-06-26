@@ -20,6 +20,11 @@ export async function readableToBytes(stream: Readable | ReadableStream) {
   return Buffer.concat(chunks);
 }
 
+export async function readableToString(stream: Readable | ReadableStream) {
+  const bytes = await readableToBytes(stream);
+  return bytes.toString();
+}
+
 export async function createTempfile(content?: Buffer | string) {
   const tmpfile = join(tmpdir(), randomUUID());
   if (typeof content === 'string') {

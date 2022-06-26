@@ -1,25 +1,37 @@
 import { strict as assert } from 'assert';
+import { createWriteStream, createReadStream } from 'fs';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
+import { readableToString, createTempfile } from './utils';
 
-describe('compress.test.ts', () => {
+describe('options.compressed.test.ts', () => {
   const keepAliveTimeout = 1000;
   let close: any;
   let _url: string;
+  let tmpfile: string;
+  let cleanup: any;
   beforeAll(async () => {
     const { closeServer, url } = await startServer({ keepAliveTimeout });
     close = closeServer;
     _url = url;
   });
-
   afterAll(async () => {
     await close();
+  });
+
+  beforeEach(async () => {
+    const item = await createTempfile();
+    tmpfile = item.tmpfile;
+    cleanup = item.cleanup;
+  });
+  afterEach(async () => {
+    await cleanup();
   });
 
   it('should deflate content when server accept brotli', async () => {
     const response = await urllib.request(`${_url}brotli`, {
       dataType: 'text',
-      gzip: true,
+      compressed: true,
     });
     assert.equal(response.status, 200);
     assert.equal(response.headers['content-encoding'], 'br');
@@ -32,7 +44,7 @@ describe('compress.test.ts', () => {
   it('should gzip content when server accept gzip', async () => {
     const response = await urllib.request(`${_url}gzip`, {
       dataType: 'text',
-      gzip: true,
+      compressed: true,
     });
     assert.equal(response.status, 200);
     assert.equal(response.headers['content-encoding'], 'gzip');
@@ -42,10 +54,67 @@ describe('compress.test.ts', () => {
     assert.match(response.data, /const server = createServer\(async/);
   });
 
+  it('should gzip work on dataType = stream', async () => {
+    const response = await urllib.request(`${_url}gzip`, {
+      dataType: 'stream',
+      compressed: true,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-encoding'], 'gzip');
+    // console.log(response.headers);
+    const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], 'gzip, br');
+    const text = await readableToString(response.res as any);
+    assert.match(text, /const server = createServer\(async/);
+  });
+
+  it('should brotli work on dataType = stream', async () => {
+    const response = await urllib.request(`${_url}brotli`, {
+      dataType: 'stream',
+      compressed: true,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-encoding'], 'br');
+    // console.log(response.headers);
+    const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], 'gzip, br');
+    const text = await readableToString(response.res as any);
+    assert.match(text, /const server = createServer\(async/);
+  });
+
+  it('should gzip work on writeStream', async () => {
+    const writeStream = createWriteStream(tmpfile);
+    const response = await urllib.request(`${_url}gzip`, {
+      compressed: true,
+      writeStream,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-encoding'], 'gzip');
+    const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], 'gzip, br');
+    const text = await readableToString(createReadStream(tmpfile));
+    assert.match(text, /const server = createServer\(async/);
+  });
+
+  it('should brotli work on writeStream', async () => {
+    const writeStream = createWriteStream(tmpfile);
+    const response = await urllib.request(`${_url}brotli`, {
+      compressed: true,
+      writeStream,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-encoding'], 'br');
+    // console.log(response.headers);
+    const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], 'gzip, br');
+    const text = await readableToString(createReadStream(tmpfile));
+    assert.match(text, /const server = createServer\(async/);
+  });
+
   it('should keep accept-encoding raw', async () => {
     const response = await urllib.request(`${_url}gzip`, {
       dataType: 'text',
-      gzip: true,
+      compressed: true,
       headers: {
         'accept-encoding': 'gzip',
       },
@@ -62,7 +131,7 @@ describe('compress.test.ts', () => {
     await assert.rejects(async () => {
       await urllib.request(`${_url}error-gzip`, {
         dataType: 'text',
-        gzip: true,
+        compressed: true,
       });
     }, (err: any) => {
       // console.error(err);
@@ -79,7 +148,7 @@ describe('compress.test.ts', () => {
     await assert.rejects(async () => {
       await urllib.request(`${_url}error-brotli`, {
         dataType: 'text',
-        gzip: true,
+        compressed: true,
       });
     }, (err: any) => {
       // console.error(err);

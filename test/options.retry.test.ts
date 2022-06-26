@@ -1,29 +1,82 @@
 import { strict as assert } from 'assert';
+import { createWriteStream, createReadStream } from 'fs';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
+import { readableToString, createTempfile } from './utils';
 
 describe('options.retry.test.ts', () => {
   let close: any;
   let _url: string;
+  let tmpfile: string;
+  let cleanup: any;
+
   beforeAll(async () => {
     const { closeServer, url } = await startServer();
     close = closeServer;
     _url = url;
   });
-
   afterAll(async () => {
     await close();
   });
 
+  beforeEach(async () => {
+    const item = await createTempfile();
+    tmpfile = item.tmpfile;
+    cleanup = item.cleanup;
+  });
+  afterEach(async () => {
+    await cleanup();
+  });
+
   it('should not retry on 400', async () => {
-    let response = await urllib.request(`${_url}mock-status?status=400`, {
+    const response = await urllib.request(`${_url}mock-status?status=400`, {
       dataType: 'text',
       retry: 2,
     });
     assert.equal(response.status, 400);
     assert.equal(response.data, 'Mock status 400');
-    let requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
     assert.equal(requestHeaders['x-urllib-retry'], undefined);
+  });
+
+  it('should not retry on streaming', async () => {
+    const response = await urllib.request(`${_url}mock-status?status=500`, {
+      dataType: 'text',
+      retry: 2,
+      streaming: true,
+    });
+    assert.equal(response.status, 500);
+    const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['x-urllib-retry'], undefined);
+    const text = await readableToString(response.res as any);
+    assert.equal(text, 'Mock status 500');
+  });
+
+  it('should not retry on writeStream', async () => {
+    const writeStream = createWriteStream(tmpfile);
+    const response = await urllib.request(`${_url}mock-status?status=500`, {
+      dataType: 'text',
+      retry: 2,
+      writeStream,
+    });
+    assert.equal(response.status, 500);
+    const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['x-urllib-retry'], undefined);
+    const text = await readableToString(createReadStream(tmpfile));
+    assert.equal(text, 'Mock status 500');
+  });
+
+  it('should not retry on streaming', async () => {
+    const response = await urllib.request(`${_url}mock-status?status=500`, {
+      dataType: 'text',
+      retry: 2,
+      streaming: true,
+    });
+    assert.equal(response.status, 500);
+    const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['x-urllib-retry'], undefined);
+    const text = await readableToString(response.res as any);
+    assert.equal(text, 'Mock status 500');
   });
 
   it('should retry fail on default server status 500', async () => {

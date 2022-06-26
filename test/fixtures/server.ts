@@ -72,6 +72,11 @@ export async function startServer(options?: {
       res.statusCode = 302;
       return res.end('Redirect to /redirect-to-url');
     }
+    if (pathname === '/redirect-deadlock') {
+      res.setHeader('Location', '/redirect-deadlock');
+      res.statusCode = 302;
+      return res.end('Redirect to /redirect-deadlock');
+    }
     if (pathname === '/redirect-301') {
       res.setHeader('Location', '/redirect-301-to-url');
       res.statusCode = 301;
@@ -144,6 +149,9 @@ export async function startServer(options?: {
       res.setHeader('Content-Encoding', 'br');
       createReadStream(__filename).pipe(res);
       return;
+    }
+    if (pathname === '/error') {
+      return res.destroy();
     }
 
     if (pathname === '/multipart' && (req.method === 'POST' || req.method === 'PUT')) {
