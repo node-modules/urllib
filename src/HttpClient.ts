@@ -129,8 +129,9 @@ export class HttpClient extends EventEmitter {
     if (args.dataType === 'json' && !headers.accept) {
       headers.accept = 'application/json';
     }
-    if (args.gzip) {
-      headers['accept-encoding'] = 'gzip, deflate';
+    if (args.gzip && !headers['accept-encoding']) {
+      // try Brotli first
+      headers['accept-encoding'] = 'gzip, br';
     }
 
     try {
@@ -249,7 +250,7 @@ export class HttpClient extends EventEmitter {
         lastUrl = requestUrl.href;
       }
       const contentEncoding = response.headers['content-encoding'];
-      const isCompressContent = contentEncoding === 'gzip' || contentEncoding === 'deflate';
+      const isCompressContent = contentEncoding === 'gzip' || contentEncoding === 'br';
 
       res.headers = response.headers;
       res.status = res.statusCode = response.statusCode;
@@ -270,14 +271,15 @@ export class HttpClient extends EventEmitter {
           headers: res.headers,
         };
         if (isCompressContent) {
-          const decoder = contentEncoding === 'gzip' ? zlib.createGunzip() : zlib.createInflate();
+          // gzip or br
+          const decoder = contentEncoding === 'gzip' ? zlib.createGunzip() : zlib.createBrotliDecompress();
           responseBodyStream = Object.assign(pipeline(response.body, decoder), meta);
         } else {
           responseBodyStream = Object.assign(response.body, meta);
         }
       } else if (args.writeStream) {
         if (isCompressContent) {
-          const decoder = contentEncoding === 'gzip' ? zlib.createGunzip() : zlib.createInflate();
+          const decoder = contentEncoding === 'gzip' ? zlib.createGunzip() : zlib.createBrotliDecompress();
           await streamPromise.pipeline(response.body, decoder, args.writeStream);
         } else {
           await streamPromise.pipeline(response.body, args.writeStream);
@@ -287,7 +289,7 @@ export class HttpClient extends EventEmitter {
         data = Buffer.from(await response.body.arrayBuffer());
         if (isCompressContent) {
           try {
-            data = contentEncoding === 'gzip' ? zlib.gunzipSync(data) : zlib.inflateSync(data);
+            data = contentEncoding === 'gzip' ? zlib.gunzipSync(data) : zlib.brotliDecompressSync(data);
           } catch (err: any) {
             if (err.name === 'Error') {
               err.name = 'UnzipError';

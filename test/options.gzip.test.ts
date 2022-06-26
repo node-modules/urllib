@@ -22,7 +22,7 @@ describe('options.gzip.test.ts', () => {
     });
     assert.equal(status, 200);
     const requestHeaders = JSON.parse(headers['x-request-headers'] as string);
-    assert.equal(requestHeaders['accept-encoding'], 'gzip, deflate');
+    assert.equal(requestHeaders['accept-encoding'], 'gzip, br');
     assert.equal(headers['content-encoding'], 'gzip');
     assert.equal(typeof data, 'string');
     assert.match(data, /const server = createServer/);
@@ -48,9 +48,9 @@ describe('options.gzip.test.ts', () => {
     });
     assert.equal(status, 200);
     const requestHeaders = JSON.parse(headers['x-request-headers'] as string);
-    assert.equal(requestHeaders['accept-encoding'], 'gzip, deflate');
+    assert.equal(requestHeaders['accept-encoding'], 'gzip, br');
     assert.equal(headers['content-encoding'], 'gzip');
-    assert.equal(data.headers['accept-encoding'], 'gzip, deflate');
+    assert.equal(data.headers['accept-encoding'], 'gzip, br');
     assert.equal(data.method, 'GET');
   });
 
@@ -63,6 +63,32 @@ describe('options.gzip.test.ts', () => {
     const requestHeaders = JSON.parse(headers['x-request-headers'] as string);
     assert.equal(requestHeaders['accept-encoding'], undefined);
     assert.equal(headers['content-encoding'], 'gzip');
+    assert.equal(data.headers['accept-encoding'], undefined);
+    assert.equal(data.method, 'GET');
+  });
+
+  it('should handle br json response on gzip = true', async () => {
+    const { status, headers, data } = await urllib.request(`${_url}?content-encoding=br`, {
+      dataType: 'json',
+      gzip: true,
+    });
+    assert.equal(status, 200);
+    const requestHeaders = JSON.parse(headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], 'gzip, br');
+    assert.equal(headers['content-encoding'], 'br');
+    assert.equal(data.headers['accept-encoding'], 'gzip, br');
+    assert.equal(data.method, 'GET');
+  });
+
+  it('should handle br json response on gzip = false', async () => {
+    const { status, headers, data } = await urllib.request(`${_url}?content-encoding=br`, {
+      dataType: 'json',
+      gzip: false,
+    });
+    assert.equal(status, 200);
+    const requestHeaders = JSON.parse(headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], undefined);
+    assert.equal(headers['content-encoding'], 'br');
     assert.equal(data.headers['accept-encoding'], undefined);
     assert.equal(data.method, 'GET');
   });

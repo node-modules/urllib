@@ -118,7 +118,7 @@ console.log('status: %s, body size: %d, headers: %j', res.statusCode, data.lengt
   - ***formatRedirectUrl*** Function - Format the redirect url by your self. Default is `url.resolve(from, to)`.
   - ***beforeRequest*** Function - Before request hook, you can change every thing here.
   - ***streaming*** Boolean - let you get the `res` object when request  connected, default `false`. alias `customResponse`
-  - ***gzip*** Boolean - Accept gzip response content and auto decode it, default is `false`.
+  - ***gzip*** Boolean - Accept `gzip, br` response content and auto decode it, default is `false`.
   - ***timing*** Boolean - Enable timing or not, default is `false`.
   - ***enableProxy*** Boolean - Enable proxy request, default is `false`.
   - ***proxy*** String | Object - proxy agent uri or options, default is `null`.
@@ -346,7 +346,7 @@ When open the trace, urllib may have poor perfomance, please consider carefully.
 - ✅ Auto redirect handle
 - ✅ https & self-signed certificate
 - ✅ Connection timeout & Response timeout
-- ✅ Support `Accept-Encoding=gzip` by default
+- ✅ Support `Accept-Encoding: gzip, br` by default
 - ✅ Support [Digest access authentication](http://en.wikipedia.org/wiki/Digest_access_authentication)
 
 <!-- GITCONTRIBUTOR_START -->
