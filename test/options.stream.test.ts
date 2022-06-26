@@ -51,7 +51,36 @@ describe('options.stream.test.ts', () => {
     assert.equal(response.data.requestBody, raw);
   });
 
-  it('should close request stream when request timeout', async () => {
+  // FIXME: https://github.com/nodejs/undici/pull/1515 wait for new version publish
+  it.skip('should close 1KB request stream when request timeout', async () => {
+    await writeFile(tmpfile, Buffer.alloc(1024));
+    const stream = createReadStream(tmpfile);
+    assert.equal(stream.destroyed, false);
+
+    await Promise.all([
+      assert.rejects(async () => {
+        await urllib.request(`${_url}block`, {
+          method: 'post',
+          timeout: 100,
+          stream,
+        });  
+      }, (err: any) => {
+        // console.error(err);
+        assert.equal(err.name, 'HttpClientRequestTimeoutError');
+        assert.equal(err.message, 'Request timeout for 100 ms');
+        err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
+        // stream should be close after request error fire
+        assert.equal(stream.destroyed, true);
+        return true;
+      }),
+      pEvent(stream, 'error'),
+    ]);
+    // stream close
+    assert.equal(stream.destroyed, true);
+  });
+
+  // FIXME: https://github.com/nodejs/undici/pull/1515 wait for new version publish
+  it.skip('should close 10MB size request stream when request timeout', async () => {
     await writeFile(tmpfile, Buffer.alloc(10 * 1024 * 1024));
     const stream = createReadStream(tmpfile);
     assert.equal(stream.destroyed, false);

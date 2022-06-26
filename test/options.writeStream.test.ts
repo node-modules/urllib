@@ -69,26 +69,29 @@ describe('options.writeStream.test.ts', () => {
     assert.equal(writeStreamClosed, true);
   });
 
-  it('should throw request error when writeStream error', async () => {
-    const tmpfile = join(__dirname, 'not-exists-dir', 'foo.txt');
-    const writeStream = createWriteStream(tmpfile);
-    let writeStreamError = false;
-    writeStream.on('error', () => {
-      writeStreamError = true;
-    });
-    await assert.rejects(async () => {
-      await urllib.request(_url, {
-        writeStream,
+  // writeStream only work with error handle on Node.js >= 18
+  if (!process.version.startsWith('v14.') && !process.version.startsWith('v16.')) {
+    it('should throw request error when writeStream error', async () => {
+      const tmpfile = join(__dirname, 'not-exists-dir', 'foo.txt');
+      const writeStream = createWriteStream(tmpfile);
+      let writeStreamError = false;
+      writeStream.on('error', () => {
+        writeStreamError = true;
       });
-    }, (err: any) => {
-      // console.error(err);
-      assert.equal(err.name, 'Error');
-      assert.equal(err.code, 'ENOENT');
-      assert.match(err.message, /no such file or directory/);
+      await assert.rejects(async () => {
+        await urllib.request(_url, {
+          writeStream,
+        });
+      }, (err: any) => {
+        // console.error(err);
+        assert.equal(err.name, 'Error');
+        assert.equal(err.code, 'ENOENT');
+        assert.match(err.message, /no such file or directory/);
+        assert.equal(writeStream.destroyed, true);
+        return true;
+      });
       assert.equal(writeStream.destroyed, true);
-      return true;
+      assert.equal(writeStreamError, true);
     });
-    assert.equal(writeStream.destroyed, true);
-    assert.equal(writeStreamError, true);
-  });
+  }
 });

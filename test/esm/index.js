@@ -1,4 +1,4 @@
-import assert from 'assert/strict';
+import { strict as assert } from 'assert';
 import * as urllibStar from 'urllib';
 import urllib from 'urllib';
 import { request, HttpClient } from 'urllib';
