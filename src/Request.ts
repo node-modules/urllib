@@ -125,6 +125,7 @@ export type RequestOptions = {
    * It rely on lookup and have the same version requirement.
    */
   checkAddress?: (ip: string, family: number | string) => boolean;
+  /** Auto retry times on 5xx response, default is 0. Don't work on streaming request */
   retry?: number;
   retryDelay?: number;
   isRetry?: (response: HttpClientResponse) => boolean;

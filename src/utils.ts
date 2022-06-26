@@ -45,3 +45,9 @@ export function parseJSON(data: string, fixJSONCtlChars?: FixJSONCtlChars) {
   }
   return data;
 }
+
+export function sleep(ms: number) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}

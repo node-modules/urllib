@@ -11,7 +11,7 @@ async function main() {
     const file = path.join(root, name);
     const content = await fs.readFile(file, 'utf-8');
     // replace "from './HttpClient'" to "from './HttpClient.js'"
-    const newContent = content.replaceAll(/ from \'(\.\/[^\.\']+?)\'/g, (match, p1) => {
+    const newContent = content.replace(/ from \'(\.\/[^\.\']+?)\'/g, (match, p1) => {
       const after = ` from '${p1}.js'`;
       console.log('[%s] %s => %s', file, match, after);
       return after;

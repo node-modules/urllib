@@ -29,7 +29,7 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.res.headers, response.headers);
     assert.equal(response.data, null);
     // console.log(response.res);
-    assert(isReadable(response.res as any));
+    isReadable && assert(isReadable(response.res as any));
     assert.equal(response.res.status, 200);
     const bytes = await readableToBytes(response.res as Readable);
     const data = JSON.parse(bytes.toString());
@@ -46,7 +46,7 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.headers['content-type'], undefined);
     assert.equal(response.data, null);
     // console.log(response.headers);
-    assert(isReadable(response.res as any));
+    isReadable && assert(isReadable(response.res as any));
     const bytes = await readableToBytes(response.res as Readable);
     assert.equal(bytes.length, 1024102400);
   });

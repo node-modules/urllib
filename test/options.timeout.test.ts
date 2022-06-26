@@ -24,9 +24,13 @@ describe('options.timeout.test.ts', () => {
       // console.error(err);
       assert.equal(err.name, 'HttpClientRequestTimeoutError');
       assert.equal(err.message, 'Request timeout for 10 ms');
-      assert.equal(err.cause.name, 'HeadersTimeoutError');
-      assert.equal(err.cause.message, 'Headers Timeout Error');
-      assert.equal(err.cause.code, 'UND_ERR_HEADERS_TIMEOUT');
+      if (err.cause) {
+        // not work on Node.js 14
+        assert.equal(err.cause.name, 'HeadersTimeoutError');
+        assert.equal(err.cause.message, 'Headers Timeout Error');
+        assert.equal(err.cause.code, 'UND_ERR_HEADERS_TIMEOUT');
+      }
+     
       assert.equal(err.res.status, -1);
       return true;
     });
@@ -41,9 +45,11 @@ describe('options.timeout.test.ts', () => {
       // console.error(err);
       assert.equal(err.name, 'HttpClientRequestTimeoutError');
       assert.equal(err.message, 'Request timeout for 100 ms');
-      assert.equal(err.cause.name, 'BodyTimeoutError');
-      assert.equal(err.cause.message, 'Body Timeout Error');
-      assert.equal(err.cause.code, 'UND_ERR_BODY_TIMEOUT');
+      if (err.cause) {
+        assert.equal(err.cause.name, 'BodyTimeoutError');
+        assert.equal(err.cause.message, 'Body Timeout Error');
+        assert.equal(err.cause.code, 'UND_ERR_BODY_TIMEOUT');
+      }
       assert.equal(err.res.status, 200);
       return true;
     });
@@ -60,7 +66,7 @@ describe('options.timeout.test.ts', () => {
       assert.equal(err.name, 'HttpClientRequestTimeoutError');
       assert.equal(err.message, 'Request timeout for 50 ms');
       assert.equal(err.res.status, 200);
-      assert.equal(err.cause.name, 'BodyTimeoutError');
+      err.cause && assert.equal(err.cause.name, 'BodyTimeoutError');
       return true;
     });
   });
@@ -75,7 +81,7 @@ describe('options.timeout.test.ts', () => {
       assert.equal(err.name, 'HttpClientRequestTimeoutError');
       assert.equal(err.message, 'Request timeout for 100 ms');
       assert.equal(err.res.status, -1);
-      assert.equal(err.cause.name, 'HeadersTimeoutError');
+      err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
       return true;
     });
   });

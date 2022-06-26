@@ -1,21 +1,29 @@
 import { EventEmitter } from 'events';
 import { debuglog } from 'util';
-import zlib from 'zlib';
+import { createGunzip, createBrotliDecompress, gunzipSync, brotliDecompressSync } from 'zlib';
 import { Blob } from 'buffer';
-import { Readable, isReadable, pipeline, promises as streamPromise } from 'stream';
+import { Readable, isReadable as isReadableNative, pipeline, promises as streamPromise } from 'stream';
 import { basename } from 'path';
 import { createReadStream } from 'fs';
 import { IncomingHttpHeaders } from 'http';
 import {
-  FormData,
+  FormData as FormDataNative,
   request as undiciRequest,
   Dispatcher,
 } from 'undici';
+import { FormData as FormDataNode } from 'formdata-node';
+import { FormDataEncoder } from 'form-data-encoder';
 import createUserAgent from 'default-user-agent';
 import mime from 'mime-types';
 import { RequestURL, RequestOptions, HttpMethod } from './Request';
 import { HttpClientResponseMeta, HttpClientResponse, ReadableWithMeta } from './Response';
-import { parseJSON } from './utils';
+import { parseJSON, sleep } from './utils';
+
+const FormData = FormDataNative ?? FormDataNode;
+// impl isReadable on Node.js 14
+const isReadable = isReadableNative ?? function isReadable(stream: any) {
+  return stream && typeof stream.read === 'function';
+};
 
 const debug = debuglog('urllib');
 
@@ -66,6 +74,14 @@ function getFileName(stream: Readable) {
   return '';
 }
 
+function defaultIsRetry(response: HttpClientResponse) {
+  return response.status >= 500;
+}
+
+type RequestContext = {
+  retries: number;
+};
+
 export class HttpClient extends EventEmitter {
   defaultArgs?: RequestOptions;
 
@@ -74,12 +90,21 @@ export class HttpClient extends EventEmitter {
     this.defaultArgs = clientOptions?.defaultArgs;
   }
 
-  async request(url: RequestURL, options?: RequestOptions) {
+  public async request(url: RequestURL, options?: RequestOptions) {
+    return await this.requestInternal(url, options);
+  }
+
+  private async requestInternal(url: RequestURL, options?: RequestOptions, requestContext?: RequestContext): Promise<HttpClientResponse> {
     const requestUrl = typeof url === 'string' ? new URL(url) : url;
     const args = {
+      retry: 0,
       ...this.defaultArgs,
       ...options,
       emitter: this,
+    };
+    requestContext = {
+      retries: 0,
+      ...requestContext,
     };
     const requestStartTime = Date.now();
     // keep urllib createCallbackResponse style
@@ -130,8 +155,10 @@ export class HttpClient extends EventEmitter {
       headers.accept = 'application/json';
     }
     if (args.gzip && !headers['accept-encoding']) {
-      // try Brotli first
       headers['accept-encoding'] = 'gzip, br';
+    }
+    if (requestContext.retries > 0) {
+      headers['x-urllib-retry'] = `${requestContext.retries}/${args.retry}`;
     }
 
     try {
@@ -141,7 +168,6 @@ export class HttpClient extends EventEmitter {
         maxRedirections: args.maxRedirects ?? 10,
         headersTimeout,
         bodyTimeout,
-        headers,
       };
       if (args.followRedirect === false) {
         requestOptions.maxRedirections = 0;
@@ -194,7 +220,18 @@ export class HttpClient extends EventEmitter {
             formData.append(field, new BlobFromStream(file, mime.lookup(fileName) || ''), fileName);
           }
         }
-        requestOptions.body = formData;
+
+        if (FormDataNative) {
+          requestOptions.body = formData;
+        } else {
+          // Node.js 14 does not support spec-compliant FormData
+          // https://github.com/octet-stream/form-data#usage
+          const encoder = new FormDataEncoder(formData as any);
+          Object.assign(headers, encoder.headers);
+          // fix "Content-Length":"NaN"
+          delete headers['Content-Length'];
+          requestOptions.body = Readable.from(encoder);
+        }
       } else if (args.content) {
         if (!isGETOrHEAD) {
           // handle content
@@ -235,8 +272,10 @@ export class HttpClient extends EventEmitter {
         }
       }
 
-      debug('%s %s, headers: %j, timeout: %s,%s',
+      debug('%s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s',
         requestOptions.method, url, headers, headersTimeout, bodyTimeout);
+
+      requestOptions.headers = headers;
       const response = await undiciRequest(requestUrl, requestOptions);
       const context = response.context as { history: URL[] };
       let lastUrl = '';
@@ -254,10 +293,6 @@ export class HttpClient extends EventEmitter {
 
       res.headers = response.headers;
       res.status = res.statusCode = response.statusCode;
-      // res.statusMessage = response.statusText;
-      // if (response.redirected) {
-      //   res.requestUrls.push(response.url);
-      // }
       if (res.headers['content-length']) {
         res.size = parseInt(res.headers['content-length']);
       }
@@ -265,6 +300,8 @@ export class HttpClient extends EventEmitter {
       let data: any = null;
       let responseBodyStream: ReadableWithMeta | undefined;
       if (args.streaming || args.dataType === 'stream') {
+        // streaming mode will disable retry
+        args.retry = 0;
         const meta = {
           status: res.status,
           statusCode: res.statusCode,
@@ -272,14 +309,16 @@ export class HttpClient extends EventEmitter {
         };
         if (isCompressContent) {
           // gzip or br
-          const decoder = contentEncoding === 'gzip' ? zlib.createGunzip() : zlib.createBrotliDecompress();
+          const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
           responseBodyStream = Object.assign(pipeline(response.body, decoder), meta);
         } else {
           responseBodyStream = Object.assign(response.body, meta);
         }
       } else if (args.writeStream) {
+        // streaming mode will disable retry
+        args.retry = 0;
         if (isCompressContent) {
-          const decoder = contentEncoding === 'gzip' ? zlib.createGunzip() : zlib.createBrotliDecompress();
+          const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
           await streamPromise.pipeline(response.body, decoder, args.writeStream);
         } else {
           await streamPromise.pipeline(response.body, args.writeStream);
@@ -289,7 +328,7 @@ export class HttpClient extends EventEmitter {
         data = Buffer.from(await response.body.arrayBuffer());
         if (isCompressContent) {
           try {
-            data = contentEncoding === 'gzip' ? zlib.gunzipSync(data) : zlib.brotliDecompressSync(data);
+            data = contentEncoding === 'gzip' ? gunzipSync(data) : brotliDecompressSync(data);
           } catch (err: any) {
             if (err.name === 'Error') {
               err.name = 'UnzipError';
@@ -318,6 +357,18 @@ export class HttpClient extends EventEmitter {
         requestUrls: res.requestUrls,
         res: responseBodyStream ?? res,
       };
+
+      if (args.retry > 0 && requestContext.retries < args.retry) {
+        const isRetry = args.isRetry ?? defaultIsRetry;
+        if (isRetry(clientResponse)) {
+          if (args.retryDelay) {
+            await sleep(args.retryDelay);
+          }
+          requestContext.retries++;
+          return await this.requestInternal(url, options, requestContext);
+        }
+      }
+
       return clientResponse;
     } catch (e: any) {
       debug('throw error: %s', e);
