@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const assert = require('assert/strict');
+const { strict: assert } = require('assert');
 const urllib = require('urllib');
 const { request, HttpClient } = require('urllib');
 

@@ -15,6 +15,7 @@ import { FormData as FormDataNode } from 'formdata-node';
 import { FormDataEncoder } from 'form-data-encoder';
 import createUserAgent from 'default-user-agent';
 import mime from 'mime-types';
+import pump from 'pump';
 import { RequestURL, RequestOptions, HttpMethod } from './Request';
 import { HttpClientResponseMeta, HttpClientResponse, ReadableWithMeta } from './Response';
 import { parseJSON, sleep } from './utils';
@@ -23,6 +24,15 @@ const FormData = FormDataNative ?? FormDataNode;
 // impl isReadable on Node.js 14
 const isReadable = isReadableNative ?? function isReadable(stream: any) {
   return stream && typeof stream.read === 'function';
+};
+// impl promise pipeline on Node.js 14
+const pipelinePromise = streamPromise?.pipeline ?? function pipeline(source: any, target: any) {
+  return new Promise<void>((resolve, reject) => {
+    pump(source, target, (err?: Error) => {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
 };
 
 const debug = debuglog('urllib');
@@ -319,9 +329,9 @@ export class HttpClient extends EventEmitter {
         args.retry = 0;
         if (isCompressContent) {
           const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
-          await streamPromise.pipeline(response.body, decoder, args.writeStream);
+          await pipelinePromise(response.body, decoder, args.writeStream);
         } else {
-          await streamPromise.pipeline(response.body, args.writeStream);
+          await pipelinePromise(response.body, args.writeStream);
         }
       } else {
         // buffer
