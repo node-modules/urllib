@@ -1,6 +1,6 @@
 import { Socket } from 'net';
 import { createServer, Server } from 'http';
-import { createDeflate, createGzip, gzipSync } from 'zlib';
+import { createBrotliCompress, createGzip, gzipSync, brotliCompressSync } from 'zlib';
 import { createReadStream } from 'fs';
 import busboy from 'busboy';
 import iconv from 'iconv-lite';
@@ -125,9 +125,9 @@ export async function startServer(options?: {
       return res.end('你好');
     }
 
-    if (pathname === '/deflate') {
-      res.setHeader('Content-Encoding', 'deflate');
-      createReadStream(__filename).pipe(createDeflate()).pipe(res);
+    if (pathname === '/brotli') {
+      res.setHeader('Content-Encoding', 'br');
+      createReadStream(__filename).pipe(createBrotliCompress()).pipe(res);
       return;
     }
     if (pathname === '/gzip') {
@@ -137,6 +137,11 @@ export async function startServer(options?: {
     }
     if (pathname === '/error-gzip') {
       res.setHeader('Content-Encoding', 'gzip');
+      createReadStream(__filename).pipe(res);
+      return;
+    }
+    if (pathname === '/error-brotli') {
+      res.setHeader('Content-Encoding', 'br');
       createReadStream(__filename).pipe(res);
       return;
     }
@@ -217,6 +222,10 @@ export async function startServer(options?: {
     if (contentEncoding === 'gzip') {
       res.setHeader('content-encoding', contentEncoding);
       return res.end(gzipSync(responseBody));
+    }
+    if (contentEncoding === 'br') {
+      res.setHeader('content-encoding', contentEncoding);
+      return res.end(brotliCompressSync(responseBody));
     }
     res.end(responseBody);
   });

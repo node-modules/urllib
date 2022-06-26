@@ -111,7 +111,7 @@ export interface RequestOptions {
   beforeRequest?: (...args: any[]) => void;
   /** let you get the res object when request connected, default false. alias customResponse */
   streaming?: boolean;
-  /** Accept gzip response content and auto decode it, default is false. */
+  /** Accept `gzip, br` response content and auto decode it, default is false. */
   gzip?: boolean;
   /** Enable timing or not, default is false. */
   timing?: boolean;
