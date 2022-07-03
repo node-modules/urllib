@@ -144,6 +144,7 @@ export class HttpClient extends EventEmitter {
       keepAliveSocket: true,
       requestUrls: [],
       timing: {
+        waiting: 0,
         contentDownload: 0,
       },
     };
@@ -309,6 +310,10 @@ export class HttpClient extends EventEmitter {
 
       requestOptions.headers = headers;
       const response = await undiciRequest(requestUrl, requestOptions);
+      if (args.timing) {
+        res.timing.waiting = performanceTime(requestStartTime);
+      }
+
       const context = response.context as { history: URL[] };
       let lastUrl = '';
       if (context?.history) {
@@ -378,7 +383,10 @@ export class HttpClient extends EventEmitter {
           }
         }
       }
-      res.rt = res.timing.contentDownload = performanceTime(requestStartTime);
+      res.rt = performanceTime(requestStartTime);
+      if (args.timing) {
+        res.timing.contentDownload = res.rt;
+      }
 
       const clientResponse: HttpClientResponse = {
         data,
@@ -417,7 +425,10 @@ export class HttpClient extends EventEmitter {
       if (res.requestUrls.length === 0) {
         res.requestUrls.push(requestUrl.href);
       }
-      res.rt = res.timing.contentDownload = performanceTime(requestStartTime);
+      res.rt = performanceTime(requestStartTime);
+      if (args.timing) {
+        res.timing.contentDownload = res.rt;
+      }
       throw err;
     }
   }

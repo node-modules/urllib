@@ -15,6 +15,7 @@ export type HttpClientResponseMeta = {
    */
   timing: {
     contentDownload: number;
+    waiting: number;
   };
   // remoteAddress: remoteAddress,
   // remotePort: remotePort,

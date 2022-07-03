@@ -14,4 +14,3 @@ export { HttpClient } from './HttpClient';
 export default {
   request,
 };
-
