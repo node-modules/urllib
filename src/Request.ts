@@ -149,4 +149,6 @@ export type RequestOptions = {
    * It will retry when status >= 500 by default. Request error is not included.
    */
   isRetry?: (response: HttpClientResponse) => boolean;
+  /** Default: `null` */
+  opaque?: unknown;
 };

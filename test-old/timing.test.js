@@ -69,48 +69,6 @@ describe('timing.test.js', function() {
     });
   });
 
-  it('should dns cache on https', function(done) {
-    urllib.request(config.npmRegistry + '/urllib', {
-      timing: true,
-      timeout: 10000,
-      // disable keepalive
-      httpsAgent: false,
-    }, function(err, data, res) {
-      assert(!err);
-      assert(data);
-      assert(res.timing);
-      console.log(res.timing);
-      // if (/^v0\.10\.\d+$/.test(process.version)) {
-      //   // socket lookup event wont fire on 0.10
-      //   assert(res.timing.dnslookup === 0);
-      // } else {
-      //   assert(res.timing.dnslookup < firstDnsLookup);
-      // }
-      done();
-    });
-  });
-
-  it('should dns cache on http', function(done) {
-    urllib.request(config.npmRegistry + '/urllib', {
-      timing: true,
-      timeout: 10000,
-      // disable keepalive
-      agent: false,
-    }, function(err, data, res) {
-      assert(!err);
-      assert(data);
-      assert(res.timing);
-      console.log(res.timing);
-      // if (/^v0\.10\.\d+$/.test(process.version)) {
-      //   // socket lookup event wont fire on 0.10
-      //   assert(res.timing.dnslookup === 0);
-      // } else {
-      //   assert(res.timing.dnslookup < firstDnsLookup);
-      // }
-      done();
-    });
-  });
-
   // FIXME: why https request not support options.lookup
   it.skip('should custom dns lookup work on https', function(done) {
     done = pedding(2, done);

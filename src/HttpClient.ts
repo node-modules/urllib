@@ -194,6 +194,7 @@ export class HttpClient extends EventEmitter {
       headers['x-urllib-retry'] = `${requestContext.retries}/${args.retry}`;
     }
 
+    let opaque = args.opaque;
     try {
       const requestOptions: UndiciRquestOptions = {
         method,
@@ -201,6 +202,7 @@ export class HttpClient extends EventEmitter {
         maxRedirections: args.maxRedirects ?? 10,
         headersTimeout,
         bodyTimeout,
+        opaque,
       };
       if (args.followRedirect === false) {
         requestOptions.maxRedirections = 0;
@@ -310,6 +312,7 @@ export class HttpClient extends EventEmitter {
 
       requestOptions.headers = headers;
       const response = await undiciRequest(requestUrl, requestOptions);
+      opaque = response.opaque;
       if (args.timing) {
         res.timing.waiting = performanceTime(requestStartTime);
       }
@@ -389,6 +392,7 @@ export class HttpClient extends EventEmitter {
       }
 
       const clientResponse: HttpClientResponse = {
+        opaque,
         data,
         status: res.status,
         headers: res.headers,
@@ -418,6 +422,7 @@ export class HttpClient extends EventEmitter {
       } else if (err.name === 'BodyTimeoutError') {
         err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: e });
       }
+      err.opaque = opaque;
       err.status = res.status;
       err.headers = res.headers;
       err.res = res;

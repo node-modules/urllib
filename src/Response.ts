@@ -30,6 +30,7 @@ export type ReadableWithMeta = Readable & {
 };
 
 export type HttpClientResponse = {
+  opaque: unknown;
   data: any
   status: number;
   headers: IncomingHttpHeaders;
