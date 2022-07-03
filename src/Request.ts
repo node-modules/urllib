@@ -119,9 +119,14 @@ export type RequestOptions = {
    * Alias to compressed
    * */
   gzip?: boolean;
-  /** Enable timing or not, default is false. */
+  /**
+   * @deprecated
+   * Enable timing or not, default is false.
+   * */
   timing?: boolean;
   /**
+   * @deprecated
+   * Not support on HTTPS
    * Custom DNS lookup function, default is dns.lookup.
    * Require node >= 4.0.0(for http protocol) and node >=8(for https protocol)
    */
