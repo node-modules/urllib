@@ -1,5 +1,4 @@
 import { Readable, Writable } from 'stream';
-import { LookupFunction } from 'net';
 import { IncomingHttpHeaders } from 'http';
 import type {
   HttpMethod as UndiciHttpMethod,
@@ -124,19 +123,6 @@ export type RequestOptions = {
    * Enable timing or not, default is false.
    * */
   timing?: boolean;
-  /**
-   * @deprecated
-   * Not support on HTTPS
-   * Custom DNS lookup function, default is dns.lookup.
-   * Require node >= 4.0.0(for http protocol) and node >=8(for https protocol)
-   */
-  lookup?: LookupFunction;
-  /**
-   * check request address to protect from SSRF and similar attacks.
-   * It receive two arguments(ip and family) and should return true or false to identified the address is legal or not.
-   * It rely on lookup and have the same version requirement.
-   */
-  checkAddress?: (ip: string, family: number | string) => boolean;
   /**
    * Auto retry times on 5xx response, default is 0. Don't work on streaming request
    * It's not supported by using retry and writeStream, because the retry request can't stop the stream which is consuming.

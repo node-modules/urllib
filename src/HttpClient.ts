@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import { LookupFunction } from 'net';
 import { debuglog } from 'util';
 import {
   createGunzip,
@@ -23,6 +24,7 @@ import { FormDataEncoder } from 'form-data-encoder';
 import createUserAgent from 'default-user-agent';
 import mime from 'mime-types';
 import pump from 'pump';
+import { HttpAgent, CheckAddressFunction } from './HttpAgent';
 import { RequestURL, RequestOptions, HttpMethod } from './Request';
 import { HttpClientResponseMeta, HttpClientResponse, ReadableWithMeta } from './Response';
 import { parseJSON, sleep } from './utils';
@@ -50,9 +52,19 @@ const debug = debuglog('urllib');
 
 export type ClientOptions = {
   defaultArgs?: RequestOptions;
+  /**
+   * Custom DNS lookup function, default is `dns.lookup`.
+   */
+  lookup?: LookupFunction;
+  /**
+    * check request address to protect from SSRF and similar attacks.
+    * It receive two arguments(ip and family) and should return true or false to identified the address is legal or not.
+    * It rely on lookup and have the same version requirement.
+    */
+  checkAddress?: CheckAddressFunction;
 };
 
-type UndiciRquestOptions = Omit<Dispatcher.RequestOptions, 'origin' | 'path' | 'method'> & Partial<Pick<Dispatcher.RequestOptions, 'method'>>;
+type UndiciRquestOptions = { dispatcher?: Dispatcher } & Omit<Dispatcher.RequestOptions, 'origin' | 'path' | 'method'> & Partial<Pick<Dispatcher.RequestOptions, 'method'>>;
 
 // https://github.com/octet-stream/form-data
 class BlobFromStream {
@@ -108,22 +120,29 @@ type RequestContext = {
 };
 
 export class HttpClient extends EventEmitter {
-  defaultArgs?: RequestOptions;
+  #defaultArgs?: RequestOptions;
+  #dispatcher?: Dispatcher;
 
   constructor(clientOptions?: ClientOptions) {
     super();
-    this.defaultArgs = clientOptions?.defaultArgs;
+    this.#defaultArgs = clientOptions?.defaultArgs;
+    if (clientOptions?.lookup || clientOptions?.checkAddress) {
+      this.#dispatcher = new HttpAgent({
+        lookup: clientOptions?.lookup,
+        checkAddress: clientOptions.checkAddress,
+      });
+    }
   }
 
-  public async request(url: RequestURL, options?: RequestOptions) {
-    return await this.requestInternal(url, options);
+  async request(url: RequestURL, options?: RequestOptions) {
+    return await this.#requestInternal(url, options);
   }
 
-  private async requestInternal(url: RequestURL, options?: RequestOptions, requestContext?: RequestContext): Promise<HttpClientResponse> {
+  async #requestInternal(url: RequestURL, options?: RequestOptions, requestContext?: RequestContext): Promise<HttpClientResponse> {
     const requestUrl = typeof url === 'string' ? new URL(url) : url;
     const args = {
       retry: 0,
-      ...this.defaultArgs,
+      ...this.#defaultArgs,
       ...options,
       emitter: this,
     };
@@ -203,6 +222,7 @@ export class HttpClient extends EventEmitter {
         headersTimeout,
         bodyTimeout,
         opaque,
+        dispatcher: this.#dispatcher,
       };
       if (args.followRedirect === false) {
         requestOptions.maxRedirections = 0;
@@ -409,7 +429,7 @@ export class HttpClient extends EventEmitter {
             await sleep(args.retryDelay);
           }
           requestContext.retries++;
-          return await this.requestInternal(url, options, requestContext);
+          return await this.#requestInternal(url, options, requestContext);
         }
       }
 

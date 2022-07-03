@@ -116,8 +116,6 @@ console.log('status: %s, body size: %d, headers: %j', res.statusCode, data.lengt
   - ***streaming*** Boolean - let you get the `res` object when request  connected, default `false`. alias `customResponse`
   - ***gzip*** Boolean - Accept `gzip, br` response content and auto decode it, default is `false`.
   - ***timing*** Boolean - Enable timing or not, default is `false`.
-  - ***lookup*** Function - Custom DNS lookup function, default is `dns.lookup`. Require node >= 4.0.0(for http protocol) and node >=8(for https protocol)
-  - ***checkAddress*** Function: optional, check request address to protect from SSRF and similar attacks. It receive tow arguments(`ip` and `family`) and should return true or false to identified the address is legal or not. It rely on `lookup` and have the same version requirement.
 
 #### Options: `options.data`
 
