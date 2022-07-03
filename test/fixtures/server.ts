@@ -72,6 +72,11 @@ export async function startServer(options?: {
       res.statusCode = 302;
       return res.end('Redirect to /redirect-to-url');
     }
+    if (pathname === '/redirect-to-rool') {
+      res.setHeader('Location', '/');
+      res.statusCode = 302;
+      return res.end('Redirect to /');
+    }
     if (pathname === '/redirect-deadlock') {
       res.setHeader('Location', '/redirect-deadlock');
       res.statusCode = 302;
@@ -93,6 +98,11 @@ export async function startServer(options?: {
       res.setHeader('Location', url);
       res.statusCode = 301;
       return res.end(`Redirect to ${url}`);
+    }
+    if (req.url === '/redirect-to-ip') {
+      res.statusCode = 302;
+      res.setHeader('Location', 'http://10.10.10.10/');
+      return res.end('Redirect to http://10.10.10.10/');
     }
 
     if (pathname === '/socket.end.error') {
@@ -254,7 +264,7 @@ export async function startServer(options?: {
     server.listen(0, () => {
       const address: any = server.address();
       resolve({
-        url: `http://127.0.0.1:${address.port}/`,
+        url: `http://localhost:${address.port}/`,
         server,
         closeServer() {
           if (hasCloseAllConnections) {
