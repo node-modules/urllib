@@ -980,6 +980,23 @@ describe('test/urllib.test.js', function () {
         });
       });
     });
+
+    it('should not emit request error if request is done', function (done) {
+      var req = urllib.request(host + '/stream', {
+        method: 'post',
+        data: {foo: 'bar'},
+        ctx: {
+          foo: 'stream request'
+        }
+      }, function (err) {
+        assert(!err);
+        done();
+      });
+
+      req.on('finish', () => {
+        req.emit('error', new Error('mock error'));
+      });
+    });
   });
 
   describe('support stream', function () {
