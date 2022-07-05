@@ -1,4 +1,16 @@
 
+2.38.1 / 2022-07-05
+==================
+
+**fixes**
+  * [[`f343daa`](http://github.com/node-modules/urllib/commit/f343daa6d1ffb91ebed00e0f858fcb4378921349)] - fix: ignore request error if request is done (#384) (killa <<killa123@126.com>>)
+
+**others**
+  * [[`518d22c`](http://github.com/node-modules/urllib/commit/518d22c30e3888e6cffec0572f05af0fc30f824f)] - Create codeql-analysis.yml (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`7daf2fa`](http://github.com/node-modules/urllib/commit/7daf2fa599ac294ffc8a3adfe7015b667f13e59a)] - chore: update contributors (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`20451f2`](http://github.com/node-modules/urllib/commit/20451f2898fba90a72c9b953e518e2f67a3bddd7)] - test: add tsd for timing interface (#377) (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`f662c2b`](http://github.com/node-modules/urllib/commit/f662c2b066d3d4363491ee552a0976fe29a528cf)] - chore: update contributors (fengmk2 <<fengmk2@gmail.com>>)
+
 2.38.0 / 2021-11-24
 ==================
 
