@@ -57,6 +57,16 @@ export async function startServer(options?: {
       await sleep(parseInt(timeout));
     }
 
+    if (pathname === '/auth') {
+      const authorization = req.headers.authorization?.split(' ')[1] ?? '';
+      const data = Buffer.from(authorization, 'base64');
+      const auth = data.toString().split(':');
+      return res.end(JSON.stringify({
+        user: auth[0],
+        password: auth[1],
+      }));
+    }
+
     if (pathname === '/wrongjson') {
       res.setHeader('content-type', 'application/json');
       return res.end(Buffer.from('{"foo":""'));
