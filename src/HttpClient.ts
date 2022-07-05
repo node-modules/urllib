@@ -212,6 +212,9 @@ export class HttpClient extends EventEmitter {
     if (requestContext.retries > 0) {
       headers['x-urllib-retry'] = `${requestContext.retries}/${args.retry}`;
     }
+    if (args.auth && !headers.authorization) {
+      headers.authorization = `Basic ${Buffer.from(args.auth).toString('base64')}`;
+    }
 
     let opaque = args.opaque;
     try {

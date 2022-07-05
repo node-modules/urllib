@@ -71,10 +71,11 @@ export type RequestOptions = {
    * timeout: [3000, 5000], which will set connecting timeout to 3s and response 5s.
    */
   timeout?: number | number[];
-  /** username:password used in HTTP Basic Authorization. */
+  /**
+   * username:password used in HTTP Basic Authorization.
+   * Alias to `headers.authorization = xxx`
+   **/
   auth?: string;
-  /** username:password used in HTTP Digest Authorization. */
-  digestAuth?: string;
   /**
    * An array of strings or Buffers of trusted certificates.
    * If this is omitted several well known "root" CAs will be used, like VeriSign.
