@@ -411,11 +411,9 @@ describe('test/urllib.test.js', function () {
     it('should handle server socket end("balabal") will error', function (done) {
       urllib.request(host + '/socket.end.error', function (err, data) {
         assert(err);
-        assert(err.name === 'ResponseError');
-        err.code && assert(err.code === 'HPE_INVALID_CHUNK_SIZE');
-        assert(/Parse Error.*GET http:\/\/127\.0\.0\.1:/.test(err.message) >= 0);
-        assert(err.bytesParsed === 2);
-        assert(!data);
+        assert(err.code === 'ECONNRESET');
+        assert(err.data);
+        assert(data);
         done();
       });
     });
@@ -993,7 +991,7 @@ describe('test/urllib.test.js', function () {
         done();
       });
 
-      req.on('finish', () => {
+      req.on('response', () => {
         req.emit('error', new Error('mock error'));
       });
     });
