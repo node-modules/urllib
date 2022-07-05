@@ -6,7 +6,7 @@ var proxy = require('./fixtures/reverse-proxy');
 var isNode010 = /^v0\.10\.\d+$/.test(process.version);
 var isNode012 = /^v0\.12\.\d+$/.test(process.version);
 
-var testUrl = process.env.CI ? 'https://registry.npmjs.com' : 'https://registry.npm.taobao.org';
+var testUrl = process.env.CI ? 'https://registry.npmjs.com' : 'https://registry.npmmirror.com';
 
 if (!isNode010 && !isNode012) {
   describe('test/proxy.test.js', function() {
@@ -25,15 +25,12 @@ if (!isNode010 && !isNode012) {
     });
 
     it('should proxy http work', function(done) {
-      urllib.request('http://registry.npm.taobao.org/pedding/1.0.0', {
-        dataType: 'json',
+      urllib.request('http://registry.npmmirror.com/pedding/1.0.0', {
         enableProxy: true,
         proxy: proxyUrl,
       }, function(err, data, res) {
         assert(!err);
-        console.log(res.headers);
-        assert(data.name === 'pedding');
-        assert(res.status === 200);
+        assert(res.status === 301);
         done();
       });
     });
