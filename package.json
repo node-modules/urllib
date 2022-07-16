@@ -1,6 +1,9 @@
 {
   "name": "urllib",
   "version": "2.38.1",
+  "publishConfig": {
+    "tag": "latest-2"
+  },
   "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more.",
   "keywords": [
     "urllib",

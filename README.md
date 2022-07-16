@@ -1,4 +1,4 @@
-# urllib
+# urllib@2
 
 [![NPM version][npm-image]][npm-url]
 [![Node.js CI](https://github.com/node-modules/urllib/actions/workflows/nodejs.yml/badge.svg)](https://github.com/node-modules/urllib/actions/workflows/nodejs.yml)
@@ -21,7 +21,7 @@ and digest authentication, redirections, cookies, timeout and more.
 ## Install
 
 ```bash
-$ npm install urllib --save
+$ npm install urllib@2 --save
 ```
 
 ## Usage
