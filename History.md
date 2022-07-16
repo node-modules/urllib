@@ -1,4 +1,30 @@
 
+3.0.0 / 2022-07-16
+==================
+
+**others**
+  * [[`20944ee`](http://github.com/node-modules/urllib/commit/20944ee71789297db4a4f82065ddc9eeca2f94e9)] - 📦 NEW: Support request and response events (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`f01c264`](http://github.com/node-modules/urllib/commit/f01c26439f9bd7ca5beb3e4b4d46ce5709dfb3c6)] - 📦 NEW: Support HttpClient with rejectUnauthorized (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`61a915c`](http://github.com/node-modules/urllib/commit/61a915c29f9b876966c01b8fad0175906d00d178)] - 📦 NEW: Support options.auth (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`cb084d9`](http://github.com/node-modules/urllib/commit/cb084d97031b6d67dc2ca3127a4f26359986bb6f)] - 📦 NEW: Support custom lookup and checkAddress (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`cc1c854`](http://github.com/node-modules/urllib/commit/cc1c854f45bc5e48716ffca650d1e58385fe24eb)] - 📦 NEW: Support options.opaque = object (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`f07c9f8`](http://github.com/node-modules/urllib/commit/f07c9f86a909d1555c7f29398ad05216112d4299)] - 📦 NEW: Support options.timing = true (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`70a75c6`](http://github.com/node-modules/urllib/commit/70a75c6bc8200286d2f6a183c52b95fb76fb05ba)] - 📦 NEW: Support options.compressed instead of gzip (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`936bc01`](http://github.com/node-modules/urllib/commit/936bc01cf0418d642af91bfe8c1e0c38c0b1a5a4)] - 👌 IMPROVE: Support Node.js 14 (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`eb6c319`](http://github.com/node-modules/urllib/commit/eb6c31950d295c019878edf066353bcbec007eed)] - 📦 NEW: Support auto retry like HttpClient2 (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`b07a45e`](http://github.com/node-modules/urllib/commit/b07a45ee9f33eca21f5aad1c24ca04b83cc1fdf9)] - 👌 IMPROVE: Use brotli instead of deflate (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`a8876f2`](http://github.com/node-modules/urllib/commit/a8876f268c434da9936f53e7264fa1ddb3a4ed24)] - 🤖 TEST: Big stream timeout (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`6b5a4f1`](http://github.com/node-modules/urllib/commit/6b5a4f19ac011666db292b5bdf3850e02ede39d2)] - 📦 NEW: Use request instead of fetch (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`c1218c5`](http://github.com/node-modules/urllib/commit/c1218c5da101e773346c99b735d3988be0b55560)] - 🐛 FIX: Try to use Readable first (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`a67d9d1`](http://github.com/node-modules/urllib/commit/a67d9d1dd7297111ac746b7d964c437cbf1b3e84)] - 🐛 FIX: Dont parse empty data to json (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`2882f0e`](http://github.com/node-modules/urllib/commit/2882f0eadca544bafb8e31de2fce9bd49438f3dd)] - 🤖 TEST: Error cases for stream and writeStream (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`57ccc7e`](http://github.com/node-modules/urllib/commit/57ccc7eda197dfe2a9a83e61bab3bb6a9c5bf11e)] - 📦 NEW: Support options.streaming = true (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`f2ca7eb`](http://github.com/node-modules/urllib/commit/f2ca7ebd406cc641959a6ecefb6c395aec9893a1)] - 📦 NEW: Support fixJSONCtlChars (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`f5390f2`](http://github.com/node-modules/urllib/commit/f5390f2a5b630238402d412e76d54035c0bfc7f3)] - 📦 NEW: TS compiler both Commonjs and ESM support (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`c3cc765`](http://github.com/node-modules/urllib/commit/c3cc76592e74bcebe793dd52a15dfe5823c65505)] - 📦 NEW: Support upload file by args.files (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`70a238d`](http://github.com/node-modules/urllib/commit/70a238de07170c6fdbac37d245bc72048d4435dd)] - 🤖 TEST: Use jest and ts (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`26c44b7`](http://github.com/node-modules/urllib/commit/26c44b75e7a6ac95dd0dd8853400f7d83d815f3b)] - 📦 NEW: [BREAKING] Refactor impl base on undici (fengmk2 <<fengmk2@gmail.com>>)
+
 2.38.1 / 2022-07-05
 ==================
 
