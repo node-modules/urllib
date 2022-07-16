@@ -1,6 +1,9 @@
 {
   "name": "urllib",
-  "version": "3.0.0-alpha.1",
+  "version": "3.0.0",
+  "publishConfig": {
+    "tag": "latest"
+  },
   "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more. Base undici fetch API.",
   "keywords": [
     "urllib",
@@ -86,9 +89,6 @@
   },
   "ci": {
     "version": "14, 16, 18"
-  },
-  "publishConfig": {
-    "tag": "next"
   },
   "license": "MIT"
 }
