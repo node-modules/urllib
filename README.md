@@ -247,41 +247,11 @@ Response is normal object, it contains:
 - `socketHandledRequests`: socket already handled request count
 - `socketHandledResponses`: socket already handled response count
 
-#### Response: `res.aborted`
+## Run test with debug log
 
-If the underlaying connection was terminated before `response.end()` was called,
-`res.aborted` should be `true`.
-
-```js
-import { createServer } from 'http';
-
-createServer((req, res) => {
-  req.resume();
-  req.on('end', () => {
-    res.write('foo haha\n');
-    setTimeout(() => {
-      res.write('foo haha 2');
-      setTimeout(() => {
-        res.socket.end();
-      }, 300);
-    }, 200);
-    return;
-  });
-}).listen(2022);
-
-const { data, res } = await request('http://127.0.0.1:2022/socket.end');
-assert.equal(data.toString(), 'foo haha\nfoo haha 2');
-assert(res.aborted);
+```bash
+NODE_DEBUG=urllib npm test
 ```
-
-## TODO
-
-- ❎ Support Proxy
-- ✅ Upload file like form upload
-- ✅ Auto redirect handle
-- ✅ https & self-signed certificate
-- ✅ Connection timeout & Response timeout
-- ✅ Support [Digest access authentication](http://en.wikipedia.org/wiki/Digest_access_authentication)
 
 <!-- GITCONTRIBUTOR_START -->
 
