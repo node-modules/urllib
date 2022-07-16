@@ -110,4 +110,9 @@ export type RequestOptions = {
   isRetry?: (response: HttpClientResponse) => boolean;
   /** Default: `null` */
   opaque?: unknown;
+  /**
+   * @deprecated
+   * Maybe you should use opaque instead
+   */
+  ctx?: unknown;
 };

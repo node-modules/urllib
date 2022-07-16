@@ -48,6 +48,9 @@ function noop() {
   // noop
 }
 
+const MAX_REQURE_ID_VALUE = Math.pow(2, 31) - 10;
+let globalRequestId = 0;
+
 const debug = debuglog('urllib');
 
 export type ClientOptions = {
@@ -153,18 +156,29 @@ export class HttpClient extends EventEmitter {
   }
 
   async #requestInternal(url: RequestURL, options?: RequestOptions, requestContext?: RequestContext): Promise<HttpClientResponse> {
+    if (globalRequestId >= MAX_REQURE_ID_VALUE) {
+      globalRequestId = 0;
+    }
+    const requestId = ++globalRequestId;
+
     const requestUrl = typeof url === 'string' ? new URL(url) : url;
     const args = {
       retry: 0,
       ...this.#defaultArgs,
       ...options,
-      emitter: this,
     };
     requestContext = {
       retries: 0,
       ...requestContext,
     };
     const requestStartTime = performance.now();
+
+    const reqMeta = {
+      requestId,
+      url: requestUrl.href,
+      args,
+      ctx: args.ctx,
+    };
     // keep urllib createCallbackResponse style
     const resHeaders: IncomingHttpHeaders = {};
     const res: HttpClientResponseMeta = {
@@ -344,10 +358,13 @@ export class HttpClient extends EventEmitter {
         }
       }
 
-      debug('%s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s',
-        requestOptions.method, url, headers, headersTimeout, bodyTimeout);
-
+      debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s',
+        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout);
       requestOptions.headers = headers;
+      if (this.listenerCount('request') > 0) {
+        this.emit('request', reqMeta);
+      }
+
       const response = await undiciRequest(requestUrl, requestOptions);
       opaque = response.opaque;
       if (args.timing) {
@@ -450,9 +467,19 @@ export class HttpClient extends EventEmitter {
         }
       }
 
+      if (this.listenerCount('response') > 0) {
+        this.emit('response', {
+          requestId,
+          error: null,
+          ctx: args.ctx,
+          req: reqMeta,
+          res,
+        });
+      }
+
       return clientResponse;
     } catch (e: any) {
-      debug('throw error: %s', e);
+      debug('Request#%d throw error: %s', requestId, e);
       let err = e;
       if (err.name === 'HeadersTimeoutError') {
         err = new HttpClientRequestTimeoutError(headersTimeout, { cause: e });
@@ -470,6 +497,16 @@ export class HttpClient extends EventEmitter {
       res.rt = performanceTime(requestStartTime);
       if (args.timing) {
         res.timing.contentDownload = res.rt;
+      }
+
+      if (this.listenerCount('response') > 0) {
+        this.emit('response', {
+          requestId,
+          error: err,
+          ctx: args.ctx,
+          req: reqMeta,
+          res,
+        });
       }
       throw err;
     }
