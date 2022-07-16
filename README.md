@@ -253,6 +253,39 @@ Response is normal object, it contains:
 NODE_DEBUG=urllib npm test
 ```
 
+## Benchmarks
+
+Fork [undici benchmarks script](https://github.com/fengmk2/undici/blob/urllib-benchmark/benchmarks/benchmark.js)
+
+### Connections 1
+
+| Tests               | Samples |        Result | Tolerance | Difference with slowest |
+|---------------------|---------|---------------|-----------|-------------------------|
+| http - no keepalive |     15 | 6.38 req/sec | ± 2.44 % |                      - |
+| http - keepalive    |     10 | 6.77 req/sec | ± 2.35 % |               + 6.13 % |
+| urllib2 - request   |     45 | 40.13 req/sec | ± 2.88 % |             + 528.66 % |
+| urllib3 - request   |     10 | 58.51 req/sec | ± 2.52 % |             + 816.64 % |
+| undici - pipeline   |      5 | 59.12 req/sec | ± 2.47 % |             + 826.18 % |
+| undici - fetch      |     15 | 60.42 req/sec | ± 3.00 % |             + 846.60 % |
+| undici - dispatch   |      5 | 60.58 req/sec | ± 1.39 % |             + 848.99 % |
+| undici - stream     |      5 | 61.30 req/sec | ± 1.31 % |             + 860.39 % |
+| undici - request    |      5 | 61.74 req/sec | ± 2.03 % |             + 867.20 % |
+
+### Connections 50
+
+| Tests               | Samples |           Result | Tolerance | Difference with slowest |
+|---------------------|---------|------------------|-----------|-------------------------|
+| urllib2 - request   |     51 | 1465.40 req/sec | ± 14.40 % |                      - |
+| undici - fetch      |     40 | 3121.10 req/sec | ± 2.82 % |             + 112.99 % |
+| http - no keepalive |     45 | 3355.42 req/sec | ± 2.84 % |             + 128.98 % |
+| http - keepalive    |     51 | 5179.55 req/sec | ± 36.61 % |             + 253.46 % |
+| urllib3 - request   |     30 | 7045.86 req/sec | ± 2.93 % |             + 380.82 % |
+| undici - pipeline   |     50 | 8306.92 req/sec | ± 2.99 % |             + 466.87 % |
+| undici - request    |     51 | 9552.59 req/sec | ± 13.13 % |             + 551.88 % |
+| undici - stream     |     45 | 12523.45 req/sec | ± 2.97 % |             + 754.61 % |
+| undici - dispatch   |     51 | 12970.18 req/sec | ± 3.15 % |             + 785.10 % |
+
+
 <!-- GITCONTRIBUTOR_START -->
 
 ## Contributors
