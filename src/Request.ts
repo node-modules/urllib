@@ -76,34 +76,6 @@ export type RequestOptions = {
    * Alias to `headers.authorization = xxx`
    **/
   auth?: string;
-  /**
-   * An array of strings or Buffers of trusted certificates.
-   * If this is omitted several well known "root" CAs will be used, like VeriSign.
-   * These are used to authorize connections.
-   * Notes: This is necessary only if the server uses the self - signed certificate
-   */
-  ca?: string | Buffer | string[] | Buffer[];
-  /**
-   * If true, the server certificate is verified against the list of supplied CAs.
-   * An 'error' event is emitted if verification fails.Default: true.
-   */
-  rejectUnauthorized?: boolean;
-  /** A string or Buffer containing the private key, certificate and CA certs of the server in PFX or PKCS12 format. */
-  pfx?: string | Buffer;
-  /**
-   * A string or Buffer containing the private key of the client in PEM format.
-   * Notes: This is necessary only if using the client certificate authentication
-   */
-  key?: string | Buffer;
-  /**
-   * A string or Buffer containing the certificate key of the client in PEM format.
-   * Notes: This is necessary only if using the client certificate authentication
-   */
-  cert?: string | Buffer;
-  /** A string of passphrase for the private key or pfx. */
-  passphrase?: string;
-  /** A string describing the ciphers to use or exclude. */
-  ciphers?: string;
   /** follow HTTP 3xx responses as redirects. defaults to true. */
   followRedirect?: boolean;
   /** The maximum number of redirects to follow, defaults to 10. */
