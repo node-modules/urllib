@@ -66,6 +66,7 @@
     "@types/jest": "28",
     "@types/mime-types": "^2.1.1",
     "@types/pump": "^1.1.1",
+    "@types/selfsigned": "^2.0.1",
     "busboy": "^1.6.0",
     "coffee": "5",
     "egg-ci": "2",
@@ -75,6 +76,7 @@
     "iconv-lite": "^0.6.3",
     "jest": "28",
     "jest-summary-reporter": "^0.0.2",
+    "selfsigned": "^2.0.1",
     "ts-jest": "28",
     "tslib": "^2.4.0",
     "typescript": "4"

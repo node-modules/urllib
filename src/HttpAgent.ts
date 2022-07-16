@@ -4,12 +4,14 @@ import {
   Agent,
 } from 'undici';
 import { DispatchHandlers } from 'undici/types/dispatcher';
+import { BuildOptions } from 'undici/types/connector';
 
 export type CheckAddressFunction = (ip: string, family: number | string) => boolean;
 
 export type HttpAgentOptions = {
   lookup?: LookupFunction;
   checkAddress?: CheckAddressFunction;
+  connect?: BuildOptions,
 };
 
 class IllegalAddressError extends Error {
@@ -44,7 +46,7 @@ export class HttpAgent extends Agent {
       });
     };
     super({
-      connect: { lookup },
+      connect: { ...options.connect, lookup },
     });
     this.#checkAddress = options.checkAddress;
   }

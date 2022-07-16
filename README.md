@@ -93,21 +93,6 @@ console.log('status: %s, body size: %d, headers: %j', res.statusCode, data.lengt
       Set `false` if you does not use agent.
   - ***httpsAgent*** [https.Agent](http://nodejs.org/api/https.html#https_class_https_agent) - HTTPS Agent object.
       Set `false` if you does not use agent.
-  - ***ca*** String | Buffer | Array - An array of strings or Buffers of trusted certificates.
-      If this is omitted several well known "root" CAs will be used, like VeriSign.
-      These are used to authorize connections.
-      **Notes**: This is necessary only if the server uses the self-signed certificate
-  - ***rejectUnauthorized*** Boolean - If true, the server certificate is verified against the list of supplied CAs.
-      An 'error' event is emitted if verification fails. Default: true.
-  - ***pfx*** String | Buffer - A string or Buffer containing the private key,
-      certificate and CA certs of the server in PFX or PKCS12 format.
-  - ***key*** String | Buffer - A string or Buffer containing the private key of the client in PEM format.
-      **Notes**: This is necessary only if using the client certificate authentication
-  - ***cert*** String | Buffer - A string or Buffer containing the certificate key of the client in PEM format.
-      **Notes**: This is necessary only if using the client certificate authentication
-  - ***passphrase*** String - A string of passphrase for the private key or pfx.
-  - ***ciphers*** String - A string describing the ciphers to use or exclude.
-  - ***secureProtocol*** String - The SSL method to use, e.g. SSLv3_method to force SSL version 3.
   - ***followRedirect*** Boolean - follow HTTP 3xx responses as redirects. defaults to false.
   - ***maxRedirects*** Number - The maximum number of redirects to follow, defaults to 10.
   - ***formatRedirectUrl*** Function - Format the redirect url by your self. Default is `url.resolve(from, to)`.

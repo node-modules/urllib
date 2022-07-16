@@ -1,17 +1,21 @@
 import { Socket } from 'net';
-import { createServer, Server } from 'http';
+import { createServer, Server, IncomingMessage, ServerResponse } from 'http';
+import { createServer as createHttpsServer } from 'https';
 import { createBrotliCompress, createGzip, gzipSync, brotliCompressSync } from 'zlib';
 import { createReadStream } from 'fs';
 import busboy from 'busboy';
 import iconv from 'iconv-lite';
 import { readableToBytes, sleep } from '../utils';
+import selfsigned from 'selfsigned';
 
 const requestsPerSocket = Symbol('requestsPerSocket');
 
 export async function startServer(options?: {
   keepAliveTimeout?: number;
+  https?: boolean;
 }): Promise<{ server: Server, url: string, closeServer: any }> {
-  const server = createServer(async (req, res) => {
+  let server: Server;
+  const requestHandler = async (req: IncomingMessage, res: ServerResponse) => {
     const startTime = Date.now();
     req.socket[requestsPerSocket] = (req.socket[requestsPerSocket] || 0) + 1;
     if (server.keepAliveTimeout) {
@@ -256,7 +260,18 @@ export async function startServer(options?: {
       return res.end(brotliCompressSync(responseBody));
     }
     res.end(responseBody);
-  });
+  };
+
+  if (options?.https) {
+    const pems = selfsigned.generate();
+    server = createHttpsServer({
+      key: pems.private,
+      cert: pems.cert,
+    }, requestHandler);
+  } else {
+    server = createServer(requestHandler);
+  }
+
   if (options?.keepAliveTimeout) {
     server.keepAliveTimeout = options.keepAliveTimeout;
   }
@@ -269,12 +284,13 @@ export async function startServer(options?: {
       connections.push(connection);
     });
   }
+  const protocol = options?.https ? 'https' : 'http';
 
   return new Promise(resolve => {
     server.listen(0, () => {
       const address: any = server.address();
       resolve({
-        url: `http://localhost:${address.port}/`,
+        url: `${protocol}://localhost:${address.port}/`,
         server,
         closeServer() {
           if (hasCloseAllConnections) {

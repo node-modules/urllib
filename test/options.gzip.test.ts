@@ -25,7 +25,7 @@ describe('options.gzip.test.ts', () => {
     assert.equal(requestHeaders['accept-encoding'], 'gzip, br');
     assert.equal(headers['content-encoding'], 'gzip');
     assert.equal(typeof data, 'string');
-    assert.match(data, /const server = createServer/);
+    assert.match(data, /export async function startServer/);
   });
 
   it('should handle gzip text response on gzip = false', async () => {
@@ -38,7 +38,7 @@ describe('options.gzip.test.ts', () => {
     assert.equal(requestHeaders['accept-encoding'], undefined);
     assert.equal(headers['content-encoding'], 'gzip');
     assert.equal(typeof data, 'string');
-    assert.match(data, /const server = createServer/);
+    assert.match(data, /export async function startServer/);
   });
 
   it('should handle gzip json response on gzip = true', async () => {

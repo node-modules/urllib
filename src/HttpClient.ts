@@ -62,6 +62,19 @@ export type ClientOptions = {
     * It rely on lookup and have the same version requirement.
     */
   checkAddress?: CheckAddressFunction;
+  connect?: {
+    key?: string | Buffer;
+    /**
+    * A string or Buffer containing the certificate key of the client in PEM format.
+    * Notes: This is necessary only if using the client certificate authentication
+    */
+    cert?: string | Buffer;
+    /**
+    * If true, the server certificate is verified against the list of supplied CAs.
+    * An 'error' event is emitted if verification fails.Default: true.
+    */
+    rejectUnauthorized?: boolean;
+  },
 };
 
 type UndiciRquestOptions = { dispatcher?: Dispatcher } & Omit<Dispatcher.RequestOptions, 'origin' | 'path' | 'method'> & Partial<Pick<Dispatcher.RequestOptions, 'method'>>;
@@ -126,10 +139,11 @@ export class HttpClient extends EventEmitter {
   constructor(clientOptions?: ClientOptions) {
     super();
     this.#defaultArgs = clientOptions?.defaultArgs;
-    if (clientOptions?.lookup || clientOptions?.checkAddress) {
+    if (clientOptions?.lookup || clientOptions?.checkAddress || clientOptions?.connect) {
       this.#dispatcher = new HttpAgent({
-        lookup: clientOptions?.lookup,
+        lookup: clientOptions.lookup,
         checkAddress: clientOptions.checkAddress,
+        connect: clientOptions.connect,
       });
     }
   }
