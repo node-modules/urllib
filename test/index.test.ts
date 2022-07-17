@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import urllib from '../src';
+import { MockAgent, setGlobalDispatcher } from '../src';
 import { startServer } from './fixtures/server';
 
 describe('index.test.ts', () => {
@@ -67,6 +68,28 @@ describe('index.test.ts', () => {
   describe('default export', () => {
     it('should export USER_AGENT', () => {
       assert.match(urllib.USER_AGENT, /urllib\//);
+    });
+  });
+
+  describe('Mocking request', () => {
+    it('should mocking intercept work', async () => {
+      const mockAgent = new MockAgent();
+      setGlobalDispatcher(mockAgent);
+
+      const mockPool = mockAgent.get(_url.substring(0, _url.length - 1));
+      mockPool.intercept({
+        path: '/foo',
+        method: 'POST',
+      }).reply(400, {
+        message: 'mock 400 bad request',
+      });
+
+      const response = await urllib.request(`${_url}foo`, {
+        method: 'POST',
+        dataType: 'json',
+      });
+      assert.equal(response.status, 400);
+      assert.deepEqual(response.data, { message: 'mock 400 bad request' });
     });
   });
 });

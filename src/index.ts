@@ -10,6 +10,7 @@ export async function request(url: RequestURL, options?: RequestOptions) {
 }
 
 export { HttpClient, HEADER_USER_AGENT as USER_AGENT } from './HttpClient';
+export { MockAgent, setGlobalDispatcher } from 'undici';
 
 export default {
   request,
