@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import urllib from '../src';
-import { MockAgent, setGlobalDispatcher } from '../src';
+import { MockAgent, setGlobalDispatcher, getGlobalDispatcher } from '../src';
 import { startServer } from './fixtures/server';
 
 describe('index.test.ts', () => {
@@ -73,6 +73,9 @@ describe('index.test.ts', () => {
 
   describe('Mocking request', () => {
     it('should mocking intercept work', async () => {
+      assert.equal(typeof getGlobalDispatcher, 'function');
+      assert(getGlobalDispatcher());
+
       const mockAgent = new MockAgent();
       setGlobalDispatcher(mockAgent);
 
@@ -104,6 +107,14 @@ describe('index.test.ts', () => {
       });
       assert.equal(response.status, 400);
       assert.deepEqual(response.data, { message: 'mock 400 bad request on tgz' });
+
+      // only intercept once
+      response = await urllib.request(`${_url}download/bar.tgz`, {
+        method: 'GET',
+        dataType: 'json',
+      });
+      assert.equal(response.status, 200);
+      assert.equal(response.data.method, 'GET');
     });
   });
 });
