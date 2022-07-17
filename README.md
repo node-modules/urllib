@@ -253,6 +253,34 @@ Response is normal object, it contains:
 NODE_DEBUG=urllib npm test
 ```
 
+## Mocking Request
+
+export from [undici](https://undici.nodejs.org/#/docs/best-practices/mocking-request)
+
+```ts
+import { strict as assert } from 'assert';
+import { MockAgent, setGlobalDispatcher, request } from 'urllib';
+
+const mockAgent = new MockAgent();
+setGlobalDispatcher(mockAgent);
+
+const mockPool = mockAgent.get('http://localhost:7001');
+
+mockPool.intercept({
+  path: '/foo',
+  method: 'POST',
+}).reply(400, {
+  message: 'mock 400 bad request',
+});
+
+const response = await request('http://localhost:7001/foo', {
+  method: 'POST',
+  dataType: 'json',
+});
+assert.equal(response.status, 400);
+assert.deepEqual(response.data, { message: 'mock 400 bad request' });
+```
+
 ## Benchmarks
 
 Fork [undici benchmarks script](https://github.com/fengmk2/undici/blob/urllib-benchmark/benchmarks/benchmark.js)
