@@ -84,12 +84,26 @@ describe('index.test.ts', () => {
         message: 'mock 400 bad request',
       });
 
-      const response = await urllib.request(`${_url}foo`, {
+      mockPool.intercept({
+        path: /\.tgz$/,
+        method: 'GET',
+      }).reply(400, {
+        message: 'mock 400 bad request on tgz',
+      });
+
+      let response = await urllib.request(`${_url}foo`, {
         method: 'POST',
         dataType: 'json',
       });
       assert.equal(response.status, 400);
       assert.deepEqual(response.data, { message: 'mock 400 bad request' });
+
+      response = await urllib.request(`${_url}download/foo.tgz`, {
+        method: 'GET',
+        dataType: 'json',
+      });
+      assert.equal(response.status, 400);
+      assert.deepEqual(response.data, { message: 'mock 400 bad request on tgz' });
     });
   });
 });
