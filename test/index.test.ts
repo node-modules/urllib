@@ -63,4 +63,10 @@ describe('index.test.ts', () => {
       });
     });
   });
+
+  describe('default export', () => {
+    it('should export USER_AGENT', () => {
+      assert.match(urllib.USER_AGENT, /urllib\//);
+    });
+  });
 });
