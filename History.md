@@ -1,4 +1,11 @@
 
+3.0.2 / 2022-07-17
+==================
+
+**others**
+  * [[`3bc7461`](http://github.com/node-modules/urllib/commit/3bc74610eba9dfac4b5ab7b1c2e927cafacdaa9f)] - 📦 NEW: Enable Mocking request from undici (#386) (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`2ef38b9`](http://github.com/node-modules/urllib/commit/2ef38b9a373428e109a2a813b11cdb5fd8e61446)] - 📖 DOC: Change History (fengmk2 <<fengmk2@gmail.com>>)
+
 3.0.1 / 2022-07-17
 ==================
 
