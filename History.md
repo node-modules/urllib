@@ -1,4 +1,32 @@
 
+3.0.1 / 2022-07-17
+==================
+
+**others**
+  * [[`a16deb5`](http://github.com/node-modules/urllib/commit/a16deb5923d55d145d29099073d9a3ccde07eeaf)] - 🐛 FIX: should export USER_AGENT (#385) (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`122d4a6`](http://github.com/node-modules/urllib/commit/122d4a6fc98ebe6b59b3c2cf386c180785fb4a5b)] - 📖 DOC: Add Benchmarks result (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`a8ef220`](http://github.com/node-modules/urllib/commit/a8ef220d2f56d451724cf00e7c105126a0580e61)] - 📦 NEW: Support request and response events (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`e39b033`](http://github.com/node-modules/urllib/commit/e39b03359bf8d4d582cdf2d042bc13bc4fe5a71a)] - 📦 NEW: Support HttpClient with rejectUnauthorized (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`885446c`](http://github.com/node-modules/urllib/commit/885446ca86c69cb221b35013062b524ab37e78ac)] - 📦 NEW: Support options.auth (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`8b9a6ee`](http://github.com/node-modules/urllib/commit/8b9a6ee07b61fba0fdf37bb64c60d3560df808d8)] - 📦 NEW: Support custom lookup and checkAddress (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`b6fc7e9`](http://github.com/node-modules/urllib/commit/b6fc7e940a50ebf8dec68507ae2487b6ab78be86)] - 📦 NEW: Support options.opaque = object (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`1485441`](http://github.com/node-modules/urllib/commit/148544132ff39dc15a77a3559da76aa6cb66835c)] - 📦 NEW: Support options.timing = true (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`3637ee1`](http://github.com/node-modules/urllib/commit/3637ee18bd5272a9ddc922b96104d767697aea55)] - 📦 NEW: Support options.compressed instead of gzip (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`1715e31`](http://github.com/node-modules/urllib/commit/1715e31ae031cab71f3d49cff687b8bcfce89928)] - 👌 IMPROVE: Support Node.js 14 (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`13ac861`](http://github.com/node-modules/urllib/commit/13ac8612aad7c8b4a0bde8a315dbdbac617b17e7)] - 📦 NEW: Support auto retry like HttpClient2 (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`ab4b630`](http://github.com/node-modules/urllib/commit/ab4b630e5c188924a2f5784e4abfc05a4be382ff)] - 👌 IMPROVE: Use brotli instead of deflate (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`0b55bbe`](http://github.com/node-modules/urllib/commit/0b55bbe339108ddefbb5213e335078ea000f5f52)] - 🤖 TEST: Big stream timeout (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`d4ac841`](http://github.com/node-modules/urllib/commit/d4ac84157c5b78590dacc4d28df60492a5ee2d7c)] - 📦 NEW: Use request instead of fetch (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`43eaaa1`](http://github.com/node-modules/urllib/commit/43eaaa187ebc8e1ee795bc26f1940553f40e6875)] - 🐛 FIX: Try to use Readable first (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`9c9df8d`](http://github.com/node-modules/urllib/commit/9c9df8dca57c2a3be8717d27cb7d6fff3bd71312)] - 🐛 FIX: Dont parse empty data to json (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`e6025df`](http://github.com/node-modules/urllib/commit/e6025df5aae8d237b0fb0d482f7a3d8ecb340d8b)] - 🤖 TEST: Error cases for stream and writeStream (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`0fbeffc`](http://github.com/node-modules/urllib/commit/0fbeffc9181ec8d8accc95672580f42b9bdfd9d4)] - 📦 NEW: Support options.streaming = true (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`7d8a700`](http://github.com/node-modules/urllib/commit/7d8a7007f7b64e47b4adc78a861dcff53fad6a10)] - 📦 NEW: Support fixJSONCtlChars (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`85f915a`](http://github.com/node-modules/urllib/commit/85f915a878388cba582bc9f7e0f2c51158b53fa3)] - 📦 NEW: TS compiler both Commonjs and ESM support (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`d18a3d4`](http://github.com/node-modules/urllib/commit/d18a3d492b3f7943a1f89449ebdeb46c52b83eaf)] - 📦 NEW: Support upload file by args.files (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`c5a284f`](http://github.com/node-modules/urllib/commit/c5a284fda3e88b309150f93aedae10bb12f61ab3)] - 🤖 TEST: Use jest and ts (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`8bbbb18`](http://github.com/node-modules/urllib/commit/8bbbb184dd26e123dcd67181385186e076c1f1b6)] - 📦 NEW: [BREAKING] Refactor impl base on undici (fengmk2 <<fengmk2@gmail.com>>)
+
 3.0.0 / 2022-07-16
 ==================
 
