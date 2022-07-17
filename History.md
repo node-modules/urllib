@@ -1,4 +1,10 @@
 
+3.0.3 / 2022-07-17
+==================
+
+**others**
+  * [[`d101f13`](http://github.com/node-modules/urllib/commit/d101f13956709dec0442220e1dec70990cd9b127)] - 🐛 FIX: export getGlobalDispatcher (#387) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.0.2 / 2022-07-17
 ==================
 
