@@ -113,7 +113,7 @@ class HttpClientRequestTimeoutError extends Error {
   }
 }
 
-const HEADER_USER_AGENT = createUserAgent('node-urllib', '3.0.0');
+export const HEADER_USER_AGENT = createUserAgent('node-urllib', '3.0.0');
 
 function getFileName(stream: Readable) {
   const filePath: string = (stream as any).path;

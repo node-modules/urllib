@@ -1,4 +1,4 @@
-import { HttpClient } from './HttpClient';
+import { HttpClient, HEADER_USER_AGENT } from './HttpClient';
 import { RequestOptions, RequestURL } from './Request';
 
 let httpclient: HttpClient;
@@ -9,8 +9,9 @@ export async function request(url: RequestURL, options?: RequestOptions) {
   return await httpclient.request(url, options);
 }
 
-export { HttpClient } from './HttpClient';
+export { HttpClient, HEADER_USER_AGENT as USER_AGENT } from './HttpClient';
 
 export default {
   request,
+  USER_AGENT: HEADER_USER_AGENT,
 };
