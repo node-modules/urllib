@@ -1,4 +1,10 @@
 
+3.0.4 / 2022-07-18
+==================
+
+**others**
+  * [[`b730bbd`](http://github.com/node-modules/urllib/commit/b730bbd003ec68397b5a56e5d8f83bf8c6f1dc98)] - 🐛 FIX: Should deps tslib (#389) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.0.3 / 2022-07-17
 ==================
 
