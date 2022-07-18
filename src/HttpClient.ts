@@ -420,7 +420,7 @@ export class HttpClient extends EventEmitter {
       } else {
         // buffer
         data = Buffer.from(await response.body.arrayBuffer());
-        if (isCompressedContent) {
+        if (isCompressedContent && data.length > 0) {
           try {
             data = contentEncoding === 'gzip' ? gunzipSync(data) : brotliDecompressSync(data);
           } catch (err: any) {

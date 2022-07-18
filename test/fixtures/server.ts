@@ -119,6 +119,12 @@ export async function startServer(options?: {
       return res.end('Redirect to http://10.10.10.10/');
     }
 
+    if (req.url === '/304-with-gzip') {
+      res.setHeader('Content-Encoding', 'gzip');
+      res.statusCode = 304;
+      return res.end();
+    }
+
     if (pathname === '/socket.end.error') {
       res.write('foo haha\n');
       await sleep(200);
