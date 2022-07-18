@@ -16,31 +16,21 @@ describe('non-ascii-request-header.test.ts', () => {
     await close();
   });
 
-  it.skip('should error when request headers contain non ascii', async () => {
+  it('should throw error when request headers contain non ascii', async () => {
     await assert.rejects(async () => {
-      const r = await urllib.request(_url, {
+      const response = await urllib.request(_url, {
         headers: { 'x-test': '中文' },
         dataType: 'json',
       });
-      console.log(r);
+      console.log(response);
     }, (err: any) => {
       // console.error(err);
-      assert.equal(err.name, 'TypeError');
-      assert.equal(err.message, 'Invalid character in header content ["x-test"]');
-      assert.equal(err.code, 'ERR_INVALID_CHAR');
+      assert.equal(err.name, 'InvalidArgumentError');
+      assert.equal(err.message, 'invalid x-test header');
+      assert.equal(err.code, 'UND_ERR_INVALID_ARG');
       assert(err.res);
       assert.equal(err.res.status, -1);
       return true;
     });
-  });
-
-  it('should ignore request headers contain non ascii', async () => {
-    const response = await urllib.request(_url, {
-      headers: { 'x-test': '中文' },
-      dataType: 'json',
-    });
-    // console.log(response);
-    assert.equal(response.status, 200);
-    assert.equal(response.data.headers['x-test'], '-\x87');
   });
 });
