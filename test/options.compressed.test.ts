@@ -54,6 +54,32 @@ describe('options.compressed.test.ts', () => {
     assert.match(response.data, /export async function startServer/);
   });
 
+  it('should dataType=text with 304 status with content-encoding: gzip', async () => {
+    const response = await urllib.request(`${_url}304-with-gzip`, {
+      dataType: 'text',
+      compressed: true,
+    });
+    assert.equal(response.status, 304);
+    assert.equal(response.headers['content-encoding'], 'gzip');
+    // console.log(response.headers);
+    const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], 'gzip, br');
+    assert.equal(response.data, '');
+  });
+
+  it('should dataType=json with 304 status with content-encoding: gzip', async () => {
+    const response = await urllib.request(`${_url}304-with-gzip`, {
+      dataType: 'json',
+      compressed: true,
+    });
+    assert.equal(response.status, 304);
+    assert.equal(response.headers['content-encoding'], 'gzip');
+    // console.log(response.headers);
+    const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], 'gzip, br');
+    assert.equal(response.data, null);
+  });
+
   it('should gzip work on dataType = stream', async () => {
     const response = await urllib.request(`${_url}gzip`, {
       dataType: 'stream',
