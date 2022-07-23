@@ -75,13 +75,13 @@ console.log('status: %s, body size: %d, headers: %j', res.statusCode, data.lengt
 
 #### Arguments
 
-- **url** String | Object - The URL to request, either a String or a Object that return by [url.parse](http://nodejs.org/api/url.html#url_url_parse_urlstr_parsequerystring_slashesdenotehost).
+- **url** String | Object - The URL to request, either a String or a Object that return by [url.parse](https://nodejs.org/api/url.html#url_url_parse_urlstr_parsequerystring_slashesdenotehost).
 - ***options*** Object - Optional
   - ***method*** String - Request method, defaults to `GET`. Could be `GET`, `POST`, `DELETE` or `PUT`. Alias 'type'.
   - ***data*** Object - Data to be sent. Will be stringify automatically.
-  - ***content*** String | [Buffer](http://nodejs.org/api/buffer.html) - Manually set the content of payload. If set, `data` will be ignored.
-  - ***stream*** [stream.Readable](http://nodejs.org/api/stream.html#stream_class_stream_readable) - Stream to be pipe to the remote. If set, `data` and `content` will be ignored.
-  - ***writeStream*** [stream.Writable](http://nodejs.org/api/stream.html#stream_class_stream_writable) - A writable stream to be piped by the response stream. Responding data will be write to this stream and `callback` will be called with `data` set `null` after finished writing.
+  - ***content*** String | [Buffer](https://nodejs.org/api/buffer.html) - Manually set the content of payload. If set, `data` will be ignored.
+  - ***stream*** [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable) - Stream to be pipe to the remote. If set, `data` and `content` will be ignored.
+  - ***writeStream*** [stream.Writable](https://nodejs.org/api/stream.html#stream_class_stream_writable) - A writable stream to be piped by the response stream. Responding data will be write to this stream and `callback` will be called with `data` set `null` after finished writing.
   - ***files*** {Array<ReadStream|Buffer|String> | Object | ReadStream | Buffer | String - The files will send with `multipart/form-data` format, base on `formstream`. If `method` not set, will use `POST` method by default.
   - ***contentType*** String - Type of request data. Could be `json` (**Notes**: not use `application/json` here). If it's `json`, will auto set `Content-Type: application/json` header.
   - ***dataType*** String - Type of response data. Could be `text` or `json`. If it's `text`, the `callback`ed `data` would be a String. If it's `json`, the `data` of callback would be a parsed JSON Object and will auto set `Accept: application/json` header. Default `callback`ed `data` would be a `Buffer`.
@@ -89,9 +89,10 @@ console.log('status: %s, body size: %d, headers: %j', res.statusCode, data.lengt
   - ***headers*** Object - Request headers.
   - ***timeout*** Number | Array - Request timeout in milliseconds for connecting phase and response receiving phase. Defaults to `exports.TIMEOUT`, both are 5s. You can use `timeout: 5000` to tell urllib use same timeout on two phase or set them seperately such as `timeout: [3000, 5000]`, which will set connecting timeout to 3s and response 5s.
   - ***auth*** String - `username:password` used in HTTP Basic Authorization.
-  - ***agent*** [http.Agent](http://nodejs.org/api/http.html#http_class_http_agent) - HTTP Agent object.
+  - ***digestAuth*** String - `username:password` used in HTTP [Digest Authorization](https://en.wikipedia.org/wiki/Digest_access_authentication).
+  - ***agent*** [http.Agent](https://nodejs.org/api/http.html#http_class_http_agent) - HTTP Agent object.
       Set `false` if you does not use agent.
-  - ***httpsAgent*** [https.Agent](http://nodejs.org/api/https.html#https_class_https_agent) - HTTPS Agent object.
+  - ***httpsAgent*** [https.Agent](https://nodejs.org/api/https.html#https_class_https_agent) - HTTPS Agent object.
       Set `false` if you does not use agent.
   - ***followRedirect*** Boolean - follow HTTP 3xx responses as redirects. defaults to false.
   - ***maxRedirects*** Number - The maximum number of redirects to follow, defaults to 10.

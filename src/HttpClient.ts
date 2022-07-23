@@ -27,7 +27,7 @@ import pump from 'pump';
 import { HttpAgent, CheckAddressFunction } from './HttpAgent';
 import { RequestURL, RequestOptions, HttpMethod } from './Request';
 import { HttpClientResponseMeta, HttpClientResponse, ReadableWithMeta } from './Response';
-import { parseJSON, sleep } from './utils';
+import { parseJSON, sleep, digestAuthHeader } from './utils';
 
 const FormData = FormDataNative ?? FormDataNode;
 // impl isReadable on Node.js 14
@@ -178,6 +178,7 @@ export class HttpClient extends EventEmitter {
       url: requestUrl.href,
       args,
       ctx: args.ctx,
+      retries: requestContext.retries,
     };
     // keep urllib createCallbackResponse style
     const resHeaders: IncomingHttpHeaders = {};
@@ -324,8 +325,7 @@ export class HttpClient extends EventEmitter {
           requestOptions.body = args.content;
           if (args.contentType) {
             headers['content-type'] = args.contentType;
-          }
-          if (typeof args.content === 'string' && !headers['content-type']) {
+          } else if (typeof args.content === 'string' && !headers['content-type']) {
             headers['content-type'] = 'text/plain;charset=UTF-8';
           }
         }
@@ -365,7 +365,24 @@ export class HttpClient extends EventEmitter {
         this.emit('request', reqMeta);
       }
 
-      const response = await undiciRequest(requestUrl, requestOptions);
+      let response = await undiciRequest(requestUrl, requestOptions);
+      // handle digest auth
+      if (response.statusCode === 401 && response.headers['www-authenticate'] &&
+          !requestOptions.headers.authorization && args.digestAuth) {
+        const authenticate = response.headers['www-authenticate'];
+        if (authenticate.startsWith('Digest ')) {
+          debug('Request#%d %s: got digest auth header WWW-Authenticate: %s', requestId, requestUrl.href, authenticate);
+          requestOptions.headers.authorization = digestAuthHeader(requestOptions.method!,
+            requestUrl.pathname, authenticate, args.digestAuth);
+          debug('Request#%d %s: auth with digest header: %s', requestId, url, requestOptions.headers.authorization);
+          if (response.headers['set-cookie']) {
+            // FIXME: merge exists cookie header
+            requestOptions.headers.cookie = response.headers['set-cookie'].join(';');
+          }
+          response = await undiciRequest(requestUrl, requestOptions);
+        }
+      }
+
       opaque = response.opaque;
       if (args.timing) {
         res.timing.waiting = performanceTime(requestStartTime);
