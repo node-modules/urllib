@@ -76,6 +76,10 @@ export type RequestOptions = {
    * Alias to `headers.authorization = xxx`
    **/
   auth?: string;
+  /**
+   * username:password used in HTTP Digest Authorization.
+   * */
+  digestAuth?: string;
   /** follow HTTP 3xx responses as redirects. defaults to true. */
   followRedirect?: boolean;
   /** The maximum number of redirects to follow, defaults to 10. */
