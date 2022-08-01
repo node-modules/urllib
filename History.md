@@ -1,4 +1,10 @@
 
+3.1.0 / 2022-08-01
+==================
+
+**others**
+  * [[`d5a0e66`](http://github.com/node-modules/urllib/commit/d5a0e664ac9d63d1a812a5af5daddacdc8e94134)] - 📦 NEW: Support digest auth (#390) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.0.4 / 2022-07-18
 ==================
 
