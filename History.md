@@ -1,4 +1,10 @@
 
+3.1.1 / 2022-08-23
+==================
+
+**others**
+  * [[`e29fd00`](http://github.com/node-modules/urllib/commit/e29fd0069796f6733940f0cd98b8f3a26ea230dc)] - 🐛 FIX: Alias reqMeta.options to reqMeta.args (#391) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.1.0 / 2022-08-01
 ==================
 
