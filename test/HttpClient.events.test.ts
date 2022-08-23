@@ -35,6 +35,7 @@ describe('HttpClient.events.test.ts', () => {
       responseCount++;
       // console.log(info);
       assert.equal(info.req.args.opaque.requestId, `mock-request-id-${requestCount}`);
+      assert.equal(info.req.options, info.req.args);
       assert.equal(info.res.status, 200);
       assert.equal(info.requestId, info.req.requestId);
 
@@ -55,6 +56,9 @@ describe('HttpClient.events.test.ts', () => {
     });
     assert.equal(response.status, 200);
     assert.equal(response.data.method, 'GET');
+    assert.equal(requestCount, 1);
+    assert.equal(responseCount, 1);
+
     response = await httpclient.request(_url, {
       dataType: 'json',
       opaque: {

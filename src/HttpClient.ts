@@ -489,7 +489,10 @@ export class HttpClient extends EventEmitter {
           requestId,
           error: null,
           ctx: args.ctx,
-          req: reqMeta,
+          req: {
+            ...reqMeta,
+            options: args,
+          },
           res,
         });
       }
