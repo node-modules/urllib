@@ -21,6 +21,7 @@ describe('options.followRedirect.test.js', () => {
       followRedirect: true,
     });
     assert.equal(response.res.statusCode, 200);
+    assert.equal(response.statusCode, response.res.statusCode);
     assert((response.data as Buffer).length > 100);
     assert.equal(response.url, `${_url}redirect-to-url`);
     assert.equal(response.requestUrls.length, 2);

@@ -33,6 +33,8 @@ export type HttpClientResponse = {
   opaque: unknown;
   data: any
   status: number;
+  // alias to status, keep compatibility
+  statusCode: number;
   headers: IncomingHttpHeaders;
   url: string;
   redirected: boolean;
