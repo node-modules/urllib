@@ -466,6 +466,7 @@ export class HttpClient extends EventEmitter {
         opaque,
         data,
         status: res.status,
+        statusCode: res.status,
         headers: res.headers,
         url: lastUrl,
         redirected: res.requestUrls.length > 1,
