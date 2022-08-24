@@ -1,4 +1,10 @@
 
+3.1.2 / 2022-08-24
+==================
+
+**others**
+  * [[`d1b89c8`](http://github.com/node-modules/urllib/commit/d1b89c8911358c4a192e89e85dabf197dcc87a87)] - 🐛 FIX: Keep statusCode on HttpClientResponse for compatibility (#392) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.1.1 / 2022-08-23
 ==================
 
