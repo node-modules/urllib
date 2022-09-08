@@ -24,6 +24,7 @@ describe('options.digestAuth.test.ts', () => {
     assert(response.data.authorization);
     // console.log(response.data);
     assert.match(response.data.authorization, /Digest username="user", realm="testrealm@urllib.com", nonce="/);
+    assert.match(response.data.authorization, /, uri="\/digestAuth",/);
   });
 
   it('should auth fail', async () => {
@@ -45,6 +46,16 @@ describe('options.digestAuth.test.ts', () => {
     assert.deepEqual(response.data, {
       error: 'authorization required',
     });
+  });
+
+  it('should digest auth with query', async () => {
+    const response = await urllib.request(`${_url}digestAuth?t=123123`, {
+      digestAuth: 'user:pwd',
+      dataType: 'json',
+    });
+    assert.equal(response.status, 200);
+    assert(response.data.authorization);
+    assert.match(response.data.authorization, /, uri="\/digestAuth\?t=123123",/);
   });
 
   it.skip('should request with digest auth success in httpbin', async () => {
