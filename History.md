@@ -1,4 +1,10 @@
 
+3.1.3 / 2022-09-09
+==================
+
+**others**
+  * [[`65c5112`](http://github.com/node-modules/urllib/commit/65c5112aaaa8a6b6a9e324b0522fe1635e3792ba)] - 🐛 FIX: Include query parameters in digest uri (#396) (Chris Byrne <<github@adapt.gen.nz>>)
+
 3.1.2 / 2022-08-24
 ==================
 
