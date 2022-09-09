@@ -373,7 +373,7 @@ export class HttpClient extends EventEmitter {
         if (authenticate.startsWith('Digest ')) {
           debug('Request#%d %s: got digest auth header WWW-Authenticate: %s', requestId, requestUrl.href, authenticate);
           requestOptions.headers.authorization = digestAuthHeader(requestOptions.method!,
-            requestUrl.pathname, authenticate, args.digestAuth);
+            `${requestUrl.pathname}${requestUrl.search}`, authenticate, args.digestAuth);
           debug('Request#%d %s: auth with digest header: %s', requestId, url, requestOptions.headers.authorization);
           if (response.headers['set-cookie']) {
             // FIXME: merge exists cookie header
