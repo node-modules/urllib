@@ -17,8 +17,8 @@ export type HttpClientResponseMeta = {
     contentDownload: number;
     waiting: number;
   };
-  // remoteAddress: remoteAddress,
-  // remotePort: remotePort,
+  remoteAddress: string,
+  remotePort: number,
   // socketHandledRequests: socketHandledRequests,
   // socketHandledResponses: socketHandledResponses,
 };
