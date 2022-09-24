@@ -195,8 +195,6 @@ export class HttpClient extends EventEmitter {
         waiting: 0,
         contentDownload: 0,
       },
-      remoteAddress: '',
-      remotePort: -1,
     };
 
     let headersTimeout = 5000;
