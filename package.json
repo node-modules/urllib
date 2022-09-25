@@ -49,7 +49,7 @@
     "build:cjs:test": "cd test/cjs && rm -rf node_modules && npm link ../.. && node index.js",
     "build:esm:test": "cd test/esm && rm -rf node_modules && npm link ../.. && node index.js",
     "build:test": "npm run build && npm run build:cjs:test && npm run build:esm:test",
-    "test": "tsc --version && vitest --coverage",
+    "test": "tsc --version && vitest run --coverage",
     "ci": "npm run lint && npm run test && npm run build:test",
     "contributor": "git-contributor",
     "prepack": "npm run build && rm -rf src/*.tsbuildinfo"
