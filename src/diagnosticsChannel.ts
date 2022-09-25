@@ -39,7 +39,7 @@ export function initDiagnosticsChannel() {
     const opaque = request[kHandler].opts.opaque;
     // ignore non HttpClient Request
     if (!opaque || !opaque[symbols.kRequestId]) return;
-    debug('[%s] Request#%d %s %s', name, opaque[symbols.kRequestId], request.method, request.origin);
+    debug('[%s] Request#%d %s %s, path: %s', name, opaque[symbols.kRequestId], request.method, request.origin, request.path);
     if (!opaque[symbols.kEnableRequestTiming]) return;
     opaque[symbols.kRequestTiming].queuing = performanceTime(opaque[symbols.kRequestStartTime]);
   });
@@ -92,7 +92,7 @@ export function initDiagnosticsChannel() {
 
   // This message is published after the response headers have been received, i.e. the response has been completed.
   diagnosticsChannel.channel('undici:request:headers').subscribe((message, name) => {
-    const { request } = message as DiagnosticsChannel.RequestHeadersMessage;
+    const { request, response } = message as DiagnosticsChannel.RequestHeadersMessage;
     if (!kHandler) return;
     const opaque = request[kHandler].opts.opaque;
     if (!opaque || !opaque[symbols.kRequestId]) return;
@@ -100,8 +100,8 @@ export function initDiagnosticsChannel() {
     // get socket from opaque
     const socket = opaque[symbols.kRequestSocket];
     socket[symbols.kHandledResponses]++;
-    debug('[%s] Request#%d get response headers on Socket#%d (handled %d responses)',
-      name, opaque[symbols.kRequestId], socket[symbols.kSocketId], socket[symbols.kHandledResponses]);
+    debug('[%s] Request#%d get %s response headers on Socket#%d (handled %d responses)',
+      name, opaque[symbols.kRequestId], response.statusCode, socket[symbols.kSocketId], socket[symbols.kHandledResponses]);
 
     if (!opaque[symbols.kEnableRequestTiming]) return;
     opaque[symbols.kRequestTiming].waiting = performanceTime(opaque[symbols.kRequestStartTime]);

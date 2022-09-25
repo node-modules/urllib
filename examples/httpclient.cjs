@@ -1,5 +1,3 @@
-'use strict';
-
 const HttpClient = require('..').HttpClient;
 
 tryHttpclient(HttpClient, 'urllib');
@@ -21,7 +19,7 @@ function tryHttpclient(HttpClient, name) {
       return urllib.request('https://nodejs.org', options);
     })
     .then(function() {
-      return urllib.request('https://nodejs.org', options);
+      return urllib.request('https://nodejs.org/en/', options);
     })
     .catch(function(err) {
       console.error(err);
