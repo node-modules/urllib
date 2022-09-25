@@ -41,7 +41,7 @@ export type BaseResponseMeta = {
   timing: Timing;
   // SocketInfo
   socket: SocketInfo;
-}
+};
 
 export type HttpClientResponseMeta = BaseResponseMeta & {
   size: number;

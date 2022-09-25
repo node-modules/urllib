@@ -68,7 +68,7 @@ export function initDiagnosticsChannel() {
     opaque[symbols.kRequestSocket] = socket;
     debug('[%s] Request#%d send headers on Socket#%d (handled %d requests)',
       name, opaque[symbols.kRequestId], socket[symbols.kSocketId], socket[symbols.kHandledRequests]);
-  
+
     if (!opaque[symbols.kEnableRequestTiming]) return;
     opaque[symbols.kRequestTiming].requestHeadersSent = performanceTime(opaque[symbols.kRequestStartTime]);
     // first socket need to caculate the connected time
@@ -96,7 +96,7 @@ export function initDiagnosticsChannel() {
     if (!kHandler) return;
     const opaque = request[kHandler]?.opts?.opaque;
     if (!opaque || !opaque[symbols.kRequestId]) return;
-  
+
     // get socket from opaque
     const socket = opaque[symbols.kRequestSocket];
     socket[symbols.kHandledResponses]++;

@@ -562,11 +562,11 @@ export class HttpClient extends EventEmitter {
       socketInfo.handledResponses = socket[symbols.kHandledResponses];
       socketInfo.localAddress = socket.localAddress;
       socketInfo.localPort = socket.localPort;
-      socketInfo.remoteAddress = socket.remoteAddress
+      socketInfo.remoteAddress = socket.remoteAddress;
       socketInfo.remotePort = socket.remotePort;
       socketInfo.remoteFamily = socket.remoteFamily;
       socketInfo.bytesRead = socket.bytesRead;
       socketInfo.bytesWritten = socket.bytesWritten;
     }
   }
- }
+}
