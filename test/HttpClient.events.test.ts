@@ -1,3 +1,5 @@
+
+import { describe, it, beforeAll, afterAll } from 'vitest';
 import { strict as assert } from 'assert';
 import { HttpClient } from '../src';
 import { startServer } from './fixtures/server';

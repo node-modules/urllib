@@ -1,3 +1,4 @@
+import { describe, it, beforeAll, afterAll } from 'vitest';
 import { strict as assert } from 'assert';
 import dns from 'dns';
 import { HttpClient } from '../src';

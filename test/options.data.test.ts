@@ -1,10 +1,11 @@
+import { describe, it, beforeAll, afterAll } from 'vitest';
 import { strict as assert } from 'assert';
 import { createReadStream } from 'fs';
 import { Readable } from 'stream';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 
-describe('options.data.test.ts', () => {
+describe('options.data.test.ts2', () => {
   let close: any;
   let _url: string;
   beforeAll(async () => {
