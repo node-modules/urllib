@@ -36,7 +36,7 @@ export function initDiagnosticsChannel() {
         }
       }
     }
-    const opaque = request[kHandler].opts.opaque;
+    const opaque = request[kHandler]?.opts?.opaque;
     // ignore non HttpClient Request
     if (!opaque || !opaque[symbols.kRequestId]) return;
     debug('[%s] Request#%d %s %s, path: %s', name, opaque[symbols.kRequestId], request.method, request.origin, request.path);
@@ -60,7 +60,7 @@ export function initDiagnosticsChannel() {
   diagnosticsChannel.channel('undici:client:sendHeaders').subscribe((message, name) => {
     const { request, socket } = message as DiagnosticsChannel.ClientSendHeadersMessage;
     if (!kHandler) return;
-    const opaque = request[kHandler].opts.opaque;
+    const opaque = request[kHandler]?.opts?.opaque;
     if (!opaque || !opaque[symbols.kRequestId]) return;
 
     socket[symbols.kHandledRequests]++;
@@ -82,7 +82,7 @@ export function initDiagnosticsChannel() {
   diagnosticsChannel.channel('undici:request:bodySent').subscribe((message, name) => {
     const { request } = message as DiagnosticsChannel.RequestBodySentMessage;
     if (!kHandler) return;
-    const opaque = request[kHandler].opts.opaque;
+    const opaque = request[kHandler]?.opts?.opaque;
     if (!opaque || !opaque[symbols.kRequestId]) return;
 
     debug('[%s] Request#%d send body', name, opaque[symbols.kRequestId]);
@@ -94,7 +94,7 @@ export function initDiagnosticsChannel() {
   diagnosticsChannel.channel('undici:request:headers').subscribe((message, name) => {
     const { request, response } = message as DiagnosticsChannel.RequestHeadersMessage;
     if (!kHandler) return;
-    const opaque = request[kHandler].opts.opaque;
+    const opaque = request[kHandler]?.opts?.opaque;
     if (!opaque || !opaque[symbols.kRequestId]) return;
   
     // get socket from opaque
@@ -111,7 +111,7 @@ export function initDiagnosticsChannel() {
   diagnosticsChannel.channel('undici:request:trailers').subscribe((message, name) => {
     const { request } = message as DiagnosticsChannel.RequestTrailersMessage;
     if (!kHandler) return;
-    const opaque = request[kHandler].opts.opaque;
+    const opaque = request[kHandler]?.opts?.opaque;
     if (!opaque || !opaque[symbols.kRequestId]) return;
 
     debug('[%s] Request#%d get response body and trailers', name, opaque[symbols.kRequestId]);
