@@ -1,3 +1,4 @@
+import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import { strict as assert } from 'assert';
 import { createReadStream } from 'fs';
 import { writeFile, readFile } from 'fs/promises';

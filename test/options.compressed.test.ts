@@ -1,3 +1,4 @@
+import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import { strict as assert } from 'assert';
 import { createWriteStream, createReadStream } from 'fs';
 import urllib from '../src';

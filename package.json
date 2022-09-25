@@ -49,7 +49,7 @@
     "build:cjs:test": "cd test/cjs && rm -rf node_modules && npm link ../.. && node index.js",
     "build:esm:test": "cd test/esm && rm -rf node_modules && npm link ../.. && node index.js",
     "build:test": "npm run build && npm run build:cjs:test && npm run build:esm:test",
-    "test": "tsc --version && jest --coverage",
+    "test": "tsc --version && vitest run --coverage",
     "ci": "npm run lint && npm run test && npm run build:test",
     "contributor": "git-contributor",
     "prepack": "npm run build && rm -rf src/*.tsbuildinfo"
@@ -67,10 +67,10 @@
   "devDependencies": {
     "@types/busboy": "^1.5.0",
     "@types/default-user-agent": "^1.0.0",
-    "@types/jest": "28",
     "@types/mime-types": "^2.1.1",
     "@types/pump": "^1.1.1",
     "@types/selfsigned": "^2.0.1",
+    "@vitest/coverage-c8": "^0.23.4",
     "busboy": "^1.6.0",
     "coffee": "5",
     "egg-ci": "2",
@@ -78,11 +78,9 @@
     "eslint-config-egg": "^12.0.0",
     "git-contributor": "1",
     "iconv-lite": "^0.6.3",
-    "jest": "28",
-    "jest-summary-reporter": "^0.0.2",
     "selfsigned": "^2.0.1",
-    "ts-jest": "28",
-    "typescript": "4"
+    "typescript": "4",
+    "vitest": "^0.23.4"
   },
   "engines": {
     "node": ">= 14.0.0"
