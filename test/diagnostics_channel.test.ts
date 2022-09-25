@@ -76,8 +76,9 @@ describe('diagnostics_channel.test.ts', () => {
     assert(lastRequestOpaque.tracer.socket);
     assert.equal(lastRequestOpaque.tracer.socket.requests, 1);
 
+    // HEAD 请求不会 keepalive
+    // GET 请求会走 keepalive
     await sleep(1);
-
     traceId = `mock-traceid-${Date.now()}`;
     response = await urllib.request(_url, {
       method: 'GET',
