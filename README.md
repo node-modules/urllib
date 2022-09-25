@@ -251,7 +251,7 @@ Response is normal object, it contains:
 ## Run test with debug log
 
 ```bash
-NODE_DEBUG=urllib npm test
+NODE_DEBUG=urllib:* npm test
 ```
 
 ## Mocking Request

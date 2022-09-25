@@ -26,8 +26,10 @@ import mime from 'mime-types';
 import pump from 'pump';
 import { HttpAgent, CheckAddressFunction } from './HttpAgent';
 import { RequestURL, RequestOptions, HttpMethod } from './Request';
-import { HttpClientResponseMeta, HttpClientResponse, ReadableWithMeta } from './Response';
-import { parseJSON, sleep, digestAuthHeader } from './utils';
+import { HttpClientResponseMeta, HttpClientResponse, ReadableWithMeta, BaseResponseMeta, SocketInfo } from './Response';
+import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime } from './utils';
+import symbols from './symbols';
+import { initDiagnosticsChannel } from './diagnosticsChannel';
 
 const FormData = FormDataNative ?? FormDataNode;
 // impl isReadable on Node.js 14
@@ -48,10 +50,7 @@ function noop() {
   // noop
 }
 
-const MAX_REQURE_ID_VALUE = Math.pow(2, 31) - 10;
-let globalRequestId = 0;
-
-const debug = debuglog('urllib');
+const debug = debuglog('urllib:HttpClient');
 
 export type ClientOptions = {
   defaultArgs?: RequestOptions;
@@ -127,10 +126,6 @@ function defaultIsRetry(response: HttpClientResponse) {
   return response.status >= 500;
 }
 
-function performanceTime(startTime: number) {
-  return Math.floor((performance.now() - startTime) * 1000) / 1000;
-}
-
 type RequestContext = {
   retries: number;
 };
@@ -149,6 +144,7 @@ export class HttpClient extends EventEmitter {
         connect: clientOptions.connect,
       });
     }
+    initDiagnosticsChannel();
   }
 
   async request(url: RequestURL, options?: RequestOptions) {
@@ -156,11 +152,7 @@ export class HttpClient extends EventEmitter {
   }
 
   async #requestInternal(url: RequestURL, options?: RequestOptions, requestContext?: RequestContext): Promise<HttpClientResponse> {
-    if (globalRequestId >= MAX_REQURE_ID_VALUE) {
-      globalRequestId = 0;
-    }
-    const requestId = ++globalRequestId;
-
+    const requestId = globalId('HttpClientRequest');
     const requestUrl = typeof url === 'string' ? new URL(url) : url;
     const args = {
       retry: 0,
@@ -173,12 +165,50 @@ export class HttpClient extends EventEmitter {
     };
     const requestStartTime = performance.now();
 
+    // https://developer.chrome.com/docs/devtools/network/reference/?utm_source=devtools#timing-explanation
+    const timing = {
+      // socket assigned
+      queuing: 0,
+      // dns lookup time
+      // dnslookup: 0,
+      // socket connected
+      connected: 0,
+      // request headers sent
+      requestHeadersSent: 0,
+      // request sent, including headers and body
+      requestSent: 0,
+      // Time to first byte (TTFB), the response headers have been received
+      waiting: 0,
+      // the response body and trailers have been received
+      contentDownload: 0,
+    };
+    const orginalOpaque = args.opaque;
+    // using opaque to diagnostics channel, binding request and socket
+    const internalOpaque = {
+      [symbols.kRequestId]: requestId,
+      [symbols.kRequestStartTime]: requestStartTime,
+      [symbols.kEnableRequestTiming]: !!args.timing,
+      [symbols.kRequestTiming]: timing,
+      [symbols.kRequestOrginalOpaque]: orginalOpaque,
+    };
     const reqMeta = {
       requestId,
       url: requestUrl.href,
       args,
       ctx: args.ctx,
       retries: requestContext.retries,
+    };
+    const socketInfo = {
+      id: 0,
+      localAddress: '',
+      localPort: 0,
+      remoteAddress: '',
+      remotePort: 0,
+      remoteFamily: '',
+      bytesWritten: 0,
+      bytesRead: 0,
+      handledRequests: 0,
+      handledResponses: 0,
     };
     // keep urllib createCallbackResponse style
     const resHeaders: IncomingHttpHeaders = {};
@@ -191,10 +221,8 @@ export class HttpClient extends EventEmitter {
       rt: 0,
       keepAliveSocket: true,
       requestUrls: [],
-      timing: {
-        waiting: 0,
-        contentDownload: 0,
-      },
+      timing,
+      socket: socketInfo,
     };
 
     let headersTimeout = 5000;
@@ -245,7 +273,6 @@ export class HttpClient extends EventEmitter {
       headers.authorization = `Basic ${Buffer.from(args.auth).toString('base64')}`;
     }
 
-    let opaque = args.opaque;
     try {
       const requestOptions: UndiciRquestOptions = {
         method,
@@ -253,7 +280,7 @@ export class HttpClient extends EventEmitter {
         maxRedirections: args.maxRedirects ?? 10,
         headersTimeout,
         bodyTimeout,
-        opaque,
+        opaque: internalOpaque,
         dispatcher: this.#dispatcher,
       };
       if (args.followRedirect === false) {
@@ -383,11 +410,6 @@ export class HttpClient extends EventEmitter {
         }
       }
 
-      opaque = response.opaque;
-      if (args.timing) {
-        res.timing.waiting = performanceTime(requestStartTime);
-      }
-
       const context = response.context as { history: URL[] };
       let lastUrl = '';
       if (context?.history) {
@@ -413,10 +435,12 @@ export class HttpClient extends EventEmitter {
       if (args.dataType === 'stream') {
         // streaming mode will disable retry
         args.retry = 0;
-        const meta = {
+        const meta: BaseResponseMeta = {
           status: res.status,
           statusCode: res.statusCode,
           headers: res.headers,
+          timing,
+          socket: socketInfo,
         };
         if (isCompressedContent) {
           // gzip or br
@@ -458,12 +482,11 @@ export class HttpClient extends EventEmitter {
         }
       }
       res.rt = performanceTime(requestStartTime);
-      if (args.timing) {
-        res.timing.contentDownload = res.rt;
-      }
+      // get real socket info from internalOpaque
+      this.#updateSocketInfo(socketInfo, internalOpaque);
 
       const clientResponse: HttpClientResponse = {
-        opaque,
+        opaque: orginalOpaque,
         data,
         status: res.status,
         statusCode: res.status,
@@ -507,7 +530,7 @@ export class HttpClient extends EventEmitter {
       } else if (err.name === 'BodyTimeoutError') {
         err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: e });
       }
-      err.opaque = opaque;
+      err.opaque = orginalOpaque;
       err.status = res.status;
       err.headers = res.headers;
       err.res = res;
@@ -516,9 +539,7 @@ export class HttpClient extends EventEmitter {
         res.requestUrls.push(requestUrl.href);
       }
       res.rt = performanceTime(requestStartTime);
-      if (args.timing) {
-        res.timing.contentDownload = res.rt;
-      }
+      this.#updateSocketInfo(socketInfo, internalOpaque);
 
       if (this.listenerCount('response') > 0) {
         this.emit('response', {
@@ -532,4 +553,20 @@ export class HttpClient extends EventEmitter {
       throw err;
     }
   }
-}
+
+  #updateSocketInfo(socketInfo: SocketInfo, internalOpaque: any) {
+    const socket = internalOpaque[symbols.kRequestSocket];
+    if (socket) {
+      socketInfo.id = socket[symbols.kSocketId];
+      socketInfo.handledRequests = socket[symbols.kHandledRequests];
+      socketInfo.handledResponses = socket[symbols.kHandledResponses];
+      socketInfo.localAddress = socket.localAddress;
+      socketInfo.localPort = socket.localPort;
+      socketInfo.remoteAddress = socket.remoteAddress
+      socketInfo.remotePort = socket.remotePort;
+      socketInfo.remoteFamily = socket.remoteFamily;
+      socketInfo.bytesRead = socket.bytesRead;
+      socketInfo.bytesWritten = socket.bytesWritten;
+    }
+  }
+ }

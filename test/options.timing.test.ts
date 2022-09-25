@@ -27,7 +27,7 @@ describe('options.timing.test.ts', () => {
     assert(res.timing.waiting > 0);
     assert(res.timing.contentDownload > 0);
     assert(res.timing.contentDownload > res.timing.waiting);
-    assert.equal(res.timing.contentDownload, res.rt);
+    assert(res.timing.contentDownload <= res.rt);
   });
 
   it('should timing = false work', async () => {

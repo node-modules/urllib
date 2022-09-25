@@ -2,6 +2,7 @@ import { describe, it, beforeAll, afterAll } from 'vitest';
 import { strict as assert } from 'assert';
 import diagnosticsChannel from 'diagnostics_channel';
 import urllib from '../src';
+import symbols from '../src/symbols';
 import { startServer } from './fixtures/server';
 import { sleep } from './utils';
 
@@ -38,7 +39,7 @@ describe('diagnostics_channel.test.ts', () => {
           }
         }
       }
-      const opaque = request[kHandler].opts.opaque;
+      const opaque = request[kHandler].opts.opaque[symbols.kRequestOrginalOpaque];
       if (opaque && name === 'undici:client:sendHeaders' && socket) {
         socket[kRequests]++;
         opaque.tracer.socket = {
