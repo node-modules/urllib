@@ -57,6 +57,7 @@
   },
   "dependencies": {
     "default-user-agent": "^1.0.0",
+    "diagnostics_channel": "^1.1.0",
     "digest-header": "^0.0.1",
     "form-data-encoder": "^1.7.2",
     "formdata-node": "^4.3.3",
