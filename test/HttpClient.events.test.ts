@@ -44,9 +44,18 @@ describe('HttpClient.events.test.ts', () => {
       if (responseCount === 1) {
         assert.deepEqual(info.ctx, { foo: 'bar' });
         assert.deepEqual(info.ctx, info.req.ctx);
+        // timing false
+        assert.equal(info.res.timing.requestHeadersSent, 0);
       } else {
         assert.equal(info.ctx, undefined);
+        // timing true
+        assert(info.res.timing.requestHeadersSent > 0);
       }
+      // socket info
+      assert(info.res.socket.remoteAddress);
+      assert(info.res.socket.remotePort);
+      assert(info.res.socket.localAddress);
+      assert(info.res.socket.localPort);
     });
 
     let response = await httpclient.request(_url, {
@@ -66,6 +75,7 @@ describe('HttpClient.events.test.ts', () => {
       opaque: {
         requestId: 'mock-request-id-2',
       },
+      timing: true,
     });
     assert.equal(response.status, 200);
     assert.equal(response.data.method, 'GET');
