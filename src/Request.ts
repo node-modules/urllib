@@ -96,7 +96,6 @@ export type RequestOptions = {
    * */
   gzip?: boolean;
   /**
-   * @deprecated
    * Enable timing or not, default is false.
    * */
   timing?: boolean;

@@ -80,11 +80,11 @@
     "git-contributor": "1",
     "iconv-lite": "^0.6.3",
     "selfsigned": "^2.0.1",
-    "typescript": "4",
+    "typescript": "^4.8.3",
     "vitest": "^0.23.4"
   },
   "engines": {
-    "node": ">= 14.0.0"
+    "node": ">= 14.17.0"
   },
   "ci": {
     "version": "14, 16, 18"

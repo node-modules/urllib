@@ -1,4 +1,5 @@
 import { randomBytes, createHash } from 'crypto';
+import { performance } from 'perf_hooks';
 import { FixJSONCtlChars } from './Request';
 
 const JSONCtlCharsMap = {
@@ -125,4 +126,18 @@ export function digestAuthHeader(method: string, uri: string, wwwAuthenticate: s
     authstring += `, qop=${qop}, nc=${nc}, cnonce="${cnonce}"`;
   }
   return authstring;
+}
+
+const MAX_ID_VALUE = Math.pow(2, 31) - 10;
+const globalIds: Record<string, number> = {};
+
+export function globalId(category: string) {
+  if (!globalIds[category] || globalIds[category] >= MAX_ID_VALUE) {
+    globalIds[category] = 0;
+  }
+  return ++globalIds[category];
+}
+
+export function performanceTime(startTime: number, now?: number) {
+  return Math.floor(((now ?? performance.now()) - startTime) * 1000) / 1000;
 }

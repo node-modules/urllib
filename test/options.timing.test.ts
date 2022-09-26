@@ -3,6 +3,7 @@ import { strict as assert } from 'assert';
 import urllib from '../src';
 import { HttpClientResponseMeta } from '../src/Response';
 import { startServer } from './fixtures/server';
+import { sleep } from './utils';
 
 describe('options.timing.test.ts', () => {
   let close: any;
@@ -18,16 +19,40 @@ describe('options.timing.test.ts', () => {
   });
 
   it('should timing = true work', async () => {
-    const response = await urllib.request(`${_url}?content-encoding=gzip`, {
+    let response = await urllib.request(`${_url}?content-encoding=gzip`, {
       dataType: 'json',
       timing: true,
     });
     assert.equal(response.status, 200);
-    const res = response.res as HttpClientResponseMeta;
+    let res = response.res as HttpClientResponseMeta;
     assert(res.timing.waiting > 0);
+    assert(res.timing.queuing > 0);
+    assert(res.timing.connected > 0);
+    assert(res.timing.requestHeadersSent > 0);
+    assert(res.timing.requestSent > 0);
     assert(res.timing.contentDownload > 0);
     assert(res.timing.contentDownload > res.timing.waiting);
-    assert.equal(res.timing.contentDownload, res.rt);
+    assert(res.timing.contentDownload <= res.rt);
+    assert(res.socket.handledResponses === 1);
+
+    // again connected should be zero
+    await sleep(1)
+
+    response = await urllib.request(`${_url}?content-encoding=gzip`, {
+      dataType: 'json',
+      timing: true,
+    });
+    assert.equal(response.status, 200);
+    res = response.res as HttpClientResponseMeta;
+    assert(res.timing.waiting > 0);
+    assert(res.timing.queuing > 0);
+    assert(res.timing.connected === 0);
+    assert(res.timing.requestHeadersSent > 0);
+    assert(res.timing.requestSent > 0);
+    assert(res.timing.contentDownload > 0);
+    assert(res.timing.contentDownload > res.timing.waiting);
+    assert(res.timing.contentDownload <= res.rt);
+    assert(res.socket.handledResponses === 2);
   });
 
   it('should timing = false work', async () => {
