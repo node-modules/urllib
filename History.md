@@ -1,4 +1,13 @@
 
+3.2.0 / 2022-09-26
+==================
+
+**others**
+  * [[`315f4a0`](http://github.com/node-modules/urllib/commit/315f4a0bf69abc2b29247fcf1a606c44412a86f3)] - 📦 NEW: Support timing and socket info (#400) (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`414692b`](http://github.com/node-modules/urllib/commit/414692b183fb205acfb163f8aef4f853ce1b97e1)] - 🧪️ TEST: Add diagnostics_channel test cases (#398) (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`65abb60`](http://github.com/node-modules/urllib/commit/65abb6074e5098834dd964a2bedaffd64a703ef9)] - 🤖 TEST: Use vitest instead of jest (#399) (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`5f0c4a8`](http://github.com/node-modules/urllib/commit/5f0c4a8da84ef9954942bcd78721a5445e0cb095)] - 📖 DOC: Update contributors (fengmk2 <<fengmk2@gmail.com>>)
+
 3.1.3 / 2022-09-09
 ==================
 
