@@ -56,6 +56,7 @@ describe('HttpClient.events.test.ts', () => {
       assert(info.res.socket.remotePort);
       assert(info.res.socket.localAddress);
       assert(info.res.socket.localPort);
+      assert(info.res.socket.id > 0);
     });
 
     let response = await httpclient.request(_url, {
