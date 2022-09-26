@@ -16,7 +16,7 @@ let initedDiagnosticsChannel = false;
 //
 // server --> client
 // undici:request:headers => { request, response }
-//   -> undici:request:trailers => { request }
+//   -> undici:request:trailers => { request, trailers }
 export function initDiagnosticsChannel() {
   // makre sure init global DiagnosticsChannel once
   if (initedDiagnosticsChannel) return;
