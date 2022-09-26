@@ -12,11 +12,11 @@ let initedDiagnosticsChannel = false;
 // undici:request:create => { request }
 //   -> [optional] undici:client:connected => { socket } [first request will create socket]
 //   -> undici:client:sendHeaders => { socket, request }
-//     -> undici:request:bodySent => { socket, request }
+//     -> undici:request:bodySent => { request }
 //
 // server --> client
-// undici:request:headers => { socket, request, response }
-//   -> undici:request:trailers => { socket, request, response }
+// undici:request:headers => { request, response }
+//   -> undici:request:trailers => { request }
 export function initDiagnosticsChannel() {
   // makre sure init global DiagnosticsChannel once
   if (initedDiagnosticsChannel) return;
