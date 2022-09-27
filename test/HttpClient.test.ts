@@ -74,6 +74,23 @@ describe('HttpClient.test.ts', () => {
       }
       assert(lookupCallCounter < 5, `${lookupCallCounter} should smaller than 5`);
     });
+
+    it('should work with custom lookup on none-protol links', async () => {
+      let lookupCallCounter = 0;
+      const httpclient = new HttpClient({
+        // mock lookup delay
+        lookup(...args) {
+          lookupCallCounter++;
+          setTimeout(() => {
+            dns.lookup(...args);
+          }, 100);
+        },
+      });
+      let response = await httpclient.request('registry.npmmirror.com/urllib');
+      // default http => https
+      assert.equal(lookupCallCounter, 2);
+      assert.equal(response.status, 200);
+    });
   });
 
   describe('clientOptions.checkAddress', () => {
