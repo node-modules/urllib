@@ -31,6 +31,7 @@ import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime } from '.
 import symbols from './symbols';
 import { initDiagnosticsChannel } from './diagnosticsChannel';
 
+const PROTO_RE = /^https?:\/\//i;
 const FormData = FormDataNative ?? FormDataNode;
 // impl isReadable on Node.js 14
 const isReadable = stream.isReadable ?? function isReadable(stream: any) {
@@ -153,7 +154,16 @@ export class HttpClient extends EventEmitter {
 
   async #requestInternal(url: RequestURL, options?: RequestOptions, requestContext?: RequestContext): Promise<HttpClientResponse> {
     const requestId = globalId('HttpClientRequest');
-    const requestUrl = typeof url === 'string' ? new URL(url) : url;
+    let requestUrl: URL;
+    if (typeof url === 'string') {
+      if (!PROTO_RE.test(url)) {
+        // Support `request('www.server.com')`
+        url = 'http://' + url;
+      }
+      requestUrl = new URL(url);
+    } else {
+      requestUrl = url;
+    }
     const args = {
       retry: 0,
       ...this.#defaultArgs,
