@@ -1,4 +1,10 @@
 
+3.2.1 / 2022-09-27
+==================
+
+**fixes**
+  * [[`456c73b`](http://github.com/node-modules/urllib/commit/456c73b3dc02e1323cb8db99b60ffd191e5d7abb)] - 🐛 FIX: http default protocol for URL argument (#404) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.2.0 / 2022-09-26
 ==================
 
