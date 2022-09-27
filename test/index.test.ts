@@ -67,6 +67,22 @@ describe('index.test.ts', () => {
         return true;
       });
     });
+
+    it('should request(host-only) work', async () => {
+      const host = process.env.CI ? 'registry.npmjs.org' : 'registry.npmmirror.com';
+      const url = `${host}/urllib/latest`;
+      const response = await urllib.request(url, { dataType: 'json' });
+      assert.equal(response.status, 200);
+      assert.equal(response.data.name, 'urllib');
+    });
+
+    it('should request(host:port) work', async () => {
+      const host = process.env.CI ? 'registry.npmjs.org' : 'registry.npmmirror.com';
+      const url = `${host}:80/urllib/latest`;
+      const response = await urllib.request(url, { dataType: 'json' });
+      assert.equal(response.status, 200);
+      assert.equal(response.data.name, 'urllib');
+    });
   });
 
   describe('default export', () => {
