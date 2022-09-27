@@ -69,6 +69,7 @@
     "@types/busboy": "^1.5.0",
     "@types/default-user-agent": "^1.0.0",
     "@types/mime-types": "^2.1.1",
+    "@types/node": "^18.7.23",
     "@types/pump": "^1.1.1",
     "@types/selfsigned": "^2.0.1",
     "@vitest/coverage-c8": "^0.23.4",

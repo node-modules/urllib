@@ -153,7 +153,12 @@ export class HttpClient extends EventEmitter {
 
   async #requestInternal(url: RequestURL, options?: RequestOptions, requestContext?: RequestContext): Promise<HttpClientResponse> {
     const requestId = globalId('HttpClientRequest');
-    const requestUrl = typeof url === 'string' ? new URL(url) : url;
+    let requestUrl: URL;
+    if (typeof url === 'string') {
+      requestUrl = new URL(/^https?:\/\//i.test(url) ? url : `http://${url}`);
+    } else {
+      requestUrl = url;
+    }
     const args = {
       retry: 0,
       ...this.#defaultArgs,
@@ -395,7 +400,7 @@ export class HttpClient extends EventEmitter {
       let response = await undiciRequest(requestUrl, requestOptions);
       // handle digest auth
       if (response.statusCode === 401 && response.headers['www-authenticate'] &&
-          !requestOptions.headers.authorization && args.digestAuth) {
+        !requestOptions.headers.authorization && args.digestAuth) {
         const authenticate = response.headers['www-authenticate'];
         if (authenticate.startsWith('Digest ')) {
           debug('Request#%d %s: got digest auth header WWW-Authenticate: %s', requestId, requestUrl.href, authenticate);
