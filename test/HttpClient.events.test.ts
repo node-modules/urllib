@@ -38,6 +38,8 @@ describe('HttpClient.events.test.ts', () => {
       // console.log(info);
       assert.equal(info.req.args.opaque.requestId, `mock-request-id-${requestCount}`);
       assert.equal(info.req.options, info.req.args);
+      assert(info.req.args.headers);
+      assert(info.req.options.headers);
       assert.equal(info.res.status, 200);
       assert.equal(info.requestId, info.req.requestId);
 
@@ -97,6 +99,8 @@ describe('HttpClient.events.test.ts', () => {
       // console.log(info);
       assert.equal(info.req.args.opaque.requestId, `mock-request-id-${requestCount}`);
       assert.equal(info.req.options, info.req.args);
+      assert(info.req.args.headers);
+      assert(info.req.options.headers);
       assert.equal(info.res.status, -1);
       assert.equal(info.requestId, info.req.requestId);
 
