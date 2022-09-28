@@ -38,6 +38,8 @@ describe('HttpClient.events.test.ts', () => {
       // console.log(info);
       assert.equal(info.req.args.opaque.requestId, `mock-request-id-${requestCount}`);
       assert.equal(info.req.options, info.req.args);
+      assert(info.req.args.headers);
+      assert(info.req.options.headers);
       assert.equal(info.res.status, 200);
       assert.equal(info.requestId, info.req.requestId);
 
@@ -83,5 +85,44 @@ describe('HttpClient.events.test.ts', () => {
 
     assert.equal(requestCount, 2);
     assert.equal(responseCount, 2);
+  });
+
+  it('should emit response on request error', async () => {
+    const httpclient = new HttpClient();
+    let requestCount = 0;
+    let responseCount = 0;
+    httpclient.on('request', info => {
+      requestCount++;
+    });
+    httpclient.on('response', info => {
+      responseCount++;
+      // console.log(info);
+      assert.equal(info.req.args.opaque.requestId, `mock-request-id-${requestCount}`);
+      assert.equal(info.req.options, info.req.args);
+      assert(info.req.args.headers);
+      assert(info.req.options.headers);
+      assert.equal(info.res.status, -1);
+      assert.equal(info.requestId, info.req.requestId);
+
+      assert.equal(info.error.name, 'SocketError');
+      assert.equal(info.error.message, 'other side closed');
+      assert.equal(info.error.status, -1);
+    });
+
+    await assert.rejects(async () => {
+      await httpclient.request(`${_url}error`, {
+        dataType: 'json',
+        opaque: {
+          requestId: 'mock-request-id-1',
+        },
+        ctx: { foo: 'bar' },
+      });
+    }, (err: any) => {
+      // console.error(err);
+      assert.equal(err.name, 'SocketError');
+      assert.equal(err.message, 'other side closed');
+      assert.equal(err.status, -1);
+      return true;
+    });
   });
 });

@@ -164,10 +164,17 @@ export class HttpClient extends EventEmitter {
     } else {
       requestUrl = url;
     }
+
+    const method = (options?.method ?? 'GET').toUpperCase() as HttpMethod;
+    const orginalHeaders = options?.headers;
+    const headers: IncomingHttpHeaders = {};
     const args = {
       retry: 0,
       ...this.#defaultArgs,
       ...options,
+      // keep method and headers exists on args for request event handler to easy use
+      method,
+      headers,
     };
     requestContext = {
       retries: 0,
@@ -245,13 +252,10 @@ export class HttpClient extends EventEmitter {
         headersTimeout = bodyTimeout = args.timeout;
       }
     }
-
-    const method = (args.method ?? 'GET').toUpperCase() as HttpMethod;
-    const headers: IncomingHttpHeaders = {};
-    if (args.headers) {
+    if (orginalHeaders) {
       // convert headers to lower-case
-      for (const name in args.headers) {
-        headers[name.toLowerCase()] = args.headers[name];
+      for (const name in orginalHeaders) {
+        headers[name.toLowerCase()] = orginalHeaders[name];
       }
     }
     // hidden user-agent
@@ -556,7 +560,10 @@ export class HttpClient extends EventEmitter {
           requestId,
           error: err,
           ctx: args.ctx,
-          req: reqMeta,
+          req: {
+            ...reqMeta,
+            options: args,
+          },
           res,
         });
       }
