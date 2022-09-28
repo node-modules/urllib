@@ -556,7 +556,10 @@ export class HttpClient extends EventEmitter {
           requestId,
           error: err,
           ctx: args.ctx,
-          req: reqMeta,
+          req: {
+            ...reqMeta,
+            options: args,
+          },
           res,
         });
       }
