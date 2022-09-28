@@ -1,4 +1,10 @@
 
+3.2.2 / 2022-09-28
+==================
+
+**fixes**
+  * [[`5a3ca77`](http://github.com/node-modules/urllib/commit/5a3ca7728f32d53b460b17d55f2eb69ec6ea8a59)] - 🐛 FIX: Keep req.options on error response event (#405) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.2.1 / 2022-09-27
 ==================
 
