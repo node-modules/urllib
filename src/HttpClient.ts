@@ -13,6 +13,7 @@ import stream from 'stream';
 import { basename } from 'path';
 import { createReadStream } from 'fs';
 import { IncomingHttpHeaders } from 'http';
+import { format as urlFormat } from 'url';
 import { performance } from 'perf_hooks';
 import {
   FormData as FormDataNative,
@@ -162,7 +163,12 @@ export class HttpClient extends EventEmitter {
       }
       requestUrl = new URL(url);
     } else {
-      requestUrl = url;
+      if (!url.searchParams) {
+        // url maybe url.parse(url) object in urllib2
+        requestUrl = new URL(urlFormat(url));
+      } else {
+        requestUrl = url;
+      }
     }
 
     const method = (options?.method ?? 'GET').toUpperCase() as HttpMethod;

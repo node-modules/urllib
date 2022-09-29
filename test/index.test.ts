@@ -1,5 +1,6 @@
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import { strict as assert } from 'assert';
+import { parse as urlparse } from 'url';
 import urllib from '../src';
 import { MockAgent, setGlobalDispatcher, getGlobalDispatcher } from '../src';
 import { startServer } from './fixtures/server';
@@ -33,6 +34,20 @@ describe('index.test.ts', () => {
       assert.equal(response.headers['content-type'], 'text/html');
       assert(response.headers.date);
       assert.equal(response.url, `${_url}html`);
+      assert(!response.redirected);
+    });
+
+    it('should work with url.parse() object', async () => {
+      const urlObject = urlparse(`${_url}html?abc=123`);
+      const response = await urllib.request(urlObject as any, {
+        data: {
+          foo: 'bar',
+        },
+      });
+      assert.equal(response.status, 200);
+      assert.equal(response.headers['content-type'], 'text/html');
+      assert(response.headers.date);
+      assert.equal(response.url, `${_url}html?abc=123&foo=bar`);
       assert(!response.redirected);
     });
 
@@ -92,13 +107,19 @@ describe('index.test.ts', () => {
   });
 
   describe('Mocking request', () => {
+    let mockAgent: MockAgent;
+    beforeAll(() => {
+      mockAgent = new MockAgent();
+      setGlobalDispatcher(mockAgent);
+    });
+
+    afterAll(async () => {
+      await mockAgent.close();
+    });
+
     it('should mocking intercept work', async () => {
       assert.equal(typeof getGlobalDispatcher, 'function');
       assert(getGlobalDispatcher());
-
-      const mockAgent = new MockAgent();
-      setGlobalDispatcher(mockAgent);
-
       const mockPool = mockAgent.get(_url.substring(0, _url.length - 1));
       mockPool.intercept({
         path: '/foo',
@@ -135,6 +156,8 @@ describe('index.test.ts', () => {
       });
       assert.equal(response.status, 200);
       assert.equal(response.data.method, 'GET');
+
+      mockAgent.assertNoPendingInterceptors();
     });
   });
 });
