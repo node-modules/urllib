@@ -1,4 +1,10 @@
 
+3.2.3 / 2022-09-29
+==================
+
+**fixes**
+  * [[`9575d29`](http://github.com/node-modules/urllib/commit/9575d29a7ca238a46de0c4d7d3e92617019cbf13)] - 🐛 FIX: Support urlObject for compatibility (#406) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.2.2 / 2022-09-28
 ==================
 
