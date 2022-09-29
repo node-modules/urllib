@@ -108,12 +108,14 @@ describe('index.test.ts', () => {
 
   describe('Mocking request', () => {
     let mockAgent: MockAgent;
+    let globalAgent = getGlobalDispatcher();
     beforeAll(() => {
       mockAgent = new MockAgent();
       setGlobalDispatcher(mockAgent);
     });
 
     afterAll(async () => {
+      setGlobalDispatcher(globalAgent);
       await mockAgent.close();
     });
 
