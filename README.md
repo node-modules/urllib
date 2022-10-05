@@ -90,16 +90,12 @@ console.log('status: %s, body size: %d, headers: %j', res.statusCode, data.lengt
   - ***timeout*** Number | Array - Request timeout in milliseconds for connecting phase and response receiving phase. Defaults to `exports.TIMEOUT`, both are 5s. You can use `timeout: 5000` to tell urllib use same timeout on two phase or set them seperately such as `timeout: [3000, 5000]`, which will set connecting timeout to 3s and response 5s.
   - ***auth*** String - `username:password` used in HTTP Basic Authorization.
   - ***digestAuth*** String - `username:password` used in HTTP [Digest Authorization](https://en.wikipedia.org/wiki/Digest_access_authentication).
-  - ***agent*** [http.Agent](https://nodejs.org/api/http.html#http_class_http_agent) - HTTP Agent object.
-      Set `false` if you does not use agent.
-  - ***httpsAgent*** [https.Agent](https://nodejs.org/api/https.html#https_class_https_agent) - HTTPS Agent object.
-      Set `false` if you does not use agent.
   - ***followRedirect*** Boolean - follow HTTP 3xx responses as redirects. defaults to false.
   - ***maxRedirects*** Number - The maximum number of redirects to follow, defaults to 10.
   - ***formatRedirectUrl*** Function - Format the redirect url by your self. Default is `url.resolve(from, to)`.
   - ***beforeRequest*** Function - Before request hook, you can change every thing here.
   - ***streaming*** Boolean - let you get the `res` object when request  connected, default `false`. alias `customResponse`
-  - ***gzip*** Boolean - Accept `gzip, br` response content and auto decode it, default is `false`.
+  - ***compressed*** Boolean - Accept `gzip, br` response content and auto decode it, default is `false`.
   - ***timing*** Boolean - Enable timing or not, default is `false`.
 
 #### Options: `options.data`
