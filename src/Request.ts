@@ -3,6 +3,7 @@ import { IncomingHttpHeaders } from 'http';
 import type {
   HttpMethod as UndiciHttpMethod,
 } from 'undici/types/dispatcher';
+import type Dispatcher from 'undici/types/dispatcher';
 import type {
   HttpClientResponse,
 } from './Response';
@@ -118,4 +119,8 @@ export type RequestOptions = {
    * Maybe you should use opaque instead
    */
   ctx?: unknown;
+  /**
+   * request dispatcher, default is getGlobalDispatcher()
+   */
+  dispatcher?: Dispatcher;
 };

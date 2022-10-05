@@ -1,9 +1,12 @@
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import { strict as assert } from 'assert';
 import { parse as urlparse } from 'url';
+import { createReadStream, readFileSync } from 'fs';
+import { Readable } from 'stream';
 import urllib from '../src';
 import { MockAgent, setGlobalDispatcher, getGlobalDispatcher } from '../src';
 import { startServer } from './fixtures/server';
+import { readableToBytes } from './utils';
 
 describe('index.test.ts', () => {
   let close: any;
@@ -158,6 +161,34 @@ describe('index.test.ts', () => {
       });
       assert.equal(response.status, 200);
       assert.equal(response.data.method, 'GET');
+
+      mockAgent.assertNoPendingInterceptors();
+    });
+
+    it('should mocking intercept work with readable', async () => {
+      const mockPool = mockAgent.get(_url.substring(0, _url.length - 1));
+      // mock response stream
+      mockPool.intercept({
+        path: '/foo.js',
+        method: 'GET',
+      }).reply(200, readFileSync(__filename)).times(2);
+      let response = await urllib.request(`${_url}foo.js`, {
+        method: 'GET',
+        dataType: 'stream',
+      });
+      assert.equal(response.status, 200);
+      let bytes = await readableToBytes(response.res as Readable);
+      assert.match(bytes.toString(), /mock response stream/);
+      assert.equal(bytes.length, readFileSync(__filename).length);
+
+      response = await urllib.request(`${_url}foo.js`, {
+        method: 'GET',
+        streaming: true,
+      });
+      assert.equal(response.status, 200);
+      bytes = await readableToBytes(response.res as Readable);
+      assert.match(bytes.toString(), /streaming: true,/);
+      assert.equal(bytes.length, readFileSync(__filename).length);
 
       mockAgent.assertNoPendingInterceptors();
     });
