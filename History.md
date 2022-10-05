@@ -1,4 +1,10 @@
 
+3.3.0 / 2022-10-05
+==================
+
+**features**
+  * [[`b483da3`](http://github.com/node-modules/urllib/commit/b483da3fb7e934bdea1cf23a9f00b59491a80145)] - 👌 IMPROVE: Support request with proxy agent (#408) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.2.3 / 2022-09-29
 ==================
 

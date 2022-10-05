@@ -215,7 +215,7 @@ describe('HttpClient.test.ts', () => {
     it('should throw error when follow redirect and redirect address illegal', async () => {
       const httpclient = new HttpClient({
         checkAddress(address) {
-          return address !== '10.10.10.10';
+          return address !== '127.0.0.1';
         },
       });
 
@@ -225,16 +225,11 @@ describe('HttpClient.test.ts', () => {
         // console.error(err);
         assert.equal(err.name, 'IllegalAddressError');
         assert.equal(err.message, 'illegal address');
-        assert.equal(err.hostname, '10.10.10.10');
-        assert.equal(err.ip, '10.10.10.10');
+        assert.equal(err.hostname, 'localhost');
+        assert.equal(err.ip, '127.0.0.1');
         assert(err.family === 4);
         return true;
       });
-
-      const response = await httpclient.request(`${_url}redirect-to-root`, {
-        dataType: 'text',
-      });
-      assert.equal(response.status, 200);
     });
   });
 });

@@ -107,7 +107,7 @@ export async function startServer(options?: {
       res.statusCode = 302;
       return res.end('Redirect to /redirect-to-url');
     }
-    if (pathname === '/redirect-to-rool') {
+    if (pathname === '/redirect-to-root') {
       res.setHeader('Location', '/');
       res.statusCode = 302;
       return res.end('Redirect to /');
@@ -136,8 +136,8 @@ export async function startServer(options?: {
     }
     if (req.url === '/redirect-to-ip') {
       res.statusCode = 302;
-      res.setHeader('Location', 'http://10.10.10.10/');
-      return res.end('Redirect to http://10.10.10.10/');
+      res.setHeader('Location', 'http://127.0.0.1/');
+      return res.end('Redirect to http://127.0.0.1/');
     }
 
     if (req.url === '/304-with-gzip') {
