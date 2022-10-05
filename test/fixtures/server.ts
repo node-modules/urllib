@@ -134,10 +134,10 @@ export async function startServer(options?: {
       res.statusCode = 301;
       return res.end(`Redirect to ${url}`);
     }
-    if (req.url === '/redirect-to-ip') {
+    if (req.url === '/redirect-to-localhost') {
       res.statusCode = 302;
-      res.setHeader('Location', 'http://127.0.0.1/');
-      return res.end('Redirect to http://127.0.0.1/');
+      res.setHeader('Location', 'http://localhost/');
+      return res.end('Redirect to http://localhost/');
     }
 
     if (req.url === '/304-with-gzip') {
