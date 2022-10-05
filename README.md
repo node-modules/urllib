@@ -282,6 +282,20 @@ assert.equal(response.status, 400);
 assert.deepEqual(response.data, { message: 'mock 400 bad request' });
 ```
 
+## Request through a http proxy
+
+export from [undici](https://undici.nodejs.org/#/docs/best-practices/proxy)
+
+```ts
+import { ProxyAgent, request } from 'urllib';
+
+const proxyAgent = new ProxyAgent('http://my.proxy.com:8080');
+const response = await request('https://www.npmjs.com/package/urllib', {
+  dispatcher: proxyAgent,
+});
+console.log(response.status, response.headers);
+```
+
 ## Benchmarks
 
 Fork [undici benchmarks script](https://github.com/fengmk2/undici/blob/urllib-benchmark/benchmarks/benchmark.js)

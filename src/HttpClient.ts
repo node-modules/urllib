@@ -301,7 +301,7 @@ export class HttpClient extends EventEmitter {
         headersTimeout,
         bodyTimeout,
         opaque: internalOpaque,
-        dispatcher: this.#dispatcher,
+        dispatcher: args.dispatcher ?? this.#dispatcher,
       };
       if (args.followRedirect === false) {
         requestOptions.maxRedirections = 0;
