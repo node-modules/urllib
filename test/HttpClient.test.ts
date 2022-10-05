@@ -220,9 +220,9 @@ describe('HttpClient.test.ts', () => {
       });
 
       await assert.rejects(async () => {
-        await httpclient.request(`${_url}redirect-to-ip`);
+        await httpclient.request(`${_url}redirect-to-localhost`);
       }, (err: any) => {
-        // console.error(err);
+        console.error(err);
         assert.equal(err.name, 'IllegalAddressError');
         assert.equal(err.message, 'illegal address');
         assert.equal(err.hostname, 'localhost');
