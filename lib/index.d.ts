@@ -12,7 +12,7 @@ export type HttpMethod = "GET" | "POST" | "DELETE" | "PUT" | "HEAD" | "OPTIONS" 
 export as namespace urllib;
 export interface RequestOptions {
   /** Request method, defaults to GET. Could be GET, POST, DELETE or PUT. Alias 'type'. */
-  method?: HttpMethod;
+  method?: HttpMethod | Lowercase<HttpMethod>;
   /** Alias method  */
   type?: HttpMethod;
   /** Data to be sent. Will be stringify automatically. */
