@@ -8,10 +8,12 @@ on:
     branches:
       - main
       - master
+      - 2.x
   pull_request:
     branches:
       - main
       - master
+      - 2.x
   schedule:
     - cron: '0 2 * * *'
 
