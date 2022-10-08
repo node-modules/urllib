@@ -8,6 +8,9 @@ expectType<Buffer>((await curl<Buffer>('http://a.com', {})).data);
 expectType<string>((await curl<string>('http://a.com', {
   method: 'HEAD',
 })).data);
+expectType<string>((await curl<string>('http://a.com', {
+  method: 'head',
+})).data);
 
 // HttpClientResponse
 const res = await curl<Buffer>('http://a.com');
