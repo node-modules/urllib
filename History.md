@@ -1,4 +1,13 @@
 
+2.39.0 / 2022-10-09
+==================
+
+**features**
+  * [[`2896cf0`](http://github.com/node-modules/urllib/commit/2896cf01234184bdefc23506ec6c5aaba81d30c2)] - 👌 IMPROVE: support lower case method on d.ts (#410) (fengmk2 <<fengmk2@gmail.com>>)
+
+**others**
+  * [[`0a200be`](http://github.com/node-modules/urllib/commit/0a200bec22a4fd6895e864366e66c99a8559e5f8)] - chore: change npm tag to latest-2 (fengmk2 <<fengmk2@gmail.com>>)
+
 2.38.1 / 2022-07-05
 ==================
 
