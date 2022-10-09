@@ -1,6 +1,6 @@
 {
   "name": "urllib",
-  "version": "2.39.0",
+  "version": "2.39.1",
   "publishConfig": {
     "tag": "latest-2"
   },

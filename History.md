@@ -1,4 +1,10 @@
 
+2.39.1 / 2022-10-09
+==================
+
+**fixes**
+  * [[`01b54a9`](http://github.com/node-modules/urllib/commit/01b54a9fa48bdd745798fd06ad32ed41f22815d3)] - 🐛 FIX: support old ts version (fengmk2 <<fengmk2@gmail.com>>)
+
 2.39.0 / 2022-10-09
 ==================
 
