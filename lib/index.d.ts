@@ -7,12 +7,13 @@ import { EventEmitter } from 'events';
 import { LookupFunction } from 'net';
 
 export { IncomingHttpHeaders, OutgoingHttpHeaders };
-export type HttpMethod = "GET" | "POST" | "DELETE" | "PUT" | "HEAD" | "OPTIONS" | "PATCH" | "TRACE" | "CONNECT";
+export type HttpMethod = "GET" | "POST" | "DELETE" | "PUT" | "HEAD" | "OPTIONS" | "PATCH" | "TRACE" | "CONNECT"
+  | "get" | "post" | "delete" | "put" | "head" | "options" | "patch" | "trace" | "connect";
 
 export as namespace urllib;
 export interface RequestOptions {
   /** Request method, defaults to GET. Could be GET, POST, DELETE or PUT. Alias 'type'. */
-  method?: HttpMethod | Lowercase<HttpMethod>;
+  method?: HttpMethod;
   /** Alias method  */
   type?: HttpMethod;
   /** Data to be sent. Will be stringify automatically. */
