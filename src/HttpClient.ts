@@ -462,7 +462,8 @@ export class HttpClient extends EventEmitter {
           timing,
           socket: socketInfo,
         };
-        if (isCompressedContent) {
+        // only auto decompress on request args.compressed = true
+        if (args.compressed === true && isCompressedContent) {
           // gzip or br
           const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
           responseBodyStream = Object.assign(pipeline(response.body, decoder, noop), meta);
@@ -472,7 +473,7 @@ export class HttpClient extends EventEmitter {
       } else if (args.writeStream) {
         // streaming mode will disable retry
         args.retry = 0;
-        if (isCompressedContent) {
+        if (args.compressed === true && isCompressedContent) {
           const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
           await pipelinePromise(response.body, decoder, args.writeStream);
         } else {

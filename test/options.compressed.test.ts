@@ -29,6 +29,19 @@ describe('options.compressed.test.ts', () => {
     await cleanup();
   });
 
+  it('should default compressed = false', async () => {
+    const response = await urllib.request(`${_url}brotli`, {
+      dataType: 'text',
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-encoding'], 'br');
+    // console.log(response.headers);
+    const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    assert(!requestHeaders['accept-encoding'],
+      `should not contains accept-encoding header: ${requestHeaders['accept-encoding']}`);
+    assert.match(response.data, /export async function startServer/);
+  });
+
   it('should deflate content when server accept brotli', async () => {
     const response = await urllib.request(`${_url}brotli`, {
       dataType: 'text',
