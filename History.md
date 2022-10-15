@@ -1,4 +1,15 @@
 
+3.3.1 / 2022-10-16
+==================
+
+**fixes**
+  * [[`d5270f1`](http://github.com/node-modules/urllib/commit/d5270f1e95072ab8becdcce6570e90c2dfd680e5)] - 🐛 FIX: Only auto decompress response stream on args.compressed=true (#412) (fengmk2 <<fengmk2@gmail.com>>)
+
+**others**
+  * [[`d3f6809`](http://github.com/node-modules/urllib/commit/d3f680986f2fd0a5bd8419a8b249ca83a8a5c551)] - 📖 DOC: Fix typo on Arguments (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`b63eb51`](http://github.com/node-modules/urllib/commit/b63eb51f62fa9b375a69b5aae9d7c7029aeb1885)] - 🤖 TEST: Only show error on non-IllegalAddressError (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`c54c86a`](http://github.com/node-modules/urllib/commit/c54c86ae9deba6fdf2b0a020e12bf38fa656d427)] - 🤖 TEST: Fix address illegal test case (#409) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.3.0 / 2022-10-05
 ==================
 
