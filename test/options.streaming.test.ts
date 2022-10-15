@@ -1,6 +1,7 @@
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import { strict as assert } from 'assert';
-import { isReadable, Readable } from 'stream';
+import { isReadable, Readable, pipeline } from 'stream';
+import { createBrotliDecompress } from 'zlib';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 import { readableToBytes } from './utils';
@@ -37,6 +38,65 @@ describe('options.streaming.test.ts', () => {
     assert.equal(data.method, 'GET');
     assert.equal(data.url, '/streaming_testing');
     assert.equal(data.requestBody, '');
+  });
+
+  it('should work on streaming=true and compressed=true/false', async () => {
+    let response = await urllib.request(`${_url}brotli`, {
+      streaming: true,
+      compressed: true,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-encoding'], 'br');
+    // console.log(response.headers);
+    let requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], 'gzip, br');
+    assert.equal(response.data, null);
+    // console.log(response.res);
+    // response.res stream is decompressed
+    isReadable && assert(isReadable(response.res as any));
+    let bytes = await readableToBytes(response.res as Readable);
+    let data = bytes.toString();
+    assert.match(data, /export async function startServer/);
+
+    response = await urllib.request(`${_url}brotli`, {
+      streaming: true,
+      // compressed: false,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-encoding'], 'br');
+    // console.log(response.headers);
+    requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    assert(!requestHeaders['accept-encoding'],
+      `should not contains accept-encoding header: ${requestHeaders['accept-encoding']}`);
+    assert.equal(response.data, null);
+    // console.log(response.res);
+    // response.res stream is not decompressed
+    isReadable && assert(isReadable(response.res as any));
+    let decoder = createBrotliDecompress();
+    bytes = await readableToBytes(pipeline(response.res as Readable, decoder, () => {}));
+    data = bytes.toString();
+    assert.match(data, /export async function startServer/);
+
+    response = await urllib.request(`${_url}brotli`, {
+      streaming: true,
+      compressed: false,
+      headers: {
+        'accept-encoding': 'gzip, deflate, br',
+      },
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-encoding'], 'br');
+    // console.log(response.headers);
+    requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    assert.equal(requestHeaders['accept-encoding'], 'gzip, deflate, br');
+    assert.equal(response.data, null);
+    // console.log(response.res);
+    // response.res stream is not decompressed
+    isReadable && assert(isReadable(response.res as any));
+    decoder = createBrotliDecompress();
+    bytes = await readableToBytes(pipeline(response.res as Readable, decoder, () => {}));
+    data = bytes.toString();
+    assert.match(data, /export async function startServer/);
   });
 
   it('should get big streaming response', async () => {

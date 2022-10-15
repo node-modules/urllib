@@ -2,7 +2,8 @@ import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest
 import { strict as assert } from 'assert';
 import { createWriteStream } from 'fs';
 import { join } from 'path';
-import { stat } from 'fs/promises';
+import { gunzipSync } from 'zlib';
+import { stat, readFile } from 'fs/promises';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 import { createTempfile, sleep } from './utils';
@@ -42,6 +43,34 @@ describe('options.writeStream.test.ts', () => {
     assert.equal(response.headers['content-length'], '1024123');
     const stats = await stat(tmpfile);
     assert.equal(stats.size, 1024123);
+  });
+
+  it('should work with compressed=true/false', async () => {
+    let writeStream = createWriteStream(tmpfile);
+    let response = await urllib.request(`${_url}gzip`, {
+      writeStream,
+      compressed: true,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-type'], undefined);
+    assert.equal(response.data, null);
+    // console.log(response.headers);
+    // writeStream is decompressed
+    let data = await readFile(tmpfile, 'utf-8');
+    assert.match(data, /export async function startServer/);
+
+    writeStream = createWriteStream(tmpfile);
+    response = await urllib.request(`${_url}gzip`, {
+      writeStream,
+      compressed: false,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-type'], undefined);
+    assert.equal(response.data, null);
+    // console.log(response.headers);
+    // writeStream is not decompressed
+    data = gunzipSync(await readFile(tmpfile)).toString();
+    assert.match(data, /export async function startServer/);
   });
 
   it('should close writeStream when request timeout', async () => {

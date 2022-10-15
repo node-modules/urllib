@@ -134,6 +134,26 @@ describe('index.test.ts', () => {
       });
 
       mockPool.intercept({
+        path: '/bar',
+        method: 'GET',
+        query: {
+          q: '1',
+        },
+      }).reply(200, {
+        message: 'mock bar with q=1',
+      });
+
+      mockPool.intercept({
+        path: '/bar',
+        method: 'GET',
+        query: {
+          q: '2',
+        },
+      }).reply(200, {
+        message: 'mock bar with q=2',
+      });
+
+      mockPool.intercept({
         path: /\.tgz$/,
         method: 'GET',
       }).reply(400, {
@@ -146,6 +166,19 @@ describe('index.test.ts', () => {
       });
       assert.equal(response.status, 400);
       assert.deepEqual(response.data, { message: 'mock 400 bad request' });
+
+      response = await urllib.request(`${_url}bar?q=1`, {
+        method: 'GET',
+        dataType: 'json',
+      });
+      assert.equal(response.status, 200);
+      assert.deepEqual(response.data, { message: 'mock bar with q=1' });
+      response = await urllib.request(`${_url}bar?q=2`, {
+        method: 'GET',
+        dataType: 'json',
+      });
+      assert.equal(response.status, 200);
+      assert.deepEqual(response.data, { message: 'mock bar with q=2' });
 
       response = await urllib.request(`${_url}download/foo.tgz`, {
         method: 'GET',
