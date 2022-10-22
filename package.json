@@ -40,7 +40,7 @@
     "content-type": "^1.0.2",
     "debug": "^2.6.9",
     "default-user-agent": "^1.0.0",
-    "digest-header": "^0.0.1",
+    "digest-header": "^1.0.0",
     "ee-first": "~1.1.1",
     "formstream": "^1.1.0",
     "humanize-ms": "^1.2.0",
