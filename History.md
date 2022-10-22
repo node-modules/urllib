@@ -1,4 +1,10 @@
 
+2.40.0 / 2022-10-22
+==================
+
+**features**
+  * [[`59b8cad`](http://github.com/node-modules/urllib/commit/59b8cad667ff856552647cb20edec6ad60fa4d50)] - 👌 IMPROVE: Upgrade digest-header to v1 (#415) (fengmk2 <<fengmk2@gmail.com>>)
+
 2.39.1 / 2022-10-09
 ==================
 
