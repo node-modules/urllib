@@ -94,7 +94,12 @@ describe('options.dataType.test.ts', () => {
     }, (err: any) => {
       // console.error(err);
       assert.equal(err.name, 'JSONResponseFormatError');
-      assert.equal(err.message, 'Unexpected end of JSON input (data json format: "{\\"foo\\":\\"\\"")');
+      if (err.message.startsWith('Expected')) {
+        // new message on Node.js >= 19
+        assert.equal(err.message, 'Expected \',\' or \'}\' after property value in JSON at position 9 (data json format: "{\\"foo\\":\\"\\"")');
+      } else {
+        assert.equal(err.message, 'Unexpected end of JSON input (data json format: "{\\"foo\\":\\"\\"")');
+      }
       assert.equal(err.res.status, 200);
       assert.equal(err.res.headers['content-type'], 'application/json');
       assert.equal(err.res.size, 9);

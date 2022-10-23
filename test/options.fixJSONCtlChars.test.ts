@@ -36,7 +36,7 @@ describe('options.fixJSONCtlChars.test.ts', () => {
     }, (err: any) => {
       assert.equal(err.name, 'JSONResponseFormatError');
       // console.error(err);
-      assert.match(err.message, /Unexpected token/);
+      assert.match(err.message, /Unexpected token|Bad control character in string literal in JSON at position 8/);
       assert.equal(err.status, 200);
       assert.equal(err.headers['x-method'], 'GET');
       return true;
