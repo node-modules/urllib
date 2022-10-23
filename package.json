@@ -73,11 +73,10 @@
     "@types/selfsigned": "^2.0.1",
     "@vitest/coverage-c8": "^0.23.4",
     "busboy": "^1.6.0",
-    "coffee": "5",
-    "egg-ci": "2",
-    "eslint": "^8.17.0",
-    "eslint-config-egg": "^12.0.0",
-    "git-contributor": "1",
+    "egg-ci": "^2.1.0",
+    "eslint": "^8.25.0",
+    "eslint-config-egg": "^12.1.0",
+    "git-contributor": "^1.1.0",
     "iconv-lite": "^0.6.3",
     "proxy": "^1.0.2",
     "selfsigned": "^2.0.1",
@@ -88,7 +87,7 @@
     "node": ">= 14.17.0"
   },
   "ci": {
-    "version": "14, 16, 18"
+    "version": "14, 16, 18, 19"
   },
   "license": "MIT"
 }

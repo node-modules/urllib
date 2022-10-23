@@ -47,12 +47,20 @@ describe('keep-alive-header.test.ts', () => {
   });
 
   it('should return mock user agent',  async () => {
-    const response = await urllib.request(_url, {
+    let response = await urllib.request(_url, {
       dataType: 'json',
       headers: {'user-agent': 'mock agent'},
     });
     assert.equal(response.status, 200);
     // console.log(response.data.headers);
     assert.equal(response.data.headers['user-agent'], 'mock agent');
+
+    response = await urllib.request(_url, {
+      dataType: 'json',
+      headers: {'User-Agent': 'mock agent upper case'},
+    });
+    assert.equal(response.status, 200);
+    // console.log(response.data.headers);
+    assert.equal(response.data.headers['user-agent'], 'mock agent upper case');
   });
 });
