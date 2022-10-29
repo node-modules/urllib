@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "default-user-agent": "^1.0.0",
-    "digest-header": "^0.0.1",
+    "digest-header": "^1.0.0",
     "form-data-encoder": "^1.7.2",
     "formdata-node": "^4.3.3",
     "mime-types": "^2.1.35",
