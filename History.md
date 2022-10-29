@@ -1,4 +1,13 @@
 
+3.4.0 / 2022-10-29
+==================
+
+**features**
+  * [[`20148f0`](http://github.com/node-modules/urllib/commit/20148f03860f7ce2fd98852a7eec583c0fc95bb9)] - 👌 IMPROVE: Upgrade digest-header to v1 (#417) (fengmk2 <<fengmk2@gmail.com>>)
+
+**others**
+  * [[`b097c56`](http://github.com/node-modules/urllib/commit/b097c567cadd1818ab961282b423c1072bddda71)] - 🤖 TEST: Add Node.js 19 ci runner (#416) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.3.1 / 2022-10-16
 ==================
 
