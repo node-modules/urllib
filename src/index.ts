@@ -4,7 +4,13 @@ import { RequestOptions, RequestURL } from './Request';
 let httpclient: HttpClient;
 export async function request(url: RequestURL, options?: RequestOptions) {
   if (!httpclient) {
-    httpclient = new HttpClient();
+    if (options?.socketPath) {
+      httpclient = new HttpClient({
+        connect: { socketPath: options.socketPath },
+      });
+    } else {
+      httpclient = new HttpClient({});
+    }
   }
   return await httpclient.request(url, options);
 }

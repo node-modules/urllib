@@ -97,6 +97,7 @@ console.log('status: %s, body size: %d, headers: %j', res.statusCode, data.lengt
   - ***streaming*** Boolean - let you get the `res` object when request  connected, default `false`. alias `customResponse`
   - ***compressed*** Boolean - Accept `gzip, br` response content and auto decode it, default is `false`.
   - ***timing*** Boolean - Enable timing or not, default is `false`.
+  - ***socketPath*** String | null - request a unix socket service, default is `null`.
 
 #### Options: `options.data`
 
