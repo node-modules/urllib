@@ -123,4 +123,9 @@ export type RequestOptions = {
    * request dispatcher, default is getGlobalDispatcher()
    */
   dispatcher?: Dispatcher;
+
+  /**
+   * unix domain socket file path
+   */
+  socketPath?: string | null;
 };

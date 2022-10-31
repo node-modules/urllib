@@ -78,6 +78,11 @@ export type ClientOptions = {
     * An 'error' event is emitted if verification fails.Default: true.
     */
     rejectUnauthorized?: boolean;
+
+    /**
+     * sockePath string | null (optional) - Default: null - An IPC endpoint, either Unix domain socket or Windows named pipe
+     */
+    socketPath?: string | null;
   },
 };
 
