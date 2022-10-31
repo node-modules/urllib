@@ -1,4 +1,10 @@
 
+3.5.0 / 2022-10-31
+==================
+
+**features**
+  * [[`6ad7a02`](http://github.com/node-modules/urllib/commit/6ad7a029e38f4011846365e852feacb169e4df14)] - feat: add socketPath support (#418) (Ke Wu <<gemwuu@163.com>>)
+
 3.4.0 / 2022-10-29
 ==================
 
