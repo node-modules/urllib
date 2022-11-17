@@ -421,7 +421,12 @@ export class HttpClient extends EventEmitter {
       // handle digest auth
       if (response.statusCode === 401 && response.headers['www-authenticate'] &&
           !requestOptions.headers.authorization && args.digestAuth) {
-        const authenticate = response.headers['www-authenticate'];
+        let authenticate = response.headers['www-authenticate'];
+          
+        if(Array.isArray(authenticate)) {
+          authenticate = authenticate[0];
+        }
+
         if (authenticate.startsWith('Digest ')) {
           debug('Request#%d %s: got digest auth header WWW-Authenticate: %s', requestId, requestUrl.href, authenticate);
           requestOptions.headers.authorization = digestAuthHeader(requestOptions.method!,
