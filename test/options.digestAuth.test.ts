@@ -28,6 +28,18 @@ describe('options.digestAuth.test.ts', () => {
     assert.match(response.data.authorization, /, uri="\/digestAuth",/);
   });
 
+  it('should choose one of multiple challenges split in different headers', async () => {
+    const response = await urllib.request(`${_url}digestAuth/multi`, {
+      digestAuth: 'user:pwd',
+      dataType: 'json',
+    });
+    assert.equal(response.status, 200);
+    assert(response.data.authorization);
+    // console.log(response.data);
+    assert.match(response.data.authorization, /Digest username="user", realm="testrealm@urllib.com", nonce="/);
+    assert.match(response.data.authorization, /, uri="\/digestAuth\/multi",/);
+  });
+
   it('should auth fail', async () => {
     const response = await urllib.request(`${_url}digestAuth`, {
       digestAuth: 'invailduser:pwd',
