@@ -1,4 +1,13 @@
 
+3.5.1 / 2022-11-19
+==================
+
+**fixes**
+  * [[`46d0515`](http://github.com/node-modules/urllib/commit/46d0515eab2e29026e58081bd0516692449c6722)] - fix: parsing multiple www-authenticate response headers (#421) (capsice <<108602490+capsice@users.noreply.github.com>>)
+
+**others**
+  * [[`5c0b4e9`](http://github.com/node-modules/urllib/commit/5c0b4e99ffc8b3ddf9ee40d1cd580f02a80bc712)] - test: use vitest skipIf api (#419) (Ke Wu <<gemwuu@163.com>>)
+
 3.5.0 / 2022-10-31
 ==================
 
