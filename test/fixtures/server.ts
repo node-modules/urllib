@@ -92,6 +92,30 @@ export async function startServer(options?: {
       }));
     }
 
+    if (pathname === '/digestAuth/multi') {
+      const authorization = req.headers.authorization;
+      if (!authorization) {
+        res.setHeader('www-authenticate', [
+          'Digest realm="testrealm@urllib.com", algorithm=MD5-sess, qop="auth", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"',
+          'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"',
+        ]);
+        res.statusCode = 401;
+        return res.end(JSON.stringify({
+          error: 'authorization required',
+        }));
+      }
+      if (!authorization.includes('Digest username="user"')) {
+        res.setHeader('www-authenticate', 'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"');
+        res.statusCode = 401;
+        return res.end(JSON.stringify({
+          error: 'authorization invaild',
+        }));
+      }
+      return res.end(JSON.stringify({
+        authorization,
+      }));
+    }
+
     if (pathname === '/wrongjson') {
       res.setHeader('content-type', 'application/json');
       return res.end(Buffer.from('{"foo":""'));
@@ -154,7 +178,7 @@ export async function startServer(options?: {
       res.socket!.end('balabala');
       return;
     }
-    
+
     if (pathname === '/wrongjson-gbk') {
       res.setHeader('content-type', 'application/json');
       createReadStream(__filename).pipe(res);
@@ -259,7 +283,7 @@ export async function startServer(options?: {
     if (req.headers['content-type']?.startsWith('application/x-www-form-urlencoded')) {
       const searchParams = new URLSearchParams(requestBytes.toString());
       requestBody = {};
-      for (const [ field, value ] of searchParams.entries()) {
+      for (const [field, value] of searchParams.entries()) {
         requestBody[field] = value;
       }
     } else if (req.headers['content-type']?.startsWith('application/json')) {
