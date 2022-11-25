@@ -1,14 +1,11 @@
 import { Readable, Writable } from 'stream';
 import { IncomingHttpHeaders } from 'http';
-import type {
-  HttpMethod as UndiciHttpMethod,
-} from 'undici/types/dispatcher';
 import type Dispatcher from 'undici/types/dispatcher';
 import type {
   HttpClientResponse,
 } from './Response';
 
-export type HttpMethod = UndiciHttpMethod;
+export type HttpMethod = Dispatcher.HttpMethod;
 
 export type RequestURL = string | URL;
 
