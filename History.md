@@ -1,4 +1,10 @@
 
+3.5.2 / 2022-11-25
+==================
+
+**fixes**
+  * [[`6a9dd92`](http://github.com/node-modules/urllib/commit/6a9dd924fe1b09637c825868ce6dc5c6fc8be263)] - 🐛 FIX: Import undici types change (#422) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.5.1 / 2022-11-19
 ==================
 
