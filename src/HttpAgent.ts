@@ -3,15 +3,15 @@ import { LookupFunction, isIP } from 'net';
 import {
   Agent,
 } from 'undici';
-import { DispatchHandlers } from 'undici/types/dispatcher';
-import { BuildOptions } from 'undici/types/connector';
+import type Dispatcher from 'undici/types/dispatcher';
+import type buildConnector from 'undici/types/connector';
 
 export type CheckAddressFunction = (ip: string, family: number | string) => boolean;
 
 export type HttpAgentOptions = {
   lookup?: LookupFunction;
   checkAddress?: CheckAddressFunction;
-  connect?: BuildOptions,
+  connect?: buildConnector.BuildOptions,
 };
 
 class IllegalAddressError extends Error {
@@ -51,7 +51,7 @@ export class HttpAgent extends Agent {
     this.#checkAddress = options.checkAddress;
   }
 
-  dispatch(options: Agent.DispatchOptions, handler: DispatchHandlers): boolean {
+  dispatch(options: Agent.DispatchOptions, handler: Dispatcher.DispatchHandlers): boolean {
     if (this.#checkAddress && options.origin) {
       const originUrl = typeof options.origin === 'string' ? new URL(options.origin) : options.origin;
       let hostname = originUrl.hostname;
