@@ -149,8 +149,8 @@ export function isReadable(stream: any) {
   // https://github.com/nodejs/node/blob/1287530385137dda1d44975063217ccf90759475/lib/internal/streams/utils.js#L119
   // simple way https://github.com/sindresorhus/is-stream/blob/main/index.js
   return stream !== null
-		&& typeof stream === 'object'
-		&& typeof stream.pipe === 'function'
+    && typeof stream === 'object'
+    && typeof stream.pipe === 'function'
     && stream.readable !== false
     && typeof stream._read === 'function'
     && typeof stream._readableState === 'object';

@@ -25,6 +25,8 @@ import { FormDataEncoder } from 'form-data-encoder';
 import createUserAgent from 'default-user-agent';
 import mime from 'mime-types';
 import pump from 'pump';
+// Compatible with old style formstream
+import FormStream from 'formstream';
 import { HttpAgent, CheckAddressFunction } from './HttpAgent';
 import { RequestURL, RequestOptions, HttpMethod } from './Request';
 import { HttpClientResponseMeta, HttpClientResponse, ReadableWithMeta, BaseResponseMeta, SocketInfo } from './Response';
@@ -315,6 +317,9 @@ export class HttpClient extends EventEmitter {
         // https://nodejs.org/dist/latest-v18.x/docs/api/stream.html#readablewrapstream
         if (isReadable(args.stream) && !(args.stream instanceof Readable)) {
           debug('Request#%d convert old style stream to Readable', requestId);
+          args.stream = new Readable().wrap(args.stream);
+        } else if (args.stream instanceof FormStream) {
+          debug('Request#%d convert formstream to Readable', requestId);
           args.stream = new Readable().wrap(args.stream);
         }
         args.content = args.stream;
