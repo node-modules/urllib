@@ -1,4 +1,10 @@
 
+3.7.0 / 2022-12-06
+==================
+
+**features**
+  * [[`726fe86`](http://github.com/node-modules/urllib/commit/726fe86e2c19a57336029ca87c0b962749368e64)] - 👌 IMPROVE: Support formstream module instance stream (#424) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.6.0 / 2022-12-05
 ==================
 
