@@ -1,6 +1,7 @@
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import { strict as assert } from 'assert';
 import { createReadStream } from 'fs';
+import os from 'os';
 import path from 'path';
 import { writeFile, readFile } from 'fs/promises';
 import urllib from '../src';
@@ -56,7 +57,8 @@ describe('options.stream.test.ts', () => {
     assert.equal(response.data.requestBody, raw);
   });
 
-  it('should post with Readable.wrap()', async () => {
+  // Readable.wrap() will fail on Node.js 19 + Windows
+  it.skipIf(os.platform() === 'win32')('should post with Readable.wrap()', async () => {
     const response = await urllib.request(_url, {
       method: 'post',
       dataType: 'json',
