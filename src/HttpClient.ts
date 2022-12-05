@@ -34,10 +34,6 @@ import { initDiagnosticsChannel } from './diagnosticsChannel';
 
 const PROTO_RE = /^https?:\/\//i;
 const FormData = FormDataNative ?? FormDataNode;
-// impl isReadable on Node.js 14
-const isReadable = stream.isReadable ?? function isReadable(stream: any) {
-  return stream && typeof stream.read === 'function';
-};
 // impl promise pipeline on Node.js 14
 const pipelinePromise = stream.promises?.pipeline ?? function pipeline(...args: any[]) {
   return new Promise<void>((resolve, reject) => {

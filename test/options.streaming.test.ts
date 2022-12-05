@@ -1,8 +1,9 @@
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import { strict as assert } from 'assert';
-import { isReadable, Readable, pipeline } from 'stream';
+import { Readable, pipeline } from 'stream';
 import { createBrotliDecompress } from 'zlib';
 import urllib from '../src';
+import { isReadable } from '../src/utils';
 import { startServer } from './fixtures/server';
 import { readableToBytes } from './utils';
 
@@ -31,7 +32,7 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.res.headers, response.headers);
     assert.equal(response.data, null);
     // console.log(response.res);
-    isReadable && assert(isReadable(response.res as any));
+    assert(isReadable(response.res as any));
     assert.equal(response.res.status, 200);
     const bytes = await readableToBytes(response.res as Readable);
     const data = JSON.parse(bytes.toString());
@@ -53,7 +54,7 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.data, null);
     // console.log(response.res);
     // response.res stream is decompressed
-    isReadable && assert(isReadable(response.res as any));
+    assert(isReadable(response.res as any));
     let bytes = await readableToBytes(response.res as Readable);
     let data = bytes.toString();
     assert.match(data, /export async function startServer/);
@@ -71,7 +72,7 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.data, null);
     // console.log(response.res);
     // response.res stream is not decompressed
-    isReadable && assert(isReadable(response.res as any));
+    assert(isReadable(response.res as any));
     let decoder = createBrotliDecompress();
     bytes = await readableToBytes(pipeline(response.res as Readable, decoder, () => {}));
     data = bytes.toString();
@@ -92,7 +93,7 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.data, null);
     // console.log(response.res);
     // response.res stream is not decompressed
-    isReadable && assert(isReadable(response.res as any));
+    assert(isReadable(response.res as any));
     decoder = createBrotliDecompress();
     bytes = await readableToBytes(pipeline(response.res as Readable, decoder, () => {}));
     data = bytes.toString();
@@ -107,7 +108,7 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.headers['content-type'], undefined);
     assert.equal(response.data, null);
     // console.log(response.headers);
-    isReadable && assert(isReadable(response.res as any));
+    assert(isReadable(response.res as any));
     const bytes = await readableToBytes(response.res as Readable);
     assert.equal(bytes.length, 1024102400);
   });
@@ -120,7 +121,7 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.headers['content-type'], undefined);
     assert.equal(response.data, null);
     // console.log(response.headers);
-    isReadable && assert(isReadable(response.res as any));
+    assert(isReadable(response.res as any));
     const bytes = await readableToBytes(response.res as Readable);
     assert.equal(bytes.length, 1024102400);
   });
