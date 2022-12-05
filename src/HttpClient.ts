@@ -28,7 +28,7 @@ import pump from 'pump';
 import { HttpAgent, CheckAddressFunction } from './HttpAgent';
 import { RequestURL, RequestOptions, HttpMethod } from './Request';
 import { HttpClientResponseMeta, HttpClientResponse, ReadableWithMeta, BaseResponseMeta, SocketInfo } from './Response';
-import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime } from './utils';
+import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime, isReadable } from './utils';
 import symbols from './symbols';
 import { initDiagnosticsChannel } from './diagnosticsChannel';
 
@@ -317,7 +317,7 @@ export class HttpClient extends EventEmitter {
       if (args.stream && !args.content) {
         // convert old style stream to new stream
         // https://nodejs.org/dist/latest-v18.x/docs/api/stream.html#readablewrapstream
-        if (Readable.isReadable(args.stream) && !(args.stream instanceof Readable)) {
+        if (isReadable(args.stream) && !(args.stream instanceof Readable)) {
           debug('Request#%d convert old style stream to Readable', requestId);
           args.stream = new Readable().wrap(args.stream);
         }

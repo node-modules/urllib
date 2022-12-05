@@ -4,6 +4,7 @@ import { createReadStream } from 'fs';
 import path from 'path';
 import { writeFile, readFile } from 'fs/promises';
 import urllib from '../src';
+import { isReadable } from '../src/utils';
 import { startServer } from './fixtures/server';
 import { createTempfile } from './utils';
 import tar from 'tar-stream';
@@ -55,6 +56,25 @@ describe('options.stream.test.ts', () => {
     assert.equal(response.data.requestBody, raw);
   });
 
+  it('should post with Readable.wrap()', async () => {
+    const response = await urllib.request(_url, {
+      method: 'post',
+      dataType: 'json',
+      stream: new Readable().wrap(createReadStream(__filename)),
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-type'], 'application/json');
+    assert.equal(response.data.method, 'POST');
+    // console.log(response.data);
+    // not exists on Node.js
+    if (response.data.headers['transfer-encoding']) {
+      assert.equal(response.data.headers['transfer-encoding'], 'chunked');
+    }
+    assert.match(response.data.requestBody, /\('should post with Readable.wrap\(\)', async \(\) => {/);
+    const raw = await readFile(__filename, 'utf-8');
+    assert.equal(response.data.requestBody, raw);
+  });
+
   it('should post with response.res', async () => {
     const response = await urllib.request(_url, {
       method: 'post',
@@ -64,7 +84,7 @@ describe('options.stream.test.ts', () => {
     assert.equal(response.status, 200);
     assert.equal(response.headers['content-type'], 'application/json');
     assert(response.res);
-    assert(Readable.isReadable(response.res as Readable));
+    assert(isReadable(response.res as Readable));
     assert(response.res instanceof Readable);
     const response2 = await urllib.request(`${_url}raw`, {
       method: 'post',
@@ -150,7 +170,7 @@ describe('options.stream.test.ts', () => {
       extract.on('error', (err: Error) => reject(err));
       extract.on('finish', () => resolve(null));
       extract.on('entry', async (header: any, stream: any, next: any) => {
-        assert(Readable.isReadable(stream));
+        assert(isReadable(stream));
         assert.equal(stream instanceof Readable, false);
         // console.log(header.name, header.size, header.type);
         if (header.type !== 'directory') {
@@ -168,7 +188,7 @@ describe('options.stream.test.ts', () => {
       });
       const tgzFile = path.join(__dirname, 'fixtures/pedding-0.0.1.tgz');
       const tgzStream = createReadStream(tgzFile);
-      assert(Readable.isReadable(tgzStream));
+      assert(isReadable(tgzStream));
       assert(tgzStream instanceof Readable);
       tgzStream.pipe(createGunzip()).pipe(extract);
     });
