@@ -1,4 +1,10 @@
 
+3.6.0 / 2022-12-05
+==================
+
+**features**
+  * [[`53d2c91`](http://github.com/node-modules/urllib/commit/53d2c919b7d370a866581b3924b9349f5da3bf9f)] - 👌 IMPROVE: Support old style readable stream (#423) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.5.2 / 2022-11-25
 ==================
 
