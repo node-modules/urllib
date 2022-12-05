@@ -11,6 +11,7 @@ import { createTempfile } from './utils';
 import tar from 'tar-stream';
 import { createGunzip } from 'zlib';
 import { Readable } from 'stream';
+import FormStream from 'formstream';
 
 describe('options.stream.test.ts', () => {
   let close: any;
@@ -57,26 +58,6 @@ describe('options.stream.test.ts', () => {
     assert.equal(response.data.requestBody, raw);
   });
 
-  // Readable.wrap() will fail on Node.js 19 + Windows
-  it.skipIf(os.platform() === 'win32')('should post with Readable.wrap()', async () => {
-    const response = await urllib.request(_url, {
-      method: 'post',
-      dataType: 'json',
-      stream: new Readable().wrap(createReadStream(__filename)),
-    });
-    assert.equal(response.status, 200);
-    assert.equal(response.headers['content-type'], 'application/json');
-    assert.equal(response.data.method, 'POST');
-    // console.log(response.data);
-    // not exists on Node.js
-    if (response.data.headers['transfer-encoding']) {
-      assert.equal(response.data.headers['transfer-encoding'], 'chunked');
-    }
-    assert.match(response.data.requestBody, /\('should post with Readable.wrap\(\)', async \(\) => {/);
-    const raw = await readFile(__filename, 'utf-8');
-    assert.equal(response.data.requestBody, raw);
-  });
-
   it('should post with response.res', async () => {
     const response = await urllib.request(_url, {
       method: 'post',
@@ -98,6 +79,29 @@ describe('options.stream.test.ts', () => {
     assert.match(response2.data.requestBody, /\('should post with stream', async \(\) => {/);
     const raw = await readFile(__filename, 'utf-8');
     assert.equal(response2.data.requestBody, raw);
+  });
+
+  it('should upload file with formstream', async () => {
+    const form = new FormStream();
+    form.file('file', __filename);
+    form.field('hello', '你好 urllib 3');
+    assert.equal(!!isReadable(form), false);
+    assert.equal(form instanceof Readable, false);
+    const response = await urllib.request(`${_url}multipart`, {
+      method: 'post',
+      dataType: 'json',
+      stream: form,
+      headers: form.headers(),
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-type'], 'application/json');
+    assert.equal(response.data.method, 'POST');
+    // console.log(response.data);
+    assert.match(response.data.headers['content-type'], /^multipart\/form-data; boundary=--------------------------\d+$/);
+    assert.equal(response.data.files.file.filename, 'options.stream.test.ts');
+    assert.equal(response.data.form.hello, '你好 urllib 3');
+    const raw = await readFile(__filename);
+    assert.equal(response.data.files.file.size, raw.length);
   });
 
   it('should close 1KB request stream when request timeout', async () => {

@@ -60,6 +60,7 @@
     "digest-header": "^1.0.0",
     "form-data-encoder": "^1.7.2",
     "formdata-node": "^4.3.3",
+    "formstream": "^1.1.1",
     "mime-types": "^2.1.35",
     "pump": "^3.0.0",
     "tslib": "^2.4.0",
