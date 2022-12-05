@@ -84,7 +84,7 @@ describe('options.stream.test.ts', () => {
   it('should upload file with formstream', async () => {
     const form = new FormStream();
     form.file('file', __filename);
-    form.field('hello', '你好urllib');
+    form.field('hello', '你好 urllib 3');
     assert.equal(!!isReadable(form), false);
     assert.equal(form instanceof Readable, false);
     const response = await urllib.request(`${_url}multipart`, {
@@ -99,6 +99,7 @@ describe('options.stream.test.ts', () => {
     // console.log(response.data);
     assert.match(response.data.headers['content-type'], /^multipart\/form-data; boundary=--------------------------\d+$/);
     assert.equal(response.data.files.file.filename, 'options.stream.test.ts');
+    assert.equal(response.data.form.hello, '你好 urllib 3');
     const raw = await readFile(__filename);
     assert.equal(response.data.files.file.size, raw.length);
   });
