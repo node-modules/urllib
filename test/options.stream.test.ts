@@ -50,9 +50,32 @@ describe('options.stream.test.ts', () => {
     if (response.data.headers['transfer-encoding']) {
       assert.equal(response.data.headers['transfer-encoding'], 'chunked');
     }
-    assert.match(response.data.requestBody, /it\('should post with stream', async \(\) => {/);
+    assert.match(response.data.requestBody, /\('should post with stream', async \(\) => {/);
     const raw = await readFile(__filename, 'utf-8');
     assert.equal(response.data.requestBody, raw);
+  });
+
+  it('should post with response.res', async () => {
+    const response = await urllib.request(_url, {
+      method: 'post',
+      dataType: 'stream',
+      stream: createReadStream(__filename),
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-type'], 'application/json');
+    assert(response.res);
+    assert(Readable.isReadable(response.res as Readable));
+    assert(response.res instanceof Readable);
+    const response2 = await urllib.request(`${_url}raw`, {
+      method: 'post',
+      dataType: 'json',
+      stream: response.res,
+    });
+    assert.equal(response2.status, 200);
+    assert(!response2.headers['content-type']);
+    assert.match(response2.data.requestBody, /\('should post with stream', async \(\) => {/);
+    const raw = await readFile(__filename, 'utf-8');
+    assert.equal(response2.data.requestBody, raw);
   });
 
   it('should close 1KB request stream when request timeout', async () => {
