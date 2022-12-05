@@ -16,7 +16,7 @@ describe('options.dispatcher.test.ts', () => {
     proxyServer = setup();
     await new Promise<void>((resolve) => {
       proxyServer.listen(0, () => {
-        console.log('HTTP proxy server listening on port %d', proxyServer.address().port);
+        // console.log('HTTP proxy server listening on port %d', proxyServer.address().port);
         proxyServerUrl = `http://127.0.0.1:${proxyServer.address().port}`;
         resolve();
       });

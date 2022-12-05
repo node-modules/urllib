@@ -28,16 +28,12 @@ import pump from 'pump';
 import { HttpAgent, CheckAddressFunction } from './HttpAgent';
 import { RequestURL, RequestOptions, HttpMethod } from './Request';
 import { HttpClientResponseMeta, HttpClientResponse, ReadableWithMeta, BaseResponseMeta, SocketInfo } from './Response';
-import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime } from './utils';
+import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime, isReadable } from './utils';
 import symbols from './symbols';
 import { initDiagnosticsChannel } from './diagnosticsChannel';
 
 const PROTO_RE = /^https?:\/\//i;
 const FormData = FormDataNative ?? FormDataNode;
-// impl isReadable on Node.js 14
-const isReadable = stream.isReadable ?? function isReadable(stream: any) {
-  return stream && typeof stream.read === 'function';
-};
 // impl promise pipeline on Node.js 14
 const pipelinePromise = stream.promises?.pipeline ?? function pipeline(...args: any[]) {
   return new Promise<void>((resolve, reject) => {
@@ -315,6 +311,12 @@ export class HttpClient extends EventEmitter {
       const isGETOrHEAD = requestOptions.method === 'GET' || requestOptions.method === 'HEAD';
       // alias to args.content
       if (args.stream && !args.content) {
+        // convert old style stream to new stream
+        // https://nodejs.org/dist/latest-v18.x/docs/api/stream.html#readablewrapstream
+        if (isReadable(args.stream) && !(args.stream instanceof Readable)) {
+          debug('Request#%d convert old style stream to Readable', requestId);
+          args.stream = new Readable().wrap(args.stream);
+        }
         args.content = args.stream;
       }
 
