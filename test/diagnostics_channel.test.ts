@@ -25,7 +25,7 @@ describe('diagnostics_channel.test.ts', () => {
     let kHandler: any;
     function onMessage(message: any, name: string) {
       if (name === 'undici:client:connected') {
-        console.log('%s %j', name, message.connectParams);
+        // console.log('%s %j', name, message.connectParams);
         message.socket[kRequests] = 0;
         return;
       }

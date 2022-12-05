@@ -315,6 +315,12 @@ export class HttpClient extends EventEmitter {
       const isGETOrHEAD = requestOptions.method === 'GET' || requestOptions.method === 'HEAD';
       // alias to args.content
       if (args.stream && !args.content) {
+        // convert old style stream to new stream
+        // https://nodejs.org/dist/latest-v18.x/docs/api/stream.html#readablewrapstream
+        if (Readable.isReadable(args.stream) && !(args.stream instanceof Readable)) {
+          debug('Request#%d convert old style stream to Readable', requestId);
+          args.stream = new Readable().wrap(args.stream);
+        }
         args.content = args.stream;
       }
 

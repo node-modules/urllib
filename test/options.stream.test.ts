@@ -1,10 +1,14 @@
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import { strict as assert } from 'assert';
 import { createReadStream } from 'fs';
+import path from 'path';
 import { writeFile, readFile } from 'fs/promises';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 import { createTempfile } from './utils';
+import tar from 'tar-stream';
+import { createGunzip } from 'zlib';
+import { Readable } from 'stream';
 
 describe('options.stream.test.ts', () => {
   let close: any;
@@ -115,5 +119,35 @@ describe('options.stream.test.ts', () => {
     });
     assert.equal(stream.destroyed, true);
     assert.equal(streamError, true);
+  });
+
+  it('should POST work on tar-stream', async () => {
+    await new Promise((resolve, reject) => {
+      const extract = tar.extract();
+      extract.on('error', (err: Error) => reject(err));
+      extract.on('finish', () => resolve(null));
+      extract.on('entry', async (header: any, stream: any, next: any) => {
+        assert(Readable.isReadable(stream));
+        assert.equal(stream instanceof Readable, false);
+        // console.log(header.name, header.size, header.type);
+        if (header.type !== 'directory') {
+          const response = await urllib.request(`${_url}raw`, {
+            method: 'POST',
+            stream,
+            headers: {
+              'content-length': header.size,
+            },
+          });
+          assert.equal(response.status, 200);
+          assert.equal(response.data.length, header.size);
+        }
+        next();
+      });
+      const tgzFile = path.join(__dirname, 'fixtures/pedding-0.0.1.tgz');
+      const tgzStream = createReadStream(tgzFile);
+      assert(Readable.isReadable(tgzStream));
+      assert(tgzStream instanceof Readable);
+      tgzStream.pipe(createGunzip()).pipe(extract);
+    });
   });
 });
