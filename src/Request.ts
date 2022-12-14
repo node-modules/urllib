@@ -35,17 +35,22 @@ export type RequestOptions = {
     * The files will send with multipart/form-data format, base on formstream.
     * If method not set, will use POST method by default.
     */
-  files?: Array<Readable | Buffer | string> | Record<string, Readable | Buffer | string> | Readable | Buffer | string;
+  files?: Array<Readable | Buffer | string> | Record<string, Readable | Buffer | string> | Readable | Buffer | string | object;
   /** Type of request data, could be 'json'. If it's 'json', will auto set Content-Type: 'application/json' header. */
   contentType?: string;
   /**
    * Type of response data. Could be text or json.
-   * If it's text, the callbacked data would be a String.
+   * If it's text or html, the callbacked data would be a String.
    * If it's json, the data of callback would be a parsed JSON Object
    * and will auto set Accept: 'application/json' header.
    * Default is 'buffer'.
    */
-  dataType?: 'text' | 'json' | 'buffer' | 'stream';
+  dataType?: 'text' | 'html' | 'json' | 'buffer' | 'stream';
+  /**
+   * @deprecated
+   * Only for d.ts keep compatible with urllib@2, don't use it anymore.
+   */
+  dataAsQueryString?: boolean;
   /**
    * @deprecated
    * Let you get the res object when request connected, default false.

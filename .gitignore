@@ -10,3 +10,4 @@ src/**/*.js
 src/**/*.js.map
 src/**/*.d.ts
 !src/formstream.d.ts
+.DS_Store
