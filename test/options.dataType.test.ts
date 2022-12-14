@@ -55,6 +55,19 @@ describe('options.dataType.test.ts', () => {
     assert(!response.redirected);
   });
 
+  it('should work with dataType = html', async () => {
+    const response = await urllib.request(_url, {
+      dataType: 'html',
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-type'], 'application/json');
+    assert(response.headers.date);
+    assert.equal(typeof response.data, 'string');
+    assert.match(response.data, /^{"method":"GET",/);
+    assert.equal(response.url, _url);
+    assert(!response.redirected);
+  });
+
   it('should work with dataType = json', async () => {
     const response = await urllib.request(_url, {
       dataType: 'json',

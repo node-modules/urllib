@@ -156,6 +156,11 @@ export class HttpClient extends EventEmitter {
     return await this.#requestInternal(url, options);
   }
 
+  // alias to request, keep compatible with urlib@2 HttpClient.curl
+  async curl(url: RequestURL, options?: RequestOptions) {
+    return await this.request(url, options);
+  }
+
   async #requestInternal(url: RequestURL, options?: RequestOptions, requestContext?: RequestContext): Promise<HttpClientResponse> {
     const requestId = globalId('HttpClientRequest');
     let requestUrl: URL;
@@ -507,7 +512,7 @@ export class HttpClient extends EventEmitter {
             throw err;
           }
         }
-        if (args.dataType === 'text') {
+        if (args.dataType === 'text' || args.dataType === 'html') {
           data = data.toString();
         } else if (args.dataType === 'json') {
           if (data.length === 0) {

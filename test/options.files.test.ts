@@ -103,6 +103,24 @@ describe('options.files.test.ts', () => {
     assert.equal(response.data.files.json.size, jsonStat.size);
   });
 
+  it('should upload files as object success with default POST method', async () => {
+    const files: object = {
+      hello: Buffer.from('😄foo😭'),
+    };
+    const response = await urllib.request(`${_url}multipart`, {
+      files,
+      dataType: 'json',
+    });
+    assert.equal(response.status, 200);
+    // console.log(response.data);
+    assert.equal(response.data.method, 'POST');
+    assert.match(response.data.headers['content-type'], /^multipart\/form-data;/);
+    assert.equal(response.data.files.hello.filename, 'bufferfile0');
+    assert.equal(response.data.files.hello.mimeType, 'application/octet-stream');
+    assert.equal(response.data.files.hello.encoding, '7bit');
+    assert.equal(response.data.files.hello.size, 11);
+  });
+
   it('should upload a file with stream success', async () => {
     const file = path.join(__dirname, 'cjs', 'index.js');
     const stat = await fs.stat(file);

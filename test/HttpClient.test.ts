@@ -18,6 +18,16 @@ describe('HttpClient.test.ts', () => {
     await close();
   });
 
+  describe('.curl()', () => {
+    it('should curl alias to request()', async () => {
+      const httpclient = new HttpClient({ defaultArgs: { timeout: 1000 } });
+      let response = await httpclient.curl(_url);
+      assert.equal(response.status, 200);
+      response = await httpclient.curl(_url, { method: 'GET' });
+      assert.equal(response.status, 200);
+    });
+  });
+
   describe('clientOptions.defaultArgs', () => {
     it('should work with custom defaultArgs', async () => {
       const httpclient = new HttpClient({ defaultArgs: { timeout: 1000 } });
