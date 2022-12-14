@@ -31,6 +31,15 @@ describe('index.test.ts', () => {
       assert(!response.redirected);
     });
 
+    it('should curl alias to request', async () => {
+      const response = await urllib.curl(`${_url}html`);
+      assert.equal(response.status, 200);
+      assert.equal(response.headers['content-type'], 'text/html');
+      assert(response.headers.date);
+      assert.equal(response.url, `${_url}html`);
+      assert(!response.redirected);
+    });
+
     it('should keep dataAsQueryString compatible', async () => {
       const response = await urllib.request(`${_url}html`, { dataAsQueryString: true });
       assert.equal(response.status, 200);
