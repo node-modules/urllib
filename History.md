@@ -1,4 +1,10 @@
 
+3.8.0 / 2022-12-14
+==================
+
+**features**
+  * [[`ee75fe7`](http://github.com/node-modules/urllib/commit/ee75fe78063112ed62d840167cc1ec71a9c6ea21)] - 👌 IMPROVE: Keep more compatible d.ts on urllib v2 (#425) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.7.0 / 2022-12-06
 ==================
 
