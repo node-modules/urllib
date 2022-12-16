@@ -1,6 +1,6 @@
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import { strict as assert } from 'assert';
-import { Readable, pipeline } from 'stream';
+import { pipeline } from 'stream';
 import { createBrotliDecompress } from 'zlib';
 import urllib from '../src';
 import { isReadable } from '../src/utils';
@@ -21,7 +21,7 @@ describe('options.streaming.test.ts', () => {
   });
 
   it('should get streaming response', async () => {
-    const response = await urllib.request(`${_url}streaming_testing`, {
+    let response = await urllib.request(`${_url}streaming_testing`, {
       streaming: true,
     });
     assert.equal(response.status, 200);
@@ -34,11 +34,22 @@ describe('options.streaming.test.ts', () => {
     // console.log(response.res);
     assert(isReadable(response.res as any));
     assert.equal(response.res.status, 200);
-    const bytes = await readableToBytes(response.res as Readable);
+    const bytes = await readableToBytes(response.res);
     const data = JSON.parse(bytes.toString());
     assert.equal(data.method, 'GET');
     assert.equal(data.url, '/streaming_testing');
     assert.equal(data.requestBody, '');
+
+    response = await urllib.request(`${_url}streaming_testing`, {
+      streaming: true,
+    });
+    assert.equal(response.status, 200);
+    let size = 0;
+    // response.res can be read by await for of
+    for await (const chunk of response.res) {
+      size += chunk.length;
+    }
+    assert.equal(size, bytes.length);
   });
 
   it('should work on streaming=true and compressed=true/false', async () => {
@@ -54,8 +65,8 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.data, null);
     // console.log(response.res);
     // response.res stream is decompressed
-    assert(isReadable(response.res as any));
-    let bytes = await readableToBytes(response.res as Readable);
+    assert(isReadable(response.res));
+    let bytes = await readableToBytes(response.res);
     let data = bytes.toString();
     assert.match(data, /export async function startServer/);
 
@@ -72,9 +83,9 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.data, null);
     // console.log(response.res);
     // response.res stream is not decompressed
-    assert(isReadable(response.res as any));
+    assert(isReadable(response.res));
     let decoder = createBrotliDecompress();
-    bytes = await readableToBytes(pipeline(response.res as Readable, decoder, () => {}));
+    bytes = await readableToBytes(pipeline(response.res, decoder, () => {}));
     data = bytes.toString();
     assert.match(data, /export async function startServer/);
 
@@ -93,9 +104,9 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.data, null);
     // console.log(response.res);
     // response.res stream is not decompressed
-    assert(isReadable(response.res as any));
+    assert(isReadable(response.res));
     decoder = createBrotliDecompress();
-    bytes = await readableToBytes(pipeline(response.res as Readable, decoder, () => {}));
+    bytes = await readableToBytes(pipeline(response.res, decoder, () => {}));
     data = bytes.toString();
     assert.match(data, /export async function startServer/);
   });
@@ -109,7 +120,7 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.data, null);
     // console.log(response.headers);
     assert(isReadable(response.res as any));
-    const bytes = await readableToBytes(response.res as Readable);
+    const bytes = await readableToBytes(response.res);
     assert.equal(bytes.length, 1024102400);
   });
 
@@ -122,7 +133,7 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.data, null);
     // console.log(response.headers);
     assert(isReadable(response.res as any));
-    const bytes = await readableToBytes(response.res as Readable);
+    const bytes = await readableToBytes(response.res);
     assert.equal(bytes.length, 1024102400);
   });
 });

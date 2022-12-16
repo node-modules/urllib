@@ -34,24 +34,19 @@ export type Timing = {
   contentDownload: number;
 };
 
-export type BaseResponseMeta = {
+export type RawResponseWithMeta = Readable & {
   status: number;
   statusCode: number;
   headers: IncomingHttpHeaders;
   timing: Timing;
   // SocketInfo
   socket: SocketInfo;
-};
-
-export type HttpClientResponseMeta = BaseResponseMeta & {
   size: number;
   aborted: boolean;
   rt: number;
   keepAliveSocket: boolean;
   requestUrls: string[];
 };
-
-export type ReadableWithMeta = Readable & BaseResponseMeta;
 
 export type HttpClientResponse = {
   opaque: unknown;
@@ -63,5 +58,5 @@ export type HttpClientResponse = {
   url: string;
   redirected: boolean;
   requestUrls: string[];
-  res: ReadableWithMeta | HttpClientResponseMeta;
+  res: RawResponseWithMeta;
 };

@@ -228,7 +228,7 @@ describe('index.test.ts', () => {
         dataType: 'stream',
       });
       assert.equal(response.status, 200);
-      let bytes = await readableToBytes(response.res as Readable);
+      let bytes = await readableToBytes(response.res);
       assert.match(bytes.toString(), /mock response stream/);
       assert.equal(bytes.length, readFileSync(__filename).length);
 
@@ -237,7 +237,7 @@ describe('index.test.ts', () => {
         streaming: true,
       });
       assert.equal(response.status, 200);
-      bytes = await readableToBytes(response.res as Readable);
+      bytes = await readableToBytes(response.res);
       assert.match(bytes.toString(), /streaming: true,/);
       assert.equal(bytes.length, readFileSync(__filename).length);
 

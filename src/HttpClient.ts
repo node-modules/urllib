@@ -29,7 +29,7 @@ import pump from 'pump';
 import FormStream from 'formstream';
 import { HttpAgent, CheckAddressFunction } from './HttpAgent';
 import { RequestURL, RequestOptions, HttpMethod } from './Request';
-import { HttpClientResponseMeta, HttpClientResponse, ReadableWithMeta, BaseResponseMeta, SocketInfo } from './Response';
+import { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response';
 import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime, isReadable } from './utils';
 import symbols from './symbols';
 import { initDiagnosticsChannel } from './diagnosticsChannel';
@@ -243,7 +243,7 @@ export class HttpClient extends EventEmitter {
     };
     // keep urllib createCallbackResponse style
     const resHeaders: IncomingHttpHeaders = {};
-    const res: HttpClientResponseMeta = {
+    let res = {
       status: -1,
       statusCode: -1,
       headers: resHeaders,
@@ -254,7 +254,7 @@ export class HttpClient extends EventEmitter {
       requestUrls: [],
       timing,
       socket: socketInfo,
-    };
+    } as any as RawResponseWithMeta;
 
     let headersTimeout = 5000;
     let bodyTimeout = 5000;
@@ -471,24 +471,16 @@ export class HttpClient extends EventEmitter {
       }
 
       let data: any = null;
-      let responseBodyStream: ReadableWithMeta | undefined;
       if (args.dataType === 'stream') {
         // streaming mode will disable retry
         args.retry = 0;
-        const meta: BaseResponseMeta = {
-          status: res.status,
-          statusCode: res.statusCode,
-          headers: res.headers,
-          timing,
-          socket: socketInfo,
-        };
         // only auto decompress on request args.compressed = true
         if (args.compressed === true && isCompressedContent) {
           // gzip or br
           const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
-          responseBodyStream = Object.assign(pipeline(response.body, decoder, noop), meta);
+          res = Object.assign(pipeline(response.body, decoder, noop), res);
         } else {
-          responseBodyStream = Object.assign(response.body, meta);
+          res = Object.assign(response.body, res);
         }
       } else if (args.writeStream) {
         // streaming mode will disable retry
@@ -535,7 +527,7 @@ export class HttpClient extends EventEmitter {
         url: lastUrl,
         redirected: res.requestUrls.length > 1,
         requestUrls: res.requestUrls,
-        res: responseBodyStream ?? res,
+        res,
       };
 
       if (args.retry > 0 && requestContext.retries < args.retry) {
