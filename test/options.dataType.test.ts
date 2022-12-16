@@ -151,7 +151,7 @@ describe('options.dataType.test.ts', () => {
     assert.equal(response.status, 200);
     assert.equal(response.headers['content-type'], 'application/json');
     assert(response.res);
-    const bytes = await readableToBytes(response.res as Readable);
+    const bytes = await readableToBytes(response.res);
     const jsonString = bytes.toString();
     assert.equal(JSON.parse(jsonString).method, 'GET');
   });
@@ -164,7 +164,7 @@ describe('options.dataType.test.ts', () => {
     assert.equal(response.headers['content-type'], 'application/json');
     assert(response.res);
     assert(response.res);
-    const bytes = await readableToBytes(response.res as Readable);
+    const bytes = await readableToBytes(response.res);
     const jsonString = bytes.toString();
     assert.equal(JSON.parse(jsonString).method, 'GET');
   });

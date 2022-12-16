@@ -67,7 +67,7 @@ describe('options.stream.test.ts', () => {
     assert.equal(response.status, 200);
     assert.equal(response.headers['content-type'], 'application/json');
     assert(response.res);
-    assert(isReadable(response.res as Readable));
+    assert(isReadable(response.res));
     assert(response.res instanceof Readable);
     const response2 = await urllib.request(`${_url}raw`, {
       method: 'post',

@@ -1,6 +1,6 @@
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import { strict as assert } from 'assert';
-import { Readable, pipeline } from 'stream';
+import { pipeline } from 'stream';
 import { createBrotliDecompress } from 'zlib';
 import urllib from '../src';
 import { isReadable } from '../src/utils';
@@ -66,7 +66,7 @@ describe('options.streaming.test.ts', () => {
     // console.log(response.res);
     // response.res stream is decompressed
     assert(isReadable(response.res));
-    let bytes = await readableToBytes(response.res as Readable);
+    let bytes = await readableToBytes(response.res);
     let data = bytes.toString();
     assert.match(data, /export async function startServer/);
 
