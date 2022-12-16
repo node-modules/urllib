@@ -1,4 +1,10 @@
 
+3.8.1 / 2022-12-16
+==================
+
+**fixes**
+  * [[`3c731cc`](http://github.com/node-modules/urllib/commit/3c731cc3a376f84d5d5d4b6af0b0b986891eac12)] - 🐛 FIX: HttpClientResponse.res should be IncomingMessage (#426) (fengmk2 <<fengmk2@gmail.com>>)
+
 3.8.0 / 2022-12-14
 ==================
 
