@@ -1,5 +1,5 @@
 import { Readable } from 'stream';
-import { IncomingHttpHeaders } from 'http';
+import { IncomingHttpHeaders, IncomingMessage } from 'http';
 
 export type SocketInfo = {
   id: number;
@@ -34,10 +34,8 @@ export type Timing = {
   contentDownload: number;
 };
 
-export type BaseResponseMeta = {
+export type BaseResponseMeta = IncomingMessage & {
   status: number;
-  statusCode: number;
-  headers: IncomingHttpHeaders;
   timing: Timing;
   // SocketInfo
   socket: SocketInfo;
