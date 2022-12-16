@@ -1,5 +1,5 @@
 import { Readable } from 'stream';
-import { IncomingHttpHeaders, IncomingMessage } from 'http';
+import { IncomingHttpHeaders } from 'http';
 
 export type SocketInfo = {
   id: number;
@@ -34,22 +34,19 @@ export type Timing = {
   contentDownload: number;
 };
 
-export type BaseResponseMeta = IncomingMessage & {
+export type RawResponseWithMeta = Readable & {
   status: number;
+  statusCode: number;
+  headers: IncomingHttpHeaders;
   timing: Timing;
   // SocketInfo
   socket: SocketInfo;
-};
-
-export type HttpClientResponseMeta = BaseResponseMeta & {
   size: number;
   aborted: boolean;
   rt: number;
   keepAliveSocket: boolean;
   requestUrls: string[];
 };
-
-export type ReadableWithMeta = Readable & BaseResponseMeta;
 
 export type HttpClientResponse = {
   opaque: unknown;
@@ -61,5 +58,5 @@ export type HttpClientResponse = {
   url: string;
   redirected: boolean;
   requestUrls: string[];
-  res: ReadableWithMeta | HttpClientResponseMeta;
+  res: RawResponseWithMeta;
 };
