@@ -76,7 +76,6 @@
     "@types/tar-stream": "^2.2.2",
     "@vitest/coverage-c8": "^0.23.4",
     "busboy": "^1.6.0",
-    "egg-ci": "^2.1.0",
     "eslint": "^8.25.0",
     "eslint-config-egg": "^12.1.0",
     "git-contributor": "^1.1.0",
@@ -89,9 +88,6 @@
   },
   "engines": {
     "node": ">= 14.17.0"
-  },
-  "ci": {
-    "version": "14, 16, 18, 19"
   },
   "license": "MIT"
 }
