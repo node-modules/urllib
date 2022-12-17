@@ -1,5 +1,5 @@
 import { HttpClient, HEADER_USER_AGENT } from './HttpClient';
-import { RequestOptions, RequestURL, HttpMethod } from './Request';
+import { RequestOptions, RequestURL } from './Request';
 
 let httpclient: HttpClient;
 export async function request(url: RequestURL, options?: RequestOptions) {
