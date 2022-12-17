@@ -1,5 +1,5 @@
 import { HttpClient, HEADER_USER_AGENT } from './HttpClient';
-import { RequestOptions, RequestURL, HttpMethod } from './Request';
+import { RequestOptions, RequestURL } from './Request';
 
 let httpclient: HttpClient;
 export async function request(url: RequestURL, options?: RequestOptions) {
@@ -29,9 +29,14 @@ export {
   setGlobalDispatcher, getGlobalDispatcher,
 } from 'undici';
 // HttpClient2 is keep compatible with urlib@2 HttpClient2
-export { HttpClient, HttpClient as HttpClient2, HEADER_USER_AGENT as USER_AGENT };
+export { HttpClient, HttpClient as HttpClient2, HEADER_USER_AGENT as USER_AGENT } from './HttpClient';
 // RequestOptions2 is keep compatible with urlib@2 RequestOptions2
-export { RequestOptions, RequestOptions as RequestOptions2, RequestURL, HttpMethod };
+export {
+  RequestOptions, RequestOptions as RequestOptions2, RequestURL, HttpMethod,
+  FixJSONCtlCharsHandler, FixJSONCtlChars,
+} from './Request';
+
+export { SocketInfo, Timing, RawResponseWithMeta, HttpClientResponse } from './Response';
 
 export default {
   request,

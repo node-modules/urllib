@@ -11,3 +11,4 @@ src/**/*.js.map
 src/**/*.d.ts
 !src/formstream.d.ts
 .DS_Store
+test/fixtures/ts/*.js

@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2021",
+    "module": "NodeNext",
+    "moduleResolution": "Node",
+    "baseUrl": "./",
+    "paths": {
+      "urllib": ["../../.."]
+    }
+  }
+}
