@@ -1,3 +1,8 @@
+3.9.0 / 2022-12-17
+==================
+
+**features**
+  * [[`c6928c4`](http://github.com/node-modules/urllib/commit/c6928c4e81eb235f6cb233dd986cba460ec6e1bd)] - 📦 NEW: Export HttpClientResponse from urllib directly (#427) (fengmk2 <<fengmk2@gmail.com>>)
 
 3.8.1 / 2022-12-16
 ==================
