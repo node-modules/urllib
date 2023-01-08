@@ -71,6 +71,7 @@
     "@types/busboy": "^1.5.0",
     "@types/default-user-agent": "^1.0.0",
     "@types/mime-types": "^2.1.1",
+    "@types/node": "^18.11.18",
     "@types/pump": "^1.1.1",
     "@types/selfsigned": "^2.0.1",
     "@types/tar-stream": "^2.2.2",
@@ -78,13 +79,14 @@
     "busboy": "^1.6.0",
     "eslint": "^8.25.0",
     "eslint-config-egg": "^12.1.0",
-    "git-contributor": "^1.1.0",
+    "git-contributor": "^2.0.0",
     "iconv-lite": "^0.6.3",
     "proxy": "^1.0.2",
     "selfsigned": "^2.0.1",
     "tar-stream": "^2.2.0",
     "typescript": "^4.8.3",
-    "vitest": "^0.25.3"
+    "vite": "^4.0.4",
+    "vitest": "^0.26.3"
   },
   "engines": {
     "node": ">= 14.17.0"
