@@ -85,7 +85,6 @@
     "selfsigned": "^2.0.1",
     "tar-stream": "^2.2.0",
     "typescript": "^4.8.3",
-    "vite": "^4.0.4",
     "vitest": "^0.26.3"
   },
   "engines": {
