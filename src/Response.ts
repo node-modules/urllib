@@ -48,9 +48,9 @@ export type RawResponseWithMeta = Readable & {
   requestUrls: string[];
 };
 
-export type HttpClientResponse = {
+export type HttpClientResponse<T = any> = {
   opaque: unknown;
-  data: any;
+  data: T;
   status: number;
   // alias to status, keep compatibility
   statusCode: number;

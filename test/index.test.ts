@@ -31,6 +31,17 @@ describe('index.test.ts', () => {
       assert(!response.redirected);
     });
 
+    it('should request with T response data', async () => {
+      type HelloData = {
+        hello: string;
+      };
+      const response = await urllib.request<HelloData>(`${_url}hello/json`, {
+        dataType: 'json',
+      });
+      assert.equal(response.status, 200);
+      console.log(response.data.hello);
+    });
+
     it('should curl alias to request', async () => {
       const response = await urllib.curl(`${_url}html`);
       assert.equal(response.status, 200);

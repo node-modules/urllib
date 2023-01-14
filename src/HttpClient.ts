@@ -152,16 +152,16 @@ export class HttpClient extends EventEmitter {
     initDiagnosticsChannel();
   }
 
-  async request(url: RequestURL, options?: RequestOptions) {
-    return await this.#requestInternal(url, options);
+  async request<T = any>(url: RequestURL, options?: RequestOptions) {
+    return await this.#requestInternal<T>(url, options);
   }
 
   // alias to request, keep compatible with urlib@2 HttpClient.curl
-  async curl(url: RequestURL, options?: RequestOptions) {
-    return await this.request(url, options);
+  async curl<T = any>(url: RequestURL, options?: RequestOptions) {
+    return await this.request<T>(url, options);
   }
 
-  async #requestInternal(url: RequestURL, options?: RequestOptions, requestContext?: RequestContext): Promise<HttpClientResponse> {
+  async #requestInternal<T>(url: RequestURL, options?: RequestOptions, requestContext?: RequestContext): Promise<HttpClientResponse<T>> {
     const requestId = globalId('HttpClientRequest');
     let requestUrl: URL;
     if (typeof url === 'string') {
