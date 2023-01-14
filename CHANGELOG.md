@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.10.1](https://github.com/node-modules/urllib/compare/v3.10.0...v3.10.1) (2023-01-14)
+
+
+### Bug Fixes
+
+* keep urllib2 request with Type parameter ([#432](https://github.com/node-modules/urllib/issues/432)) ([12f169e](https://github.com/node-modules/urllib/commit/12f169e18089682331710aee10fdc7fd6a0946d3))
+
 ## [3.10.0](https://github.com/node-modules/urllib/compare/v3.9.0...v3.10.0) (2022-12-18)
 
 
