@@ -2,7 +2,7 @@ import { HttpClient, HEADER_USER_AGENT } from './HttpClient';
 import { RequestOptions, RequestURL } from './Request';
 
 let httpclient: HttpClient;
-export async function request(url: RequestURL, options?: RequestOptions) {
+export async function request<T = any>(url: RequestURL, options?: RequestOptions) {
   if (!httpclient) {
     if (options?.socketPath) {
       httpclient = new HttpClient({
@@ -12,7 +12,7 @@ export async function request(url: RequestURL, options?: RequestOptions) {
       httpclient = new HttpClient({});
     }
   }
-  return await httpclient.request(url, options);
+  return await httpclient.request<T>(url, options);
 }
 
 // export curl method is keep compatible with urlib.curl()
@@ -20,8 +20,8 @@ export async function request(url: RequestURL, options?: RequestOptions) {
 // import * as urllib from 'urllib';
 // urllib.curl(url);
 // ```
-export async function curl(url: RequestURL, options?: RequestOptions) {
-  return await request(url, options);
+export async function curl<T = any>(url: RequestURL, options?: RequestOptions) {
+  return await request<T>(url, options);
 }
 
 export {

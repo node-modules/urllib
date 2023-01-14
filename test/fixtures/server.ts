@@ -71,6 +71,12 @@ export async function startServer(options?: {
       }));
     }
 
+    if (pathname === '/hello/json') {
+      return res.end(JSON.stringify({
+        hello: 'urllib',
+      }));
+    }
+
     if (pathname === '/digestAuth') {
       const authorization = req.headers.authorization;
       if (!authorization) {
