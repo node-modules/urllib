@@ -1,5 +1,5 @@
 import { Readable, Writable } from 'stream';
-import { IncomingHttpHeaders } from 'http';
+import type { IncomingHttpHeaders } from 'http';
 import type Dispatcher from 'undici/types/dispatcher';
 import type {
   HttpClientResponse,
