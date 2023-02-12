@@ -310,7 +310,6 @@ export class HttpClient extends EventEmitter {
         maxRedirections: args.maxRedirects ?? 10,
         headersTimeout,
         headers,
-        reset: false,
         bodyTimeout,
         opaque: internalOpaque,
         dispatcher: args.dispatcher ?? this.#dispatcher,
@@ -429,6 +428,7 @@ export class HttpClient extends EventEmitter {
 
       debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s',
         requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout);
+      requestOptions.headers = headers;
       if (this.listenerCount('request') > 0) {
         this.emit('request', reqMeta);
       }
