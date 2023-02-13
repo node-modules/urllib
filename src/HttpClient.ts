@@ -446,7 +446,7 @@ export class HttpClient extends EventEmitter {
           requestOptions.headers.authorization = digestAuthHeader(requestOptions.method!,
             `${requestUrl.pathname}${requestUrl.search}`, authenticate, args.digestAuth);
           debug('Request#%d %s: auth with digest header: %s', requestId, url, requestOptions.headers.authorization);
-          if (response.headers['set-cookie']) {
+          if (Array.isArray(response.headers['set-cookie'])) {
             // FIXME: merge exists cookie header
             requestOptions.headers.cookie = response.headers['set-cookie'].join(';');
           }
