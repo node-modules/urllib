@@ -82,7 +82,7 @@ describe('options.writeStream.test.ts', () => {
       // console.log('writeStreamClosed');
     });
     await assert.rejects(async () => {
-      await urllib.request(`${_url}mock-bytes?size=1024&timeout=200`, {
+      await urllib.request(`${_url}mock-bytes?size=1024&timeout=2000`, {
         writeStream,
         timeout: 100,
       });

@@ -12,7 +12,6 @@ import { Readable, pipeline } from 'stream';
 import stream from 'stream';
 import { basename } from 'path';
 import { createReadStream } from 'fs';
-import { IncomingHttpHeaders } from 'http';
 import { format as urlFormat } from 'url';
 import { performance } from 'perf_hooks';
 import {
@@ -33,6 +32,12 @@ import { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response'
 import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime, isReadable } from './utils';
 import symbols from './symbols';
 import { initDiagnosticsChannel } from './diagnosticsChannel';
+import type { IncomingHttpHeaders } from 'http';
+
+type Exists<T> = T extends undefined ? never : T;
+type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;
+type PropertyShouldBe<T, K extends keyof T, V> = Omit<T, K> & { [P in K]: V };
+type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', IncomingHttpHeaders>;
 
 const PROTO_RE = /^https?:\/\//i;
 const FormData = FormDataNative ?? FormDataNode;
@@ -83,8 +88,6 @@ export type ClientOptions = {
     socketPath?: string | null;
   },
 };
-
-type UndiciRquestOptions = { dispatcher?: Dispatcher } & Omit<Dispatcher.RequestOptions, 'origin' | 'path' | 'method'> & Partial<Pick<Dispatcher.RequestOptions, 'method'>>;
 
 // https://github.com/octet-stream/form-data
 class BlobFromStream {
@@ -180,7 +183,7 @@ export class HttpClient extends EventEmitter {
     }
 
     const method = (options?.method ?? 'GET').toUpperCase() as HttpMethod;
-    const orginalHeaders = options?.headers;
+    const originalHeaders = options?.headers;
     const headers: IncomingHttpHeaders = {};
     const args = {
       retry: 0,
@@ -266,10 +269,10 @@ export class HttpClient extends EventEmitter {
         headersTimeout = bodyTimeout = args.timeout;
       }
     }
-    if (orginalHeaders) {
+    if (originalHeaders) {
       // convert headers to lower-case
-      for (const name in orginalHeaders) {
-        headers[name.toLowerCase()] = orginalHeaders[name];
+      for (const name in originalHeaders) {
+        headers[name.toLowerCase()] = originalHeaders[name];
       }
     }
     // hidden user-agent
@@ -302,15 +305,16 @@ export class HttpClient extends EventEmitter {
     }
 
     try {
-      const requestOptions: UndiciRquestOptions = {
+      const requestOptions: IUndiciRequestOption = {
         method,
-        keepalive: true,
         maxRedirections: args.maxRedirects ?? 10,
         headersTimeout,
+        headers,
         bodyTimeout,
         opaque: internalOpaque,
         dispatcher: args.dispatcher ?? this.#dispatcher,
       };
+
       if (args.followRedirect === false) {
         requestOptions.maxRedirections = 0;
       }
@@ -429,7 +433,7 @@ export class HttpClient extends EventEmitter {
         this.emit('request', reqMeta);
       }
 
-      let response = await undiciRequest(requestUrl, requestOptions);
+      let response = await undiciRequest(requestUrl, requestOptions as UndiciRequestOption);
       if (response.statusCode === 401 && response.headers['www-authenticate'] &&
         !requestOptions.headers.authorization && args.digestAuth) {
         // handle digest auth
@@ -442,11 +446,11 @@ export class HttpClient extends EventEmitter {
           requestOptions.headers.authorization = digestAuthHeader(requestOptions.method!,
             `${requestUrl.pathname}${requestUrl.search}`, authenticate, args.digestAuth);
           debug('Request#%d %s: auth with digest header: %s', requestId, url, requestOptions.headers.authorization);
-          if (response.headers['set-cookie']) {
+          if (Array.isArray(response.headers['set-cookie'])) {
             // FIXME: merge exists cookie header
             requestOptions.headers.cookie = response.headers['set-cookie'].join(';');
           }
-          response = await undiciRequest(requestUrl, requestOptions);
+          response = await undiciRequest(requestUrl, requestOptions as UndiciRequestOption);
         }
       }
 

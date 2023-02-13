@@ -16,9 +16,9 @@ describe('options.timeout.test.ts', () => {
     await close();
   });
 
-  it('should HeadersTimeout 10ms throw error', async () => {
+  it('should HeadersTimeout 1000ms throw error', async () => {
     await assert.rejects(async () => {
-      await urllib.request(`${_url}?timeout=100`, {
+      await urllib.request(`${_url}?timeout=2000`, {
         timeout: 10,
       });
     }, (err: any) => {
@@ -31,7 +31,7 @@ describe('options.timeout.test.ts', () => {
         assert.equal(err.cause.message, 'Headers Timeout Error');
         assert.equal(err.cause.code, 'UND_ERR_HEADERS_TIMEOUT');
       }
-     
+
       assert.equal(err.res.status, -1);
       assert(err.res.rt > 10, `actual ${err.res.rt}`);
       assert.equal(typeof err.res.rt, 'number');
@@ -41,7 +41,7 @@ describe('options.timeout.test.ts', () => {
 
   it('should BodyTimeout throw error', async () => {
     await assert.rejects(async () => {
-      await urllib.request(`${_url}mock-bytes?timeout=300`, {
+      await urllib.request(`${_url}mock-bytes?timeout=2000`, {
         timeout: 100,
       });
     }, (err: any) => {
