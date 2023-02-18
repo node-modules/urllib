@@ -6,7 +6,7 @@
     "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "importHelpers": true,
+    "importHelpers": false,
     "module": "NodeNext",
     "moduleResolution": "Node",
     "newLine": "LF",

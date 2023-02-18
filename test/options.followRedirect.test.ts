@@ -23,6 +23,7 @@ describe('options.followRedirect.test.js', () => {
     });
     assert.equal(response.res.statusCode, 200);
     assert.equal(response.statusCode, response.res.statusCode);
+    assert.equal(response.statusText, 'OK');
     assert((response.data as Buffer).length > 100);
     assert.equal(response.url, `${_url}redirect-to-url`);
     assert.equal(response.requestUrls.length, 2);
@@ -34,6 +35,7 @@ describe('options.followRedirect.test.js', () => {
       dataType: 'text',
     });
     assert.equal(response.res.statusCode, 302);
+    assert.equal(response.statusText, 'Found');
     assert.equal(response.url, `${_url}redirect-deadlock`);
     assert.equal(response.requestUrls.length, 11);
     assert.equal(response.data, 'Redirect to /redirect-deadlock');

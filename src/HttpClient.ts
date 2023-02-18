@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { LookupFunction } from 'net';
+import { STATUS_CODES } from 'http';
 import { debuglog } from 'util';
 import {
   createGunzip,
@@ -249,6 +250,7 @@ export class HttpClient extends EventEmitter {
     let res = {
       status: -1,
       statusCode: -1,
+      statusText: '',
       headers: resHeaders,
       size: 0,
       aborted: false,
@@ -470,6 +472,7 @@ export class HttpClient extends EventEmitter {
 
       res.headers = response.headers;
       res.status = res.statusCode = response.statusCode;
+      res.statusText = STATUS_CODES[res.status] || '';
       if (res.headers['content-length']) {
         res.size = parseInt(res.headers['content-length']);
       }
@@ -527,6 +530,7 @@ export class HttpClient extends EventEmitter {
         data,
         status: res.status,
         statusCode: res.status,
+        statusText: res.statusText,
         headers: res.headers,
         url: lastUrl,
         redirected: res.requestUrls.length > 1,
