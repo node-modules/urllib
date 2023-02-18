@@ -175,7 +175,7 @@ describe('options.content.test.ts', () => {
     assert.equal(response.data.length, stat.size);
     assert.deepEqual(response.data, fileContent);
     const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
-    console.log(requestHeaders);
+    // console.log(requestHeaders);
     assert.equal(requestHeaders['transfer-encoding'], 'chunked');
     assert.equal(requestHeaders.connection, 'keep-alive');
   });

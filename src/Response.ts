@@ -37,6 +37,7 @@ export type Timing = {
 export type RawResponseWithMeta = Readable & {
   status: number;
   statusCode: number;
+  statusText: string;
   headers: IncomingHttpHeaders;
   timing: Timing;
   // SocketInfo
@@ -54,6 +55,7 @@ export type HttpClientResponse<T = any> = {
   status: number;
   // alias to status, keep compatibility
   statusCode: number;
+  statusText: string;
   headers: IncomingHttpHeaders;
   url: string;
   redirected: boolean;
