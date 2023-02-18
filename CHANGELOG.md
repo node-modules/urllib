@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.11.0](https://github.com/node-modules/urllib/compare/v3.10.2...v3.11.0) (2023-02-18)
+
+
+### Features
+
+* support statusText on response ([#434](https://github.com/node-modules/urllib/issues/434)) ([bda2231](https://github.com/node-modules/urllib/commit/bda2231cd455d13d0638ab02422d12fdde1daa5f))
+
 ## [3.10.2](https://github.com/node-modules/urllib/compare/v3.10.1...v3.10.2) (2023-02-13)
 
 
