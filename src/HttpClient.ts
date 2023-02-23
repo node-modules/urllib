@@ -34,6 +34,7 @@ import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime, isReadab
 import symbols from './symbols';
 import { initDiagnosticsChannel } from './diagnosticsChannel';
 import type { IncomingHttpHeaders } from 'http';
+import * as querystring from 'querystring';
 
 type Exists<T> = T extends undefined ? never : T;
 type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;
@@ -405,10 +406,10 @@ export class HttpClient extends EventEmitter {
           || isReadable(args.data);
         if (isGETOrHEAD) {
           if (!isStringOrBufferOrReadable) {
-            for (const field in args.data) {
-              const value = typeof args.data[field] !== 'string' ? '' : args.data[field];
-              requestUrl.searchParams.append(field, value);
+            for (const [ k, v ] of requestUrl.searchParams.entries()) {
+              args.data[k] = v;
             }
+            requestUrl.search = querystring.stringify(args.data);
           }
         } else {
           if (isStringOrBufferOrReadable) {

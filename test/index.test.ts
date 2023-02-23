@@ -79,7 +79,7 @@ describe('index.test.ts', () => {
       assert.equal(response.status, 200);
       assert.equal(response.headers['content-type'], 'text/html');
       assert(response.headers.date);
-      assert.equal(response.url, `${_url}html?abc=123&foo=bar`);
+      assert.equal(response.url, `${_url}html?foo=bar&abc=123`);
       assert(!response.redirected);
     });
 
