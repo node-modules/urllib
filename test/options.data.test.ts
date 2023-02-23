@@ -23,6 +23,9 @@ describe('options.data.test.ts2', () => {
       data: {
         sql: 'SELECT * from table',
         data: '哈哈',
+        a: undefined,
+        b: '',
+        c: null,
       },
       dataType: 'json',
     });
@@ -32,7 +35,7 @@ describe('options.data.test.ts2', () => {
     assert(response.url.startsWith(_url));
     assert(!response.redirected);
     // console.log(response.headers);
-    assert.equal(response.data.url, '/?sql=SELECT+*+from+table&data=%E5%93%88%E5%93%88');
+    assert.equal(response.data.url, '/?sql=SELECT+*+from+table&data=%E5%93%88%E5%93%88&a=&b=&c=');
     const url = new URL(response.data.href);
     assert.equal(url.searchParams.get('sql'), 'SELECT * from table');
     assert.equal(url.searchParams.get('data'), '哈哈');

@@ -406,7 +406,8 @@ export class HttpClient extends EventEmitter {
         if (isGETOrHEAD) {
           if (!isStringOrBufferOrReadable) {
             for (const field in args.data) {
-              requestUrl.searchParams.append(field, args.data[field]);
+              const value = typeof args.data[field] !== 'string' ? '' : args.data[field];
+              requestUrl.searchParams.append(field, value);
             }
           }
         } else {
