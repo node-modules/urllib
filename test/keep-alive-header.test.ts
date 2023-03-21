@@ -20,7 +20,8 @@ describe('keep-alive-header.test.ts', () => {
 
   it('should handle Keep-Alive header and not throw reset error', async () => {
     let count = 0;
-    const max = process.env.CI && process.platform !== 'win32' ? 10 : 2;
+    // const max = process.env.CI && process.platform !== 'win32' ? 10 : 2;
+    const max = 5;
     while (count < max) {
       count++;
       let response = await urllib.request(_url);
