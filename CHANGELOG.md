@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.0](https://github.com/node-modules/urllib/compare/v3.11.0...v3.12.0) (2023-03-21)
+
+
+### Features
+
+* support reset to not reuse connection ([#438](https://github.com/node-modules/urllib/issues/438)) ([3e12703](https://github.com/node-modules/urllib/commit/3e1270395bf22aa2dbc12ae858e439debfbe03ae))
+
 ## [3.11.0](https://github.com/node-modules/urllib/compare/v3.10.2...v3.11.0) (2023-02-18)
 
 
