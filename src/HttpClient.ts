@@ -316,6 +316,9 @@ export class HttpClient extends EventEmitter {
         opaque: internalOpaque,
         dispatcher: args.dispatcher ?? this.#dispatcher,
       };
+      if (typeof args.reset === 'boolean') {
+        requestOptions.reset = args.reset;
+      }
 
       if (args.followRedirect === false) {
         requestOptions.maxRedirections = 0;

@@ -130,4 +130,6 @@ export type RequestOptions = {
    * unix domain socket file path
    */
   socketPath?: string | null;
+  /** Whether the request should stablish a keep-alive or not. Default `undefined` */
+  reset?: boolean;
 };
