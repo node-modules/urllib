@@ -315,7 +315,7 @@ export class HttpClient extends EventEmitter {
         bodyTimeout,
         opaque: internalOpaque,
         dispatcher: args.dispatcher ?? this.#dispatcher,
-        reset: options?.reset ?? false,
+        reset: typeof options?.reset === 'boolean' ? options.reset : undefined,
       };
 
       if (args.followRedirect === false) {
