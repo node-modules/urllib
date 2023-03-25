@@ -1,12 +1,12 @@
-import { Socket } from 'net';
-import { createServer, Server, IncomingMessage, ServerResponse } from 'http';
-import { createServer as createHttpsServer } from 'https';
-import { createBrotliCompress, createGzip, gzipSync, brotliCompressSync } from 'zlib';
-import { createReadStream } from 'fs';
+import { Socket } from 'node:net';
+import { createServer, Server, IncomingMessage, ServerResponse } from 'node:http';
+import { createServer as createHttpsServer } from 'node:https';
+import { createBrotliCompress, createGzip, gzipSync, brotliCompressSync } from 'node:zlib';
+import { createReadStream } from 'node:fs';
 import busboy from 'busboy';
 import iconv from 'iconv-lite';
-import { readableToBytes, sleep } from '../utils';
 import selfsigned from 'selfsigned';
+import { readableToBytes, sleep } from '../utils';
 
 const requestsPerSocket = Symbol('requestsPerSocket');
 
@@ -188,7 +188,7 @@ export async function startServer(options?: {
     if (pathname === '/wrongjson-gbk') {
       res.setHeader('content-type', 'application/json');
       createReadStream(__filename).pipe(res);
-      return
+      return;
     }
     if (pathname === '/json_with_controls_unicode') {
       return res.end(Buffer.from('{"foo":"\b\f\n\r\tbar\u000e!1!\u0086!2!\u0000!3!\u001F!4!\u005C!5!end\u005C\\"}'));
@@ -289,7 +289,7 @@ export async function startServer(options?: {
     if (req.headers['content-type']?.startsWith('application/x-www-form-urlencoded')) {
       const searchParams = new URLSearchParams(requestBytes.toString());
       requestBody = {};
-      for (const [field, value] of searchParams.entries()) {
+      for (const [ field, value ] of searchParams.entries()) {
         requestBody[field] = value;
       }
     } else if (req.headers['content-type']?.startsWith('application/json')) {

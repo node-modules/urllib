@@ -1,5 +1,5 @@
+import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { strict as assert } from 'assert';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 
@@ -22,6 +22,6 @@ describe('options.reset.test.ts', () => {
       reset: true,
     });
     assert.equal(response.status, 200);
-    assert(response.data.headers['connection'] === 'close');
+    assert(response.data.headers.connection === 'close');
   });
 });

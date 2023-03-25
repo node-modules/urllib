@@ -1,6 +1,6 @@
+import { strict as assert } from 'node:assert';
+import { createWriteStream, createReadStream } from 'node:fs';
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
-import { strict as assert } from 'assert';
-import { createWriteStream, createReadStream } from 'fs';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 import { readableToString, createTempfile } from './utils';
@@ -116,7 +116,7 @@ describe('options.retry.test.ts', () => {
   });
 
   it('should custom isRetry', async () => {
-    let response = await urllib.request(`${_url}mock-status?status=400`, {
+    const response = await urllib.request(`${_url}mock-status?status=400`, {
       dataType: 'text',
       retry: 2,
       isRetry(response) {
@@ -125,20 +125,20 @@ describe('options.retry.test.ts', () => {
     });
     assert.equal(response.status, 400);
     assert.equal(response.data, 'Mock status 400');
-    let requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
     assert.equal(requestHeaders['x-urllib-retry'], '2/2');
   });
 
   it('should retry with delay', async () => {
     const startTime = Date.now();
-    let response = await urllib.request(`${_url}mock-status?status=500`, {
+    const response = await urllib.request(`${_url}mock-status?status=500`, {
       dataType: 'text',
       retry: 3,
       retryDelay: 110,
     });
     assert.equal(response.status, 500);
     assert.equal(response.data, 'Mock status 500');
-    let requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
+    const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
     assert.equal(requestHeaders['x-urllib-retry'], '3/3');
     const use = Date.now() - startTime;
     assert(use >= 330);

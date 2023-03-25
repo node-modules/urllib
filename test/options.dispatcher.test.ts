@@ -1,5 +1,5 @@
+import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { strict as assert } from 'assert';
 import setup from 'proxy';
 import { request, ProxyAgent, getGlobalDispatcher, setGlobalDispatcher } from '../src';
 import { startServer } from './fixtures/server';
@@ -14,7 +14,7 @@ describe('options.dispatcher.test.ts', () => {
     close = closeServer;
     _url = url;
     proxyServer = setup();
-    await new Promise<void>((resolve) => {
+    await new Promise<void>(resolve => {
       proxyServer.listen(0, () => {
         // console.log('HTTP proxy server listening on port %d', proxyServer.address().port);
         proxyServerUrl = `http://127.0.0.1:${proxyServer.address().port}`;

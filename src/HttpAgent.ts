@@ -1,5 +1,5 @@
-import dns from 'dns';
-import { LookupFunction, isIP } from 'net';
+import dns from 'node:dns';
+import { LookupFunction, isIP } from 'node:net';
 import {
   Agent,
 } from 'undici';

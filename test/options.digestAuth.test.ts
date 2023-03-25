@@ -1,5 +1,5 @@
+import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { strict as assert } from 'assert';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 
@@ -72,7 +72,7 @@ describe('options.digestAuth.test.ts', () => {
   });
 
   it.skip('should request with digest auth success in httpbin', async () => {
-    var url = 'https://httpbin.org/digest-auth/auth/user/passwd';
+    const url = 'https://httpbin.org/digest-auth/auth/user/passwd';
     const response = await urllib.request(url, {
       digestAuth: 'user:passwd',
       dataType: 'json',
@@ -87,7 +87,7 @@ describe('options.digestAuth.test.ts', () => {
   });
 
   it.skip('should request with digest auth fail in httpbin', async () => {
-    var url = 'https://httpbin.org/digest-auth/auth/user/passwd';
+    const url = 'https://httpbin.org/digest-auth/auth/user/passwd';
     const response = await urllib.request(url, {
       digestAuth: 'user:passwdfail',
       dataType: 'json',

@@ -1,9 +1,8 @@
+import { strict as assert } from 'node:assert';
+import os from 'node:os';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { strict as assert } from 'assert';
 import urllib from '../src';
 import { startServer } from './fixtures/socket_server';
-import os from 'os';
-
 
 describe.skipIf(os.platform() === 'win32')('options.socketPath.test.ts', () => {
   let close: any;
@@ -28,7 +27,7 @@ describe.skipIf(os.platform() === 'win32')('options.socketPath.test.ts', () => {
       dataType: 'json',
     });
 
-    assert.deepStrictEqual(result.data, {a: 1});
+    assert.deepStrictEqual(result.data, { a: 1 });
   });
 });
 

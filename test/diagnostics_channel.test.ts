@@ -1,6 +1,6 @@
+import { strict as assert } from 'node:assert';
+import diagnosticsChannel from 'node:diagnostics_channel';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { strict as assert } from 'assert';
-import diagnosticsChannel from 'diagnostics_channel';
 import urllib from '../src';
 import symbols from '../src/symbols';
 import { startServer } from './fixtures/server';

@@ -1,6 +1,6 @@
 
+import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { strict as assert } from 'assert';
 import { HttpClient } from '../src';
 import { startServer } from './fixtures/server';
 
@@ -91,7 +91,7 @@ describe('HttpClient.events.test.ts', () => {
     const httpclient = new HttpClient();
     let requestCount = 0;
     let responseCount = 0;
-    httpclient.on('request', info => {
+    httpclient.on('request', () => {
       requestCount++;
     });
     httpclient.on('response', info => {
@@ -124,5 +124,7 @@ describe('HttpClient.events.test.ts', () => {
       assert.equal(err.status, -1);
       return true;
     });
+    assert.equal(requestCount, 1);
+    assert.equal(responseCount, 1);
   });
 });

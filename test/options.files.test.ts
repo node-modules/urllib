@@ -1,9 +1,9 @@
+import { strict as assert } from 'node:assert';
+import path from 'node:path';
+import fs from 'node:fs/promises';
+import { createReadStream } from 'node:fs';
+import { Readable } from 'node:stream';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { strict as assert } from 'assert';
-import path from 'path';
-import fs from 'fs/promises';
-import { createReadStream } from 'fs';
-import { Readable } from 'stream';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 

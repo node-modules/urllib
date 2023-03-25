@@ -1,20 +1,21 @@
-import { EventEmitter } from 'events';
-import { LookupFunction } from 'net';
-import { STATUS_CODES } from 'http';
-import { debuglog } from 'util';
+import { EventEmitter } from 'node:events';
+import { LookupFunction } from 'node:net';
+import { STATUS_CODES } from 'node:http';
+import type { IncomingHttpHeaders } from 'node:http';
+import { debuglog } from 'node:util';
 import {
   createGunzip,
   createBrotliDecompress,
   gunzipSync,
   brotliDecompressSync,
-} from 'zlib';
-import { Blob } from 'buffer';
-import { Readable, pipeline } from 'stream';
-import stream from 'stream';
-import { basename } from 'path';
-import { createReadStream } from 'fs';
-import { format as urlFormat } from 'url';
-import { performance } from 'perf_hooks';
+} from 'node:zlib';
+import { Blob } from 'node:buffer';
+import { Readable, pipeline } from 'node:stream';
+import stream from 'node:stream';
+import { basename } from 'node:path';
+import { createReadStream } from 'node:fs';
+import { format as urlFormat } from 'node:url';
+import { performance } from 'node:perf_hooks';
 import {
   FormData as FormDataNative,
   request as undiciRequest,
@@ -33,7 +34,6 @@ import { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response'
 import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime, isReadable } from './utils';
 import symbols from './symbols';
 import { initDiagnosticsChannel } from './diagnosticsChannel';
-import type { IncomingHttpHeaders } from 'http';
 
 type Exists<T> = T extends undefined ? never : T;
 type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;

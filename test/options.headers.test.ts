@@ -1,5 +1,5 @@
+import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { strict as assert } from 'assert';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 
@@ -41,7 +41,7 @@ describe('options.headers.test.ts', () => {
         // 'CASE-KEy': 'case3,case33',
         'lower-key': 'lower',
       },
-      dataType: 'json'
+      dataType: 'json',
     });
     assert.equal(response.status, 200);
     assert.equal(response.data.headers['case-key'], 'case2');

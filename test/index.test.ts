@@ -1,8 +1,7 @@
+import { strict as assert } from 'node:assert';
+import { parse as urlparse } from 'node:url';
+import { readFileSync } from 'node:fs';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { strict as assert } from 'assert';
-import { parse as urlparse } from 'url';
-import { createReadStream, readFileSync } from 'fs';
-import { Readable } from 'stream';
 import urllib from '../src';
 import { MockAgent, setGlobalDispatcher, getGlobalDispatcher } from '../src';
 import { startServer } from './fixtures/server';
@@ -140,7 +139,7 @@ describe('index.test.ts', () => {
 
   describe('Mocking request', () => {
     let mockAgent: MockAgent;
-    let globalAgent = getGlobalDispatcher();
+    const globalAgent = getGlobalDispatcher();
     beforeAll(() => {
       mockAgent = new MockAgent();
       setGlobalDispatcher(mockAgent);

@@ -1,7 +1,7 @@
+import { strict as assert } from 'node:assert';
+import { pipeline } from 'node:stream';
+import { createBrotliDecompress } from 'node:zlib';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { strict as assert } from 'assert';
-import { pipeline } from 'stream';
-import { createBrotliDecompress } from 'zlib';
 import urllib from '../src';
 import { isReadable } from '../src/utils';
 import { startServer } from './fixtures/server';
@@ -85,7 +85,9 @@ describe('options.streaming.test.ts', () => {
     // response.res stream is not decompressed
     assert(isReadable(response.res));
     let decoder = createBrotliDecompress();
-    bytes = await readableToBytes(pipeline(response.res, decoder, () => {}));
+    bytes = await readableToBytes(pipeline(response.res, decoder, () => {
+      return;
+    }));
     data = bytes.toString();
     assert.match(data, /export async function startServer/);
 
@@ -106,7 +108,9 @@ describe('options.streaming.test.ts', () => {
     // response.res stream is not decompressed
     assert(isReadable(response.res));
     decoder = createBrotliDecompress();
-    bytes = await readableToBytes(pipeline(response.res, decoder, () => {}));
+    bytes = await readableToBytes(pipeline(response.res, decoder, () => {
+      return;
+    }));
     data = bytes.toString();
     assert.match(data, /export async function startServer/);
   });

@@ -1,8 +1,8 @@
+import { strict as assert } from 'node:assert';
+import dns from 'node:dns';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { strict as assert } from 'assert';
-import dns from 'dns';
 import { HttpClient } from '../src';
-import { HttpClientResponseMeta } from '../src/Response';
+import { RawResponseWithMeta } from '../src/Response';
 import { startServer } from './fixtures/server';
 
 describe('HttpClient.test.ts', () => {
@@ -50,7 +50,7 @@ describe('HttpClient.test.ts', () => {
       let response = await httpclient.request(_url);
       assert.equal(lookupCallCounter, 1);
       assert.equal(response.status, 200);
-      const res = response.res as HttpClientResponseMeta;
+      const res = response.res as RawResponseWithMeta;
       assert(res.rt > 100, `rt ${res.rt} should bigger than 100`);
       // will cache dns lookup
       let count = 10;
@@ -74,7 +74,7 @@ describe('HttpClient.test.ts', () => {
       let response = await httpclient.request('https://registry.npmmirror.com/urllib');
       assert.equal(lookupCallCounter, 1);
       assert.equal(response.status, 200);
-      const res = response.res as HttpClientResponseMeta;
+      const res = response.res as RawResponseWithMeta;
       // console.log(res);
       assert(res.rt > 100, `rt ${res.rt} should bigger than 100`);
       // will cache dns lookup
@@ -96,7 +96,7 @@ describe('HttpClient.test.ts', () => {
           return true;
         },
       });
-      
+
       await assert.rejects(async () => {
         await httpclient.request(_url);
       }, (err: any) => {
@@ -130,7 +130,7 @@ describe('HttpClient.test.ts', () => {
           return true;
         },
       });
-      
+
       await assert.rejects(async () => {
         await httpclient.request(_url);
       }, (err: any) => {
@@ -224,7 +224,7 @@ describe('HttpClient.test.ts', () => {
 
     it('should throw error when follow redirect and redirect address illegal', async () => {
       const httpclient = new HttpClient({
-        checkAddress(address) {
+        checkAddress() {
           // return address !== '127.0.0.1';
           return false;
         },
