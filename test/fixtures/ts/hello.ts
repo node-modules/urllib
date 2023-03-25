@@ -10,3 +10,5 @@ async function request(url: RequestURL, options: RequestOptions): Promise<HttpCl
 async function request2(url: RequestURL, options: RequestOptions2): Promise<HttpClientResponse> {
   return await urllib2.curl(url, options);
 }
+
+console.log(request, request2);

@@ -41,7 +41,7 @@
     "url": "git://github.com/node-modules/urllib.git"
   },
   "scripts": {
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint src test --ext .ts",
     "build": "npm run build:dist",
     "build:cjs": "tsc -p ./tsconfig.build.cjs.json",
     "build:esm": "tsc -p ./tsconfig.build.esm.json && node ./scripts/esm_import_fix.js",

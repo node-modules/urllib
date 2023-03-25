@@ -1,9 +1,9 @@
+import { strict as assert } from 'node:assert';
+import { createWriteStream } from 'node:fs';
+import { join } from 'node:path';
+import { gunzipSync } from 'node:zlib';
+import { stat, readFile } from 'node:fs/promises';
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
-import { strict as assert } from 'assert';
-import { createWriteStream } from 'fs';
-import { join } from 'path';
-import { gunzipSync } from 'zlib';
-import { stat, readFile } from 'fs/promises';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 import { createTempfile, sleep } from './utils';

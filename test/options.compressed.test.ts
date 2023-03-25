@@ -1,6 +1,6 @@
+import { strict as assert } from 'node:assert';
+import { createWriteStream, createReadStream } from 'node:fs';
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
-import { strict as assert } from 'assert';
-import { createWriteStream, createReadStream } from 'fs';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 import { readableToString, createTempfile } from './utils';

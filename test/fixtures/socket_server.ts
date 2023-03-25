@@ -1,5 +1,4 @@
-import { createServer, Server } from 'http';
-
+import { createServer, Server } from 'node:http';
 
 const socketPath = '/tmp/urllib.unix.sock';
 export async function startServer(): Promise<{
@@ -19,11 +18,11 @@ export async function startServer(): Promise<{
   return new Promise(resolve => {
     unixSocketServer.listen(socketPath, () => {
       resolve({
-        url: `http://localhost/`,
+        url: 'http://localhost/',
         server: unixSocketServer,
         socketPath,
         closeServer: () => new Promise(resolve => unixSocketServer.close(resolve)),
-      })
+      });
     });
-  })
+  });
 }

@@ -1,9 +1,9 @@
-import { Readable } from 'stream';
-import { ReadableStream } from 'stream/web';
-import { rm, writeFile } from 'fs/promises';
-import { join } from 'path';
-import { tmpdir } from 'os';
-import { randomUUID } from 'crypto';
+import { Readable } from 'node:stream';
+import { ReadableStream } from 'node:stream/web';
+import { rm, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { randomUUID } from 'node:crypto';
 
 export async function sleep(ms: number) {
   await new Promise(resolve => {

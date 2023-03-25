@@ -1,5 +1,5 @@
+import { strict as assert } from 'node:assert';
 import { describe, it } from 'vitest';
-import { strict as assert } from 'assert';
 import { globalId } from '../src/utils';
 
 describe('utils.test.ts', () => {

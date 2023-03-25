@@ -1,7 +1,7 @@
+import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { strict as assert } from 'assert';
 import urllib from '../src';
-import { HttpClientResponseMeta } from '../src/Response';
+import { RawResponseWithMeta } from '../src/Response';
 import { startServer } from './fixtures/server';
 import { sleep } from './utils';
 
@@ -24,7 +24,7 @@ describe('options.timing.test.ts', () => {
       timing: true,
     });
     assert.equal(response.status, 200);
-    let res = response.res as HttpClientResponseMeta;
+    let res = response.res as RawResponseWithMeta;
     assert(res.timing.waiting > 0);
     assert(res.timing.queuing > 0);
     assert(res.timing.connected > 0);
@@ -36,14 +36,14 @@ describe('options.timing.test.ts', () => {
     assert(res.socket.handledResponses === 1);
 
     // again connected should be zero
-    await sleep(1)
+    await sleep(1);
 
     response = await urllib.request(`${_url}?content-encoding=gzip`, {
       dataType: 'json',
       timing: true,
     });
     assert.equal(response.status, 200);
-    res = response.res as HttpClientResponseMeta;
+    res = response.res as RawResponseWithMeta;
     assert(res.timing.waiting > 0);
     assert(res.timing.queuing > 0);
     assert(res.timing.connected === 0);
@@ -61,7 +61,7 @@ describe('options.timing.test.ts', () => {
       timing: false,
     });
     assert.equal(response.status, 200);
-    const res = response.res as HttpClientResponseMeta;
+    const res = response.res as RawResponseWithMeta;
     assert.equal(res.timing.waiting, 0);
     assert.equal(res.timing.contentDownload, 0);
     assert(res.rt > 0);
@@ -72,7 +72,7 @@ describe('options.timing.test.ts', () => {
       dataType: 'json',
     });
     assert.equal(response.status, 200);
-    const res = response.res as HttpClientResponseMeta;
+    const res = response.res as RawResponseWithMeta;
     assert.equal(res.timing.waiting, 0);
     assert.equal(res.timing.contentDownload, 0);
     assert(res.rt > 0);

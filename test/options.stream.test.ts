@@ -1,17 +1,16 @@
+import { strict as assert } from 'node:assert';
+import { createReadStream } from 'node:fs';
+import path from 'node:path';
+import { writeFile, readFile } from 'node:fs/promises';
+import { createGunzip } from 'node:zlib';
+import { Readable } from 'node:stream';
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
-import { strict as assert } from 'assert';
-import { createReadStream } from 'fs';
-import os from 'os';
-import path from 'path';
-import { writeFile, readFile } from 'fs/promises';
+import tar from 'tar-stream';
+import FormStream from 'formstream';
 import urllib from '../src';
 import { isReadable } from '../src/utils';
 import { startServer } from './fixtures/server';
 import { createTempfile } from './utils';
-import tar from 'tar-stream';
-import { createGunzip } from 'zlib';
-import { Readable } from 'stream';
-import FormStream from 'formstream';
 
 describe('options.stream.test.ts', () => {
   let close: any;
@@ -109,7 +108,7 @@ describe('options.stream.test.ts', () => {
     const stream = createReadStream(tmpfile);
     assert.equal(stream.destroyed, false);
 
-    await  assert.rejects(async () => {
+    await assert.rejects(async () => {
       await urllib.request(`${_url}block`, {
         method: 'post',
         timeout: 100,
@@ -158,7 +157,7 @@ describe('options.stream.test.ts', () => {
       await urllib.request(`${_url}block`, {
         method: 'post',
         stream,
-      });  
+      });
     }, (err: any) => {
       // console.error(err);
       assert.equal(err.name, 'Error');
