@@ -26,7 +26,7 @@ describe('options.data.test.ts', () => {
         b: undefined,
         c: '2222',
         d: 1111,
-        e: function(){},
+        e() { return ''; },
         f: true,
       },
       dataType: 'json',
@@ -36,7 +36,7 @@ describe('options.data.test.ts', () => {
     assert.equal(response.data.method, 'GET');
     assert(response.url.startsWith(_url));
     assert(!response.redirected);
-    assert.equal(response.data.url, '/?sql=SELECT+*+from+table&data=%E5%93%88%E5%93%88&c=2222&d=1111&e=function%28%29+%7B%0A++++++++%7D&f=true');
+    assert.equal(response.data.url, '/?sql=SELECT+*+from+table&data=%E5%93%88%E5%93%88&c=2222&d=1111&e=e%28%29+%7B%0A++++++++++return+%22%22%3B%0A++++++++%7D&f=true');
     const url = new URL(response.data.href);
     assert.equal(url.searchParams.get('sql'), 'SELECT * from table');
     assert.equal(url.searchParams.get('data'), '哈哈');
