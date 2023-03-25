@@ -1,6 +1,6 @@
-import diagnosticsChannel from 'diagnostics_channel';
-import { performance } from 'perf_hooks';
-import { debuglog } from 'util';
+import diagnosticsChannel from 'node:diagnostics_channel';
+import { performance } from 'node:perf_hooks';
+import { debuglog } from 'node:util';
 import { DiagnosticsChannel } from 'undici';
 import symbols from './symbols';
 import { globalId, performanceTime } from './utils';

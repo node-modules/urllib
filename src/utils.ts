@@ -1,6 +1,6 @@
-import { randomBytes, createHash } from 'crypto';
-import { Readable } from 'stream';
-import { performance } from 'perf_hooks';
+import { randomBytes, createHash } from 'node:crypto';
+import { Readable } from 'node:stream';
+import { performance } from 'node:perf_hooks';
 import { FixJSONCtlChars } from './Request';
 
 const JSONCtlCharsMap = {
