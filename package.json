@@ -41,7 +41,7 @@
     "url": "git://github.com/node-modules/urllib.git"
   },
   "scripts": {
-    "lint": "eslint src test --ext .ts",
+    "lint": "eslint src test --ext .ts --cache",
     "build": "npm run build:dist",
     "build:cjs": "tsc -p ./tsconfig.build.cjs.json",
     "build:esm": "tsc -p ./tsconfig.build.esm.json && node ./scripts/esm_import_fix.js",
@@ -50,7 +50,7 @@
     "build:esm:test": "cd test/esm && rm -rf node_modules && npm link ../.. && node index.js",
     "build:test": "npm run build && npm run build:cjs:test && npm run build:esm:test && npm run test-tsc",
     "test-tsc": "tsc -p ./test/fixtures/ts/tsconfig.json",
-    "test": "vitest run",
+    "test": "npm run lint && vitest run",
     "cov": "vitest run --coverage --no-threads",
     "ci": "npm run lint && npm run cov && npm run build:test",
     "contributor": "git-contributor",

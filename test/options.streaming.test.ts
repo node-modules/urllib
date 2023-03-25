@@ -115,9 +115,9 @@ describe('options.streaming.test.ts', () => {
     assert.match(data, /export async function startServer/);
   });
 
-  it('should get big streaming response', async () => {
-    const response = await urllib.request(`${_url}mock-bytes?size=1024102400`, {
-      streaming: true,
+  it('should customResponse alias to streaming', async () => {
+    const response = await urllib.request(`${_url}mock-bytes?size=1024`, {
+      customResponse: true,
     });
     assert.equal(response.status, 200);
     assert.equal(response.headers['content-type'], undefined);
@@ -125,12 +125,12 @@ describe('options.streaming.test.ts', () => {
     // console.log(response.headers);
     assert(isReadable(response.res as any));
     const bytes = await readableToBytes(response.res);
-    assert.equal(bytes.length, 1024102400);
+    assert.equal(bytes.length, 1024);
   });
 
-  it('should customResponse alias to streaming', async () => {
+  it('should get big streaming response', async () => {
     const response = await urllib.request(`${_url}mock-bytes?size=1024102400`, {
-      customResponse: true,
+      streaming: true,
     });
     assert.equal(response.status, 200);
     assert.equal(response.headers['content-type'], undefined);
