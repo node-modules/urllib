@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.13.1](https://github.com/node-modules/urllib/compare/v3.13.0...v3.13.1) (2023-03-25)
+
+
+### Bug Fixes
+
+* ignore undefined value data on GET query ([#441](https://github.com/node-modules/urllib/issues/441)) ([f40ce0a](https://github.com/node-modules/urllib/commit/f40ce0a2eb415528d32c684ff2ec073930b24402))
+
 ## [3.13.0](https://github.com/node-modules/urllib/compare/v3.12.0...v3.13.0) (2023-03-25)
 
 
