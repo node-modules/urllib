@@ -409,7 +409,9 @@ export class HttpClient extends EventEmitter {
         if (isGETOrHEAD) {
           if (!isStringOrBufferOrReadable) {
             for (const field in args.data) {
-              requestUrl.searchParams.append(field, args.data[field]);
+              const fieldValue = args.data[field];
+              if (fieldValue === undefined) continue;
+              requestUrl.searchParams.append(field, fieldValue);
             }
           }
         } else {
