@@ -5,7 +5,7 @@ import { describe, it, beforeAll, afterAll } from 'vitest';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
 
-describe('options.data.test.ts2', () => {
+describe('options.data.test.ts', () => {
   let close: any;
   let _url: string;
   beforeAll(async () => {
@@ -23,6 +23,11 @@ describe('options.data.test.ts2', () => {
       data: {
         sql: 'SELECT * from table',
         data: '哈哈',
+        b: undefined,
+        c: '2222',
+        d: 1111,
+        e: function(){},
+        f: true,
       },
       dataType: 'json',
     });
@@ -31,8 +36,7 @@ describe('options.data.test.ts2', () => {
     assert.equal(response.data.method, 'GET');
     assert(response.url.startsWith(_url));
     assert(!response.redirected);
-    // console.log(response.headers);
-    assert.equal(response.data.url, '/?sql=SELECT+*+from+table&data=%E5%93%88%E5%93%88');
+    assert.equal(response.data.url, '/?sql=SELECT+*+from+table&data=%E5%93%88%E5%93%88&b=undefined&c=2222&d=1111&e=function%28%29+%7B%0A++++++++%7D&f=true');
     const url = new URL(response.data.href);
     assert.equal(url.searchParams.get('sql'), 'SELECT * from table');
     assert.equal(url.searchParams.get('data'), '哈哈');
