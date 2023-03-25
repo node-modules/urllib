@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.13.0](https://github.com/node-modules/urllib/compare/v3.12.0...v3.13.0) (2023-03-25)
+
+
+### Features
+
+* build target up to ES2022 ([#439](https://github.com/node-modules/urllib/issues/439)) ([95a51ce](https://github.com/node-modules/urllib/commit/95a51ce4a1b73ae5f16da14f67043cb9dd921fe6))
+
 ## [3.12.0](https://github.com/node-modules/urllib/compare/v3.11.0...v3.12.0) (2023-03-21)
 
 
