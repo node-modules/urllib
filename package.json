@@ -51,7 +51,7 @@
     "build:test": "npm run build && npm run build:cjs:test && npm run build:esm:test && npm run test-tsc",
     "test-tsc": "tsc -p ./test/fixtures/ts/tsconfig.json",
     "test": "vitest run",
-    "cov": "vitest run --coverage",
+    "cov": "vitest run --coverage --no-threads",
     "ci": "npm run lint && npm run cov && npm run build:test",
     "contributor": "git-contributor",
     "prepack": "npm run build && rm -rf src/*.tsbuildinfo"
