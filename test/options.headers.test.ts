@@ -50,4 +50,18 @@ describe('options.headers.test.ts', () => {
     assert.equal(response.data.headers['Case-key'], undefined);
     assert.equal(response.data.headers['CASE-KEY'], undefined);
   });
+
+  it('should ignore undefined value and convert null value to empty string', async () => {
+    const response = await urllib.request(_url, {
+      headers: {
+        'null-header': null as any,
+        'undefined-header': undefined,
+      },
+      dataType: 'json',
+    });
+    assert.equal(response.status, 200);
+    // console.log(response.data.headers);
+    assert.equal(response.data.headers['null-header'], '');
+    assert.equal(response.data.headers['undefined-header'], undefined);
+  });
 });
