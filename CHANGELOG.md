@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.13.2](https://github.com/node-modules/urllib/compare/v3.13.1...v3.13.2) (2023-04-24)
+
+
+### Bug Fixes
+
+* force use undici@~5.21.2 to fix content-length error ([#445](https://github.com/node-modules/urllib/issues/445)) ([331ed7e](https://github.com/node-modules/urllib/commit/331ed7e7e3c5bb1215c225e75e3fa007196a9fd2))
+
 ## [3.13.1](https://github.com/node-modules/urllib/compare/v3.13.0...v3.13.1) (2023-03-25)
 
 
