@@ -42,7 +42,7 @@
   },
   "scripts": {
     "lint": "eslint src test --ext .ts --cache",
-    "build": "npm run build:dist",
+    "build": "npm run clean && npm run build:dist",
     "build:cjs": "tsc -p ./tsconfig.build.cjs.json",
     "build:esm": "tsc -p ./tsconfig.build.esm.json && node ./scripts/esm_import_fix.js",
     "build:dist": "tsc --version && npm run build:cjs && npm run build:esm",
@@ -51,9 +51,10 @@
     "build:test": "npm run build && npm run build:cjs:test && npm run build:esm:test && npm run test-tsc",
     "test-tsc": "tsc -p ./test/fixtures/ts/tsconfig.json",
     "test": "npm run lint && vitest run",
-    "cov": "vitest run --coverage --no-threads",
+    "cov": "vitest run --coverage",
     "ci": "npm run lint && npm run cov && npm run build:test",
     "contributor": "git-contributor",
+    "clean": "rm -rf src/*.tsbuildinfo src/cjs/*.ts src/cjs/*.js src/esm/*.ts src/esm/*.js",
     "prepack": "npm run build && rm -rf src/*.tsbuildinfo"
   },
   "dependencies": {
@@ -83,8 +84,8 @@
     "proxy": "^1.0.2",
     "selfsigned": "^2.0.1",
     "tar-stream": "^2.2.0",
-    "typescript": "^4.8.3",
-    "vitest": "^0.29.7"
+    "typescript": "^5.0.4",
+    "vitest": "^0.30.1"
   },
   "engines": {
     "node": ">= 14.19.3"
