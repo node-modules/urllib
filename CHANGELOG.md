@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.14.0](https://github.com/node-modules/urllib/compare/v3.13.2...v3.14.0) (2023-05-07)
+
+
+### Features
+
+* support Node.js 20 ([#444](https://github.com/node-modules/urllib/issues/444)) ([83accbe](https://github.com/node-modules/urllib/commit/83accbe2cd2392b4ec844a27d1b384b0a7924f77))
+
 ## [3.13.2](https://github.com/node-modules/urllib/compare/v3.13.1...v3.13.2) (2023-04-24)
 
 
