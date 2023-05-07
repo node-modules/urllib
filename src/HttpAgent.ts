@@ -39,8 +39,21 @@ export class HttpAgent extends Agent {
     const lookup: LookupFunction = (hostname, dnsOptions, callback) => {
       _lookup(hostname, dnsOptions, (err, address, family) => {
         if (err) return callback(err, address, family);
-        if (options.checkAddress && !options.checkAddress(address, family)) {
-          err = new IllegalAddressError(hostname, address, family);
+        if (options.checkAddress) {
+          // dnsOptions.all set to default on Node.js >= 20, dns.lookup will return address array object
+          if (typeof address === 'string') {
+            if (!options.checkAddress(address, family)) {
+              err = new IllegalAddressError(hostname, address, family);
+            }
+          } else if (Array.isArray(address)) {
+            const addresses = address as { address: string, family: number }[];
+            for (const addr of addresses) {
+              if (!options.checkAddress(addr.address, addr.family)) {
+                err = new IllegalAddressError(hostname, addr.address, addr.family);
+                break;
+              }
+            }
+          }
         }
         callback(err, address, family);
       });

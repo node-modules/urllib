@@ -22,7 +22,7 @@ export function initDiagnosticsChannel() {
   if (initedDiagnosticsChannel) return;
   initedDiagnosticsChannel = true;
 
-  let kHandler: any;
+  let kHandler: symbol;
   // This message is published when a new outgoing request is created.
   // Note: a request is only loosely completed to a given socket.
   diagnosticsChannel.channel('undici:request:create').subscribe((message, name) => {
@@ -39,7 +39,8 @@ export function initDiagnosticsChannel() {
     const opaque = request[kHandler]?.opts?.opaque;
     // ignore non HttpClient Request
     if (!opaque || !opaque[symbols.kRequestId]) return;
-    debug('[%s] Request#%d %s %s, path: %s', name, opaque[symbols.kRequestId], request.method, request.origin, request.path);
+    debug('[%s] Request#%d %s %s, path: %s, headers: %o',
+      name, opaque[symbols.kRequestId], request.method, request.origin, request.path, request.headers);
     if (!opaque[symbols.kEnableRequestTiming]) return;
     opaque[symbols.kRequestTiming].queuing = performanceTime(opaque[symbols.kRequestStartTime]);
   });
