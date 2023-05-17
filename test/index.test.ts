@@ -107,7 +107,7 @@ describe('index.test.ts', () => {
         // console.error(err);
         assert.equal(err.res.status, 200);
         assert.equal(err.name, 'HTTPParserError');
-        assert.equal(err.message, 'Invalid character in chunk size');
+        assert.equal(err.message, 'Response does not match the HTTP/1.1 protocol (Invalid character in chunk size)');
         assert.equal(err.code, 'HPE_INVALID_CHUNK_SIZE');
         assert.equal(err.data, 'labala');
         return true;
