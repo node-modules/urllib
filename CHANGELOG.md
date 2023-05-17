@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.14.1](https://github.com/node-modules/urllib/compare/v3.14.0...v3.14.1) (2023-05-17)
+
+
+### Bug Fixes
+
+* upgrade undici to latest version ([#448](https://github.com/node-modules/urllib/issues/448)) ([c240067](https://github.com/node-modules/urllib/commit/c2400676e80158bba65a88f72e20499589110ec5))
+
 ## [3.14.0](https://github.com/node-modules/urllib/compare/v3.13.2...v3.14.0) (2023-05-07)
 
 
