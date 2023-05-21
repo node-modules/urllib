@@ -125,11 +125,12 @@ export type RequestOptions = {
    * request dispatcher, default is getGlobalDispatcher()
    */
   dispatcher?: Dispatcher;
-
   /**
    * unix domain socket file path
    */
   socketPath?: string | null;
   /** Whether the request should stablish a keep-alive or not. Default `undefined` */
   reset?: boolean;
+  /** Default: `64 KiB` */
+  highWaterMark?: number;
 };

@@ -73,7 +73,7 @@
     "@types/busboy": "^1.5.0",
     "@types/default-user-agent": "^1.0.0",
     "@types/mime-types": "^2.1.1",
-    "@types/node": "^18.11.18",
+    "@types/node": "^20.2.1",
     "@types/pump": "^1.1.1",
     "@types/selfsigned": "^2.0.1",
     "@types/tar-stream": "^2.2.2",

@@ -140,4 +140,32 @@ describe('options.streaming.test.ts', () => {
     const bytes = await readableToBytes(response.res);
     assert.equal(bytes.length, 1024102400);
   });
+
+  it('should save big streaming response with highWaterMark', async () => {
+    let start = Date.now();
+    const size = 1024 * 1024 * 100;
+    const response1 = await urllib.request(`${_url}mock-bytes?size=${size}`, {
+      streaming: true,
+      // highWaterMark: 64 * 1024,
+    });
+    assert.equal(response1.status, 200);
+    assert(isReadable(response1.res as any));
+    const bytes1 = await readableToBytes(response1.res);
+    assert.equal(bytes1.length, size);
+    const use1 = Date.now() - start;
+    console.log('highWaterMark 64KB use %dms', use1);
+
+    start = Date.now();
+    const response2 = await urllib.request(`${_url}mock-bytes?size=${size}`, {
+      streaming: true,
+      highWaterMark: 128 * 1024,
+    });
+    assert.equal(response2.status, 200);
+    assert(isReadable(response2.res as any));
+    const bytes2 = await readableToBytes(response2.res);
+    assert.equal(bytes2.length, size);
+    const use2 = Date.now() - start;
+    console.log('highWaterMark 128KB use %dms', use2);
+    assert(use2 < use1);
+  });
 });

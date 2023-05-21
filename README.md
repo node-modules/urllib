@@ -75,6 +75,7 @@ console.log('status: %s, body size: %d, headers: %j', res.status, data.length, r
   - ***compressed*** Boolean - Accept `gzip, br` response content and auto decode it, default is `false`.
   - ***timing*** Boolean - Enable timing or not, default is `false`.
   - ***socketPath*** String | null - request a unix socket service, default is `null`.
+  - ***highWaterMark*** Number - default is `67108864`, 64 KiB.
 
 #### Options: `options.data`
 
