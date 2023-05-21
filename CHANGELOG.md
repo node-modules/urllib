@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.16.0](https://github.com/node-modules/urllib/compare/v3.15.0...v3.16.0) (2023-05-21)
+
+
+### Features
+
+* support custom highWaterMark ([#450](https://github.com/node-modules/urllib/issues/450)) ([a324eeb](https://github.com/node-modules/urllib/commit/a324eebfe78181f58fde1a22c8b93100269e631b))
+
 ## [3.15.0](https://github.com/node-modules/urllib/compare/v3.14.1...v3.15.0) (2023-05-21)
 
 
