@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.15.0](https://github.com/node-modules/urllib/compare/v3.14.1...v3.15.0) (2023-05-21)
+
+
+### Features
+
+* auto update USER_AGENT version to urllib package.version ([#449](https://github.com/node-modules/urllib/issues/449)) ([d4e5f39](https://github.com/node-modules/urllib/commit/d4e5f399181c79e848ee5f765712ee1d72bccb6d))
+
 ## [3.14.1](https://github.com/node-modules/urllib/compare/v3.14.0...v3.14.1) (2023-05-17)
 
 
