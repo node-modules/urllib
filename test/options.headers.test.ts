@@ -26,7 +26,7 @@ describe('options.headers.test.ts', () => {
     });
     assert.equal(status, 200);
     assert.equal(headers['x-foo'], 'bar');
-    assert.match(data.headers['user-agent'], /node-urllib\/3\.0\.0 Node\.js\//);
+    assert.match(data.headers['user-agent'], /node-urllib\/VERSION Node\.js\//);
     assert.equal(data.headers['accept-encoding'], undefined);
     assert.equal(data.headers.connection, 'keep-alive');
     assert.equal(data.headers.accept, 'application/json');

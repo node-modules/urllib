@@ -42,10 +42,12 @@
   },
   "scripts": {
     "lint": "eslint src test --ext .ts --cache",
-    "build": "npm run clean && npm run build:dist",
+    "prebuild": "npm run clean",
+    "build": "tsc --version && npm run build:cjs && npm run build:esm && npm run build:version",
+    "postbuild": "rm -rf src/*.tsbuildinfo",
     "build:cjs": "tsc -p ./tsconfig.build.cjs.json",
     "build:esm": "tsc -p ./tsconfig.build.esm.json && node ./scripts/esm_import_fix.js",
-    "build:dist": "tsc --version && npm run build:cjs && npm run build:esm",
+    "build:version": "node ./scripts/replace_urllib_version.js",
     "build:cjs:test": "cd test/cjs && rm -rf node_modules && npm link ../.. && node index.js",
     "build:esm:test": "cd test/esm && rm -rf node_modules && npm link ../.. && node index.js",
     "build:test": "npm run build && npm run build:cjs:test && npm run build:esm:test && npm run test-tsc",
@@ -55,7 +57,7 @@
     "ci": "npm run lint && npm run cov && npm run build:test",
     "contributor": "git-contributor",
     "clean": "rm -rf src/*.tsbuildinfo src/cjs/*.ts src/cjs/*.js src/esm/*.ts src/esm/*.js",
-    "prepack": "npm run build && rm -rf src/*.tsbuildinfo"
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "default-user-agent": "^1.0.0",
