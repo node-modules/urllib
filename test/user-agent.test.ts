@@ -23,7 +23,7 @@ describe('keep-alive-header.test.ts', () => {
     });
     assert.equal(response.status, 200);
     // console.log(response.data.headers);
-    assert.match(response.data.headers['user-agent'], /^node\-urllib\/3\.\d+\.\d+ Node\.js\/\d+\.\d+\.\d+ \(/);
+    assert.match(response.data.headers['user-agent'], /^node\-urllib\/VERSION Node\.js\/\d+\.\d+\.\d+ \(/);
   });
 
   it('should return no user agent if user-agent header is set to empty string', async () => {
