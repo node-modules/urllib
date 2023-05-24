@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.16.1](https://github.com/node-modules/urllib/compare/v3.16.0...v3.16.1) (2023-05-24)
+
+
+### Bug Fixes
+
+* support request uds and tcp at the same time ([#451](https://github.com/node-modules/urllib/issues/451)) ([3583219](https://github.com/node-modules/urllib/commit/358321962bf80e0859c2cc8fa3d35fa2dd6b2e98))
+
 ## [3.16.0](https://github.com/node-modules/urllib/compare/v3.15.0...v3.16.0) (2023-05-21)
 
 
