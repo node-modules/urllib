@@ -13,21 +13,58 @@ describe.skipIf(os.platform() === 'win32')('options.socketPath.test.ts', () => {
     close = closeServer;
     _url = url;
     _socketPath = socketPath;
-
   });
 
   afterAll(async () => {
-    await close?.();
+    await close();
   });
 
   it('should request socket successfully', async () => {
-    const result = await urllib.request(_url, {
+    let result = await urllib.request(_url, {
       socketPath: _socketPath,
       contentType: 'json',
       dataType: 'json',
     });
 
     assert.deepStrictEqual(result.data, { a: 1 });
+    result = await urllib.request(_url, {
+      socketPath: _socketPath,
+      contentType: 'json',
+      dataType: 'json',
+    });
+    assert.deepStrictEqual(result.data, { a: 1 });
+    result = await urllib.request(_url, {
+      socketPath: _socketPath,
+      contentType: 'json',
+      dataType: 'json',
+    });
+    assert.deepStrictEqual(result.data, { a: 1 });
+    assert(result.res.socket.handledResponses > 1);
+
+    result = await urllib.request('http://unix/api/v1', {
+      socketPath: _socketPath,
+      contentType: 'json',
+      dataType: 'json',
+    });
+    assert.deepStrictEqual(result.data, { a: 1 });
+    assert.equal(result.url, 'http://unix/api/v1');
+
+    result = await urllib.request(_url, {
+      socketPath: _socketPath,
+      contentType: 'json',
+      dataType: 'json',
+    });
+    assert.deepStrictEqual(result.data, { a: 1 });
+    assert.equal(result.url, _url);
+
+    // request normal tcp should work
+    const host = process.env.CI ? 'registry.npmjs.org' : 'registry.npmmirror.com';
+    const url = `${host}/urllib/latest`;
+    const result2 = await urllib.request(url, {
+      dataType: 'json',
+    });
+    assert.equal(result2.status, 200);
+    assert.equal(result2.data.name, 'urllib');
   });
 });
 

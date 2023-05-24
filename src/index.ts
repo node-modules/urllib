@@ -1,16 +1,23 @@
+import LRU from 'ylru';
 import { HttpClient, HEADER_USER_AGENT } from './HttpClient';
 import { RequestOptions, RequestURL } from './Request';
 
 let httpclient: HttpClient;
+const domainSocketHttpclients = new LRU(50);
 export async function request<T = any>(url: RequestURL, options?: RequestOptions) {
-  if (!httpclient) {
-    if (options?.socketPath) {
-      httpclient = new HttpClient({
+  if (options?.socketPath) {
+    let domainSocketHttpclient = domainSocketHttpclients.get<HttpClient>(options.socketPath);
+    if (!domainSocketHttpclient) {
+      domainSocketHttpclient = new HttpClient({
         connect: { socketPath: options.socketPath },
       });
-    } else {
-      httpclient = new HttpClient({});
+      domainSocketHttpclients.set(options.socketPath, domainSocketHttpclient);
     }
+    return await domainSocketHttpclient.request<T>(url, options);
+  }
+
+  if (!httpclient) {
+    httpclient = new HttpClient({});
   }
   return await httpclient.request<T>(url, options);
 }
