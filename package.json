@@ -88,7 +88,7 @@
     "selfsigned": "^2.0.1",
     "tar-stream": "^2.2.0",
     "typescript": "^5.0.4",
-    "vitest": "^0.30.1"
+    "vitest": "^0.31.1"
   },
   "engines": {
     "node": ">= 14.19.3"
