@@ -1,12 +1,14 @@
 import { createServer, Server } from 'node:http';
 
-const socketPath = '/tmp/urllib.unix.sock';
+const socketPathPrefix = '/tmp/urllib.unix.sock';
+let index = 0;
 export async function startServer(): Promise<{
   server: Server,
   url: string,
   socketPath: string,
   closeServer: any,
 }> {
+  const socketPath = `${socketPathPrefix}_${index++}`;
   const unixSocketServer = createServer();
 
   unixSocketServer.on('request', (req, res) => {

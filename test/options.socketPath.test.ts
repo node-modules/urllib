@@ -8,15 +8,18 @@ describe.skipIf(os.platform() === 'win32')('options.socketPath.test.ts', () => {
   let close: any;
   let _url: string;
   let _socketPath: string;
+  let server2: any;
   beforeAll(async () => {
     const { url, closeServer, socketPath } = await startServer();
     close = closeServer;
     _url = url;
     _socketPath = socketPath;
+    server2 = await startServer();
   });
 
   afterAll(async () => {
     await close();
+    await server2.closeServer();
   });
 
   it('should request socket successfully', async () => {
@@ -42,7 +45,7 @@ describe.skipIf(os.platform() === 'win32')('options.socketPath.test.ts', () => {
     assert(result.res.socket.handledResponses > 1);
 
     result = await urllib.request('http://unix/api/v1', {
-      socketPath: _socketPath,
+      socketPath: server2.socketPath,
       contentType: 'json',
       dataType: 'json',
     });
