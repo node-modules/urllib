@@ -78,7 +78,7 @@
     "@types/pump": "^1.1.1",
     "@types/selfsigned": "^2.0.1",
     "@types/tar-stream": "^2.2.2",
-    "@vitest/coverage-c8": "^0.32.0",
+    "@vitest/coverage-v8": "^0.32.0",
     "busboy": "^1.6.0",
     "eslint": "^8.25.0",
     "eslint-config-egg": "^12.1.0",
