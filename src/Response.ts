@@ -12,6 +12,8 @@ export type SocketInfo = {
   bytesRead: number;
   handledRequests: number;
   handledResponses: number;
+  connectedTime?: Date;
+  lastRequestEndTime?: Date;
 };
 
 /**

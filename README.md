@@ -200,10 +200,7 @@ Response is normal object, it contains:
 - `aborted`: response was aborted or not
 - `rt`: total request and response time in ms.
 - `timing`: timing object if timing enable.
-- `remoteAddress`: http server ip address
-- `remotePort`: http server ip port
-- `socketHandledRequests`: socket already handled request count
-- `socketHandledResponses`: socket already handled response count
+- `socket`: socket info
 
 ## Run test with debug log
 

@@ -31,7 +31,12 @@ describe('options.dispatcher.test.ts', () => {
   });
 
   it('should work with proxyAgent dispatcher', async () => {
-    const proxyAgent = new ProxyAgent(proxyServerUrl);
+    const proxyAgent = new ProxyAgent({
+      uri: 'http://127.0.0.1:9090',
+      requestTls: {
+        rejectUnauthorized: false,
+      },
+    });
     const response = await request(`${_url}html`, {
       dispatcher: proxyAgent,
       dataType: 'text',
@@ -39,6 +44,20 @@ describe('options.dispatcher.test.ts', () => {
     });
     assert.equal(response.status, 200);
     assert.equal(response.data, '<h1>hello</h1>');
+
+    // const httpclient = new HttpClient({
+    //   // connect: {
+    //   //   rejectUnauthorized: false,
+    //   // },
+    // });
+    const response2 = await request('http://registry.npmmirror.com/urllib/latest', {
+      dispatcher: proxyAgent,
+      dataType: 'json',
+      timing: true,
+    });
+    console.log(response2.status, response2.headers);
+    assert.equal(response2.status, 200);
+    assert.equal(response2.data.name, 'urllib');
   });
 
   it('should work with getGlobalDispatcher() dispatcher', async () => {

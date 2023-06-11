@@ -1,6 +1,8 @@
 export default {
   kSocketId: Symbol('socket id'),
   kSocketStartTime: Symbol('socket start time'),
+  kSocketConnectedTime: Symbol('socket connected time'),
+  kSocketRequestEndTime: Symbol('socket request end time'),
   kHandledRequests: Symbol('handled requests per socket'),
   kHandledResponses: Symbol('handled responses per socket'),
   kRequestSocket: Symbol('request on the socket'),

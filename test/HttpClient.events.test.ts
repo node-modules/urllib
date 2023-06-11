@@ -1,4 +1,3 @@
-
 import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import { HttpClient } from '../src';

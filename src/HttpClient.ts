@@ -1,3 +1,4 @@
+import diagnosticsChannel from 'node:diagnostics_channel';
 import { EventEmitter } from 'node:events';
 import { LookupFunction } from 'node:net';
 import { STATUS_CODES } from 'node:http';
@@ -137,6 +138,12 @@ function defaultIsRetry(response: HttpClientResponse) {
 
 type RequestContext = {
   retries: number;
+  requestStartTime?: number;
+};
+
+const channels = {
+  request: diagnosticsChannel.channel('urllib:request'),
+  response: diagnosticsChannel.channel('urllib:response'),
 };
 
 export class HttpClient extends EventEmitter {
@@ -188,6 +195,7 @@ export class HttpClient extends EventEmitter {
     const headers: IncomingHttpHeaders = {};
     const args = {
       retry: 0,
+      timing: true,
       ...this.#defaultArgs,
       ...options,
       // keep method and headers exists on args for request event handler to easy use
@@ -198,7 +206,10 @@ export class HttpClient extends EventEmitter {
       retries: 0,
       ...requestContext,
     };
-    const requestStartTime = performance.now();
+    if (!requestContext.requestStartTime) {
+      requestContext.requestStartTime = performance.now();
+    }
+    const requestStartTime = requestContext.requestStartTime;
 
     // https://developer.chrome.com/docs/devtools/network/reference/?utm_source=devtools#timing-explanation
     const timing = {
@@ -233,7 +244,7 @@ export class HttpClient extends EventEmitter {
       ctx: args.ctx,
       retries: requestContext.retries,
     };
-    const socketInfo = {
+    const socketInfo: SocketInfo = {
       id: 0,
       localAddress: '',
       localPort: 0,
@@ -438,6 +449,9 @@ export class HttpClient extends EventEmitter {
       debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s',
         requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout);
       requestOptions.headers = headers;
+      channels.request.publish({
+        request: reqMeta,
+      });
       if (this.listenerCount('request') > 0) {
         this.emit('request', reqMeta);
       }
@@ -556,6 +570,10 @@ export class HttpClient extends EventEmitter {
         }
       }
 
+      channels.response.publish({
+        request: reqMeta,
+        response: res,
+      });
       if (this.listenerCount('response') > 0) {
         this.emit('response', {
           requestId,
@@ -589,6 +607,11 @@ export class HttpClient extends EventEmitter {
       res.rt = performanceTime(requestStartTime);
       this.#updateSocketInfo(socketInfo, internalOpaque);
 
+      channels.response.publish({
+        request: reqMeta,
+        response: res,
+        error: err,
+      });
       if (this.listenerCount('response') > 0) {
         this.emit('response', {
           requestId,
@@ -618,6 +641,9 @@ export class HttpClient extends EventEmitter {
       socketInfo.remoteFamily = socket.remoteFamily;
       socketInfo.bytesRead = socket.bytesRead;
       socketInfo.bytesWritten = socket.bytesWritten;
+      socketInfo.connectedTime = socket[symbols.kSocketConnectedTime];
+      socketInfo.lastRequestEndTime = socket[symbols.kSocketRequestEndTime];
+      socket[symbols.kSocketRequestEndTime] = new Date();
     }
   }
 }

@@ -52,6 +52,7 @@ export function initDiagnosticsChannel() {
     const { socket } = message as DiagnosticsChannel.ClientConnectedMessage;
     socket[symbols.kSocketId] = globalId('UndiciSocket');
     socket[symbols.kSocketStartTime] = performance.now();
+    socket[symbols.kSocketConnectedTime] = new Date();
     socket[symbols.kHandledRequests] = 0;
     socket[symbols.kHandledResponses] = 0;
     debug('[%s] Socket#%d connected', name, socket[symbols.kSocketId]);
