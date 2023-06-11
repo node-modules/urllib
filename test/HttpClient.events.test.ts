@@ -66,6 +66,7 @@ describe('HttpClient.events.test.ts', () => {
         requestId: 'mock-request-id-1',
       },
       ctx: { foo: 'bar' },
+      timing: false,
     });
     assert.equal(response.status, 200);
     assert.equal(response.data.method, 'GET');
