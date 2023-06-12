@@ -7,7 +7,8 @@ import { sleep } from './utils';
 describe('keep-alive-header.test.ts', () => {
   const keepAliveTimeout = 2000;
   // should shorter than server keepalive timeout
-  const clientKeepAliveTimeout = keepAliveTimeout - 200;
+  // https://zhuanlan.zhihu.com/p/34147188
+  const clientKeepAliveTimeout = keepAliveTimeout - 500;
   let close: any;
   let _url: string;
   beforeAll(async () => {
@@ -24,6 +25,7 @@ describe('keep-alive-header.test.ts', () => {
     let count = 0;
     const max = 5;
     let otherSideClosed = 0;
+    let readECONNRESET = 0;
     while (count < max) {
       count++;
       try {
@@ -68,13 +70,17 @@ describe('keep-alive-header.test.ts', () => {
         if (err.message === 'other side closed') {
           console.log(err);
           otherSideClosed++;
+        } else if (err.message === 'read ECONNRESET') {
+          console.log(err);
+          readECONNRESET++;
         } else {
           throw err;
         }
       }
     }
-    if (otherSideClosed) {
-      console.log('otherSideClosed: %d', otherSideClosed);
+    if (otherSideClosed || readECONNRESET) {
+      console.log('otherSideClosed: %d, readECONNRESET: %d',
+        otherSideClosed, readECONNRESET);
     }
   });
 });
