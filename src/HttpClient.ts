@@ -30,7 +30,7 @@ import pump from 'pump';
 // Compatible with old style formstream
 import FormStream from 'formstream';
 import { HttpAgent, CheckAddressFunction } from './HttpAgent';
-import { RequestURL, RequestOptions, HttpMethod } from './Request';
+import { RequestURL, RequestOptions, HttpMethod, RequestMeta } from './Request';
 import { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response';
 import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime, isReadable } from './utils';
 import symbols from './symbols';
@@ -146,6 +146,16 @@ const channels = {
   response: diagnosticsChannel.channel('urllib:response'),
 };
 
+export type RequestDiagnosticsMessage = {
+  request: RequestMeta;
+};
+
+export type ResponseDiagnosticsMessage = {
+  request: RequestMeta;
+  response: RawResponseWithMeta;
+};
+
+
 export class HttpClient extends EventEmitter {
   #defaultArgs?: RequestOptions;
   #dispatcher?: Dispatcher;
@@ -243,7 +253,7 @@ export class HttpClient extends EventEmitter {
       args,
       ctx: args.ctx,
       retries: requestContext.retries,
-    };
+    } as RequestMeta;
     const socketInfo: SocketInfo = {
       id: 0,
       localAddress: '',
@@ -451,7 +461,7 @@ export class HttpClient extends EventEmitter {
       requestOptions.headers = headers;
       channels.request.publish({
         request: reqMeta,
-      });
+      } as RequestDiagnosticsMessage);
       if (this.listenerCount('request') > 0) {
         this.emit('request', reqMeta);
       }
@@ -573,7 +583,7 @@ export class HttpClient extends EventEmitter {
       channels.response.publish({
         request: reqMeta,
         response: res,
-      });
+      } as ResponseDiagnosticsMessage);
       if (this.listenerCount('response') > 0) {
         this.emit('response', {
           requestId,

@@ -134,3 +134,11 @@ export type RequestOptions = {
   /** Default: `64 KiB` */
   highWaterMark?: number;
 };
+
+export type RequestMeta = {
+  requestId: number;
+  url: string;
+  args: RequestOptions;
+  ctx?: unknown;
+  retries: number;
+};
