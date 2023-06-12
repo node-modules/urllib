@@ -147,13 +147,8 @@ describe('diagnostics_channel.test.ts', () => {
       socket = response.socket;
       assert.equal(request.args.opaque, lastRequestOpaque);
     }
-    if (typeof diagnosticsChannel.subscribe === 'function') {
-      diagnosticsChannel.subscribe('urllib:request', onRequestMessage);
-      diagnosticsChannel.subscribe('urllib:response', onResponseMessage);
-    } else {
-      diagnosticsChannel.channel('urllib:request').subscribe(onRequestMessage);
-      diagnosticsChannel.channel('urllib:response').subscribe(onResponseMessage);
-    }
+    diagnosticsChannel.channel('urllib:request').subscribe(onRequestMessage);
+    diagnosticsChannel.channel('urllib:response').subscribe(onResponseMessage);
 
     let traceId = `mock-traceid-${Date.now()}`;
     // _url = 'https://registry.npmmirror.com/';
@@ -223,12 +218,100 @@ describe('diagnostics_channel.test.ts', () => {
       assert.equal(socket.handledResponses, 2 + 1000 - count);
     }
 
-    if (typeof diagnosticsChannel.unsubscribe === 'function') {
-      diagnosticsChannel.unsubscribe('urllib:request', onRequestMessage);
-      diagnosticsChannel.unsubscribe('urllib:response', onResponseMessage);
-    } else {
-      diagnosticsChannel.channel('urllib:request').unsubscribe(onRequestMessage);
-      diagnosticsChannel.channel('urllib:response').unsubscribe(onResponseMessage);
+    diagnosticsChannel.channel('urllib:request').unsubscribe(onRequestMessage);
+    diagnosticsChannel.channel('urllib:response').unsubscribe(onResponseMessage);
+  });
+
+  it('should support trace request error by urllib:request and urllib:response', async () => {
+    let lastRequestOpaque: any;
+    let socket: any;
+    let lastError: Error | undefined;
+    function onRequestMessage(message: unknown) {
+      const { request } = message as RequestDiagnosticsMessage;
+      lastRequestOpaque = request.args.opaque;
     }
+    function onResponseMessage(message: unknown) {
+      const { request, response, error } = message as ResponseDiagnosticsMessage;
+      socket = response.socket;
+      assert.equal(request.args.opaque, lastRequestOpaque);
+      lastError = error;
+    }
+    diagnosticsChannel.channel('urllib:request').subscribe(onRequestMessage);
+    diagnosticsChannel.channel('urllib:response').subscribe(onResponseMessage);
+
+    let traceId = `mock-traceid-${Date.now()}`;
+    // handle network error
+    await assert.rejects(async () => {
+      await urllib.request(`${_url}error`, {
+        method: 'GET',
+        dataType: 'json',
+        opaque: {
+          tracer: { traceId },
+        },
+      });
+    }, err => {
+      assert(err);
+      assert(lastError);
+      assert.equal(err, lastError);
+      assert.equal(err.name, 'SocketError');
+      assert.equal(err.message, 'other side closed');
+      assert.equal((err as any).code, 'UND_ERR_SOCKET');
+      assert.equal((err as any).res.socket, socket);
+      assert.equal((err as any).socket, socket);
+      assert((err as any)._rawSocket);
+      return true;
+    });
+    assert(socket);
+    assert.equal(socket.handledRequests, 1);
+    assert.equal(socket.handledResponses, 0);
+    assert.equal(lastRequestOpaque.tracer.traceId, traceId);
+    assert(socket.connectedTime);
+    assert.equal(socket.lastRequestEndTime, undefined);
+    assert(socket.localAddress);
+    assert(socket.localPort);
+    assert(socket.remoteAddress);
+    assert(socket.remotePort);
+
+    await sleep(1);
+    traceId = `mock-traceid-${Date.now()}`;
+    const response = await urllib.request(_url, {
+      method: 'GET',
+      dataType: 'json',
+      opaque: {
+        tracer: { traceId },
+      },
+    });
+    assert.equal(response.status, 200);
+    assert.equal(lastRequestOpaque.tracer.traceId, traceId);
+    assert(socket);
+    assert.equal(socket.handledRequests, 1);
+    assert.equal(socket.handledResponses, 1);
+
+    // handle response decode error, not network error
+    await sleep(1);
+    await assert.rejects(async () => {
+      await urllib.request(`${_url}error-gzip`, {
+        method: 'GET',
+        dataType: 'json',
+        opaque: {
+          tracer: { traceId },
+        },
+      });
+    }, err => {
+      assert(lastError);
+      assert.equal(err, lastError);
+      assert.equal(err.name, 'UnzipError');
+      assert.equal(err.message, 'incorrect header check');
+      assert.equal((err as any).code, 'Z_DATA_ERROR');
+      assert.equal((err as any).res.socket, socket);
+      assert.equal((err as any).socket, socket);
+      assert.equal((err as any)._rawSocket, undefined);
+      return true;
+    });
+    assert.equal(socket.handledRequests, 2);
+    assert.equal(socket.handledResponses, 2);
+
+    diagnosticsChannel.channel('urllib:request').unsubscribe(onRequestMessage);
+    diagnosticsChannel.channel('urllib:response').unsubscribe(onResponseMessage);
   });
 });

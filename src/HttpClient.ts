@@ -153,6 +153,7 @@ export type RequestDiagnosticsMessage = {
 export type ResponseDiagnosticsMessage = {
   request: RequestMeta;
   response: RawResponseWithMeta;
+  error?: Error;
 };
 
 
@@ -610,6 +611,11 @@ export class HttpClient extends EventEmitter {
       err.status = res.status;
       err.headers = res.headers;
       err.res = res;
+      if (err.socket) {
+        // store rawSocket
+        err._rawSocket = err.socket;
+      }
+      err.socket = socketInfo;
       // make sure requestUrls not empty
       if (res.requestUrls.length === 0) {
         res.requestUrls.push(requestUrl.href);
@@ -621,7 +627,7 @@ export class HttpClient extends EventEmitter {
         request: reqMeta,
         response: res,
         error: err,
-      });
+      } as ResponseDiagnosticsMessage);
       if (this.listenerCount('response') > 0) {
         this.emit('response', {
           requestId,
@@ -644,8 +650,8 @@ export class HttpClient extends EventEmitter {
       socketInfo.id = socket[symbols.kSocketId];
       socketInfo.handledRequests = socket[symbols.kHandledRequests];
       socketInfo.handledResponses = socket[symbols.kHandledResponses];
-      socketInfo.localAddress = socket.localAddress;
-      socketInfo.localPort = socket.localPort;
+      socketInfo.localAddress = socket[symbols.kSocketLocalAddress];
+      socketInfo.localPort = socket[symbols.kSocketLocalPort];
       socketInfo.remoteAddress = socket.remoteAddress;
       socketInfo.remotePort = socket.remotePort;
       socketInfo.remoteFamily = socket.remoteFamily;
