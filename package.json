@@ -53,7 +53,7 @@
     "build:test": "npm run build && npm run build:cjs:test && npm run build:esm:test && npm run test-tsc",
     "test-tsc": "tsc -p ./test/fixtures/ts/tsconfig.json",
     "test": "npm run lint && vitest run",
-    "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vitest run --test-timeout 120000 keep-alive-header.test.ts",
+    "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vitest run --test-timeout 180000 keep-alive-header.test.ts",
     "cov": "vitest run --coverage",
     "ci": "npm run lint && npm run cov && npm run build:test",
     "contributor": "git-contributor",

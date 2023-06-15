@@ -138,6 +138,7 @@ function defaultIsRetry(response: HttpClientResponse) {
 
 type RequestContext = {
   retries: number;
+  socketErrorRetries: number;
   requestStartTime?: number;
 };
 
@@ -206,6 +207,7 @@ export class HttpClient extends EventEmitter {
     const headers: IncomingHttpHeaders = {};
     const args = {
       retry: 0,
+      socketErrorRetry: 1,
       timing: true,
       ...this.#defaultArgs,
       ...options,
@@ -215,6 +217,7 @@ export class HttpClient extends EventEmitter {
     };
     requestContext = {
       retries: 0,
+      socketErrorRetries: 0,
       ...requestContext,
     };
     if (!requestContext.requestStartTime) {
@@ -323,6 +326,9 @@ export class HttpClient extends EventEmitter {
     }
     if (requestContext.retries > 0) {
       headers['x-urllib-retry'] = `${requestContext.retries}/${args.retry}`;
+    }
+    if (requestContext.socketErrorRetries > 0) {
+      headers['x-urllib-retry-on-socket-error'] = `${requestContext.socketErrorRetries}/${args.socketErrorRetry}`;
     }
     if (args.auth && !headers.authorization) {
       headers.authorization = `Basic ${Buffer.from(args.auth).toString('base64')}`;
@@ -513,6 +519,7 @@ export class HttpClient extends EventEmitter {
       if (args.dataType === 'stream') {
         // streaming mode will disable retry
         args.retry = 0;
+        args.socketErrorRetry = 0;
         // only auto decompress on request args.compressed = true
         if (args.compressed === true && isCompressedContent) {
           // gzip or br
@@ -524,6 +531,7 @@ export class HttpClient extends EventEmitter {
       } else if (args.writeStream) {
         // streaming mode will disable retry
         args.retry = 0;
+        args.socketErrorRetry = 0;
         if (args.compressed === true && isCompressedContent) {
           const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
           await pipelinePromise(response.body, decoder, args.writeStream);
@@ -608,11 +616,8 @@ export class HttpClient extends EventEmitter {
         err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: e });
       } else if (err.code === 'UND_ERR_SOCKET' || err.code === 'ECONNRESET') {
         // auto retry on socket error, https://github.com/node-modules/urllib/issues/454
-        if (args.retry > 0 && requestContext.retries < args.retry) {
-          if (args.retryDelay) {
-            await sleep(args.retryDelay);
-          }
-          requestContext.retries++;
+        if (args.socketErrorRetry > 0 && requestContext.socketErrorRetries < args.socketErrorRetry) {
+          requestContext.socketErrorRetries++;
           return await this.#requestInternal(url, options, requestContext);
         }
       }

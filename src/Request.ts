@@ -69,11 +69,16 @@ export type RequestOptions = {
   headers?: IncomingHttpHeaders;
   /**
    * Request timeout in milliseconds for connecting phase and response receiving phase.
-   * Defaults to exports.
-   * TIMEOUT, both are 5s. You can use timeout: 5000 to tell urllib use same timeout on two phase or set them seperately such as
+   * Defaults is `5000`, both are 5 seconds. You can use timeout: 5000 to tell urllib use same timeout on two phase or set them separately such as
    * timeout: [3000, 5000], which will set connecting timeout to 3s and response 5s.
    */
   timeout?: number | number[];
+  /**
+   * Default is `4000`,  4 seconds - The timeout after which a socket without active requests will time out.
+   * Monitors time between activity on a connected socket.
+   * This value may be overridden by *keep-alive* hints from the server. See [MDN: HTTP - Headers - Keep-Alive directives](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Keep-Alive#directives) for more details.
+   */
+  keepAliveTimeout?: number;
   /**
    * username:password used in HTTP Basic Authorization.
    * Alias to `headers.authorization = xxx`
@@ -91,7 +96,7 @@ export type RequestOptions = {
   formatRedirectUrl?: (a: any, b: any) => void;
   /** Before request hook, you can change every thing here. */
   beforeRequest?: (...args: any[]) => void;
-  /** Accept `gzip, br` response content and auto decode it, default is false. */
+  /** Accept `gzip, br` response content and auto decode it, default is `true`. */
   compressed?: boolean;
   /**
    * @deprecated
@@ -99,11 +104,11 @@ export type RequestOptions = {
    * */
   gzip?: boolean;
   /**
-   * Enable timing or not, default is true.
+   * Enable timing or not, default is `true`.
    * */
   timing?: boolean;
   /**
-   * Auto retry times on 5xx response, default is 0. Don't work on streaming request
+   * Auto retry times on 5xx response, default is `0`. Don't work on streaming request
    * It's not supported by using retry and writeStream, because the retry request can't stop the stream which is consuming.
    **/
   retry?: number;
@@ -114,6 +119,11 @@ export type RequestOptions = {
    * It will retry when status >= 500 by default. Request error is not included.
    */
   isRetry?: (response: HttpClientResponse) => boolean;
+  /**
+   * Auto retry times on socket error, default is `1`. Don't work on streaming request
+   * It's not supported by using retry and writeStream, because the retry request can't stop the stream which is consuming.
+   **/
+  socketErrorRetry?: number;
   /** Default: `null` */
   opaque?: unknown;
   /**
