@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { pipeline } from 'node:stream';
 import { createBrotliDecompress } from 'node:zlib';
-import { describe, it, beforeAll, afterAll } from 'vitest';
+import { describe, it, beforeEach, afterEach } from 'vitest';
 import urllib from '../src';
 import { isReadable } from '../src/utils';
 import { startServer } from './fixtures/server';
@@ -10,13 +10,13 @@ import { readableToBytes } from './utils';
 describe('options.streaming.test.ts', () => {
   let close: any;
   let _url: string;
-  beforeAll(async () => {
+  beforeEach(async () => {
     const { closeServer, url } = await startServer();
     close = closeServer;
     _url = url;
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await close();
   });
 

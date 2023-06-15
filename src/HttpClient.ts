@@ -335,6 +335,7 @@ export class HttpClient extends EventEmitter {
         headersTimeout,
         headers,
         bodyTimeout,
+        keepAliveTimeout: args.keepAliveTimeout,
         opaque: internalOpaque,
         dispatcher: args.dispatcher ?? this.#dispatcher,
       };

@@ -4,7 +4,7 @@ import urllib from '../src';
 import { startServer } from './fixtures/server';
 import { sleep } from './utils';
 
-describe('keep-alive-header.test.ts', () => {
+describe.only('keep-alive-header.test.ts', () => {
   const keepAliveTimeout = 2000;
   // should shorter than server keepalive timeout
   // https://zhuanlan.zhihu.com/p/34147188
