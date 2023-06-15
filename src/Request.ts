@@ -75,14 +75,6 @@ export type RequestOptions = {
    */
   timeout?: number | number[];
   /**
-   * Default: `4e3` - The timeout after which a socket without active requests will time out.
-   * Monitors time between activity on a connected socket.
-   * This value may be overridden by *keep-alive* hints from the server.
-   * See [MDN: HTTP - Headers - Keep-Alive directives](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Keep-Alive#directives) for more details.
-   * Defaults to 4 seconds.
-   */
-  keepAliveTimeout?: number;
-  /**
    * username:password used in HTTP Basic Authorization.
    * Alias to `headers.authorization = xxx`
    **/
