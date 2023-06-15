@@ -64,7 +64,8 @@ console.log('status: %s, body size: %d, headers: %j', res.status, data.length, r
   - ***dataType*** String - Type of response data. Could be `text` or `json`. If it's `text`, the `callback`ed `data` would be a String. If it's `json`, the `data` of callback would be a parsed JSON Object and will auto set `Accept: application/json` header. Default `callback`ed `data` would be a `Buffer`.
   - **fixJSONCtlChars** Boolean - Fix the control characters (U+0000 through U+001F) before JSON parse response. Default is `false`.
   - ***headers*** Object - Request headers.
-  - ***timeout*** Number | Array - Request timeout in milliseconds for connecting phase and response receiving phase. Defaults to `exports.TIMEOUT`, both are 5s. You can use `timeout: 5000` to tell urllib use same timeout on two phase or set them seperately such as `timeout: [3000, 5000]`, which will set connecting timeout to 3s and response 5s.
+  - ***timeout*** Number | Array - Request timeout in milliseconds for connecting phase and response receiving phase. Default is `5000`. You can use `timeout: 5000` to tell urllib use same timeout on two phase or set them seperately such as `timeout: [3000, 5000]`, which will set connecting timeout to 3s and response 5s.
+  - **keepAliveTimeout** `number | null` - Default is `4000`, 4 seconds - The timeout after which a socket without active requests will time out. Monitors time between activity on a connected socket. This value may be overridden by *keep-alive* hints from the server. See [MDN: HTTP - Headers - Keep-Alive directives](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Keep-Alive#directives) for more details.
   - ***auth*** String - `username:password` used in HTTP Basic Authorization.
   - ***digestAuth*** String - `username:password` used in HTTP [Digest Authorization](https://en.wikipedia.org/wiki/Digest_access_authentication).
   - ***followRedirect*** Boolean - follow HTTP 3xx responses as redirects. defaults to false.
@@ -72,8 +73,8 @@ console.log('status: %s, body size: %d, headers: %j', res.status, data.length, r
   - ***formatRedirectUrl*** Function - Format the redirect url by your self. Default is `url.resolve(from, to)`.
   - ***beforeRequest*** Function - Before request hook, you can change every thing here.
   - ***streaming*** Boolean - let you get the `res` object when request  connected, default `false`. alias `customResponse`
-  - ***compressed*** Boolean - Accept `gzip, br` response content and auto decode it, default is `false`.
-  - ***timing*** Boolean - Enable timing or not, default is `false`.
+  - ***compressed*** Boolean - Accept `gzip, br` response content and auto decode it, default is `true`.
+  - ***timing*** Boolean - Enable timing or not, default is `true`.
   - ***socketPath*** String | null - request a unix socket service, default is `null`.
   - ***highWaterMark*** Number - default is `67108864`, 64 KiB.
 

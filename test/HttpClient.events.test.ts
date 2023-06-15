@@ -116,9 +116,9 @@ describe('HttpClient.events.test.ts', () => {
           requestId: 'mock-request-id-1',
         },
         ctx: { foo: 'bar' },
+        socketErrorRetry: 0,
       });
     }, (err: any) => {
-      // console.error(err);
       assert.equal(err.name, 'SocketError');
       assert.equal(err.message, 'other side closed');
       assert.equal(err.status, -1);

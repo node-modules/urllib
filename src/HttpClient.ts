@@ -138,6 +138,7 @@ function defaultIsRetry(response: HttpClientResponse) {
 
 type RequestContext = {
   retries: number;
+  socketErrorRetries: number;
   requestStartTime?: number;
 };
 
@@ -206,6 +207,7 @@ export class HttpClient extends EventEmitter {
     const headers: IncomingHttpHeaders = {};
     const args = {
       retry: 0,
+      socketErrorRetry: 1,
       timing: true,
       ...this.#defaultArgs,
       ...options,
@@ -215,6 +217,7 @@ export class HttpClient extends EventEmitter {
     };
     requestContext = {
       retries: 0,
+      socketErrorRetries: 0,
       ...requestContext,
     };
     if (!requestContext.requestStartTime) {
@@ -281,6 +284,8 @@ export class HttpClient extends EventEmitter {
       requestUrls: [],
       timing,
       socket: socketInfo,
+      retries: requestContext.retries,
+      socketErrorRetries: requestContext.socketErrorRetries,
     } as any as RawResponseWithMeta;
 
     let headersTimeout = 5000;
@@ -324,8 +329,17 @@ export class HttpClient extends EventEmitter {
     if (requestContext.retries > 0) {
       headers['x-urllib-retry'] = `${requestContext.retries}/${args.retry}`;
     }
+    if (requestContext.socketErrorRetries > 0) {
+      headers['x-urllib-retry-on-socket-error'] = `${requestContext.socketErrorRetries}/${args.socketErrorRetry}`;
+    }
     if (args.auth && !headers.authorization) {
       headers.authorization = `Basic ${Buffer.from(args.auth).toString('base64')}`;
+    }
+
+    // streaming request should disable socketErrorRetry and retry
+    let isStreamingRequest = false;
+    if (args.dataType === 'stream' || args.writeStream) {
+      isStreamingRequest = true;
     }
 
     try {
@@ -356,9 +370,11 @@ export class HttpClient extends EventEmitter {
         if (isReadable(args.stream) && !(args.stream instanceof Readable)) {
           debug('Request#%d convert old style stream to Readable', requestId);
           args.stream = new Readable().wrap(args.stream);
+          isStreamingRequest = true;
         } else if (args.stream instanceof FormStream) {
           debug('Request#%d convert formstream to Readable', requestId);
           args.stream = new Readable().wrap(args.stream);
+          isStreamingRequest = true;
         }
         args.content = args.stream;
       }
@@ -402,6 +418,7 @@ export class HttpClient extends EventEmitter {
           } else if (file instanceof Readable || isReadable(file as any)) {
             const fileName = getFileName(file) || `streamfile${index}`;
             formData.append(field, new BlobFromStream(file, mime.lookup(fileName) || ''), fileName);
+            isStreamingRequest = true;
           }
         }
 
@@ -425,6 +442,7 @@ export class HttpClient extends EventEmitter {
           } else if (typeof args.content === 'string' && !headers['content-type']) {
             headers['content-type'] = 'text/plain;charset=UTF-8';
           }
+          isStreamingRequest = isReadable(args.content);
         }
       } else if (args.data) {
         const isStringOrBufferOrReadable = typeof args.data === 'string'
@@ -441,6 +459,7 @@ export class HttpClient extends EventEmitter {
         } else {
           if (isStringOrBufferOrReadable) {
             requestOptions.body = args.data;
+            isStreamingRequest = isReadable(args.data);
           } else {
             if (args.contentType === 'json'
               || args.contentType === 'application/json'
@@ -456,9 +475,13 @@ export class HttpClient extends EventEmitter {
           }
         }
       }
+      if (isStreamingRequest) {
+        args.retry = 0;
+        args.socketErrorRetry = 0;
+      }
 
-      debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s',
-        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout);
+      debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s, isStreamingRequest: %s',
+        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout, isStreamingRequest);
       requestOptions.headers = headers;
       channels.request.publish({
         request: reqMeta,
@@ -511,8 +534,6 @@ export class HttpClient extends EventEmitter {
 
       let data: any = null;
       if (args.dataType === 'stream') {
-        // streaming mode will disable retry
-        args.retry = 0;
         // only auto decompress on request args.compressed = true
         if (args.compressed === true && isCompressedContent) {
           // gzip or br
@@ -522,8 +543,6 @@ export class HttpClient extends EventEmitter {
           res = Object.assign(response.body, res);
         }
       } else if (args.writeStream) {
-        // streaming mode will disable retry
-        args.retry = 0;
         if (args.compressed === true && isCompressedContent) {
           const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
           await pipelinePromise(response.body, decoder, args.writeStream);
@@ -608,11 +627,8 @@ export class HttpClient extends EventEmitter {
         err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: e });
       } else if (err.code === 'UND_ERR_SOCKET' || err.code === 'ECONNRESET') {
         // auto retry on socket error, https://github.com/node-modules/urllib/issues/454
-        if (args.retry > 0 && requestContext.retries < args.retry) {
-          if (args.retryDelay) {
-            await sleep(args.retryDelay);
-          }
-          requestContext.retries++;
+        if (args.socketErrorRetry > 0 && requestContext.socketErrorRetries < args.socketErrorRetry) {
+          requestContext.socketErrorRetries++;
           return await this.#requestInternal(url, options, requestContext);
         }
       }
