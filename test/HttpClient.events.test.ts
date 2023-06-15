@@ -1,4 +1,3 @@
-
 import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import { HttpClient } from '../src';
@@ -67,6 +66,7 @@ describe('HttpClient.events.test.ts', () => {
         requestId: 'mock-request-id-1',
       },
       ctx: { foo: 'bar' },
+      timing: false,
     });
     assert.equal(response.status, 200);
     assert.equal(response.data.method, 'GET');

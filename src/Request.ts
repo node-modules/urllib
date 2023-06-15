@@ -99,7 +99,7 @@ export type RequestOptions = {
    * */
   gzip?: boolean;
   /**
-   * Enable timing or not, default is false.
+   * Enable timing or not, default is true.
    * */
   timing?: boolean;
   /**
@@ -133,4 +133,12 @@ export type RequestOptions = {
   reset?: boolean;
   /** Default: `64 KiB` */
   highWaterMark?: number;
+};
+
+export type RequestMeta = {
+  requestId: number;
+  url: string;
+  args: RequestOptions;
+  ctx?: unknown;
+  retries: number;
 };

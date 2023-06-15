@@ -39,6 +39,15 @@ describe('options.dispatcher.test.ts', () => {
     });
     assert.equal(response.status, 200);
     assert.equal(response.data, '<h1>hello</h1>');
+
+    const response2 = await request('http://registry.npmmirror.com/urllib/latest', {
+      dispatcher: proxyAgent,
+      dataType: 'json',
+      timing: true,
+    });
+    // console.log(response2.status, response2.headers);
+    assert.equal(response2.status, 200);
+    assert.equal(response2.data.name, 'urllib');
   });
 
   it('should work with getGlobalDispatcher() dispatcher', async () => {

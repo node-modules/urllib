@@ -4,11 +4,10 @@ import urllib from '../src';
 import { startServer } from './fixtures/server';
 
 describe('keep-alive-header.test.ts', () => {
-  const keepAliveTimeout = 1000;
   let close: any;
   let _url: string;
   beforeAll(async () => {
-    const { closeServer, url } = await startServer({ keepAliveTimeout });
+    const { closeServer, url } = await startServer();
     close = closeServer;
     _url = url;
   });

@@ -67,14 +67,14 @@ describe('options.timing.test.ts', () => {
     assert(res.rt > 0);
   });
 
-  it('should timing default to false', async () => {
+  it('should timing default to true', async () => {
     const response = await urllib.request(`${_url}?content-encoding=gzip`, {
       dataType: 'json',
     });
     assert.equal(response.status, 200);
     const res = response.res as RawResponseWithMeta;
-    assert.equal(res.timing.waiting, 0);
-    assert.equal(res.timing.contentDownload, 0);
+    assert(res.timing.waiting > 0);
+    assert(res.timing.contentDownload > 0);
     assert(res.rt > 0);
   });
 });

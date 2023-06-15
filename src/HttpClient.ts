@@ -1,3 +1,4 @@
+import diagnosticsChannel from 'node:diagnostics_channel';
 import { EventEmitter } from 'node:events';
 import { LookupFunction } from 'node:net';
 import { STATUS_CODES } from 'node:http';
@@ -29,7 +30,7 @@ import pump from 'pump';
 // Compatible with old style formstream
 import FormStream from 'formstream';
 import { HttpAgent, CheckAddressFunction } from './HttpAgent';
-import { RequestURL, RequestOptions, HttpMethod } from './Request';
+import { RequestURL, RequestOptions, HttpMethod, RequestMeta } from './Request';
 import { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response';
 import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime, isReadable } from './utils';
 import symbols from './symbols';
@@ -137,7 +138,24 @@ function defaultIsRetry(response: HttpClientResponse) {
 
 type RequestContext = {
   retries: number;
+  requestStartTime?: number;
 };
+
+const channels = {
+  request: diagnosticsChannel.channel('urllib:request'),
+  response: diagnosticsChannel.channel('urllib:response'),
+};
+
+export type RequestDiagnosticsMessage = {
+  request: RequestMeta;
+};
+
+export type ResponseDiagnosticsMessage = {
+  request: RequestMeta;
+  response: RawResponseWithMeta;
+  error?: Error;
+};
+
 
 export class HttpClient extends EventEmitter {
   #defaultArgs?: RequestOptions;
@@ -188,6 +206,7 @@ export class HttpClient extends EventEmitter {
     const headers: IncomingHttpHeaders = {};
     const args = {
       retry: 0,
+      timing: true,
       ...this.#defaultArgs,
       ...options,
       // keep method and headers exists on args for request event handler to easy use
@@ -198,7 +217,10 @@ export class HttpClient extends EventEmitter {
       retries: 0,
       ...requestContext,
     };
-    const requestStartTime = performance.now();
+    if (!requestContext.requestStartTime) {
+      requestContext.requestStartTime = performance.now();
+    }
+    const requestStartTime = requestContext.requestStartTime;
 
     // https://developer.chrome.com/docs/devtools/network/reference/?utm_source=devtools#timing-explanation
     const timing = {
@@ -232,8 +254,8 @@ export class HttpClient extends EventEmitter {
       args,
       ctx: args.ctx,
       retries: requestContext.retries,
-    };
-    const socketInfo = {
+    } as RequestMeta;
+    const socketInfo: SocketInfo = {
       id: 0,
       localAddress: '',
       localPort: 0,
@@ -438,6 +460,9 @@ export class HttpClient extends EventEmitter {
       debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s',
         requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout);
       requestOptions.headers = headers;
+      channels.request.publish({
+        request: reqMeta,
+      } as RequestDiagnosticsMessage);
       if (this.listenerCount('request') > 0) {
         this.emit('request', reqMeta);
       }
@@ -556,6 +581,10 @@ export class HttpClient extends EventEmitter {
         }
       }
 
+      channels.response.publish({
+        request: reqMeta,
+        response: res,
+      } as ResponseDiagnosticsMessage);
       if (this.listenerCount('response') > 0) {
         this.emit('response', {
           requestId,
@@ -577,11 +606,25 @@ export class HttpClient extends EventEmitter {
         err = new HttpClientRequestTimeoutError(headersTimeout, { cause: e });
       } else if (err.name === 'BodyTimeoutError') {
         err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: e });
+      } else if (err.code === 'UND_ERR_SOCKET' || err.code === 'ECONNRESET') {
+        // auto retry on socket error, https://github.com/node-modules/urllib/issues/454
+        if (args.retry > 0 && requestContext.retries < args.retry) {
+          if (args.retryDelay) {
+            await sleep(args.retryDelay);
+          }
+          requestContext.retries++;
+          return await this.#requestInternal(url, options, requestContext);
+        }
       }
       err.opaque = orginalOpaque;
       err.status = res.status;
       err.headers = res.headers;
       err.res = res;
+      if (err.socket) {
+        // store rawSocket
+        err._rawSocket = err.socket;
+      }
+      err.socket = socketInfo;
       // make sure requestUrls not empty
       if (res.requestUrls.length === 0) {
         res.requestUrls.push(requestUrl.href);
@@ -589,6 +632,11 @@ export class HttpClient extends EventEmitter {
       res.rt = performanceTime(requestStartTime);
       this.#updateSocketInfo(socketInfo, internalOpaque);
 
+      channels.response.publish({
+        request: reqMeta,
+        response: res,
+        error: err,
+      } as ResponseDiagnosticsMessage);
       if (this.listenerCount('response') > 0) {
         this.emit('response', {
           requestId,
@@ -611,13 +659,16 @@ export class HttpClient extends EventEmitter {
       socketInfo.id = socket[symbols.kSocketId];
       socketInfo.handledRequests = socket[symbols.kHandledRequests];
       socketInfo.handledResponses = socket[symbols.kHandledResponses];
-      socketInfo.localAddress = socket.localAddress;
-      socketInfo.localPort = socket.localPort;
+      socketInfo.localAddress = socket[symbols.kSocketLocalAddress];
+      socketInfo.localPort = socket[symbols.kSocketLocalPort];
       socketInfo.remoteAddress = socket.remoteAddress;
       socketInfo.remotePort = socket.remotePort;
       socketInfo.remoteFamily = socket.remoteFamily;
       socketInfo.bytesRead = socket.bytesRead;
       socketInfo.bytesWritten = socket.bytesWritten;
+      socketInfo.connectedTime = socket[symbols.kSocketConnectedTime];
+      socketInfo.lastRequestEndTime = socket[symbols.kSocketRequestEndTime];
+      socket[symbols.kSocketRequestEndTime] = new Date();
     }
   }
 }

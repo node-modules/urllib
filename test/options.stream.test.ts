@@ -19,9 +19,7 @@ describe('options.stream.test.ts', () => {
   let cleanup: any;
 
   beforeAll(async () => {
-    const { closeServer, url } = await startServer({
-      keepAliveTimeout: 1000,
-    });
+    const { closeServer, url } = await startServer();
     close = closeServer;
     _url = url;
   });
