@@ -49,6 +49,8 @@ export type RawResponseWithMeta = Readable & {
   rt: number;
   keepAliveSocket: boolean;
   requestUrls: string[];
+  retries: number;
+  socketErrorRetries: number;
 };
 
 export type HttpClientResponse<T = any> = {

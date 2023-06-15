@@ -234,6 +234,11 @@ export async function startServer(options?: {
     if (pathname === '/error') {
       return res.destroy();
     }
+    if (pathname === '/error-non-retry') {
+      if (!req.headers['x-urllib-retry-on-socket-error']) {
+        return res.destroy();
+      }
+    }
 
     if (pathname === '/multipart' && (req.method === 'POST' || req.method === 'PUT')) {
       const bb = busboy({ headers: req.headers });

@@ -284,6 +284,8 @@ export class HttpClient extends EventEmitter {
       requestUrls: [],
       timing,
       socket: socketInfo,
+      retries: requestContext.retries,
+      socketErrorRetries: requestContext.socketErrorRetries,
     } as any as RawResponseWithMeta;
 
     let headersTimeout = 5000;
@@ -334,6 +336,13 @@ export class HttpClient extends EventEmitter {
       headers.authorization = `Basic ${Buffer.from(args.auth).toString('base64')}`;
     }
 
+    if (args.dataType === 'stream' || args.writeStream) {
+      // streaming response should disable retry
+      args.retry = 0;
+      args.socketErrorRetry = 0;
+    }
+    let isStreamingRequest = false;
+
     try {
       const requestOptions: IUndiciRequestOption = {
         method,
@@ -362,9 +371,11 @@ export class HttpClient extends EventEmitter {
         if (isReadable(args.stream) && !(args.stream instanceof Readable)) {
           debug('Request#%d convert old style stream to Readable', requestId);
           args.stream = new Readable().wrap(args.stream);
+          isStreamingRequest = true;
         } else if (args.stream instanceof FormStream) {
           debug('Request#%d convert formstream to Readable', requestId);
           args.stream = new Readable().wrap(args.stream);
+          isStreamingRequest = true;
         }
         args.content = args.stream;
       }
@@ -408,6 +419,7 @@ export class HttpClient extends EventEmitter {
           } else if (file instanceof Readable || isReadable(file as any)) {
             const fileName = getFileName(file) || `streamfile${index}`;
             formData.append(field, new BlobFromStream(file, mime.lookup(fileName) || ''), fileName);
+            isStreamingRequest = true;
           }
         }
 
@@ -431,6 +443,7 @@ export class HttpClient extends EventEmitter {
           } else if (typeof args.content === 'string' && !headers['content-type']) {
             headers['content-type'] = 'text/plain;charset=UTF-8';
           }
+          isStreamingRequest = isReadable(args.content);
         }
       } else if (args.data) {
         const isStringOrBufferOrReadable = typeof args.data === 'string'
@@ -447,6 +460,7 @@ export class HttpClient extends EventEmitter {
         } else {
           if (isStringOrBufferOrReadable) {
             requestOptions.body = args.data;
+            isStreamingRequest = isReadable(args.data);
           } else {
             if (args.contentType === 'json'
               || args.contentType === 'application/json'
@@ -462,9 +476,13 @@ export class HttpClient extends EventEmitter {
           }
         }
       }
+      if (isStreamingRequest) {
+        args.retry = 0;
+        args.socketErrorRetry = 0;
+      }
 
-      debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s',
-        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout);
+      debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s, isStreamingRequest: %s',
+        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout, isStreamingRequest);
       requestOptions.headers = headers;
       channels.request.publish({
         request: reqMeta,
@@ -517,9 +535,6 @@ export class HttpClient extends EventEmitter {
 
       let data: any = null;
       if (args.dataType === 'stream') {
-        // streaming mode will disable retry
-        args.retry = 0;
-        args.socketErrorRetry = 0;
         // only auto decompress on request args.compressed = true
         if (args.compressed === true && isCompressedContent) {
           // gzip or br
@@ -529,9 +544,6 @@ export class HttpClient extends EventEmitter {
           res = Object.assign(response.body, res);
         }
       } else if (args.writeStream) {
-        // streaming mode will disable retry
-        args.retry = 0;
-        args.socketErrorRetry = 0;
         if (args.compressed === true && isCompressedContent) {
           const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
           await pipelinePromise(response.body, decoder, args.writeStream);
