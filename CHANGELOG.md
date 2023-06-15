@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.17.1](https://github.com/node-modules/urllib/compare/v3.17.0...v3.17.1) (2023-06-15)
+
+
+### Bug Fixes
+
+* set `socketErrorRetry = 1` by default ([#455](https://github.com/node-modules/urllib/issues/455)) ([1d26bb8](https://github.com/node-modules/urllib/commit/1d26bb8c2996d44a21611d3d716eb38f62570ce4))
+
 ## [3.17.0](https://github.com/node-modules/urllib/compare/v3.16.1...v3.17.0) (2023-06-15)
 
 
