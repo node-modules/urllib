@@ -607,6 +607,15 @@ export class HttpClient extends EventEmitter {
         err = new HttpClientRequestTimeoutError(headersTimeout, { cause: e });
       } else if (err.name === 'BodyTimeoutError') {
         err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: e });
+      } else if (err.code === 'UND_ERR_SOCKET' || err.code === 'ECONNRESET') {
+        // auto retry on socket error, https://github.com/node-modules/urllib/issues/454
+        if (args.retry > 0 && requestContext.retries < args.retry) {
+          if (args.retryDelay) {
+            await sleep(args.retryDelay);
+          }
+          requestContext.retries++;
+          return await this.#requestInternal(url, options, requestContext);
+        }
       }
       err.opaque = orginalOpaque;
       err.status = res.status;
