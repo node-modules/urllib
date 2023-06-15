@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.17.0](https://github.com/node-modules/urllib/compare/v3.16.1...v3.17.0) (2023-06-15)
+
+
+### Features
+
+* support tracing on diagnostics_channel ([#452](https://github.com/node-modules/urllib/issues/452)) ([416b2ca](https://github.com/node-modules/urllib/commit/416b2cab086e09b7423891b3302b04ed614ec144))
+
 ## [3.16.1](https://github.com/node-modules/urllib/compare/v3.16.0...v3.16.1) (2023-05-24)
 
 
