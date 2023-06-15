@@ -1,11 +1,16 @@
 import { strict as assert } from 'node:assert';
-import { describe, it, beforeAll, afterAll } from 'vitest';
+import { createWriteStream, createReadStream } from 'node:fs';
+import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
+import { createTempfile } from './utils';
 
 describe('options.socketErrorRetry.test.ts', () => {
   let close: any;
   let _url: string;
+  let tmpfile: string;
+  let cleanup: any;
+
   beforeAll(async () => {
     const { closeServer, url } = await startServer();
     close = closeServer;
@@ -16,14 +21,19 @@ describe('options.socketErrorRetry.test.ts', () => {
     await close();
   });
 
+  beforeEach(async () => {
+    const item = await createTempfile();
+    tmpfile = item.tmpfile;
+    cleanup = item.cleanup;
+  });
+  afterEach(async () => {
+    await cleanup();
+  });
+
   it('should auto retry on socket error and still fail', async () => {
     await assert.rejects(async () => {
       await urllib.request(`${_url}error`, {
         dataType: 'json',
-        opaque: {
-          requestId: 'mock-request-id-1',
-        },
-        ctx: { foo: 'bar' },
       });
     }, (err: any) => {
       assert.equal(err.res.retries, 0);
@@ -35,22 +45,35 @@ describe('options.socketErrorRetry.test.ts', () => {
   it('should auto retry on socket error and success', async () => {
     const response = await urllib.request(`${_url}error-non-retry`, {
       dataType: 'json',
-      opaque: {
-        requestId: 'mock-request-id-1',
-      },
-      ctx: { foo: 'bar' },
     });
     assert.equal(response.res.socketErrorRetries, 1);
   });
 
-  it('should not retry on streaming', async () => {
+  it('should not retry on streaming request', async () => {
     await assert.rejects(async () => {
       await urllib.request(`${_url}error`, {
-        opaque: {
-          requestId: 'mock-request-id-1',
-        },
-        ctx: { foo: 'bar' },
         streaming: true,
+      });
+    }, (err: any) => {
+      assert.equal(err.res.retries, 0);
+      assert.equal(err.res.socketErrorRetries, 0);
+      return true;
+    });
+
+    const writeStream = createWriteStream(tmpfile);
+    await assert.rejects(async () => {
+      await urllib.request(`${_url}error`, {
+        writeStream,
+      });
+    }, (err: any) => {
+      assert.equal(err.res.retries, 0);
+      assert.equal(err.res.socketErrorRetries, 0);
+      return true;
+    });
+
+    await assert.rejects(async () => {
+      await urllib.request(`${_url}error`, {
+        files: createReadStream(__filename),
       });
     }, (err: any) => {
       assert.equal(err.res.retries, 0);

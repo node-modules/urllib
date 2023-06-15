@@ -67,19 +67,6 @@ describe('options.retry.test.ts', () => {
     assert.equal(text, 'Mock status 500');
   });
 
-  it('should not retry on streaming', async () => {
-    const response = await urllib.request(`${_url}mock-status?status=500`, {
-      dataType: 'text',
-      retry: 2,
-      streaming: true,
-    });
-    assert.equal(response.status, 500);
-    const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
-    assert.equal(requestHeaders['x-urllib-retry'], undefined);
-    const text = await readableToString(response.res as any);
-    assert.equal(text, 'Mock status 500');
-  });
-
   it('should retry fail on default server status 500', async () => {
     let response = await urllib.request(`${_url}mock-status?status=500`, {
       dataType: 'text',
