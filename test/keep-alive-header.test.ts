@@ -1,28 +1,33 @@
 import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import urllib from '../src';
+import { getGlobalDispatcher, setGlobalDispatcher, Agent } from '../src';
 import { startServer } from './fixtures/server';
 import { sleep } from './utils';
 
 describe('keep-alive-header.test.ts', () => {
   const keepAliveTimeout = 2000;
-  // should shorter than server keepalive timeout
-  // https://zhuanlan.zhihu.com/p/34147188
-  // const clientKeepAliveTimeout = keepAliveTimeout - 500;
-  const clientKeepAliveTimeout = keepAliveTimeout;
+  const agent = getGlobalDispatcher();
   let close: any;
   let _url: string;
   beforeAll(async () => {
+    // should shorter than server keepalive timeout
+    // https://zhuanlan.zhihu.com/p/34147188
+    const keepalive1sAgent = new Agent({
+      keepAliveTimeout: 1000,
+    });
+    setGlobalDispatcher(keepalive1sAgent);
     const { closeServer, url } = await startServer({ keepAliveTimeout });
     close = closeServer;
     _url = url;
   });
 
   afterAll(async () => {
+    setGlobalDispatcher(agent);
     await close();
   });
 
-  it('should handle Keep-Alive header and not throw reset error', async () => {
+  it('should handle Keep-Alive header and not throw reset error on 1s keepalive agent', async () => {
     let count = 0;
     const max = process.env.TEST_KEEPALIVE_COUNT ? parseInt(process.env.TEST_KEEPALIVE_COUNT) : 10;
     let otherSideClosed = 0;
@@ -30,61 +35,43 @@ describe('keep-alive-header.test.ts', () => {
     while (count < max) {
       count++;
       try {
-        let response = await urllib.request(_url, {
-          keepAliveTimeout: clientKeepAliveTimeout,
-        });
+        let response = await urllib.request(_url);
         assert.equal(response.status, 200);
         // console.log(response.headers);
         assert.equal(response.headers.connection, 'keep-alive');
         assert.equal(response.headers['keep-alive'], 'timeout=2');
-        response = await urllib.request(_url, {
-          keepAliveTimeout: clientKeepAliveTimeout,
-        });
+        response = await urllib.request(_url);
         assert.equal(response.status, 200);
         // console.log(response.headers);
         assert.equal(response.headers.connection, 'keep-alive');
         assert.equal(response.headers['keep-alive'], 'timeout=2');
-        response = await urllib.request(_url, {
-          keepAliveTimeout: clientKeepAliveTimeout,
-        });
+        response = await urllib.request(_url);
         assert.equal(response.status, 200);
         // console.log(response.headers);
         assert.equal(response.headers.connection, 'keep-alive');
         assert.equal(response.headers['keep-alive'], 'timeout=2');
-        response = await urllib.request(_url, {
-          keepAliveTimeout: clientKeepAliveTimeout,
-        });
+        response = await urllib.request(_url);
         assert.equal(response.status, 200);
         // console.log(response.headers);
         assert.equal(response.headers.connection, 'keep-alive');
         assert.equal(response.headers['keep-alive'], 'timeout=2');
-        response = await urllib.request(_url, {
-          keepAliveTimeout: clientKeepAliveTimeout,
-        });
+        response = await urllib.request(_url);
         assert.equal(response.status, 200);
         assert.equal(response.headers.connection, 'keep-alive');
         assert.equal(response.headers['keep-alive'], 'timeout=2');
-        response = await urllib.request(_url, {
-          keepAliveTimeout: clientKeepAliveTimeout,
-        });
+        response = await urllib.request(_url);
         assert.equal(response.status, 200);
         assert.equal(response.headers.connection, 'keep-alive');
         assert.equal(response.headers['keep-alive'], 'timeout=2');
-        response = await urllib.request(_url, {
-          keepAliveTimeout: clientKeepAliveTimeout,
-        });
+        response = await urllib.request(_url);
         assert.equal(response.status, 200);
         assert.equal(response.headers.connection, 'keep-alive');
         assert.equal(response.headers['keep-alive'], 'timeout=2');
-        response = await urllib.request(_url, {
-          keepAliveTimeout: clientKeepAliveTimeout,
-        });
+        response = await urllib.request(_url);
         assert.equal(response.status, 200);
         assert.equal(response.headers.connection, 'keep-alive');
         assert.equal(response.headers['keep-alive'], 'timeout=2');
-        response = await urllib.request(_url, {
-          keepAliveTimeout: clientKeepAliveTimeout,
-        });
+        response = await urllib.request(_url);
         assert.equal(response.status, 200);
         // console.log(response.headers);
         assert.equal(response.headers.connection, 'keep-alive');
