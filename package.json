@@ -53,8 +53,9 @@
     "build:test": "npm run build && npm run build:cjs:test && npm run build:esm:test && npm run test-tsc",
     "test-tsc": "tsc -p ./test/fixtures/ts/tsconfig.json",
     "test": "npm run lint && vitest run",
-    "cov": "vitest run --coverage keep-alive-header.test.ts",
-    "ci": "npm run lint && npm run cov && npm run build:test",
+    "cov": "vitest run --coverage",
+    "ci": "TEST_KEEPALIVE_COUNT=100 vitest run --coverage keep-alive-header.test.ts",
+    "citmp": "npm run lint && npm run cov && npm run build:test",
     "contributor": "git-contributor",
     "clean": "rm -rf src/*.tsbuildinfo src/cjs/*.ts src/cjs/*.js src/esm/*.ts src/esm/*.js",
     "prepublishOnly": "npm run build"

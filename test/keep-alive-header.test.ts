@@ -23,7 +23,7 @@ describe('keep-alive-header.test.ts', () => {
 
   it('should handle Keep-Alive header and not throw reset error', async () => {
     let count = 0;
-    const max = 5;
+    const max = process.env.TEST_KEEPALIVE_COUNT ? parseInt(process.env.TEST_KEEPALIVE_COUNT) : 10;
     let otherSideClosed = 0;
     let readECONNRESET = 0;
     while (count < max) {
@@ -82,5 +82,7 @@ describe('keep-alive-header.test.ts', () => {
       console.log('otherSideClosed: %d, readECONNRESET: %d',
         otherSideClosed, readECONNRESET);
     }
+    assert.equal(otherSideClosed, 0);
+    assert.equal(readECONNRESET, 0);
   });
 });
