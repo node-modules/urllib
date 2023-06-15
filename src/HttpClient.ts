@@ -336,11 +336,9 @@ export class HttpClient extends EventEmitter {
       headers.authorization = `Basic ${Buffer.from(args.auth).toString('base64')}`;
     }
 
-    // streaming request should disable socketErrorRetry
+    // streaming request should disable socketErrorRetry and retry
     let isStreamingRequest = false;
     if (args.dataType === 'stream' || args.writeStream) {
-      // streaming response should disable retry
-      args.retry = 0;
       isStreamingRequest = true;
     }
 
@@ -478,6 +476,7 @@ export class HttpClient extends EventEmitter {
         }
       }
       if (isStreamingRequest) {
+        args.retry = 0;
         args.socketErrorRetry = 0;
       }
 
