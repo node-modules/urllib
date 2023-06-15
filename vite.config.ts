@@ -6,8 +6,5 @@ export default defineConfig({
       'test/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
     ],
     testTimeout: 30000,
-    coverage: {
-      provider: 'c8',
-    },
   },
 });
