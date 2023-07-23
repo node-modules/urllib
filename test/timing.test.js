@@ -1,7 +1,7 @@
 'use strict';
 
 var dns = require('dns');
-var assert = require('power-assert');
+var assert = require('assert');
 var pedding = require('pedding');
 var HttpsAgent = require('agentkeepalive').HttpsAgent;
 var httpsAgent = new HttpsAgent({ keepAlive: true });
