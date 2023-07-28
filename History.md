@@ -1,4 +1,10 @@
 
+2.41.0 / 2023-07-28
+==================
+
+**features**
+  * [[`9dbcc78`](http://github.com/node-modules/urllib/commit/9dbcc78671bb0bad890bfcb1f2ecf82725b27b67)] - feat: avoid deps vm2 (#457) (fengmk2 <<fengmk2@gmail.com>>)
+
 2.40.0 / 2022-10-22
 ==================
 
