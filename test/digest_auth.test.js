@@ -31,7 +31,7 @@ describe('test/digest_auth.test.js', function() {
     });
   });
 
-  it('should request with digest auth success in httpbin', function(done) {
+  it.skip('should request with digest auth success in httpbin', function(done) {
     var url = 'http://httpbin.org/digest-auth/auth/user/passwd';
     urllib.request(url, {
       digestAuth: 'user:passwd',
@@ -48,7 +48,7 @@ describe('test/digest_auth.test.js', function() {
     });
   });
 
-  it('should request with digest auth fail in httpbin', function(done) {
+  it.skip('should request with digest auth fail in httpbin', function(done) {
     var url = 'http://httpbin.org/digest-auth/auth/user/passwd';
     urllib.request(url, {
       digestAuth: 'user:passwdfail',
