@@ -37,8 +37,11 @@ export class HttpAgent extends Agent {
     /* eslint node/prefer-promises/dns: off*/
     const _lookup = options.lookup ?? dns.lookup;
     const lookup: LookupFunction = (hostname, dnsOptions, callback) => {
-      _lookup(hostname, dnsOptions, (err, address, family) => {
-        if (err) return callback(err, address, family);
+      _lookup(hostname, dnsOptions, (err, ...args: any[]) => {
+        // address will be array on Node.js >= 20
+        const address = args[0];
+        const family = args[1];
+        if (err) return (callback as any)(err, address, family);
         if (options.checkAddress) {
           // dnsOptions.all set to default on Node.js >= 20, dns.lookup will return address array object
           if (typeof address === 'string') {
@@ -55,7 +58,7 @@ export class HttpAgent extends Agent {
             }
           }
         }
-        callback(err, address, family);
+        (callback as any)(err, address, family);
       });
     };
     super({

@@ -58,6 +58,8 @@ function noop() {
 }
 
 const debug = debuglog('urllib:HttpClient');
+// Node.js 14 or 16
+const isNode14Or16 = /v1[46]\./.test(process.version);
 
 export type ClientOptions = {
   defaultArgs?: RequestOptions;
@@ -543,6 +545,9 @@ export class HttpClient extends EventEmitter {
           res = Object.assign(response.body, res);
         }
       } else if (args.writeStream) {
+        if (isNode14Or16 && args.writeStream.destroyed) {
+          throw new Error('writeStream is destroyed');
+        }
         if (args.compressed === true && isCompressedContent) {
           const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
           await pipelinePromise(response.body, decoder, args.writeStream);
