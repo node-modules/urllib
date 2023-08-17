@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.17.2](https://github.com/node-modules/urllib/compare/v3.17.1...v3.17.2) (2023-08-17)
+
+
+### Bug Fixes
+
+* check writeStream destroyed before send request ([#460](https://github.com/node-modules/urllib/issues/460)) ([78515b9](https://github.com/node-modules/urllib/commit/78515b9ec0b12b191eaefc298fd30674efc51415))
+
 ## [3.17.1](https://github.com/node-modules/urllib/compare/v3.17.0...v3.17.1) (2023-06-15)
 
 
