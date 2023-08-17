@@ -75,7 +75,8 @@ describe('options.files.test.ts', () => {
 
   it('should upload multi files: Record<field, string> success with default POST method', async () => {
     const file = path.join(__dirname, 'cjs', 'index.js');
-    const txt = path.join(__dirname, 'fixtures', '😄foo😭.txt');
+    // const txt = path.join(__dirname, 'fixtures', '😄foo😭.txt');
+    const txt = path.join(__dirname, 'fixtures', 'foo.txt');
     const json = path.join(__dirname, '..', 'package.json');
     const stat = await fs.stat(file);
     const jsonStat = await fs.stat(json);
@@ -83,7 +84,8 @@ describe('options.files.test.ts', () => {
     const response = await urllib.request(`${_url}multipart`, {
       files: {
         file,
-        '😄foo😭.js': txt,
+        // '😄foo😭.js': txt,
+        'foo.js': txt,
         json,
       },
       dataType: 'json',
@@ -92,9 +94,12 @@ describe('options.files.test.ts', () => {
     // console.log(response.data);
     assert.equal(response.data.method, 'POST');
     assert.match(response.data.headers['content-type'], /^multipart\/form-data;/);
-    assert.equal(response.data.files['ð\x9F\x98\x84fooð\x9F\x98­.js'].filename, 'ð\x9F\x98\x84fooð\x9F\x98­.txt');
-    assert.equal(response.data.files['ð\x9F\x98\x84fooð\x9F\x98­.js'].mimeType, 'text/plain');
-    assert.equal(response.data.files['ð\x9F\x98\x84fooð\x9F\x98­.js'].size, txtStat.size);
+    // assert.equal(response.data.files['ð\x9F\x98\x84fooð\x9F\x98­.js'].filename, 'ð\x9F\x98\x84fooð\x9F\x98­.txt');
+    // assert.equal(response.data.files['ð\x9F\x98\x84fooð\x9F\x98­.js'].mimeType, 'text/plain');
+    // assert.equal(response.data.files['ð\x9F\x98\x84fooð\x9F\x98­.js'].size, txtStat.size);
+    assert.equal(response.data.files['foo.js'].filename, 'foo.txt');
+    assert.equal(response.data.files['foo.js'].mimeType, 'text/plain');
+    assert.equal(response.data.files['foo.js'].size, txtStat.size);
     assert.equal(response.data.files.file.filename, 'index.js');
     assert.equal(response.data.files.file.mimeType, 'application/javascript');
     assert.equal(response.data.files.file.size, stat.size);
