@@ -6,6 +6,7 @@ import { createReadStream } from 'node:fs';
 import busboy from 'busboy';
 import iconv from 'iconv-lite';
 import selfsigned from 'selfsigned';
+import qs from 'qs';
 import { readableToBytes, sleep } from '../utils';
 
 const requestsPerSocket = Symbol('requestsPerSocket');
@@ -292,10 +293,20 @@ export async function startServer(options?: {
     }
 
     if (req.headers['content-type']?.startsWith('application/x-www-form-urlencoded')) {
-      const searchParams = new URLSearchParams(requestBytes.toString());
-      requestBody = {};
-      for (const [ field, value ] of searchParams.entries()) {
-        requestBody[field] = value;
+      const raw = requestBytes.toString();
+      requestBody = {
+        __raw__: raw,
+      };
+      if (req.headers['x-qs'] === 'true') {
+        requestBody = {
+          ...qs.parse(raw),
+          __raw__: raw,
+        };
+      } else {
+        const searchParams = new URLSearchParams(raw);
+        for (const [ field, value ] of searchParams.entries()) {
+          requestBody[field] = value;
+        }
       }
     } else if (req.headers['content-type']?.startsWith('application/json')) {
       requestBody = JSON.parse(requestBytes.toString());

@@ -1,6 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { createReadStream } from 'node:fs';
 import { Readable } from 'node:stream';
+import qs from 'qs';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
@@ -40,6 +41,43 @@ describe('options.data.test.ts', () => {
     const url = new URL(response.data.href);
     assert.equal(url.searchParams.get('sql'), 'SELECT * from table');
     assert.equal(url.searchParams.get('data'), '哈哈');
+  });
+
+  it('should GET with data work on nestedQuerystring=true', async () => {
+    const response = await urllib.request(_url, {
+      method: 'GET',
+      data: {
+        sql: 'SELECT * from table',
+        data: '哈哈',
+        foo: {
+          bar: 'bar value',
+          array: [ 1, 2, 3 ],
+        },
+      },
+      nestedQuerystring: true,
+      dataType: 'json',
+      headers: {
+        'x-qs': 'true',
+      },
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-type'], 'application/json');
+    assert.equal(response.data.method, 'GET');
+    assert(response.url.startsWith(_url));
+    // console.log(response);
+    assert(!response.redirected);
+    assert.equal(response.data.url, '/?sql=SELECT%20%2A%20from%20table&data=%E5%93%88%E5%93%88&foo%5Bbar%5D=bar%20value&foo%5Barray%5D%5B0%5D=1&foo%5Barray%5D%5B1%5D=2&foo%5Barray%5D%5B2%5D=3');
+    const query = qs.parse(response.data.url.substring(2));
+    const url = new URL(response.data.href);
+    assert.equal(url.searchParams.get('sql'), 'SELECT * from table');
+    assert.equal(url.searchParams.get('data'), '哈哈');
+    assert.equal(url.searchParams.get('foo[bar]'), 'bar value');
+    assert.equal(url.searchParams.get('foo[array][0]'), '1');
+    assert.equal(url.searchParams.get('foo[array][1]'), '2');
+    assert.equal(url.searchParams.get('foo[array][2]'), '3');
+    assert.equal(query.sql, 'SELECT * from table');
+    assert.equal(query.data, '哈哈');
+    assert.deepEqual(query.foo, { bar: 'bar value', array: [ '1', '2', '3' ] });
   });
 
   it('should HEAD with data and auto convert to query string', async () => {
@@ -182,6 +220,7 @@ describe('options.data.test.ts', () => {
     assert.equal(response.data.headers['content-type'], 'application/x-www-form-urlencoded;charset=UTF-8');
     assert.equal(response.data.requestBody.sql, 'SELECT * from table');
     assert.equal(response.data.requestBody.data, '哈哈 PUT');
+    assert.equal(response.data.requestBody.__raw__, 'sql=SELECT+*+from+table&data=%E5%93%88%E5%93%88+PUT');
   });
 
   it('should PATCH with data and auto using application/x-www-form-urlencoded', async () => {
@@ -226,6 +265,40 @@ describe('options.data.test.ts', () => {
     assert.equal(response.data.requestBody.sql, 'SELECT * from table');
     assert.equal(response.data.requestBody.data, '哈哈 POST');
     assert.equal(response.data.requestBody.foo, '[object Object]');
+    assert.equal(response.data.requestBody.__raw__, 'sql=SELECT+*+from+table&data=%E5%93%88%E5%93%88+POST&foo=%5Bobject+Object%5D');
+  });
+
+  it('should POST with application/x-www-form-urlencoded work on nestedQuerystring=true', async () => {
+    const response = await urllib.request(_url, {
+      method: 'POST',
+      data: {
+        sql: 'SELECT * from table',
+        data: '哈哈',
+        foo: {
+          bar: 'bar value',
+          array: [ 1, 2, 3 ],
+        },
+      },
+      nestedQuerystring: true,
+      dataType: 'json',
+      headers: {
+        'x-qs': 'true',
+      },
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-type'], 'application/json');
+    assert.equal(response.data.method, 'POST');
+    assert(response.url.startsWith(_url));
+    assert(!response.redirected);
+    // console.log(response.data);
+    assert.equal(response.data.url, '/');
+    assert.equal(response.data.headers['content-type'], 'application/x-www-form-urlencoded;charset=UTF-8');
+    assert.equal(response.data.requestBody.sql, 'SELECT * from table');
+    assert.equal(response.data.requestBody.data, '哈哈');
+    assert(response.data.requestBody.foo, 'missing requestBody.foo');
+    assert.equal(response.data.requestBody.foo.bar, 'bar value');
+    assert.deepEqual(response.data.requestBody.foo.array, [ '1', '2', '3' ]);
+    assert.equal(response.data.requestBody.__raw__, 'sql=SELECT%20%2A%20from%20table&data=%E5%93%88%E5%93%88&foo%5Bbar%5D=bar%20value&foo%5Barray%5D%5B0%5D=1&foo%5Barray%5D%5B1%5D=2&foo%5Barray%5D%5B2%5D=3');
   });
 
   it('should PUT with data and contentType = json', async () => {

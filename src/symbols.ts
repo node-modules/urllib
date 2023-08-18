@@ -12,5 +12,5 @@ export default {
   kRequestStartTime: Symbol('request start time'),
   kEnableRequestTiming: Symbol('enable request timing or not'),
   kRequestTiming: Symbol('request timing'),
-  kRequestOrginalOpaque: Symbol('request orginal opaque'),
+  kRequestOriginalOpaque: Symbol('request original opaque'),
 };
