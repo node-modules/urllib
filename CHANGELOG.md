@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.18.0](https://github.com/node-modules/urllib/compare/v3.17.2...v3.18.0) (2023-08-18)
+
+
+### Features
+
+* support nestedQuerystring as urllib v2 ([#462](https://github.com/node-modules/urllib/issues/462)) ([0f4abff](https://github.com/node-modules/urllib/commit/0f4abff96e6038abc7d86dd66e87a46a5529b1f2))
+
 ## [3.17.2](https://github.com/node-modules/urllib/compare/v3.17.1...v3.17.2) (2023-08-17)
 
 
