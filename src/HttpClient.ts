@@ -457,7 +457,7 @@ export class HttpClient extends EventEmitter {
               const querystring = qs.stringify(args.data);
               // reset the requestUrl
               const href = requestUrl.href;
-              requestUrl = new URL(href + (requestUrl.searchParams.size > 0 ? '&' : '?') + querystring);
+              requestUrl = new URL(href + (href.includes('?') ? '&' : '?') + querystring);
             } else {
               for (const field in args.data) {
                 const fieldValue = args.data[field];
