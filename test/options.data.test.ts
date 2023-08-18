@@ -80,6 +80,45 @@ describe('options.data.test.ts', () => {
     assert.deepEqual(query.foo, { bar: 'bar value', array: [ '1', '2', '3' ] });
   });
 
+  it('should GET /ok?hello=1 with data work on nestedQuerystring=true', async () => {
+    const response = await urllib.request(`${_url}ok?hello=1`, {
+      method: 'GET',
+      data: {
+        sql: 'SELECT * from table',
+        data: '哈哈',
+        foo: {
+          bar: 'bar value',
+          array: [ 1, 2, 3 ],
+        },
+      },
+      nestedQuerystring: true,
+      dataType: 'json',
+      headers: {
+        'x-qs': 'true',
+      },
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-type'], 'application/json');
+    assert.equal(response.data.method, 'GET');
+    assert(response.url.startsWith(_url));
+    // console.log(response);
+    assert(!response.redirected);
+    assert.equal(response.data.url, '/ok?hello=1&sql=SELECT%20%2A%20from%20table&data=%E5%93%88%E5%93%88&foo%5Bbar%5D=bar%20value&foo%5Barray%5D%5B0%5D=1&foo%5Barray%5D%5B1%5D=2&foo%5Barray%5D%5B2%5D=3');
+    const query = qs.parse(response.data.url.substring(4));
+    const url = new URL(response.data.href);
+    assert.equal(url.searchParams.get('hello'), '1');
+    assert.equal(url.searchParams.get('sql'), 'SELECT * from table');
+    assert.equal(url.searchParams.get('data'), '哈哈');
+    assert.equal(url.searchParams.get('foo[bar]'), 'bar value');
+    assert.equal(url.searchParams.get('foo[array][0]'), '1');
+    assert.equal(url.searchParams.get('foo[array][1]'), '2');
+    assert.equal(url.searchParams.get('foo[array][2]'), '3');
+    assert.equal(query.hello, '1');
+    assert.equal(query.sql, 'SELECT * from table');
+    assert.equal(query.data, '哈哈');
+    assert.deepEqual(query.foo, { bar: 'bar value', array: [ '1', '2', '3' ] });
+  });
+
   it('should HEAD with data and auto convert to query string', async () => {
     const response = await urllib.request(_url, {
       method: 'HEAD',
