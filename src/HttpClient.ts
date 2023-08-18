@@ -26,6 +26,7 @@ import { FormData as FormDataNode } from 'formdata-node';
 import { FormDataEncoder } from 'form-data-encoder';
 import createUserAgent from 'default-user-agent';
 import mime from 'mime-types';
+import qs from 'qs';
 import pump from 'pump';
 // Compatible with old style formstream
 import FormStream from 'formstream';
@@ -87,7 +88,7 @@ export type ClientOptions = {
     rejectUnauthorized?: boolean;
 
     /**
-     * sockePath string | null (optional) - Default: null - An IPC endpoint, either Unix domain socket or Windows named pipe
+     * socketPath string | null (optional) - Default: null - An IPC endpoint, either Unix domain socket or Windows named pipe
      */
     socketPath?: string | null;
   },
@@ -244,14 +245,14 @@ export class HttpClient extends EventEmitter {
       // the response body and trailers have been received
       contentDownload: 0,
     };
-    const orginalOpaque = args.opaque;
+    const originalOpaque = args.opaque;
     // using opaque to diagnostics channel, binding request and socket
     const internalOpaque = {
       [symbols.kRequestId]: requestId,
       [symbols.kRequestStartTime]: requestStartTime,
       [symbols.kEnableRequestTiming]: !!args.timing,
       [symbols.kRequestTiming]: timing,
-      [symbols.kRequestOrginalOpaque]: orginalOpaque,
+      [symbols.kRequestOriginalOpaque]: originalOpaque,
     };
     const reqMeta = {
       requestId,
@@ -452,10 +453,17 @@ export class HttpClient extends EventEmitter {
           || isReadable(args.data);
         if (isGETOrHEAD) {
           if (!isStringOrBufferOrReadable) {
-            for (const field in args.data) {
-              const fieldValue = args.data[field];
-              if (fieldValue === undefined) continue;
-              requestUrl.searchParams.append(field, fieldValue);
+            if (args.nestedQuerystring) {
+              const querystring = qs.stringify(args.data);
+              // reset the requestUrl
+              const href = requestUrl.href;
+              requestUrl = new URL(href + (href.includes('?') ? '&' : '?') + querystring);
+            } else {
+              for (const field in args.data) {
+                const fieldValue = args.data[field];
+                if (fieldValue === undefined) continue;
+                requestUrl.searchParams.append(field, fieldValue);
+              }
             }
           }
         } else {
@@ -472,7 +480,11 @@ export class HttpClient extends EventEmitter {
               }
             } else {
               headers['content-type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
-              requestOptions.body = new URLSearchParams(args.data).toString();
+              if (args.nestedQuerystring) {
+                requestOptions.body = qs.stringify(args.data);
+              } else {
+                requestOptions.body = new URLSearchParams(args.data).toString();
+              }
             }
           }
         }
@@ -582,7 +594,7 @@ export class HttpClient extends EventEmitter {
       this.#updateSocketInfo(socketInfo, internalOpaque);
 
       const clientResponse: HttpClientResponse = {
-        opaque: orginalOpaque,
+        opaque: originalOpaque,
         data,
         status: res.status,
         statusCode: res.status,
@@ -637,7 +649,7 @@ export class HttpClient extends EventEmitter {
           return await this.#requestInternal(url, options, requestContext);
         }
       }
-      err.opaque = orginalOpaque;
+      err.opaque = originalOpaque;
       err.status = res.status;
       err.headers = res.headers;
       err.res = res;

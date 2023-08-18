@@ -47,6 +47,11 @@ export type RequestOptions = {
    */
   dataType?: 'text' | 'html' | 'json' | 'buffer' | 'stream';
   /**
+   * urllib default use URLSearchParams to stringify form data which don't support nested object,
+   * will use qs instead of URLSearchParams to support nested object by set this option to true.
+   */
+  nestedQuerystring?: boolean;
+  /**
    * @deprecated
    * Only for d.ts keep compatible with urllib@2, don't use it anymore.
    */
