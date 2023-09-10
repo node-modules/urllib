@@ -2,9 +2,9 @@ import dns from 'node:dns';
 import { LookupFunction, isIP } from 'node:net';
 import {
   Agent,
+  Dispatcher,
+  buildConnector,
 } from 'undici';
-import type Dispatcher from 'undici/types/dispatcher';
-import type buildConnector from 'undici/types/connector';
 
 export type CheckAddressFunction = (ip: string, family: number | string) => boolean;
 

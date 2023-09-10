@@ -1,6 +1,6 @@
 import { Readable, Writable } from 'node:stream';
 import type { IncomingHttpHeaders } from 'node:http';
-import type Dispatcher from 'undici/types/dispatcher';
+import type { Dispatcher } from 'undici';
 import type {
   HttpClientResponse,
 } from './Response';
