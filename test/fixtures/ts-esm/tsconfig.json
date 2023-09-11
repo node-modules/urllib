@@ -2,8 +2,8 @@
   "compilerOptions": {
     "strict": true,
     "target": "ES2021",
-    "module": "CommonJS",
-    "moduleResolution": "Node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "baseUrl": "./",
     "paths": {
       "urllib": ["../../.."]
