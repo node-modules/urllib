@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.18.1](https://github.com/node-modules/urllib/compare/v3.18.0...v3.18.1) (2023-09-11)
+
+
+### Bug Fixes
+
+* allow type export on mts ([#465](https://github.com/node-modules/urllib/issues/465)) ([166403f](https://github.com/node-modules/urllib/commit/166403f06506b7e1a71fcabe6721161b71b26ade))
+
 ## [3.18.0](https://github.com/node-modules/urllib/compare/v3.17.2...v3.18.0) (2023-08-18)
 
 
