@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.19.0](https://github.com/node-modules/urllib/compare/v3.18.1...v3.19.0) (2023-09-14)
+
+
+### Features
+
+* use tshy to support commonjs and esm both ([#468](https://github.com/node-modules/urllib/issues/468)) ([b2576c0](https://github.com/node-modules/urllib/commit/b2576c0c1f41450cc39d4aad30d76f49140a0478))
+
 ## [3.18.1](https://github.com/node-modules/urllib/compare/v3.18.0...v3.18.1) (2023-09-11)
 
 
