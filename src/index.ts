@@ -1,6 +1,6 @@
 import LRU from 'ylru';
-import { HttpClient, HEADER_USER_AGENT } from './HttpClient';
-import { RequestOptions, RequestURL } from './Request';
+import { HttpClient, HEADER_USER_AGENT } from './HttpClient.js';
+import { RequestOptions, RequestURL } from './Request.js';
 
 let httpclient: HttpClient;
 const domainSocketHttpclients = new LRU(50);
@@ -39,14 +39,14 @@ export {
 export {
   HttpClient, HttpClient as HttpClient2, HEADER_USER_AGENT as USER_AGENT,
   RequestDiagnosticsMessage, ResponseDiagnosticsMessage,
-} from './HttpClient';
+} from './HttpClient.js';
 // RequestOptions2 is keep compatible with urlib@2 RequestOptions2
 export {
   RequestOptions, RequestOptions as RequestOptions2, RequestURL, HttpMethod,
   FixJSONCtlCharsHandler, FixJSONCtlChars,
-} from './Request';
+} from './Request.js';
 
-export { SocketInfo, Timing, RawResponseWithMeta, HttpClientResponse } from './Response';
+export { SocketInfo, Timing, RawResponseWithMeta, HttpClientResponse } from './Response.js';
 
 export default {
   request,

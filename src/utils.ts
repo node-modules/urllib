@@ -1,7 +1,7 @@
 import { randomBytes, createHash } from 'node:crypto';
 import { Readable } from 'node:stream';
 import { performance } from 'node:perf_hooks';
-import { FixJSONCtlChars } from './Request';
+import type { FixJSONCtlChars } from './Request.js';
 
 const JSONCtlCharsMap = {
   '"': '\\"', // \u0022

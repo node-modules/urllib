@@ -7,8 +7,8 @@ async function main() {
   const root = process.cwd();
   const pkg = JSON.parse(await fs.readFile(path.join(root, 'package.json')));
   const files = [
-    path.join(root, 'src/cjs/HttpClient.js'),
-    path.join(root, 'src/esm/HttpClient.js'),
+    path.join(root, 'dist/commonjs/HttpClient.js'),
+    path.join(root, 'dist/esm/HttpClient.js'),
   ];
   for (const file of files) {
     const content = await fs.readFile(file, 'utf-8');

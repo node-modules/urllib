@@ -3,8 +3,8 @@ import { performance } from 'node:perf_hooks';
 import { debuglog } from 'node:util';
 import { Socket } from 'node:net';
 import { DiagnosticsChannel } from 'undici';
-import symbols from './symbols';
-import { globalId, performanceTime } from './utils';
+import symbols from './symbols.js';
+import { globalId, performanceTime } from './utils.js';
 
 const debug = debuglog('urllib:DiagnosticsChannel');
 let initedDiagnosticsChannel = false;
