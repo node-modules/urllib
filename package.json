@@ -51,7 +51,7 @@
     "lint": "eslint src test --ext .ts --cache",
     "prebuild": "npm run clean",
     "build": "tsc --version && tshy && npm run build:version",
-    "postbuild": "rm -rf src/*.tsbuildinfo",
+    "postbuild": "rm -rf *.tsbuildinfo",
     "build:version": "node ./scripts/replace_urllib_version.js",
     "build:cjs:test": "cd test/cjs && rm -rf node_modules && npm link ../.. && node index.js",
     "build:esm:test": "cd test/esm && rm -rf node_modules && npm link ../.. && node index.js",
@@ -63,7 +63,7 @@
     "test": "npm run lint && vitest run",
     "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vitest run --test-timeout 180000 keep-alive-header.test.ts",
     "cov": "vitest run --coverage",
-    "ci": "npm run lint && npm run cov && npm run build:test",
+    "ci": "npm run lint && npm run cov && node scripts/build_test.js",
     "contributor": "git-contributor",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build"
@@ -91,7 +91,7 @@
     "@types/qs": "^6.9.7",
     "@types/selfsigned": "^2.0.1",
     "@types/tar-stream": "^2.2.2",
-    "@vitest/coverage-v8": "^0.32.0",
+    "@vitest/coverage-v8": "^0.34.4",
     "busboy": "^1.6.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.25.0",
@@ -103,7 +103,7 @@
     "tar-stream": "^2.2.0",
     "tshy": "^1.0.0-3",
     "typescript": "^5.0.4",
-    "vitest": "^0.32.0"
+    "vitest": "^0.34.4"
   },
   "engines": {
     "node": ">= 14.19.3"
