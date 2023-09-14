@@ -91,7 +91,7 @@
     "@types/qs": "^6.9.7",
     "@types/selfsigned": "^2.0.1",
     "@types/tar-stream": "^2.2.2",
-    "@vitest/coverage-v8": "^0.34.4",
+    "@vitest/coverage-v8": "^0.32.0",
     "busboy": "^1.6.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.25.0",
@@ -103,7 +103,7 @@
     "tar-stream": "^2.2.0",
     "tshy": "^1.0.0-3",
     "typescript": "^5.0.4",
-    "vitest": "^0.34.4"
+    "vitest": "^0.32.0"
   },
   "engines": {
     "node": ">= 14.19.3"
