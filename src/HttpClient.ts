@@ -30,12 +30,12 @@ import qs from 'qs';
 import pump from 'pump';
 // Compatible with old style formstream
 import FormStream from 'formstream';
-import { HttpAgent, CheckAddressFunction } from './HttpAgent';
-import { RequestURL, RequestOptions, HttpMethod, RequestMeta } from './Request';
-import { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response';
-import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime, isReadable } from './utils';
-import symbols from './symbols';
-import { initDiagnosticsChannel } from './diagnosticsChannel';
+import { HttpAgent, CheckAddressFunction } from './HttpAgent.js';
+import { RequestURL, RequestOptions, HttpMethod, RequestMeta } from './Request.js';
+import { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response.js';
+import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime, isReadable } from './utils.js';
+import symbols from './symbols.js';
+import { initDiagnosticsChannel } from './diagnosticsChannel.js';
 
 type Exists<T> = T extends undefined ? never : T;
 type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;

@@ -1,4 +1,7 @@
 {
   "name": "ts-esm-demo",
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "build": "tsc && node hello.js"
+  }
 }

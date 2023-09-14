@@ -3,7 +3,7 @@ import type { IncomingHttpHeaders } from 'node:http';
 import type { Dispatcher } from 'undici';
 import type {
   HttpClientResponse,
-} from './Response';
+} from './Response.js';
 
 export type HttpMethod = Dispatcher.HttpMethod;
 
