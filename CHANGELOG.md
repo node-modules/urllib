@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.19.1](https://github.com/node-modules/urllib/compare/v3.19.0...v3.19.1) (2023-09-17)
+
+
+### Bug Fixes
+
+* use types instead of typings ([#469](https://github.com/node-modules/urllib/issues/469)) ([8c4ec6c](https://github.com/node-modules/urllib/commit/8c4ec6c58935333aabe4b92ca86504c1491e72d9))
+
 ## [3.19.0](https://github.com/node-modules/urllib/compare/v3.18.1...v3.19.0) (2023-09-14)
 
 
