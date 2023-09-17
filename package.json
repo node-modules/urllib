@@ -38,7 +38,6 @@
     },
     "./package.json": "./package.json"
   },
-  "typings": "./dist/commonjs/index.d.ts",
   "files": [
     "dist",
     "src"
@@ -50,7 +49,7 @@
   "scripts": {
     "lint": "eslint src test --ext .ts --cache",
     "prebuild": "npm run clean",
-    "build": "tsc --version && tshy && npm run build:version",
+    "build": "tsc --version && tshy && tshy-after && npm run build:version",
     "postbuild": "rm -rf *.tsbuildinfo",
     "build:version": "node ./scripts/replace_urllib_version.js",
     "build:cjs:test": "cd test/cjs && rm -rf node_modules && npm link ../.. && node index.js",
@@ -102,11 +101,13 @@
     "selfsigned": "^2.0.1",
     "tar-stream": "^2.2.0",
     "tshy": "^1.0.0-3",
+    "tshy-after": "^1.0.0",
     "typescript": "^5.0.4",
     "vitest": "^0.32.0"
   },
   "engines": {
     "node": ">= 14.19.3"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "types": "./dist/commonjs/index.d.ts"
 }
