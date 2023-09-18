@@ -201,7 +201,8 @@ export class HttpClient extends EventEmitter {
         // url maybe url.parse(url) object in urllib2
         requestUrl = new URL(urlFormat(url));
       } else {
-        requestUrl = url;
+        // Don't mutate the URL object the user passed in
+        requestUrl = new URL(url);
       }
     }
 
