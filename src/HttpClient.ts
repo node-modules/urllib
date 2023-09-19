@@ -197,13 +197,9 @@ export class HttpClient extends EventEmitter {
       }
       requestUrl = new URL(url);
     } else {
-      if (!url.searchParams) {
-        // url maybe url.parse(url) object in urllib2
-        requestUrl = new URL(urlFormat(url));
-      } else {
-        // Don't mutate the URL object the user passed in
-        requestUrl = new URL(url);
-      }
+      // url maybe url.parse(url) object in urllib2
+      // or even if not, we clone to avoid mutating it
+      requestUrl = new URL(urlFormat(url));
     }
 
     const method = (options?.method ?? 'GET').toUpperCase() as HttpMethod;
