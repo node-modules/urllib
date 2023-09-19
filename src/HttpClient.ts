@@ -2,7 +2,6 @@ import diagnosticsChannel from 'node:diagnostics_channel';
 import { EventEmitter } from 'node:events';
 import { LookupFunction } from 'node:net';
 import { STATUS_CODES } from 'node:http';
-import type { IncomingHttpHeaders } from 'node:http';
 import { debuglog } from 'node:util';
 import {
   createGunzip,
@@ -31,6 +30,7 @@ import pump from 'pump';
 // Compatible with old style formstream
 import FormStream from 'formstream';
 import { HttpAgent, CheckAddressFunction } from './HttpAgent.js';
+import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import { RequestURL, RequestOptions, HttpMethod, RequestMeta } from './Request.js';
 import { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response.js';
 import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime, isReadable } from './utils.js';

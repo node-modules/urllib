@@ -30,6 +30,25 @@ describe('index.test.ts', () => {
       assert(!response.redirected);
     });
 
+    it('should response set-cookie as a string', async () => {
+      const response = await urllib.request(`${_url}set-one-cookie`);
+      assert.equal(response.status, 200);
+      assert.equal(typeof response.headers['set-cookie'], 'string');
+      assert.equal(response.headers['set-cookie'], 'foo=bar; path=/');
+    });
+
+    it('should response set-cookie as an array string', async () => {
+      const response = await urllib.request(`${_url}set-two-cookie`);
+      assert.equal(response.status, 200);
+      console.log(response.headers);
+      assert(Array.isArray(response.headers['set-cookie']));
+      assert.equal(typeof response.headers['set-cookie'], 'object');
+      assert.deepEqual(response.headers['set-cookie'], [
+        'foo=bar; path=/',
+        'hello=world; path=/',
+      ]);
+    });
+
     it('should request with T response data', async () => {
       type HelloData = {
         hello: string;
