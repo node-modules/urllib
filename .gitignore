@@ -14,4 +14,4 @@ src/**/*.d.ts
 test/fixtures/ts/*.js
 test/fixtures/ts-esm/*.js
 .eslintcache
-.tshy/
+.tshy*
