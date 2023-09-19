@@ -47,8 +47,12 @@ export {
 } from './Request.js';
 
 export {
-  SocketInfo, Timing, RawResponseWithMeta, HttpClientResponse, IncomingHttpHeaders,
+  SocketInfo, Timing, RawResponseWithMeta, HttpClientResponse,
 } from './Response.js';
+export {
+  IncomingHttpHeaders,
+} from './IncomingHttpHeaders.js';
+
 
 export default {
   request,
