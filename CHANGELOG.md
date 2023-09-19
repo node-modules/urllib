@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.19.2](https://github.com/node-modules/urllib/compare/v3.19.1...v3.19.2) (2023-09-19)
+
+
+### Bug Fixes
+
+* change `set-cookie` type define to `string | string[]` ([#471](https://github.com/node-modules/urllib/issues/471)) ([674915a](https://github.com/node-modules/urllib/commit/674915a2be7b3101c58532f48ca750974b872996))
+
 ## [3.19.1](https://github.com/node-modules/urllib/compare/v3.19.0...v3.19.1) (2023-09-17)
 
 
