@@ -46,7 +46,13 @@ export {
   FixJSONCtlCharsHandler, FixJSONCtlChars,
 } from './Request.js';
 
-export { SocketInfo, Timing, RawResponseWithMeta, HttpClientResponse } from './Response.js';
+export {
+  SocketInfo, Timing, RawResponseWithMeta, HttpClientResponse,
+} from './Response.js';
+export {
+  IncomingHttpHeaders,
+} from './IncomingHttpHeaders.js';
+
 
 export default {
   request,

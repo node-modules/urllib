@@ -1,4 +1,4 @@
-import { request } from "urllib";
+import { request, IncomingHttpHeaders } from "urllib";
 const responseObj = await request("test");
 
 type IsAny<T, Y, N> = 0 extends (1 & T) ? Y : N;
@@ -6,3 +6,4 @@ type IsAny<T, Y, N> = 0 extends (1 & T) ? Y : N;
 (x: IsAny<any, true, never>) => x; // true
 
 (x: IsAny<typeof responseObj, true, never>) => x; // true
+console.log(responseObj.headers as IncomingHttpHeaders);

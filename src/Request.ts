@@ -1,9 +1,7 @@
-import { Readable, Writable } from 'node:stream';
-import type { IncomingHttpHeaders } from 'node:http';
+import type { Readable, Writable } from 'node:stream';
 import type { Dispatcher } from 'undici';
-import type {
-  HttpClientResponse,
-} from './Response.js';
+import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
+import type { HttpClientResponse } from './Response.js';
 
 export type HttpMethod = Dispatcher.HttpMethod;
 

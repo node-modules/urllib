@@ -1,5 +1,5 @@
-import { Readable } from 'node:stream';
-import { IncomingHttpHeaders } from 'node:http';
+import type { Readable } from 'node:stream';
+import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 
 export type SocketInfo = {
   id: number;

@@ -133,6 +133,18 @@ export async function startServer(options?: {
       return res.end('<h1>hello</h1>');
     }
 
+    if (pathname === '/set-one-cookie') {
+      res.setHeader('set-cookie', 'foo=bar; path=/');
+      res.setHeader('content-type', 'text/html');
+      return res.end('<h1>hello set-cookie</h1>');
+    }
+
+    if (pathname === '/set-two-cookie') {
+      res.setHeader('Set-Cookie', [ 'foo=bar; path=/', 'hello=world; path=/' ]);
+      res.setHeader('content-type', 'text/html');
+      return res.end('<h1>hello set-cookie</h1>');
+    }
+
     if (pathname === '/redirect') {
       res.setHeader('Location', '/redirect-to-url');
       res.statusCode = 302;
