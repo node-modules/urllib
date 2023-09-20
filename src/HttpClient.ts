@@ -197,9 +197,13 @@ export class HttpClient extends EventEmitter {
       }
       requestUrl = new URL(url);
     } else {
-      // url maybe url.parse(url) object in urllib2
-      // or even if not, we clone to avoid mutating it
-      requestUrl = new URL(urlFormat(url));
+      if (!url.searchParams) {
+        // url maybe url.parse(url) object in urllib2
+        requestUrl = new URL(urlFormat(url));
+      } else {
+        // or even if not, we clone to avoid mutating it
+        requestUrl = new URL(url.toString());
+      }
     }
 
     const method = (options?.method ?? 'GET').toUpperCase() as HttpMethod;
