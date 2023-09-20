@@ -16,7 +16,7 @@
 [download-url]: https://npmjs.org/package/urllib
 
 Request HTTP URLs in a complex world — basic
-and digest authentication, redirections, cookies, timeout and more.
+and digest authentication, redirections, timeout and more.
 
 ## Install
 
