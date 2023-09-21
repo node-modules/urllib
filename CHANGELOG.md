@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.19.3](https://github.com/node-modules/urllib/compare/v3.19.2...v3.19.3) (2023-09-21)
+
+
+### Bug Fixes
+
+* Don't mutate passed URL object ([#470](https://github.com/node-modules/urllib/issues/470)) ([5b8867f](https://github.com/node-modules/urllib/commit/5b8867fb131df811181470aeb8fb8b68989a7751))
+
 ## [3.19.2](https://github.com/node-modules/urllib/compare/v3.19.1...v3.19.2) (2023-09-19)
 
 
