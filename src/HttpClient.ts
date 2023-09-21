@@ -39,8 +39,6 @@ import { initDiagnosticsChannel } from './diagnosticsChannel.js';
 
 type Exists<T> = T extends undefined ? never : T;
 type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;
-type PropertyShouldBe<T, K extends keyof T, V> = Omit<T, K> & { [P in K]: V };
-type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', IncomingHttpHeaders>;
 
 const PROTO_RE = /^https?:\/\//i;
 const FormData = FormDataNative ?? FormDataNode;
@@ -347,7 +345,7 @@ export class HttpClient extends EventEmitter {
     }
 
     try {
-      const requestOptions: IUndiciRequestOption = {
+      const requestOptions: UndiciRequestOption = {
         method,
         maxRedirections: args.maxRedirects ?? 10,
         headersTimeout,
