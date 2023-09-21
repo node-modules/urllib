@@ -43,6 +43,15 @@ describe('options.data.test.ts', () => {
     assert.equal(url.searchParams.get('data'), '哈哈');
   });
 
+  it('should not mutate a passed URL object when setting query string', async () => {
+    const url = new URL(_url);
+    assert.equal(url.searchParams.get('param1'), null);
+    await urllib.request(url, {
+      data: { param1: 'val1' },
+    });
+    assert.equal(url.searchParams.get('param1'), null);
+  });
+
   it('should GET with data work on nestedQuerystring=true', async () => {
     const response = await urllib.request(_url, {
       method: 'GET',
