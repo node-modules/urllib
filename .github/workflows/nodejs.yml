@@ -14,4 +14,4 @@ jobs:
     with:
       os: 'ubuntu-latest, macos-latest, windows-latest'
       version: '14.19.3, 14, 16, 18, 20'
-      install: 'npm install'
+      install: 'npx npminstall'
