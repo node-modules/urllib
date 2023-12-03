@@ -11,3 +11,5 @@ jobs:
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+    with:
+      install: 'npx npminstall'
