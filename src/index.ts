@@ -4,6 +4,7 @@ import { RequestOptions, RequestURL } from './Request.js';
 
 let httpclient: HttpClient;
 const domainSocketHttpclients = new LRU(50);
+
 export async function request<T = any>(url: RequestURL, options?: RequestOptions) {
   if (options?.socketPath) {
     let domainSocketHttpclient = domainSocketHttpclients.get<HttpClient>(options.socketPath);
@@ -22,7 +23,7 @@ export async function request<T = any>(url: RequestURL, options?: RequestOptions
   return await httpclient.request<T>(url, options);
 }
 
-// export curl method is keep compatible with urlib.curl()
+// export curl method is keep compatible with urllib.curl()
 // ```ts
 // import * as urllib from 'urllib';
 // urllib.curl(url);
@@ -52,7 +53,6 @@ export {
 export {
   IncomingHttpHeaders,
 } from './IncomingHttpHeaders.js';
-
 
 export default {
   request,
