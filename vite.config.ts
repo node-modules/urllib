@@ -6,5 +6,10 @@ export default defineConfig({
       'test/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
     ],
     testTimeout: 60000,
+    coverage: {
+      include: [
+        'src',
+      ],
+    },
   },
 });
