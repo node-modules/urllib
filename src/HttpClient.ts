@@ -20,6 +20,7 @@ import {
   FormData as FormDataNative,
   request as undiciRequest,
   Dispatcher,
+  Agent,
 } from 'undici';
 import { FormData as FormDataNode } from 'formdata-node';
 import { FormDataEncoder } from 'form-data-encoder';
@@ -86,11 +87,14 @@ export type ClientOptions = {
     * An 'error' event is emitted if verification fails.Default: true.
     */
     rejectUnauthorized?: boolean;
-
     /**
      * socketPath string | null (optional) - Default: null - An IPC endpoint, either Unix domain socket or Windows named pipe
      */
     socketPath?: string | null;
+    /**
+     * connect timeout, default is 10000ms
+     */
+    timeout?: number;
   },
 };
 
@@ -168,10 +172,14 @@ export class HttpClient extends EventEmitter {
   constructor(clientOptions?: ClientOptions) {
     super();
     this.#defaultArgs = clientOptions?.defaultArgs;
-    if (clientOptions?.lookup || clientOptions?.checkAddress || clientOptions?.connect) {
+    if (clientOptions?.lookup || clientOptions?.checkAddress) {
       this.#dispatcher = new HttpAgent({
         lookup: clientOptions.lookup,
         checkAddress: clientOptions.checkAddress,
+        connect: clientOptions.connect,
+      });
+    } else if (clientOptions?.connect) {
+      this.#dispatcher = new Agent({
         connect: clientOptions.connect,
       });
     }
