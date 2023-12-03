@@ -1,8 +1,8 @@
 import { strict as assert } from 'node:assert';
 import { parse as urlparse } from 'node:url';
 import { readFileSync } from 'node:fs';
-import { describe, it, beforeAll, afterAll } from 'vitest';
-import urllib from '../src';
+import { describe, it, beforeAll, afterAll, afterEach, beforeEach } from 'vitest';
+import urllib, { HttpClient } from '../src';
 import { MockAgent, setGlobalDispatcher, getGlobalDispatcher } from '../src';
 import { startServer } from './fixtures/server';
 import { readableToBytes } from './utils';
@@ -162,12 +162,12 @@ describe('index.test.ts', () => {
   describe('Mocking request', () => {
     let mockAgent: MockAgent;
     const globalAgent = getGlobalDispatcher();
-    beforeAll(() => {
+    beforeEach(() => {
       mockAgent = new MockAgent();
       setGlobalDispatcher(mockAgent);
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
       setGlobalDispatcher(globalAgent);
       await mockAgent.close();
     });
@@ -274,6 +274,102 @@ describe('index.test.ts', () => {
       assert.equal(bytes.length, readFileSync(__filename).length);
 
       mockAgent.assertNoPendingInterceptors();
+    });
+
+    it('should mocking intercept work on custom httpClient', async () => {
+      const httpClient = new HttpClient({
+        connect: {
+          timeout: 2000,
+        },
+      });
+      const oldAgent = httpClient.getDispatcher();
+      assert(oldAgent);
+      httpClient.setDispatcher(mockAgent);
+      const mockPool = mockAgent.get(_url.substring(0, _url.length - 1));
+      mockPool.intercept({
+        path: '/foo',
+        method: 'POST',
+      }).reply(400, {
+        message: 'mock 400 bad request',
+      });
+
+      mockPool.intercept({
+        path: '/bar',
+        method: 'GET',
+        query: {
+          q: '1',
+        },
+      }).reply(200, {
+        message: 'mock bar with q=1',
+      });
+
+      mockPool.intercept({
+        path: '/bar',
+        method: 'GET',
+        query: {
+          q: '2',
+        },
+      }).reply(200, {
+        message: 'mock bar with q=2',
+      });
+
+      mockPool.intercept({
+        path: /\.tgz$/,
+        method: 'GET',
+      }).reply(400, {
+        message: 'mock 400 bad request on tgz',
+      });
+
+      let response = await httpClient.request(`${_url}foo`, {
+        method: 'POST',
+        dataType: 'json',
+      });
+      assert.equal(response.status, 400);
+      assert.deepEqual(response.data, { message: 'mock 400 bad request' });
+
+      response = await httpClient.request(`${_url}bar?q=1`, {
+        method: 'GET',
+        dataType: 'json',
+      });
+      assert.equal(response.status, 200);
+      assert.deepEqual(response.data, { message: 'mock bar with q=1' });
+      response = await httpClient.request(`${_url}bar?q=2`, {
+        method: 'GET',
+        dataType: 'json',
+      });
+      assert.equal(response.status, 200);
+      assert.deepEqual(response.data, { message: 'mock bar with q=2' });
+
+      response = await httpClient.request(`${_url}download/foo.tgz`, {
+        method: 'GET',
+        dataType: 'json',
+      });
+      assert.equal(response.status, 400);
+      assert.deepEqual(response.data, { message: 'mock 400 bad request on tgz' });
+
+      // only intercept once
+      response = await httpClient.request(`${_url}download/bar.tgz`, {
+        method: 'GET',
+        dataType: 'json',
+      });
+      assert.equal(response.status, 200);
+      assert.equal(response.data.method, 'GET');
+
+      mockAgent.assertNoPendingInterceptors();
+
+      // should not work
+      httpClient.setDispatcher(oldAgent);
+      mockPool.intercept({
+        path: '/foo',
+        method: 'POST',
+      }).reply(400, {
+        message: 'mock 400 bad request',
+      });
+      response = await httpClient.request(`${_url}foo`, {
+        method: 'POST',
+        dataType: 'json',
+      });
+      assert.equal(response.status, 200);
     });
   });
 });

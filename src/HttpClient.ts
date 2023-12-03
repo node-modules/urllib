@@ -21,6 +21,7 @@ import {
   request as undiciRequest,
   Dispatcher,
   Agent,
+  getGlobalDispatcher,
 } from 'undici';
 import { FormData as FormDataNode } from 'formdata-node';
 import { FormDataEncoder } from 'form-data-encoder';
@@ -184,6 +185,14 @@ export class HttpClient extends EventEmitter {
       });
     }
     initDiagnosticsChannel();
+  }
+
+  getDispatcher() {
+    return this.#dispatcher ?? getGlobalDispatcher();
+  }
+
+  setDispatcher(dispatcher: Dispatcher) {
+    this.#dispatcher = dispatcher;
   }
 
   async request<T = any>(url: RequestURL, options?: RequestOptions) {
