@@ -1,6 +1,11 @@
 import type { RawResponseWithMeta, SocketInfo } from './Response.js';
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 
+// need to support ES2021
+interface ErrorOptions {
+  cause?: Error;
+}
+
 export class HttpClientRequestError extends Error {
   status?: number;
   headers?: IncomingHttpHeaders;
