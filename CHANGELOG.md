@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.20.0](https://github.com/node-modules/urllib/compare/v3.19.3...v3.20.0) (2023-12-04)
+
+
+### Features
+
+* allow to set client connect timeout ([#476](https://github.com/node-modules/urllib/issues/476)) ([fde0d23](https://github.com/node-modules/urllib/commit/fde0d23cb8fd19b9ccc36ce1bdc3ec93392d48b8))
+
 ## [3.19.3](https://github.com/node-modules/urllib/compare/v3.19.2...v3.19.3) (2023-09-21)
 
 
