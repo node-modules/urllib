@@ -13,7 +13,12 @@ export type SocketInfo = {
   handledRequests: number;
   handledResponses: number;
   connectedTime?: Date;
+  connectErrorTime?: Date;
   lastRequestEndTime?: Date;
+  attemptedRemoteAddresses?: string[];
+  connectProtocol?: string;
+  connectHost?: string;
+  connectPort?: string;
 };
 
 /**

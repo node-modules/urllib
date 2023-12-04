@@ -38,6 +38,7 @@ import { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response.
 import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime, isReadable } from './utils.js';
 import symbols from './symbols.js';
 import { initDiagnosticsChannel } from './diagnosticsChannel.js';
+import { HttpClientConnectTimeoutError, HttpClientRequestTimeoutError } from './HttpClientError.js';
 
 type Exists<T> = T extends undefined ? never : T;
 type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;
@@ -118,15 +119,6 @@ class BlobFromStream {
 
   get [Symbol.toStringTag]() {
     return 'Blob';
-  }
-}
-
-class HttpClientRequestTimeoutError extends Error {
-  constructor(timeout: number, options: ErrorOptions) {
-    const message = `Request timeout for ${timeout} ms`;
-    super(message, options);
-    this.name = this.constructor.name;
-    Error.captureStackTrace(this, this.constructor);
   }
 }
 
@@ -653,13 +645,15 @@ export class HttpClient extends EventEmitter {
       }
 
       return clientResponse;
-    } catch (e: any) {
-      debug('Request#%d throw error: %s', requestId, e);
-      let err = e;
+    } catch (rawError: any) {
+      debug('Request#%d throw error: %s', requestId, rawError);
+      let err = rawError;
       if (err.name === 'HeadersTimeoutError') {
-        err = new HttpClientRequestTimeoutError(headersTimeout, { cause: e });
+        err = new HttpClientRequestTimeoutError(headersTimeout, { cause: err });
       } else if (err.name === 'BodyTimeoutError') {
-        err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: e });
+        err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: err });
+      } else if (err.code === 'UND_ERR_CONNECT_TIMEOUT') {
+        err = new HttpClientConnectTimeoutError(err.message, err.code, { cause: err });
       } else if (err.code === 'UND_ERR_SOCKET' || err.code === 'ECONNRESET') {
         // auto retry on socket error, https://github.com/node-modules/urllib/issues/454
         if (args.socketErrorRetry > 0 && requestContext.socketErrorRetries < args.socketErrorRetry) {
@@ -681,7 +675,7 @@ export class HttpClient extends EventEmitter {
         res.requestUrls.push(requestUrl.href);
       }
       res.rt = performanceTime(requestStartTime);
-      this.#updateSocketInfo(socketInfo, internalOpaque);
+      this.#updateSocketInfo(socketInfo, internalOpaque, rawError);
 
       channels.response.publish({
         request: reqMeta,
@@ -704,21 +698,38 @@ export class HttpClient extends EventEmitter {
     }
   }
 
-  #updateSocketInfo(socketInfo: SocketInfo, internalOpaque: any) {
-    const socket = internalOpaque[symbols.kRequestSocket];
+  #updateSocketInfo(socketInfo: SocketInfo, internalOpaque: any, err?: any) {
+    const socket = internalOpaque[symbols.kRequestSocket] ?? err?.[symbols.kErrorSocket];
     if (socket) {
       socketInfo.id = socket[symbols.kSocketId];
       socketInfo.handledRequests = socket[symbols.kHandledRequests];
       socketInfo.handledResponses = socket[symbols.kHandledResponses];
-      socketInfo.localAddress = socket[symbols.kSocketLocalAddress];
-      socketInfo.localPort = socket[symbols.kSocketLocalPort];
-      socketInfo.remoteAddress = socket.remoteAddress;
-      socketInfo.remotePort = socket.remotePort;
-      socketInfo.remoteFamily = socket.remoteFamily;
+      if (socket[symbols.kSocketLocalAddress]) {
+        socketInfo.localAddress = socket[symbols.kSocketLocalAddress];
+        socketInfo.localPort = socket[symbols.kSocketLocalPort];
+      }
+      if (socket.remoteAddress) {
+        socketInfo.remoteAddress = socket.remoteAddress;
+        socketInfo.remotePort = socket.remotePort;
+        socketInfo.remoteFamily = socket.remoteFamily;
+      }
       socketInfo.bytesRead = socket.bytesRead;
       socketInfo.bytesWritten = socket.bytesWritten;
-      socketInfo.connectedTime = socket[symbols.kSocketConnectedTime];
-      socketInfo.lastRequestEndTime = socket[symbols.kSocketRequestEndTime];
+      if (socket[symbols.kSocketConnectErrorTime]) {
+        socketInfo.connectErrorTime = socket[symbols.kSocketConnectErrorTime];
+        if (Array.isArray(socket.autoSelectFamilyAttemptedAddresses)) {
+          socketInfo.attemptedRemoteAddresses = socket.autoSelectFamilyAttemptedAddresses;
+        }
+        socketInfo.connectProtocol = socket[symbols.kSocketConnectProtocol];
+        socketInfo.connectHost = socket[symbols.kSocketConnectHost];
+        socketInfo.connectPort = socket[symbols.kSocketConnectPort];
+      }
+      if (socket[symbols.kSocketConnectedTime]) {
+        socketInfo.connectedTime = socket[symbols.kSocketConnectedTime];
+      }
+      if (socket[symbols.kSocketRequestEndTime]) {
+        socketInfo.lastRequestEndTime = socket[symbols.kSocketRequestEndTime];
+      }
       socket[symbols.kSocketRequestEndTime] = new Date();
     }
   }

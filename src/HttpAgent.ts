@@ -77,7 +77,7 @@ export class HttpAgent extends Agent {
       }
       const family = isIP(hostname);
       if (family === 4 || family === 6) {
-        // if request hostname is ip, custom lookup won't excute
+        // if request hostname is ip, custom lookup won't execute
         if (!this.#checkAddress(hostname, family)) {
           throw new IllegalAddressError(hostname, hostname, family);
         }

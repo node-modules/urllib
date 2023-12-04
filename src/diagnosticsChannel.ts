@@ -35,8 +35,24 @@ function formatSocket(socket: Socket) {
     localPort: socket[symbols.kSocketLocalPort],
     remoteAddress: socket.remoteAddress,
     remotePort: socket.remotePort,
+    attemptedAddresses: socket.autoSelectFamilyAttemptedAddresses,
+    connecting: socket.connecting,
   };
 }
+
+// make sure error contains socket info
+const kDestroy = Symbol('kDestroy');
+Socket.prototype[kDestroy] = Socket.prototype.destroy;
+Socket.prototype.destroy = function(err?: any) {
+  if (err) {
+    Object.defineProperty(err, symbols.kErrorSocket, {
+      // don't show on console log
+      enumerable: false,
+      value: this,
+    });
+  }
+  return this[kDestroy](err);
+};
 
 export function initDiagnosticsChannel() {
   // makre sure init global DiagnosticsChannel once
@@ -67,10 +83,37 @@ export function initDiagnosticsChannel() {
   });
 
   // diagnosticsChannel.channel('undici:client:beforeConnect')
-  // diagnosticsChannel.channel('undici:client:connectError')
+
+  subscribe('undici:client:connectError', (message, name) => {
+    const { error, connectParams } = message as DiagnosticsChannel.ClientConnectErrorMessage & { error: any };
+    let { socket } = message as DiagnosticsChannel.ClientConnectErrorMessage;
+    if (!socket && error[symbols.kErrorSocket]) {
+      socket = error[symbols.kErrorSocket];
+    }
+    if (socket) {
+      socket[symbols.kSocketId] = globalId('UndiciSocket');
+      socket[symbols.kSocketConnectErrorTime] = new Date();
+      socket[symbols.kHandledRequests] = 0;
+      socket[symbols.kHandledResponses] = 0;
+      // copy local address to symbol, avoid them be reset after request error throw
+      if (socket.localAddress) {
+        socket[symbols.kSocketLocalAddress] = socket.localAddress;
+        socket[symbols.kSocketLocalPort] = socket.localPort;
+      }
+      socket[symbols.kSocketConnectProtocol] = connectParams.protocol;
+      socket[symbols.kSocketConnectHost] = connectParams.host;
+      socket[symbols.kSocketConnectPort] = connectParams.port;
+      debug('[%s] Socket#%d connectError, connectParams: %o, error: %s, (sock: %o)',
+        name, socket[symbols.kSocketId], connectParams, (error as Error).message, formatSocket(socket));
+    } else {
+      debug('[%s] connectError, connectParams: %o, error: %o',
+        name, connectParams, error);
+    }
+  });
+
   // This message is published after a connection is established.
   subscribe('undici:client:connected', (message, name) => {
-    const { socket } = message as DiagnosticsChannel.ClientConnectedMessage;
+    const { socket, connectParams } = message as DiagnosticsChannel.ClientConnectedMessage;
     socket[symbols.kSocketId] = globalId('UndiciSocket');
     socket[symbols.kSocketStartTime] = performance.now();
     socket[symbols.kSocketConnectedTime] = new Date();
@@ -79,6 +122,9 @@ export function initDiagnosticsChannel() {
     // copy local address to symbol, avoid them be reset after request error throw
     socket[symbols.kSocketLocalAddress] = socket.localAddress;
     socket[symbols.kSocketLocalPort] = socket.localPort;
+    socket[symbols.kSocketConnectProtocol] = connectParams.protocol;
+    socket[symbols.kSocketConnectHost] = connectParams.host;
+    socket[symbols.kSocketConnectPort] = connectParams.port;
     debug('[%s] Socket#%d connected (sock: %o)', name, socket[symbols.kSocketId], formatSocket(socket));
   });
 

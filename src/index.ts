@@ -53,6 +53,7 @@ export {
 export {
   IncomingHttpHeaders,
 } from './IncomingHttpHeaders.js';
+export * from './HttpClientError.js';
 
 export default {
   request,

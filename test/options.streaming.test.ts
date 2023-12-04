@@ -153,7 +153,8 @@ describe('options.streaming.test.ts', () => {
     const bytes1 = await readableToBytes(response1.res);
     assert.equal(bytes1.length, size);
     const use1 = Date.now() - start;
-    console.log('highWaterMark 64KB use %dms', use1);
+    // console.log('highWaterMark 64KB use %dms', use1);
+    assert(use1 > 0);
 
     start = Date.now();
     const response2 = await urllib.request(`${_url}mock-bytes?size=${size}`, {
@@ -165,7 +166,8 @@ describe('options.streaming.test.ts', () => {
     const bytes2 = await readableToBytes(response2.res);
     assert.equal(bytes2.length, size);
     const use2 = Date.now() - start;
-    console.log('highWaterMark 128KB use %dms', use2);
+    // console.log('highWaterMark 128KB use %dms', use2);
     // assert(use2 < use1);
+    assert(use2 > 0);
   });
 });

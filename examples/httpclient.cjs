@@ -12,7 +12,7 @@ function tryHttpclient(HttpClient, name) {
   urllib.on('response', function(info) {
     // console.log(name, httpAgent, httpAgent.getCurrentStatus());
     // console.log(name, httpsAgent, httpsAgent.getCurrentStatus());
-    console.log(name, info.res);
+    console.log('response', name, info.res);
   });
   urllib.request('https://nodejs.org', options)
     .then(function() {
@@ -22,6 +22,6 @@ function tryHttpclient(HttpClient, name) {
       return urllib.request('https://nodejs.org/en/', options);
     })
     .catch(function(err) {
-      console.error(err);
+      console.error('catch', err);
     });
 }
