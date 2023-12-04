@@ -21,7 +21,7 @@
     "esModuleInterop": true,
     "stripInternal": true,
     "lib": [
-      "ESNext"
+      "ES2022"
     ],
     "composite": true,
     "types": [

@@ -12,6 +12,7 @@ src/**/*.d.ts
 !src/formstream.d.ts
 .DS_Store
 test/fixtures/ts/*.js
+test/fixtures/ts-cjs-es2021/*.js
 test/fixtures/ts-esm/*.js
 .eslintcache
 .tshy*

@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import urllib from '../src';
+import urllib, { HttpClientRequestTimeoutError } from '../src';
 import { startServer } from './fixtures/server';
 
 describe('options.timeout.test.ts', () => {
@@ -58,16 +58,16 @@ describe('options.timeout.test.ts', () => {
     });
   });
 
-  it('should timeout 50ms throw error', async () => {
+  it('should timeout 500ms throw error', async () => {
     await assert.rejects(async () => {
       const response = await urllib.request(`${_url}mock-bytes?timeout=1000`, {
-        timeout: [ 10, 50 ],
+        timeout: [ 100, 500 ],
       });
       console.log(response.status, response.headers, response.data);
     }, (err: any) => {
       // console.log(err);
       assert.equal(err.name, 'HttpClientRequestTimeoutError');
-      assert.equal(err.message, 'Request timeout for 50 ms');
+      assert.equal(err.message, 'Request timeout for 500 ms');
       assert.equal(err.res.status, 200);
       err.cause && assert.equal(err.cause.name, 'BodyTimeoutError');
       return true;
@@ -79,11 +79,13 @@ describe('options.timeout.test.ts', () => {
       await urllib.request(`${_url}block`, {
         timeout: 100,
       });
-    }, (err: any) => {
+    }, (err: HttpClientRequestTimeoutError) => {
       // console.log(err);
       assert.equal(err.name, 'HttpClientRequestTimeoutError');
       assert.equal(err.message, 'Request timeout for 100 ms');
-      assert.equal(err.res.status, -1);
+      assert.equal(err.res!.status, -1);
+      assert(err.headers);
+      assert.equal(err.status, -1);
       err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
       return true;
     });

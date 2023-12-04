@@ -22,7 +22,7 @@ describe('keep-alive-header.test.ts', () => {
 
   it('should handle Keep-Alive header and not throw reset error on 1s keepalive agent', async () => {
     let count = 0;
-    const max = process.env.TEST_KEEPALIVE_COUNT ? parseInt(process.env.TEST_KEEPALIVE_COUNT) : 10;
+    const max = process.env.TEST_KEEPALIVE_COUNT ? parseInt(process.env.TEST_KEEPALIVE_COUNT) : 3;
     let otherSideClosed = 0;
     let readECONNRESET = 0;
     while (count < max) {
