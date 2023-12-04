@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.21.0](https://github.com/node-modules/urllib/compare/v3.20.0...v3.21.0) (2023-12-04)
+
+
+### Features
+
+* print more socket info on UND_ERR_CONNECT_TIMEOUT error ([#477](https://github.com/node-modules/urllib/issues/477)) ([366de1d](https://github.com/node-modules/urllib/commit/366de1df2ecdef71bcc927000f346d0cd08fe4cb))
+
 ## [3.20.0](https://github.com/node-modules/urllib/compare/v3.19.3...v3.20.0) (2023-12-04)
 
 
