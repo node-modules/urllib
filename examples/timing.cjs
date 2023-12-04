@@ -1,5 +1,10 @@
-const urllib = require('..');
+const { HttpClient } = require('..');
 
+const httpClient = new HttpClient({
+  connect: {
+    timeout: 1500,
+  },
+});
 const url = process.argv[2] || 'https://cnodejs.org';
 console.log('timing: %s', url);
 
@@ -9,7 +14,7 @@ async function request(index) {
   if (index === count) {
     return;
   }
-  const res = await urllib.request(url + '?index=' + index, {
+  const res = await httpClient.request(url + '?index=' + index, {
     // data: { wd: 'nodejs' },
     dataType: 'json',
   });
