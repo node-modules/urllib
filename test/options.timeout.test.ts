@@ -61,7 +61,7 @@ describe('options.timeout.test.ts', () => {
   it('should timeout 500ms throw error', async () => {
     await assert.rejects(async () => {
       const response = await urllib.request(`${_url}mock-bytes?timeout=1000`, {
-        timeout: [ 100, 500 ],
+        timeout: [ 400, 500 ],
       });
       console.log(response.status, response.headers, response.data);
     }, (err: any) => {
