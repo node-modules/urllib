@@ -6,6 +6,8 @@ import {
   buildConnector,
 } from 'undici';
 
+const MAX_CONNECTIONS = 1000;
+
 export type CheckAddressFunction = (ip: string, family: number | string) => boolean;
 
 export type HttpAgentOptions = {
@@ -63,6 +65,7 @@ export class HttpAgent extends Agent {
     };
     super({
       connect: { ...options.connect, lookup },
+      connections: MAX_CONNECTIONS,
     });
     this.#checkAddress = options.checkAddress;
   }
