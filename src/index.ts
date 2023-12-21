@@ -2,7 +2,7 @@ import LRU from 'ylru';
 import { HttpClient, HEADER_USER_AGENT } from './HttpClient.js';
 import { RequestOptions, RequestURL } from './Request.js';
 
-let httpclient: HttpClient;
+let httpClient: HttpClient;
 const domainSocketHttpclients = new LRU(50);
 
 export async function request<T = any>(url: RequestURL, options?: RequestOptions) {
@@ -17,10 +17,10 @@ export async function request<T = any>(url: RequestURL, options?: RequestOptions
     return await domainSocketHttpclient.request<T>(url, options);
   }
 
-  if (!httpclient) {
-    httpclient = new HttpClient({});
+  if (!httpClient) {
+    httpClient = new HttpClient({});
   }
-  return await httpclient.request<T>(url, options);
+  return await httpClient.request<T>(url, options);
 }
 
 // export curl method is keep compatible with urllib.curl()

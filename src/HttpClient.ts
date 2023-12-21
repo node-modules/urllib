@@ -22,7 +22,9 @@ import {
   Dispatcher,
   Agent,
   getGlobalDispatcher,
+  Pool,
 } from 'undici';
+import { kClients } from 'undici/lib/core/symbols.js';
 import { FormData as FormDataNode } from 'formdata-node';
 import { FormDataEncoder } from 'form-data-encoder';
 import createUserAgent from 'default-user-agent';
@@ -136,7 +138,7 @@ function defaultIsRetry(response: HttpClientResponse) {
   return response.status >= 500;
 }
 
-type RequestContext = {
+export type RequestContext = {
   retries: number;
   socketErrorRetries: number;
   requestStartTime?: number;
@@ -157,6 +159,20 @@ export type ResponseDiagnosticsMessage = {
   error?: Error;
 };
 
+export interface PoolStat {
+  /** Number of open socket connections in this pool. */
+  connected: number;
+  /** Number of open socket connections in this pool that do not have an active request. */
+  free: number;
+  /** Number of pending requests across all clients in this pool. */
+  pending: number;
+  /** Number of queued requests across all clients in this pool. */
+  queued: number;
+  /** Number of currently active requests across all clients in this pool. */
+  running: number;
+  /** Number of active, pending, or queued requests across all clients in this pool. */
+  size: number;
+}
 
 export class HttpClient extends EventEmitter {
   #defaultArgs?: RequestOptions;
@@ -185,6 +201,27 @@ export class HttpClient extends EventEmitter {
 
   setDispatcher(dispatcher: Dispatcher) {
     this.#dispatcher = dispatcher;
+  }
+
+  getDispatcherPoolStats() {
+    const agent = this.getDispatcher();
+    // origin => Pool Instance
+    const clients: Map<string, WeakRef<Pool>> = agent[kClients];
+    const poolStatsMap: Record<string, PoolStat> = {};
+    for (const [ key, ref ] of clients) {
+      const pool = ref.deref();
+      const stats = pool?.stats;
+      if (!stats) continue;
+      poolStatsMap[key] = {
+        connected: stats.connected,
+        free: stats.free,
+        pending: stats.pending,
+        queued: stats.queued,
+        running: stats.running,
+        size: stats.size,
+      } satisfies PoolStat;
+    }
+    return poolStatsMap;
   }
 
   async request<T = any>(url: RequestURL, options?: RequestOptions) {
