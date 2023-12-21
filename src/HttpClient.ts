@@ -24,7 +24,7 @@ import {
   getGlobalDispatcher,
   Pool,
 } from 'undici';
-import { kClients } from 'undici/lib/core/symbols.js';
+import undiciSymbols from 'undici/lib/core/symbols.js';
 import { FormData as FormDataNode } from 'formdata-node';
 import { FormDataEncoder } from 'form-data-encoder';
 import createUserAgent from 'default-user-agent';
@@ -206,7 +206,7 @@ export class HttpClient extends EventEmitter {
   getDispatcherPoolStats() {
     const agent = this.getDispatcher();
     // origin => Pool Instance
-    const clients: Map<string, WeakRef<Pool>> = agent[kClients];
+    const clients: Map<string, WeakRef<Pool>> = agent[undiciSymbols.kClients];
     const poolStatsMap: Record<string, PoolStat> = {};
     for (const [ key, ref ] of clients) {
       const pool = ref.deref();
@@ -228,7 +228,7 @@ export class HttpClient extends EventEmitter {
     return await this.#requestInternal<T>(url, options);
   }
 
-  // alias to request, keep compatible with urlib@2 HttpClient.curl
+  // alias to request, keep compatible with urllib@2 HttpClient.curl
   async curl<T = any>(url: RequestURL, options?: RequestOptions) {
     return await this.request<T>(url, options);
   }

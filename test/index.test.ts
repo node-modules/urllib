@@ -2,7 +2,7 @@ import { strict as assert } from 'node:assert';
 import { parse as urlparse } from 'node:url';
 import { readFileSync } from 'node:fs';
 import { describe, it, beforeAll, afterAll, afterEach, beforeEach } from 'vitest';
-import urllib, { HttpClient } from '../src';
+import urllib, { HttpClient, getDefaultHttpClient } from '../src';
 import { MockAgent, setGlobalDispatcher, getGlobalDispatcher } from '../src';
 import { startServer } from './fixtures/server';
 import { readableToBytes } from './utils';
@@ -18,6 +18,19 @@ describe('index.test.ts', () => {
 
   afterAll(async () => {
     await close();
+  });
+
+  describe('getDefaultHttpClient()', () => {
+    it('should work', async () => {
+      const response = await getDefaultHttpClient().request(`${_url}html`);
+      assert.equal(response.status, 200);
+      assert.equal(response.headers['content-type'], 'text/html');
+      assert(response.headers.date);
+      assert.equal(response.url, `${_url}html`);
+      assert(!response.redirected);
+      assert.equal(getDefaultHttpClient(), getDefaultHttpClient());
+      console.log('stats %o', getDefaultHttpClient().getDispatcherPoolStats());
+    });
   });
 
   describe('urllib.request()', () => {
