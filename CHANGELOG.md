@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.22.0](https://github.com/node-modules/urllib/compare/v3.21.0...v3.22.0) (2023-12-21)
+
+
+### Features
+
+* export agent pool stats ([#481](https://github.com/node-modules/urllib/issues/481)) ([5f9be29](https://github.com/node-modules/urllib/commit/5f9be2931a143d4414b9ae0e83d7be9a015d8bd7))
+
 ## [3.21.0](https://github.com/node-modules/urllib/compare/v3.20.0...v3.21.0) (2023-12-04)
 
 
