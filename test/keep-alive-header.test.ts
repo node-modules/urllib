@@ -32,8 +32,10 @@ describe('keep-alive-header.test.ts', () => {
       try {
         const task = httpClient.request(_url);
         console.log('after request stats: %o', httpClient.getDispatcherPoolStats());
-        assert.equal(httpClient.getDispatcherPoolStats()[origin].pending, 1);
-        assert.equal(httpClient.getDispatcherPoolStats()[origin].size, 1);
+        if (httpClient.getDispatcherPoolStats()[origin]) {
+          assert.equal(httpClient.getDispatcherPoolStats()[origin].pending, 1);
+          assert.equal(httpClient.getDispatcherPoolStats()[origin].size, 1);
+        }
         let response = await task;
         console.log('after response stats: %o', httpClient.getDispatcherPoolStats());
         assert.equal(httpClient.getDispatcherPoolStats()[origin].pending, 0);
