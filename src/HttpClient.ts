@@ -206,8 +206,11 @@ export class HttpClient extends EventEmitter {
   getDispatcherPoolStats() {
     const agent = this.getDispatcher();
     // origin => Pool Instance
-    const clients: Map<string, WeakRef<Pool>> = agent[undiciSymbols.kClients];
+    const clients: Map<string, WeakRef<Pool>> | undefined = agent[undiciSymbols.kClients];
     const poolStatsMap: Record<string, PoolStat> = {};
+    if (!clients) {
+      return poolStatsMap;
+    }
     for (const [ key, ref ] of clients) {
       const pool = ref.deref();
       const stats = pool?.stats;
