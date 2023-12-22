@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.22.1](https://github.com/node-modules/urllib/compare/v3.22.0...v3.22.1) (2023-12-22)
+
+
+### Bug Fixes
+
+* make sure kClients exists on Agent ([#482](https://github.com/node-modules/urllib/issues/482)) ([574bd47](https://github.com/node-modules/urllib/commit/574bd47e277560094202ecc6925160a8eb38f0a6))
+
 ## [3.22.0](https://github.com/node-modules/urllib/compare/v3.21.0...v3.22.0) (2023-12-21)
 
 
