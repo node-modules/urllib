@@ -104,6 +104,9 @@ describe('options.followRedirect.test.js', () => {
     assert(!redirected);
     assert.equal(url, requestURL);
     assert.equal(res.headers.location, `${_url}redirect-full-301-to-url`);
+    assert.equal(res.socket.remoteAddress, '127.0.0.1');
+    assert(res.socket.id > 0);
+    assert(res.timing.contentDownload > 0);
   });
 
   // it('should redirect `location: http://other-domain` with headers.Host', function(done) {
