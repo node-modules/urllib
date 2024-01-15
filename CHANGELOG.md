@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.22.2](https://github.com/node-modules/urllib/compare/v3.22.1...v3.22.2) (2024-01-15)
+
+
+### Bug Fixes
+
+* try to read opaque from handler property ([#485](https://github.com/node-modules/urllib/issues/485)) ([5d543d9](https://github.com/node-modules/urllib/commit/5d543d95763596c33861a414a058569a1f25b4fb))
+
 ## [3.22.1](https://github.com/node-modules/urllib/compare/v3.22.0...v3.22.1) (2023-12-22)
 
 
