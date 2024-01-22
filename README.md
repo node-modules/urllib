@@ -68,7 +68,7 @@ console.log('status: %s, body size: %d, headers: %j', res.status, data.length, r
   - **keepAliveTimeout** `number | null` - Default is `4000`, 4 seconds - The timeout after which a socket without active requests will time out. Monitors time between activity on a connected socket. This value may be overridden by *keep-alive* hints from the server. See [MDN: HTTP - Headers - Keep-Alive directives](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Keep-Alive#directives) for more details.
   - ***auth*** String - `username:password` used in HTTP Basic Authorization.
   - ***digestAuth*** String - `username:password` used in HTTP [Digest Authorization](https://en.wikipedia.org/wiki/Digest_access_authentication).
-  - ***followRedirect*** Boolean - follow HTTP 3xx responses as redirects. defaults to false.
+  - ***followRedirect*** Boolean - follow HTTP 3xx responses as redirects. defaults to true.
   - ***maxRedirects*** Number - The maximum number of redirects to follow, defaults to 10.
   - ***formatRedirectUrl*** Function - Format the redirect url by your self. Default is `url.resolve(from, to)`.
   - ***beforeRequest*** Function - Before request hook, you can change every thing here.
