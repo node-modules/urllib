@@ -16,6 +16,7 @@ import { basename } from 'node:path';
 import { createReadStream } from 'node:fs';
 import { format as urlFormat } from 'node:url';
 import { performance } from 'node:perf_hooks';
+import querystring from 'node:querystring';
 import {
   FormData as FormDataNative,
   request as undiciRequest,
@@ -503,18 +504,15 @@ export class HttpClient extends EventEmitter {
           || isReadable(args.data);
         if (isGETOrHEAD) {
           if (!isStringOrBufferOrReadable) {
+            let query;
             if (args.nestedQuerystring) {
-              const querystring = qs.stringify(args.data);
-              // reset the requestUrl
-              const href = requestUrl.href;
-              requestUrl = new URL(href + (href.includes('?') ? '&' : '?') + querystring);
+              query = qs.stringify(args.data);
             } else {
-              for (const field in args.data) {
-                const fieldValue = args.data[field];
-                if (fieldValue === undefined) continue;
-                requestUrl.searchParams.append(field, fieldValue);
-              }
+              query = querystring.stringify(args.data);
             }
+            // reset the requestUrl
+            const href = requestUrl.href;
+            requestUrl = new URL(href + (href.includes('?') ? '&' : '?') + query);
           }
         } else {
           if (isStringOrBufferOrReadable) {
