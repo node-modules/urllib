@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.22.3](https://github.com/node-modules/urllib/compare/v3.22.2...v3.22.3) (2024-02-20)
+
+
+### Bug Fixes
+
+* use querystring to stringify data ([#489](https://github.com/node-modules/urllib/issues/489)) ([ee9a786](https://github.com/node-modules/urllib/commit/ee9a786045f0cebb00ad757b5507d9730ec9c839))
+
 ## [3.22.2](https://github.com/node-modules/urllib/compare/v3.22.1...v3.22.2) (2024-01-15)
 
 
