@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.22.4](https://github.com/node-modules/urllib/compare/v3.22.3...v3.22.4) (2024-02-22)
+
+
+### Bug Fixes
+
+* options.method alias options.type is invalid ([#490](https://github.com/node-modules/urllib/issues/490)) ([75c5989](https://github.com/node-modules/urllib/commit/75c5989f5a267ed0f6505ba877d66748d7bd5e36))
+
 ## [3.22.3](https://github.com/node-modules/urllib/compare/v3.22.2...v3.22.3) (2024-02-20)
 
 
