@@ -256,7 +256,7 @@ export class HttpClient extends EventEmitter {
       }
     }
 
-    const method = (options?.method ?? 'GET').toUpperCase() as HttpMethod;
+    const method = (options?.type || options?.method || 'GET').toUpperCase() as HttpMethod;
     const originalHeaders = options?.headers;
     const headers: IncomingHttpHeaders = {};
     const args = {

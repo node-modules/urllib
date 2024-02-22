@@ -13,6 +13,8 @@ export type FixJSONCtlChars = boolean | FixJSONCtlCharsHandler;
 export type RequestOptions = {
   /** Request method, defaults to GET. Could be GET, POST, DELETE or PUT. Alias 'type'. */
   method?: HttpMethod | Lowercase<HttpMethod>;
+  /** Alias for 'method'. */
+  type?: HttpMethod | Lowercase<HttpMethod>;
   /** Data to be sent. Will be stringify automatically. */
   data?: any;
   /** Manually set the content of payload. If set, data will be ignored. */
