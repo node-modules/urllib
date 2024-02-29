@@ -40,3 +40,7 @@ export async function createTempfile(content?: Buffer | string) {
     },
   };
 }
+
+export function nodeMajorVersion() {
+  return parseInt(process.versions.node.split('.')[0]);
+}
