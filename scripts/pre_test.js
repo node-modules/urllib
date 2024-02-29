@@ -1,5 +1,5 @@
 import { execSync } from 'node:child_process';
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 function main() {
@@ -15,7 +15,7 @@ function main() {
   if (process.env.CI) {
     // add --no-file-parallelism
     const pkgFile = join(process.cwd(), 'package.json');
-    const pkg = require(pkgFile);
+    const pkg = JSON.parse(readFileSync(pkgFile, 'utf-8'));
     pkg.scripts.cov = `${pkg.scripts.cov} --no-file-parallelism`;
     writeFileSync(pkgFile, JSON.stringify(pkg));
   }
