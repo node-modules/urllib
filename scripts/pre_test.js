@@ -1,4 +1,6 @@
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
+import { writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 function main() {
   if (!process.version.startsWith('v14.')) {
@@ -10,6 +12,13 @@ function main() {
     cwd,
     stdio: [ 'inherit', 'inherit', 'inherit' ],
   });
+  if (process.env.CI) {
+    // add --no-file-parallelism
+    const pkgFile = join(__dirname, '../package.json');
+    const pkg = require(pkgFile);
+    pkg.scripts.cov = `${pkg.scripts.cov} --no-file-parallelism`;
+    writeFileSync(pkgFile, JSON.stringify(pkg));
+  }
 }
 
 main();
