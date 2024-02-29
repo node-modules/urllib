@@ -11,7 +11,7 @@ export default defineConfig({
         'src',
       ],
     },
-    pool: 'forks',
+    pool: 'threads',
     poolOptions: {
       forks: {
         isolate: false,
