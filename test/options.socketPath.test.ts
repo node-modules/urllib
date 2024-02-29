@@ -1,10 +1,10 @@
 import { strict as assert } from 'node:assert';
-import os from 'node:os';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import urllib from '../src';
 import { startServer } from './fixtures/socket_server';
+import { isWindows } from './utils';
 
-describe.skipIf(os.platform() === 'win32')('options.socketPath.test.ts', () => {
+describe.skipIf(isWindows())('options.socketPath.test.ts', () => {
   let close: any;
   let _url: string;
   let _socketPath: string;

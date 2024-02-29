@@ -2,7 +2,7 @@ import { Readable } from 'node:stream';
 import { ReadableStream } from 'node:stream/web';
 import { rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { tmpdir } from 'node:os';
+import { tmpdir, platform } from 'node:os';
 import { randomUUID } from 'node:crypto';
 
 export async function sleep(ms: number) {
@@ -43,4 +43,8 @@ export async function createTempfile(content?: Buffer | string) {
 
 export function nodeMajorVersion() {
   return parseInt(process.versions.node.split('.')[0]);
+}
+
+export function isWindows() {
+  return platform() === 'win32';
 }

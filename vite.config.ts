@@ -12,10 +12,5 @@ export default defineConfig({
       ],
     },
     pool: 'threads',
-    poolOptions: {
-      forks: {
-        isolate: false,
-      },
-    },
   },
 });
