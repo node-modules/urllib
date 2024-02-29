@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.22.5](https://github.com/node-modules/urllib/compare/v3.22.4...v3.22.5) (2024-02-29)
+
+
+### Bug Fixes
+
+* keep statusMessage alias to statusText on response.res object ([#491](https://github.com/node-modules/urllib/issues/491)) ([5773b07](https://github.com/node-modules/urllib/commit/5773b077ce90ac2d40110765f579424ea5f8fffa))
+
 ## [3.22.4](https://github.com/node-modules/urllib/compare/v3.22.3...v3.22.4) (2024-02-22)
 
 
