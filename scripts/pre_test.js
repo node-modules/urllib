@@ -14,7 +14,7 @@ function main() {
   });
   if (process.env.CI) {
     // add --no-file-parallelism
-    const pkgFile = join(__dirname, '../package.json');
+    const pkgFile = join(process.cwd(), 'package.json');
     const pkg = require(pkgFile);
     pkg.scripts.cov = `${pkg.scripts.cov} --no-file-parallelism`;
     writeFileSync(pkgFile, JSON.stringify(pkg));
