@@ -2,7 +2,7 @@ import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
-import { readableToBytes } from './utils';
+import { nodeMajorVersion, readableToBytes } from './utils';
 
 describe('options.dataType.test.ts', () => {
   let close: any;
@@ -107,8 +107,13 @@ describe('options.dataType.test.ts', () => {
       // console.error(err);
       assert.equal(err.name, 'JSONResponseFormatError');
       if (err.message.startsWith('Expected')) {
-        // new message on Node.js >= 19
-        assert.equal(err.message, 'Expected \',\' or \'}\' after property value in JSON at position 9 (data json format: "{\\"foo\\":\\"\\"")');
+        if (nodeMajorVersion() >= 21) {
+          assert.equal(err.message, 'Expected \',\' or \'}\' after property value in JSON at position 9 (line 1 column 10) (data json format: "{\\"foo\\":\\"\\"")');
+        } else {
+          // new message on Node.js >= 19
+          assert.equal(err.message, 'Expected \',\' or \'}\' after property value in JSON at position 9 (data json format: "{\\"foo\\":\\"\\"")');
+        }
+
       } else {
         assert.equal(err.message, 'Unexpected end of JSON input (data json format: "{\\"foo\\":\\"\\"")');
       }

@@ -330,6 +330,7 @@ export class HttpClient extends EventEmitter {
       status: -1,
       statusCode: -1,
       statusText: '',
+      statusMessage: '',
       headers: resHeaders,
       size: 0,
       aborted: false,
@@ -589,7 +590,7 @@ export class HttpClient extends EventEmitter {
 
       res.headers = response.headers;
       res.status = res.statusCode = response.statusCode;
-      res.statusText = STATUS_CODES[res.status] || '';
+      res.statusMessage = res.statusText = STATUS_CODES[res.status] || '';
       if (res.headers['content-length']) {
         res.size = parseInt(res.headers['content-length']);
       }

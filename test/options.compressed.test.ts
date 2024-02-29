@@ -3,7 +3,7 @@ import { createWriteStream, createReadStream } from 'node:fs';
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import urllib from '../src';
 import { startServer } from './fixtures/server';
-import { readableToString, createTempfile } from './utils';
+import { readableToString, createTempfile, nodeMajorVersion } from './utils';
 
 describe('options.compressed.test.ts', () => {
   let close: any;
@@ -193,7 +193,11 @@ describe('options.compressed.test.ts', () => {
       // console.error(err);
       assert.equal(err.name, 'UnzipError');
       assert.equal(err.message, 'Decompression failed');
-      assert.equal(err.code, 'ERR_PADDING_1');
+      if (nodeMajorVersion() >= 21) {
+        assert.equal(err.code, 'ERR__ERROR_FORMAT_PADDING_1');
+      } else {
+        assert.equal(err.code, 'ERR_PADDING_1');
+      }
       assert.equal(err.status, 200);
       assert.equal(err.headers['content-encoding'], 'br');
       return true;

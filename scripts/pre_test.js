@@ -1,4 +1,6 @@
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
+import { writeFileSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 function main() {
   if (!process.version.startsWith('v14.')) {
@@ -10,6 +12,13 @@ function main() {
     cwd,
     stdio: [ 'inherit', 'inherit', 'inherit' ],
   });
+  if (process.env.CI) {
+    // add --no-threads
+    const pkgFile = join(process.cwd(), 'package.json');
+    const pkg = JSON.parse(readFileSync(pkgFile, 'utf-8'));
+    pkg.scripts.cov = `${pkg.scripts.cov} --no-threads`;
+    writeFileSync(pkgFile, JSON.stringify(pkg));
+  }
 }
 
 main();
