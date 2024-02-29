@@ -13,10 +13,10 @@ function main() {
     stdio: [ 'inherit', 'inherit', 'inherit' ],
   });
   if (process.env.CI) {
-    // add --no-file-parallelism
+    // add --no-threads
     const pkgFile = join(process.cwd(), 'package.json');
     const pkg = JSON.parse(readFileSync(pkgFile, 'utf-8'));
-    pkg.scripts.cov = `${pkg.scripts.cov} --no-file-parallelism`;
+    pkg.scripts.cov = `${pkg.scripts.cov} --no-threads`;
     writeFileSync(pkgFile, JSON.stringify(pkg));
   }
 }
