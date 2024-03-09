@@ -18,7 +18,7 @@ describe('options.signal.test.ts', () => {
     await close();
   });
 
-  it('should throw error when AbortController abort', async () => {
+  it.skipIf(typeof global.AbortController === 'undefined')('should throw error when AbortController abort', async () => {
     await assert.rejects(async () => {
       const abortController = new AbortController();
       const p = urllib.request(`${_url}?timeout=2000`, {
