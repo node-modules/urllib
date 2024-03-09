@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.23.0](https://github.com/node-modules/urllib/compare/v3.22.5...v3.23.0) (2024-03-09)
+
+
+### Features
+
+* support AbortController ([#493](https://github.com/node-modules/urllib/issues/493)) ([b81bbbb](https://github.com/node-modules/urllib/commit/b81bbbbbdc89dbaecd2d48396621ca8061da2226))
+
 ## [3.22.5](https://github.com/node-modules/urllib/compare/v3.22.4...v3.22.5) (2024-02-29)
 
 
