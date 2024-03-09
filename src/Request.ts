@@ -1,4 +1,5 @@
 import type { Readable, Writable } from 'node:stream';
+import type { EventEmitter } from 'node:events';
 import type { Dispatcher } from 'undici';
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import type { HttpClientResponse } from './Response.js';
@@ -9,6 +10,8 @@ export type RequestURL = string | URL;
 
 export type FixJSONCtlCharsHandler = (data: string) => string;
 export type FixJSONCtlChars = boolean | FixJSONCtlCharsHandler;
+
+type AbortSignal = unknown;
 
 export type RequestOptions = {
   /** Request method, defaults to GET. Could be GET, POST, DELETE or PUT. Alias 'type'. */
@@ -148,6 +151,7 @@ export type RequestOptions = {
   reset?: boolean;
   /** Default: `64 KiB` */
   highWaterMark?: number;
+  signal?: AbortSignal | EventEmitter;
 };
 
 export type RequestMeta = {
