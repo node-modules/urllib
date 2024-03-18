@@ -73,7 +73,7 @@
     "busboy": "^1.6.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.25.0",
-    "eslint-config-egg": "^12.1.0",
+    "eslint-config-egg": "^13.0.0",
     "git-contributor": "^2.0.0",
     "iconv-lite": "^0.6.3",
     "proxy": "^1.0.2",
