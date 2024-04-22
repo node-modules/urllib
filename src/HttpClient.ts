@@ -667,6 +667,8 @@ export class HttpClient extends EventEmitter {
         }
       }
 
+      debug('Request#%d got response, status: %s, headers: %j, timing: %j',
+        requestId, res.status, res.headers, res.timing);
       channels.response.publish({
         request: reqMeta,
         response: res,
