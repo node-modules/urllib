@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.24.0](https://github.com/node-modules/urllib/compare/v3.23.0...v3.24.0) (2024-04-22)
+
+
+### Features
+
+* show debug log on response stage ([#506](https://github.com/node-modules/urllib/issues/506)) ([ec18131](https://github.com/node-modules/urllib/commit/ec18131542018903f440e9b59ccb450532aa3cb8))
+
 ## [3.23.0](https://github.com/node-modules/urllib/compare/v3.22.5...v3.23.0) (2024-03-09)
 
 
