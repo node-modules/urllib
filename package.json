@@ -76,7 +76,7 @@
     "eslint-config-egg": "^12.1.0",
     "git-contributor": "^2.0.0",
     "iconv-lite": "^0.6.3",
-    "proxy": "^1.0.2",
+    "proxy": "^2.0.0",
     "selfsigned": "^2.0.1",
     "tar-stream": "^2.2.0",
     "tshy": "^1.0.0",
