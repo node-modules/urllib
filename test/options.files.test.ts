@@ -120,7 +120,7 @@ describe('options.files.test.ts', () => {
     // console.log(response.data);
     assert.equal(response.data.method, 'POST');
     assert.match(response.data.headers['content-type'], /^multipart\/form-data;/);
-    assert.equal(response.data.files.hello.filename, 'bufferfile0');
+    assert.equal(response.data.files.hello.filename, 'hello');
     assert.equal(response.data.files.hello.mimeType, 'application/octet-stream');
     assert.equal(response.data.files.hello.encoding, '7bit');
     assert.equal(response.data.files.hello.size, 11);
@@ -265,6 +265,36 @@ describe('options.files.test.ts', () => {
     assert.equal(response.data.files.foo.filename, 'options.files.test.ts');
     assert.equal(response.data.files.foo.mimeType, 'video/mp2t');
     assert.equal(response.data.files.foo.size, stat.size);
+    assert.equal(response.data.form.hello, 'hello world，😄😓');
+    assert.equal(response.data.form.foo, 'bar');
+  });
+
+  it('should support custom fileName when use files:object', async () => {
+    const rawData = JSON.stringify({ a: 1 });
+    const response = await urllib.request(`${_url}multipart`, {
+      files: {
+        'buffer.js': Buffer.from(rawData),
+        'readable.js': Readable.from([ rawData ]),
+      },
+      data: {
+        hello: 'hello world，😄😓',
+        foo: 'bar',
+      },
+      dataType: 'json',
+    });
+    assert.equal(response.status, 200);
+    // console.log(response.data);
+    assert.equal(response.data.method, 'POST');
+    assert.match(response.data.headers['content-type'], /^multipart\/form-data;/);
+
+    assert.equal(response.data.files['readable.js'].filename, 'readable.js');
+    // set mimeType by filename
+    assert.equal(response.data.files['readable.js'].mimeType, 'application/javascript');
+
+    assert.equal(response.data.files['buffer.js'].filename, 'buffer.js');
+    assert.equal(response.data.files['buffer.js'].mimeType, 'application/octet-stream');
+    assert.equal(response.data.files['buffer.js'].size, rawData.length);
+
     assert.equal(response.data.form.hello, 'hello world，😄😓');
     assert.equal(response.data.form.foo, 'bar');
   });

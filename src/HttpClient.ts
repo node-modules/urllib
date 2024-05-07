@@ -440,7 +440,7 @@ export class HttpClient extends EventEmitter {
           requestOptions.method = 'POST';
         }
         const formData = new FormData();
-        const uploadFiles: [string, string | Readable | Buffer][] = [];
+        const uploadFiles: [string, string | Readable | Buffer, string?][] = [];
         if (Array.isArray(args.files)) {
           for (const [ index, file ] of args.files.entries()) {
             const field = index === 0 ? 'file' : `file${index}`;
@@ -452,7 +452,8 @@ export class HttpClient extends EventEmitter {
           uploadFiles.push([ 'file', args.files ]);
         } else if (typeof args.files === 'object') {
           for (const field in args.files) {
-            uploadFiles.push([ field, args.files[field] ]);
+            // set custom fileName
+            uploadFiles.push([ field, args.files[field], field ]);
           }
         }
         // set normal fields first
@@ -461,7 +462,7 @@ export class HttpClient extends EventEmitter {
             formData.append(field, args.data[field]);
           }
         }
-        for (const [ index, [ field, file ]] of uploadFiles.entries()) {
+        for (const [ index, [ field, file, customFileName ]] of uploadFiles.entries()) {
           if (typeof file === 'string') {
             // FIXME: support non-ascii filename
             // const fileName = encodeURIComponent(basename(file));
@@ -470,9 +471,9 @@ export class HttpClient extends EventEmitter {
             const fileReadable = createReadStream(file);
             formData.append(field, new BlobFromStream(fileReadable, mime.lookup(fileName) || ''), fileName);
           } else if (Buffer.isBuffer(file)) {
-            formData.append(field, new Blob([ file ]), `bufferfile${index}`);
+            formData.append(field, new Blob([ file ]), customFileName || `bufferfile${index}`);
           } else if (file instanceof Readable || isReadable(file as any)) {
-            const fileName = getFileName(file) || `streamfile${index}`;
+            const fileName = getFileName(file) || customFileName || `streamfile${index}`;
             formData.append(field, new BlobFromStream(file, mime.lookup(fileName) || ''), fileName);
             isStreamingRequest = true;
           }
