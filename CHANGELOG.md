@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.25.0](https://github.com/node-modules/urllib/compare/v3.24.0...v3.25.0) (2024-05-07)
+
+
+### Features
+
+* support custom filename when file is Buffer or Readable  ([#508](https://github.com/node-modules/urllib/issues/508)) ([032f439](https://github.com/node-modules/urllib/commit/032f439224378696ba38e2a129ca9603733eae9d))
+
 ## [3.24.0](https://github.com/node-modules/urllib/compare/v3.23.0...v3.24.0) (2024-04-22)
 
 
