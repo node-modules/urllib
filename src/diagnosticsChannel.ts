@@ -184,10 +184,15 @@ export function initDiagnosticsChannel() {
 
     // get socket from opaque
     const socket = opaque[symbols.kRequestSocket];
-    socket[symbols.kHandledResponses]++;
-    debug('[%s] Request#%d get %s response headers on Socket#%d (handled %d responses, sock: %o)',
-      name, opaque[symbols.kRequestId], response.statusCode, socket[symbols.kSocketId], socket[symbols.kHandledResponses],
-      formatSocket(socket));
+    if (socket) {
+      socket[symbols.kHandledResponses]++;
+      debug('[%s] Request#%d get %s response headers on Socket#%d (handled %d responses, sock: %o)',
+        name, opaque[symbols.kRequestId], response.statusCode, socket[symbols.kSocketId], socket[symbols.kHandledResponses],
+        formatSocket(socket));
+    } else {
+      debug('[%s] Request#%d get %s response headers on Unknown Socket',
+        name, opaque[symbols.kRequestId], response.statusCode);
+    }
 
     if (!opaque[symbols.kEnableRequestTiming]) return;
     opaque[symbols.kRequestTiming].waiting = performanceTime(opaque[symbols.kRequestStartTime]);
@@ -197,7 +202,9 @@ export function initDiagnosticsChannel() {
   subscribe('undici:request:trailers', (message, name) => {
     const { request } = message as DiagnosticsChannel.RequestTrailersMessage;
     const opaque = getRequestOpaque(request, kHandler);
-    if (!opaque || !opaque[symbols.kRequestId]) return;
+    if (!opaque || !opaque[symbols.kRequestId]) {
+      return;
+    }
 
     debug('[%s] Request#%d get response body and trailers', name, opaque[symbols.kRequestId]);
 

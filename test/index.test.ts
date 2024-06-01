@@ -32,7 +32,7 @@ describe('index.test.ts', () => {
       assert.equal(response.url, `${_url}html`);
       assert(!response.redirected);
       assert.equal(getDefaultHttpClient(), getDefaultHttpClient());
-      console.log('stats %o', getDefaultHttpClient().getDispatcherPoolStats());
+      // console.log('stats %o', getDefaultHttpClient().getDispatcherPoolStats());
     });
   });
 
@@ -76,7 +76,7 @@ describe('index.test.ts', () => {
         dataType: 'json',
       });
       assert.equal(response.status, 200);
-      console.log(response.data.hello);
+      // console.log(response.data.hello);
     });
 
     it('should curl alias to request', async () => {
