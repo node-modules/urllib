@@ -1,13 +1,14 @@
 import { strict as assert } from 'assert';
 import * as urllibStar from 'urllib';
 import urllib from 'urllib';
-import { request, HttpClient, USER_AGENT } from 'urllib';
+import { request, HttpClient, USER_AGENT, getDefaultHttpClient } from 'urllib';
 
 console.log(urllibStar);
 console.log(urllibStar.request, urllibStar.HttpClient);
 console.log(urllibStar.request, urllibStar.HttpClient);
 console.log(urllibStar.USER_AGENT, urllib.USER_AGENT, USER_AGENT);
 console.log(request, HttpClient);
+console.log('stats %o', getDefaultHttpClient().getDispatcherPoolStats());
 
 assert(urllibStar);
 assert.equal(typeof urllibStar.request, 'function');

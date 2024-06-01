@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import setup from 'proxy';
-import { request, ProxyAgent, getGlobalDispatcher, setGlobalDispatcher } from '../src';
+import { request, ProxyAgent, getGlobalDispatcher, setGlobalDispatcher, Agent } from '../src';
 import { startServer } from './fixtures/server';
 
 describe('options.dispatcher.test.ts', () => {
@@ -61,5 +61,20 @@ describe('options.dispatcher.test.ts', () => {
     assert.equal(response.status, 200);
     assert.equal(response.data, '<h1>hello</h1>');
     setGlobalDispatcher(agent);
+  });
+
+  it('should work with http/2 dispatcher', async () => {
+    // https://github.com/nodejs/undici/issues/2750#issuecomment-1941009554
+    const agent = new Agent({
+      allowH2: true,
+    });
+    assert(agent);
+    const response = await request('https://registry.npmmirror.com', {
+      dataType: 'json',
+      timing: true,
+      dispatcher: agent,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
   });
 });

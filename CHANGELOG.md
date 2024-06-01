@@ -1,5 +1,68 @@
 # Changelog
 
+## [3.25.0](https://github.com/node-modules/urllib/compare/v3.24.0...v3.25.0) (2024-05-07)
+
+
+### Features
+
+* support custom filename when file is Buffer or Readable  ([#508](https://github.com/node-modules/urllib/issues/508)) ([032f439](https://github.com/node-modules/urllib/commit/032f439224378696ba38e2a129ca9603733eae9d))
+
+## [3.24.0](https://github.com/node-modules/urllib/compare/v3.23.0...v3.24.0) (2024-04-22)
+
+
+### Features
+
+* show debug log on response stage ([#506](https://github.com/node-modules/urllib/issues/506)) ([ec18131](https://github.com/node-modules/urllib/commit/ec18131542018903f440e9b59ccb450532aa3cb8))
+
+## [3.23.0](https://github.com/node-modules/urllib/compare/v3.22.5...v3.23.0) (2024-03-09)
+
+
+### Features
+
+* support AbortController ([#493](https://github.com/node-modules/urllib/issues/493)) ([b81bbbb](https://github.com/node-modules/urllib/commit/b81bbbbbdc89dbaecd2d48396621ca8061da2226))
+
+## [3.22.5](https://github.com/node-modules/urllib/compare/v3.22.4...v3.22.5) (2024-02-29)
+
+
+### Bug Fixes
+
+* keep statusMessage alias to statusText on response.res object ([#491](https://github.com/node-modules/urllib/issues/491)) ([5773b07](https://github.com/node-modules/urllib/commit/5773b077ce90ac2d40110765f579424ea5f8fffa))
+
+## [3.22.4](https://github.com/node-modules/urllib/compare/v3.22.3...v3.22.4) (2024-02-22)
+
+
+### Bug Fixes
+
+* options.method alias options.type is invalid ([#490](https://github.com/node-modules/urllib/issues/490)) ([75c5989](https://github.com/node-modules/urllib/commit/75c5989f5a267ed0f6505ba877d66748d7bd5e36))
+
+## [3.22.3](https://github.com/node-modules/urllib/compare/v3.22.2...v3.22.3) (2024-02-20)
+
+
+### Bug Fixes
+
+* use querystring to stringify data ([#489](https://github.com/node-modules/urllib/issues/489)) ([ee9a786](https://github.com/node-modules/urllib/commit/ee9a786045f0cebb00ad757b5507d9730ec9c839))
+
+## [3.22.2](https://github.com/node-modules/urllib/compare/v3.22.1...v3.22.2) (2024-01-15)
+
+
+### Bug Fixes
+
+* try to read opaque from handler property ([#485](https://github.com/node-modules/urllib/issues/485)) ([5d543d9](https://github.com/node-modules/urllib/commit/5d543d95763596c33861a414a058569a1f25b4fb))
+
+## [3.22.1](https://github.com/node-modules/urllib/compare/v3.22.0...v3.22.1) (2023-12-22)
+
+
+### Bug Fixes
+
+* make sure kClients exists on Agent ([#482](https://github.com/node-modules/urllib/issues/482)) ([574bd47](https://github.com/node-modules/urllib/commit/574bd47e277560094202ecc6925160a8eb38f0a6))
+
+## [3.22.0](https://github.com/node-modules/urllib/compare/v3.21.0...v3.22.0) (2023-12-21)
+
+
+### Features
+
+* export agent pool stats ([#481](https://github.com/node-modules/urllib/issues/481)) ([5f9be29](https://github.com/node-modules/urllib/commit/5f9be2931a143d4414b9ae0e83d7be9a015d8bd7))
+
 ## [3.21.0](https://github.com/node-modules/urllib/compare/v3.20.0...v3.21.0) (2023-12-04)
 
 

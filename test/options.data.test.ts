@@ -29,6 +29,7 @@ describe('options.data.test.ts', () => {
         d: 1111,
         e() { return ''; },
         f: true,
+        g: [ 'a', 'b' ],
       },
       dataType: 'json',
     });
@@ -37,7 +38,7 @@ describe('options.data.test.ts', () => {
     assert.equal(response.data.method, 'GET');
     assert(response.url.startsWith(_url));
     assert(!response.redirected);
-    assert.equal(response.data.url, '/?sql=SELECT+*+from+table&data=%E5%93%88%E5%93%88&c=2222&d=1111&e=e%28%29+%7B%0A++++++++++return+%22%22%3B%0A++++++++%7D&f=true');
+    assert.equal(response.data.url, '/?sql=SELECT%20*%20from%20table&data=%E5%93%88%E5%93%88&b=&c=2222&d=1111&e=&f=true&g=a&g=b');
     const url = new URL(response.data.href);
     assert.equal(url.searchParams.get('sql'), 'SELECT * from table');
     assert.equal(url.searchParams.get('data'), '哈哈');
@@ -164,7 +165,7 @@ describe('options.data.test.ts', () => {
     assert(response.url.startsWith(_url));
     assert(!response.redirected);
     // console.log(response.data);
-    assert.equal(response.data.url, '/?that=in_path&sql=SELECT+*+from+table&data=%E5%93%88%E5%93%88');
+    assert.equal(response.data.url, '/?that=in_path&sql=SELECT%20*%20from%20table&data=%E5%93%88%E5%93%88');
     const url = new URL(response.data.href);
     assert.equal(url.searchParams.get('sql'), 'SELECT * from table');
     assert.equal(url.searchParams.get('data'), '哈哈');

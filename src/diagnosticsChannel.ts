@@ -54,6 +54,21 @@ Socket.prototype.destroy = function(err?: any) {
   return this[kDestroy](err);
 };
 
+function getRequestOpaque(request: DiagnosticsChannel.Request, kHandler?: symbol) {
+  if (!kHandler) return;
+  const handler = request[kHandler];
+  // maxRedirects = 0 will get [Symbol(handler)]: RequestHandler {
+  // responseHeaders: null,
+  // opaque: {
+  //   [Symbol(request id)]: 1,
+  //   [Symbol(request start time)]: 465.0712921619415,
+  //   [Symbol(enable request timing or not)]: true,
+  //   [Symbol(request timing)]: [Object],
+  //   [Symbol(request original opaque)]: undefined
+  // }
+  return handler?.opts?.opaque ?? handler?.opaque;
+}
+
 export function initDiagnosticsChannel() {
   // makre sure init global DiagnosticsChannel once
   if (initedDiagnosticsChannel) return;
@@ -73,7 +88,7 @@ export function initDiagnosticsChannel() {
         }
       }
     }
-    const opaque = request[kHandler]?.opts?.opaque;
+    const opaque = getRequestOpaque(request, kHandler);
     // ignore non HttpClient Request
     if (!opaque || !opaque[symbols.kRequestId]) return;
     debug('[%s] Request#%d %s %s, path: %s, headers: %o',
@@ -131,8 +146,7 @@ export function initDiagnosticsChannel() {
   // This message is published right before the first byte of the request is written to the socket.
   subscribe('undici:client:sendHeaders', (message, name) => {
     const { request, socket } = message as DiagnosticsChannel.ClientSendHeadersMessage;
-    if (!kHandler) return;
-    const opaque = request[kHandler]?.opts?.opaque;
+    const opaque = getRequestOpaque(request, kHandler);
     if (!opaque || !opaque[symbols.kRequestId]) return;
 
     socket[symbols.kHandledRequests]++;
@@ -154,8 +168,7 @@ export function initDiagnosticsChannel() {
 
   subscribe('undici:request:bodySent', (message, name) => {
     const { request } = message as DiagnosticsChannel.RequestBodySentMessage;
-    if (!kHandler) return;
-    const opaque = request[kHandler]?.opts?.opaque;
+    const opaque = getRequestOpaque(request, kHandler);
     if (!opaque || !opaque[symbols.kRequestId]) return;
 
     debug('[%s] Request#%d send body', name, opaque[symbols.kRequestId]);
@@ -166,16 +179,20 @@ export function initDiagnosticsChannel() {
   // This message is published after the response headers have been received, i.e. the response has been completed.
   subscribe('undici:request:headers', (message, name) => {
     const { request, response } = message as DiagnosticsChannel.RequestHeadersMessage;
-    if (!kHandler) return;
-    const opaque = request[kHandler]?.opts?.opaque;
+    const opaque = getRequestOpaque(request, kHandler);
     if (!opaque || !opaque[symbols.kRequestId]) return;
 
     // get socket from opaque
     const socket = opaque[symbols.kRequestSocket];
-    socket[symbols.kHandledResponses]++;
-    debug('[%s] Request#%d get %s response headers on Socket#%d (handled %d responses, sock: %o)',
-      name, opaque[symbols.kRequestId], response.statusCode, socket[symbols.kSocketId], socket[symbols.kHandledResponses],
-      formatSocket(socket));
+    if (socket) {
+      socket[symbols.kHandledResponses]++;
+      debug('[%s] Request#%d get %s response headers on Socket#%d (handled %d responses, sock: %o)',
+        name, opaque[symbols.kRequestId], response.statusCode, socket[symbols.kSocketId], socket[symbols.kHandledResponses],
+        formatSocket(socket));
+    } else {
+      debug('[%s] Request#%d get %s response headers on Unknown Socket',
+        name, opaque[symbols.kRequestId], response.statusCode);
+    }
 
     if (!opaque[symbols.kEnableRequestTiming]) return;
     opaque[symbols.kRequestTiming].waiting = performanceTime(opaque[symbols.kRequestStartTime]);
@@ -184,9 +201,10 @@ export function initDiagnosticsChannel() {
   // This message is published after the response body and trailers have been received, i.e. the response has been completed.
   subscribe('undici:request:trailers', (message, name) => {
     const { request } = message as DiagnosticsChannel.RequestTrailersMessage;
-    if (!kHandler) return;
-    const opaque = request[kHandler]?.opts?.opaque;
-    if (!opaque || !opaque[symbols.kRequestId]) return;
+    const opaque = getRequestOpaque(request, kHandler);
+    if (!opaque || !opaque[symbols.kRequestId]) {
+      return;
+    }
 
     debug('[%s] Request#%d get response body and trailers', name, opaque[symbols.kRequestId]);
 

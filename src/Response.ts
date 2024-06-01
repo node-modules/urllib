@@ -45,6 +45,11 @@ export type RawResponseWithMeta = Readable & {
   status: number;
   statusCode: number;
   statusText: string;
+  /**
+   * @alias statusText
+   * @deprecated use `statusText` instead
+   **/
+  statusMessage: string;
   headers: IncomingHttpHeaders;
   timing: Timing;
   // SocketInfo

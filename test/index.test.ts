@@ -2,7 +2,7 @@ import { strict as assert } from 'node:assert';
 import { parse as urlparse } from 'node:url';
 import { readFileSync } from 'node:fs';
 import { describe, it, beforeAll, afterAll, afterEach, beforeEach } from 'vitest';
-import urllib, { HttpClient } from '../src';
+import urllib, { HttpClient, getDefaultHttpClient } from '../src';
 import { MockAgent, setGlobalDispatcher, getGlobalDispatcher } from '../src';
 import { startServer } from './fixtures/server';
 import { readableToBytes } from './utils';
@@ -18,6 +18,22 @@ describe('index.test.ts', () => {
 
   afterAll(async () => {
     await close();
+  });
+
+  describe('getDefaultHttpClient()', () => {
+    it('should work', async () => {
+      const response = await getDefaultHttpClient().request(`${_url}html`);
+      assert.equal(response.status, 200);
+      assert.equal(response.statusText, 'OK');
+      assert.equal(response.res.statusMessage, 'OK');
+      assert.equal(response.res.statusText, 'OK');
+      assert.equal(response.headers['content-type'], 'text/html');
+      assert(response.headers.date);
+      assert.equal(response.url, `${_url}html`);
+      assert(!response.redirected);
+      assert.equal(getDefaultHttpClient(), getDefaultHttpClient());
+      // console.log('stats %o', getDefaultHttpClient().getDispatcherPoolStats());
+    });
   });
 
   describe('urllib.request()', () => {
@@ -60,7 +76,7 @@ describe('index.test.ts', () => {
         dataType: 'json',
       });
       assert.equal(response.status, 200);
-      console.log(response.data.hello);
+      // console.log(response.data.hello);
     });
 
     it('should curl alias to request', async () => {
@@ -325,6 +341,8 @@ describe('index.test.ts', () => {
         dataType: 'json',
       });
       assert.equal(response.status, 400);
+      assert.equal(response.res.statusMessage, 'Bad Request');
+      assert.equal(response.res.statusText, 'Bad Request');
       assert.deepEqual(response.data, { message: 'mock 400 bad request' });
 
       response = await httpClient.request(`${_url}bar?q=1`, {

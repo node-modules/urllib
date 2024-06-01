@@ -16,13 +16,16 @@ import { basename } from 'node:path';
 import { createReadStream } from 'node:fs';
 import { format as urlFormat } from 'node:url';
 import { performance } from 'node:perf_hooks';
+import querystring from 'node:querystring';
 import {
   FormData as FormDataNative,
   request as undiciRequest,
   Dispatcher,
   Agent,
   getGlobalDispatcher,
+  Pool,
 } from 'undici';
+import undiciSymbols from 'undici/lib/core/symbols.js';
 import { FormData as FormDataNode } from 'formdata-node';
 import { FormDataEncoder } from 'form-data-encoder';
 import createUserAgent from 'default-user-agent';
@@ -136,7 +139,7 @@ function defaultIsRetry(response: HttpClientResponse) {
   return response.status >= 500;
 }
 
-type RequestContext = {
+export type RequestContext = {
   retries: number;
   socketErrorRetries: number;
   requestStartTime?: number;
@@ -157,6 +160,20 @@ export type ResponseDiagnosticsMessage = {
   error?: Error;
 };
 
+export interface PoolStat {
+  /** Number of open socket connections in this pool. */
+  connected: number;
+  /** Number of open socket connections in this pool that do not have an active request. */
+  free: number;
+  /** Number of pending requests across all clients in this pool. */
+  pending: number;
+  /** Number of queued requests across all clients in this pool. */
+  queued: number;
+  /** Number of currently active requests across all clients in this pool. */
+  running: number;
+  /** Number of active, pending, or queued requests across all clients in this pool. */
+  size: number;
+}
 
 export class HttpClient extends EventEmitter {
   #defaultArgs?: RequestOptions;
@@ -187,11 +204,35 @@ export class HttpClient extends EventEmitter {
     this.#dispatcher = dispatcher;
   }
 
+  getDispatcherPoolStats() {
+    const agent = this.getDispatcher();
+    // origin => Pool Instance
+    const clients: Map<string, WeakRef<Pool>> | undefined = agent[undiciSymbols.kClients];
+    const poolStatsMap: Record<string, PoolStat> = {};
+    if (!clients) {
+      return poolStatsMap;
+    }
+    for (const [ key, ref ] of clients) {
+      const pool = ref.deref();
+      const stats = pool?.stats;
+      if (!stats) continue;
+      poolStatsMap[key] = {
+        connected: stats.connected,
+        free: stats.free,
+        pending: stats.pending,
+        queued: stats.queued,
+        running: stats.running,
+        size: stats.size,
+      } satisfies PoolStat;
+    }
+    return poolStatsMap;
+  }
+
   async request<T = any>(url: RequestURL, options?: RequestOptions) {
     return await this.#requestInternal<T>(url, options);
   }
 
-  // alias to request, keep compatible with urlib@2 HttpClient.curl
+  // alias to request, keep compatible with urllib@2 HttpClient.curl
   async curl<T = any>(url: RequestURL, options?: RequestOptions) {
     return await this.request<T>(url, options);
   }
@@ -215,7 +256,7 @@ export class HttpClient extends EventEmitter {
       }
     }
 
-    const method = (options?.method ?? 'GET').toUpperCase() as HttpMethod;
+    const method = (options?.type || options?.method || 'GET').toUpperCase() as HttpMethod;
     const originalHeaders = options?.headers;
     const headers: IncomingHttpHeaders = {};
     const args = {
@@ -289,6 +330,7 @@ export class HttpClient extends EventEmitter {
       status: -1,
       statusCode: -1,
       statusText: '',
+      statusMessage: '',
       headers: resHeaders,
       size: 0,
       aborted: false,
@@ -364,6 +406,7 @@ export class HttpClient extends EventEmitter {
         bodyTimeout,
         opaque: internalOpaque,
         dispatcher: args.dispatcher ?? this.#dispatcher,
+        signal: args.signal,
       };
       if (typeof args.highWaterMark === 'number') {
         requestOptions.highWaterMark = args.highWaterMark;
@@ -397,7 +440,7 @@ export class HttpClient extends EventEmitter {
           requestOptions.method = 'POST';
         }
         const formData = new FormData();
-        const uploadFiles: [string, string | Readable | Buffer][] = [];
+        const uploadFiles: [string, string | Readable | Buffer, string?][] = [];
         if (Array.isArray(args.files)) {
           for (const [ index, file ] of args.files.entries()) {
             const field = index === 0 ? 'file' : `file${index}`;
@@ -409,7 +452,8 @@ export class HttpClient extends EventEmitter {
           uploadFiles.push([ 'file', args.files ]);
         } else if (typeof args.files === 'object') {
           for (const field in args.files) {
-            uploadFiles.push([ field, args.files[field] ]);
+            // set custom fileName
+            uploadFiles.push([ field, args.files[field], field ]);
           }
         }
         // set normal fields first
@@ -418,7 +462,7 @@ export class HttpClient extends EventEmitter {
             formData.append(field, args.data[field]);
           }
         }
-        for (const [ index, [ field, file ]] of uploadFiles.entries()) {
+        for (const [ index, [ field, file, customFileName ]] of uploadFiles.entries()) {
           if (typeof file === 'string') {
             // FIXME: support non-ascii filename
             // const fileName = encodeURIComponent(basename(file));
@@ -427,9 +471,9 @@ export class HttpClient extends EventEmitter {
             const fileReadable = createReadStream(file);
             formData.append(field, new BlobFromStream(fileReadable, mime.lookup(fileName) || ''), fileName);
           } else if (Buffer.isBuffer(file)) {
-            formData.append(field, new Blob([ file ]), `bufferfile${index}`);
+            formData.append(field, new Blob([ file ]), customFileName || `bufferfile${index}`);
           } else if (file instanceof Readable || isReadable(file as any)) {
-            const fileName = getFileName(file) || `streamfile${index}`;
+            const fileName = getFileName(file) || customFileName || `streamfile${index}`;
             formData.append(field, new BlobFromStream(file, mime.lookup(fileName) || ''), fileName);
             isStreamingRequest = true;
           }
@@ -463,18 +507,15 @@ export class HttpClient extends EventEmitter {
           || isReadable(args.data);
         if (isGETOrHEAD) {
           if (!isStringOrBufferOrReadable) {
+            let query;
             if (args.nestedQuerystring) {
-              const querystring = qs.stringify(args.data);
-              // reset the requestUrl
-              const href = requestUrl.href;
-              requestUrl = new URL(href + (href.includes('?') ? '&' : '?') + querystring);
+              query = qs.stringify(args.data);
             } else {
-              for (const field in args.data) {
-                const fieldValue = args.data[field];
-                if (fieldValue === undefined) continue;
-                requestUrl.searchParams.append(field, fieldValue);
-              }
+              query = querystring.stringify(args.data);
             }
+            // reset the requestUrl
+            const href = requestUrl.href;
+            requestUrl = new URL(href + (href.includes('?') ? '&' : '?') + query);
           }
         } else {
           if (isStringOrBufferOrReadable) {
@@ -551,7 +592,7 @@ export class HttpClient extends EventEmitter {
 
       res.headers = response.headers;
       res.status = res.statusCode = response.statusCode;
-      res.statusText = STATUS_CODES[res.status] || '';
+      res.statusMessage = res.statusText = STATUS_CODES[res.status] || '';
       if (res.headers['content-length']) {
         res.size = parseInt(res.headers['content-length']);
       }
@@ -627,6 +668,8 @@ export class HttpClient extends EventEmitter {
         }
       }
 
+      debug('Request#%d got response, status: %s, headers: %j, timing: %j',
+        requestId, res.status, res.headers, res.timing);
       channels.response.publish({
         request: reqMeta,
         response: res,
