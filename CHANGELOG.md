@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.25.1](https://github.com/node-modules/urllib/compare/v3.25.0...v3.25.1) (2024-06-01)
+
+
+### Bug Fixes
+
+* adpater http/2 agent on diagnosticsChannel ([#511](https://github.com/node-modules/urllib/issues/511)) ([d565da2](https://github.com/node-modules/urllib/commit/d565da230bb5be0714e1fcaf36db2f30844c29f2))
+
 ## [3.25.0](https://github.com/node-modules/urllib/compare/v3.24.0...v3.25.0) (2024-05-07)
 
 
