@@ -2,14 +2,12 @@
 
 [![NPM version][npm-image]][npm-url]
 [![Node.js CI](https://github.com/node-modules/urllib/actions/workflows/nodejs.yml/badge.svg)](https://github.com/node-modules/urllib/actions/workflows/nodejs.yml)
-[![Test coverage][codecov-image]][codecov-url]
+[![codecov](https://codecov.io/gh/node-modules/urllib/branch/2.x/graph/badge.svg?token=xXIihkywZr)](https://codecov.io/gh/node-modules/urllib)
 [![Known Vulnerabilities][snyk-image]][snyk-url]
 [![npm download][download-image]][download-url]
 
 [npm-image]: https://img.shields.io/npm/v/urllib.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/urllib
-[codecov-image]: https://codecov.io/gh/node-modules/urllib/branch/master/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/node-modules/urllib
 [snyk-image]: https://snyk.io/test/npm/urllib/badge.svg?style=flat-square
 [snyk-url]: https://snyk.io/test/npm/urllib
 [download-image]: https://img.shields.io/npm/dm/urllib.svg?style=flat-square
