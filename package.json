@@ -65,8 +65,7 @@
     "busboy": "^0.2.14",
     "co": "*",
     "coffee": "1",
-    "egg-ci": "^1.15.0",
-    "git-contributor": "^1.0.10",
+    "git-contributor": "2",
     "http-proxy": "^1.16.2",
     "istanbul": "*",
     "jshint": "*",
@@ -84,13 +83,6 @@
   },
   "engines": {
     "node": ">= 0.10.0"
-  },
-  "ci": {
-    "type": "github",
-    "os": {
-      "github": "linux, windows, macos"
-    },
-    "version": "8, 10, 12, 14, 16"
   },
   "license": "MIT"
 }
