@@ -10,7 +10,7 @@ var agent = new http.Agent({ keepAlive: true });
 var url = process.argv[2] || 'https://cnodejs.org';
 console.log('timing: %s', url);
 
-var count = 10000;
+var count = 1;
 
 function request(index) {
   if (index === count) {
@@ -19,8 +19,9 @@ function request(index) {
   urllib.request(url, {
     // data: { wd: 'nodejs' },
     timing: true,
-    httpsAgent: httpsAgent,
-    agent: agent,
+    // httpsAgent: httpsAgent,
+    // agent: agent,
+    method: 'POST',
   }, function (err, data, res) {
     if (err) {
       console.log(err);
