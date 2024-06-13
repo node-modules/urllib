@@ -1,7 +1,7 @@
 # urllib@2
 
 [![NPM version][npm-image]][npm-url]
-[![Node.js CI](https://github.com/node-modules/urllib/actions/workflows/nodejs.yml/badge.svg)](https://github.com/node-modules/urllib/actions/workflows/nodejs.yml)
+[![Node.js CI](https://github.com/node-modules/urllib/actions/workflows/nodejs-2.x.yml/badge.svg)](https://github.com/node-modules/urllib/actions/workflows/nodejs-2.x.yml)
 [![codecov](https://codecov.io/gh/node-modules/urllib/branch/2.x/graph/badge.svg?token=xXIihkywZr)](https://codecov.io/gh/node-modules/urllib)
 [![Known Vulnerabilities][snyk-image]][snyk-url]
 [![npm download][download-image]][download-url]
