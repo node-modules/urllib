@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.43.0](https://github.com/node-modules/urllib/compare/v2.42.0...v2.43.0) (2024-06-18)
+
+
+### Features
+
+* use iconv-lite 0.6.3 ([#513](https://github.com/node-modules/urllib/issues/513)) ([a26a117](https://github.com/node-modules/urllib/commit/a26a117cbd199f7da0b0918ede0a26856c34124a))
+
 ## [2.42.0](https://github.com/node-modules/urllib/compare/v2.41.0...v2.42.0) (2024-06-13)
 
 
