@@ -698,7 +698,7 @@ describe('test/urllib.test.js', function () {
       }, function (err, data, res) {
         assert(err);
         assert(err.name === 'JSONResponseFormatError');
-        assert.match(err.message, /(Unexpected end|JSON at position)/);
+        assert(/(Unexpected end|JSON at position)/.test(err.message));
         assert(res.statusCode === 200);
         assert(data.toString() === '{"foo":""');
         done();
@@ -1840,7 +1840,7 @@ describe('test/urllib.test.js', function () {
       }, function (err, data) {
         assert(err);
         assert(err.name === 'JSONResponseFormatError');
-        assert.match(err.message, /(Unexpected end|JSON at position)/);
+        assert(/(Unexpected end|JSON at position)/.test(err.message));
         assert(data === '{"foo":"\b\f\n\r\tbar\u000e!1!\u0086!2!\u0000!3!\u001f!4!\\!5!end\\\\"}');
         done();
       });
