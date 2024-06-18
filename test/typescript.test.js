@@ -4,7 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var coffee = require('coffee');
 
-describe('typescript.test.js', function() {
+describe('test/typescript.test.js', function() {
   if (parseInt(process.versions.node) < 8) {
     return;
   }
