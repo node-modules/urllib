@@ -203,7 +203,7 @@ export class HttpClient extends EventEmitter {
       return poolStatsMap;
     }
     for (const [ key, ref ] of clients) {
-      const pool = ref.deref();
+      const pool = typeof ref.deref === 'function' ? ref.deref() : ref as unknown as Pool;
       const stats = pool?.stats;
       if (!stats) continue;
       poolStatsMap[key] = {
