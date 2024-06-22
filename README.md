@@ -1,19 +1,19 @@
-# urllib
+# urllib@3
 
 [![NPM version][npm-image]][npm-url]
-[![Node.js CI](https://github.com/node-modules/urllib/actions/workflows/nodejs.yml/badge.svg)](https://github.com/node-modules/urllib/actions/workflows/nodejs.yml)
+[![CI for 3.x](https://github.com/node-modules/urllib/actions/workflows/nodejs-3.x.yml/badge.svg?branch=3.x)](https://github.com/node-modules/urllib/actions/workflows/nodejs-3.x.yml)
 [![Test coverage][codecov-image]][codecov-url]
 [![Known Vulnerabilities][snyk-image]][snyk-url]
 [![npm download][download-image]][download-url]
 
-[npm-image]: https://img.shields.io/npm/v/urllib.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/urllib
-[codecov-image]: https://codecov.io/gh/node-modules/urllib/branch/master/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/node-modules/urllib
+[npm-image]: https://img.shields.io/npm/v/urllib/release-3.x.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/urllib/v/release-3.x
+[codecov-image]: https://codecov.io/gh/node-modules/urllib/branch/3.x/graph/badge.svg
+[codecov-url]: https://app.codecov.io/gh/node-modules/urllib/tree/3.x
 [snyk-image]: https://snyk.io/test/npm/urllib/badge.svg?style=flat-square
 [snyk-url]: https://snyk.io/test/npm/urllib
 [download-image]: https://img.shields.io/npm/dm/urllib.svg?style=flat-square
-[download-url]: https://npmjs.org/package/urllib
+[download-url]: https://npmjs.org/package/urllib/v/release-3.x
 
 Request HTTP URLs in a complex world — basic
 and digest authentication, redirections, timeout and more.
@@ -21,7 +21,7 @@ and digest authentication, redirections, timeout and more.
 ## Install
 
 ```bash
-npm install urllib
+npm install urllib@3
 ```
 
 ## Usage
@@ -283,6 +283,9 @@ Fork [undici benchmarks script](https://github.com/fengmk2/undici/blob/urllib-be
 | undici - stream     |     45 | 12523.45 req/sec | ± 2.97 % |             + 754.61 % |
 | undici - dispatch   |     51 | 12970.18 req/sec | ± 3.15 % |             + 785.10 % |
 
+## License
+
+[MIT](LICENSE)
 
 <!-- GITCONTRIBUTOR_START -->
 
@@ -301,7 +304,3 @@ Fork [undici benchmarks script](https://github.com/fengmk2/undici/blob/urllib-be
 This project follows the git-contributor [spec](https://github.com/xudafeng/git-contributor), auto updated at `Mon Dec 04 2023 00:13:39 GMT+0800`.
 
 <!-- GITCONTRIBUTOR_END -->
-
-## License
-
-[MIT](LICENSE)
