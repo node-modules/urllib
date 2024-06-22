@@ -3,8 +3,8 @@ import { createReadStream } from 'node:fs';
 import { Readable } from 'node:stream';
 import qs from 'qs';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import urllib from '../src';
-import { startServer } from './fixtures/server';
+import urllib from '../src/index.js';
+import { startServer } from './fixtures/server.js';
 
 describe('options.data.test.ts', () => {
   let close: any;

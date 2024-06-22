@@ -1,9 +1,8 @@
 import { strict as assert } from 'node:assert';
 import dns from 'node:dns';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { HttpClient } from '../src';
-import { RawResponseWithMeta } from '../src/Response';
-import { startServer } from './fixtures/server';
+import { HttpClient, RawResponseWithMeta } from '../src/index.js';
+import { startServer } from './fixtures/server.js';
 
 describe('HttpClient.test.ts', () => {
   let close: any;

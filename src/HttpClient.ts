@@ -26,6 +26,7 @@ import {
   getGlobalDispatcher,
   Pool,
 } from 'undici';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import undiciSymbols from 'undici/lib/core/symbols.js';
 import mime from 'mime-types';

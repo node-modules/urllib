@@ -95,8 +95,6 @@ export function initDiagnosticsChannel() {
     opaque[symbols.kRequestTiming].queuing = performanceTime(opaque[symbols.kRequestStartTime]);
   });
 
-  // diagnosticsChannel.channel('undici:client:beforeConnect')
-
   subscribe('undici:client:connectError', (message, name) => {
     const { error, connectParams, socket } = message as DiagnosticsChannel.ClientConnectErrorMessage & { error: any, socket: SocketExtend };
     let sock = socket;

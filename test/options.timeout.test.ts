@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import urllib, { HttpClientRequestTimeoutError } from '../src';
-import { startServer } from './fixtures/server';
+import urllib, { HttpClientRequestTimeoutError } from '../src/index.js';
+import { startServer } from './fixtures/server.js';
 
 describe('options.timeout.test.ts', () => {
   let close: any;

@@ -58,6 +58,7 @@
     "@types/busboy": "^1.5.0",
     "@types/mime-types": "^2.1.1",
     "@types/node": "^20.2.1",
+    "@types/proxy": "^1.0.4",
     "@types/qs": "^6.9.7",
     "@types/selfsigned": "^2.0.1",
     "@types/tar-stream": "^2.2.2",

@@ -1,8 +1,8 @@
 import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import urllib from '../src';
-import { startServer } from './fixtures/server';
-import { nodeMajorVersion, readableToBytes } from './utils';
+import urllib from '../src/index.js';
+import { startServer } from './fixtures/server.js';
+import { nodeMajorVersion, readableToBytes } from './utils.js';
 
 describe('options.dataType.test.ts', () => {
   let close: any;
