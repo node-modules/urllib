@@ -107,15 +107,15 @@ export function initDiagnosticsChannel() {
       sock[symbols.kHandledRequests] = 0;
       sock[symbols.kHandledResponses] = 0;
       // copy local address to symbol, avoid them be reset after request error throw
-      if (socket.localAddress) {
-        socket[symbols.kSocketLocalAddress] = socket.localAddress;
-        socket[symbols.kSocketLocalPort] = socket.localPort;
+      if (sock.localAddress) {
+        sock[symbols.kSocketLocalAddress] = sock.localAddress;
+        sock[symbols.kSocketLocalPort] = sock.localPort;
       }
-      socket[symbols.kSocketConnectProtocol] = connectParams.protocol;
-      socket[symbols.kSocketConnectHost] = connectParams.host;
-      socket[symbols.kSocketConnectPort] = connectParams.port;
+      sock[symbols.kSocketConnectProtocol] = connectParams.protocol;
+      sock[symbols.kSocketConnectHost] = connectParams.host;
+      sock[symbols.kSocketConnectPort] = connectParams.port;
       debug('[%s] Socket#%d connectError, connectParams: %o, error: %s, (sock: %o)',
-        name, socket[symbols.kSocketId], connectParams, (error as Error).message, formatSocket(socket));
+        name, sock[symbols.kSocketId], connectParams, (error as Error).message, formatSocket(sock));
     } else {
       debug('[%s] connectError, connectParams: %o, error: %o',
         name, connectParams, error);
