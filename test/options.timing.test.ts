@@ -1,9 +1,8 @@
 import { strict as assert } from 'node:assert';
+import { setTimeout as sleep } from 'node:timers/promises';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import urllib from '../src';
-import { RawResponseWithMeta } from '../src/Response';
-import { startServer } from './fixtures/server';
-import { sleep } from './utils';
+import urllib, { RawResponseWithMeta } from '../src/index.js';
+import { startServer } from './fixtures/server.js';
 
 describe('options.timing.test.ts', () => {
   let close: any;

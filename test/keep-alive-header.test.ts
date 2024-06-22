@@ -1,8 +1,9 @@
 import { strict as assert } from 'node:assert';
+import { setTimeout as sleep } from 'node:timers/promises';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { HttpClient } from '../src';
-import { startServer } from './fixtures/server';
-import { isWindows, nodeMajorVersion, sleep } from './utils';
+import { HttpClient } from '../src/index.js';
+import { startServer } from './fixtures/server.js';
+import { isWindows } from './utils.js';
 
 describe('keep-alive-header.test.ts', () => {
   // should shorter than server keepalive timeout
@@ -33,8 +34,8 @@ describe('keep-alive-header.test.ts', () => {
         const task = httpClient.request(_url);
         // console.log('after request stats: %o', httpClient.getDispatcherPoolStats());
         if (httpClient.getDispatcherPoolStats()[origin]) {
-          if (!(nodeMajorVersion() === 14 || isWindows())) {
-            // ignore node = 14 & windows
+          if (!isWindows()) {
+            // ignore on windows
             assert.equal(httpClient.getDispatcherPoolStats()[origin].pending, 1);
             assert.equal(httpClient.getDispatcherPoolStats()[origin].size, 1);
           }

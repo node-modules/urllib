@@ -11,34 +11,32 @@ import {
 } from 'node:zlib';
 import { Blob } from 'node:buffer';
 import { Readable, pipeline } from 'node:stream';
-import stream from 'node:stream';
+import { pipeline as pipelinePromise } from 'node:stream/promises';
 import { basename } from 'node:path';
 import { createReadStream } from 'node:fs';
 import { format as urlFormat } from 'node:url';
 import { performance } from 'node:perf_hooks';
 import querystring from 'node:querystring';
+import { setTimeout as sleep } from 'node:timers/promises';
 import {
-  FormData as FormDataNative,
+  FormData,
   request as undiciRequest,
   Dispatcher,
   Agent,
   getGlobalDispatcher,
   Pool,
 } from 'undici';
+// @ts-ignore
 import undiciSymbols from 'undici/lib/core/symbols.js';
-import { FormData as FormDataNode } from 'formdata-node';
-import { FormDataEncoder } from 'form-data-encoder';
-import createUserAgent from 'default-user-agent';
 import mime from 'mime-types';
 import qs from 'qs';
-import pump from 'pump';
 // Compatible with old style formstream
 import FormStream from 'formstream';
 import { HttpAgent, CheckAddressFunction } from './HttpAgent.js';
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import { RequestURL, RequestOptions, HttpMethod, RequestMeta } from './Request.js';
 import { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response.js';
-import { parseJSON, sleep, digestAuthHeader, globalId, performanceTime, isReadable } from './utils.js';
+import { parseJSON, digestAuthHeader, globalId, performanceTime, isReadable } from './utils.js';
 import symbols from './symbols.js';
 import { initDiagnosticsChannel } from './diagnosticsChannel.js';
 import { HttpClientConnectTimeoutError, HttpClientRequestTimeoutError } from './HttpClientError.js';
@@ -49,24 +47,12 @@ type PropertyShouldBe<T, K extends keyof T, V> = Omit<T, K> & { [P in K]: V };
 type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', IncomingHttpHeaders>;
 
 const PROTO_RE = /^https?:\/\//i;
-const FormData = FormDataNative ?? FormDataNode;
-// impl promise pipeline on Node.js 14
-const pipelinePromise = stream.promises?.pipeline ?? function pipeline(...args: any[]) {
-  return new Promise<void>((resolve, reject) => {
-    pump(...args, (err?: Error) => {
-      if (err) return reject(err);
-      resolve();
-    });
-  });
-};
 
 function noop() {
   // noop
 }
 
 const debug = debuglog('urllib:HttpClient');
-// Node.js 14 or 16
-const isNode14Or16 = /v1[46]\./.test(process.version);
 
 export type ClientOptions = {
   defaultArgs?: RequestOptions;
@@ -125,7 +111,10 @@ class BlobFromStream {
   }
 }
 
-export const HEADER_USER_AGENT = createUserAgent('node-urllib', 'VERSION');
+export const VERSION = 'VERSION';
+// 'node-urllib/4.0.0 Node.js/18.19.0 (darwin; x64)'
+export const HEADER_USER_AGENT =
+  `node-urllib/${VERSION} Node.js/${process.version.substring(1)} (${process.platform}; ${process.arch})`;
 
 function getFileName(stream: Readable) {
   const filePath: string = (stream as any).path;
@@ -207,7 +196,7 @@ export class HttpClient extends EventEmitter {
   getDispatcherPoolStats() {
     const agent = this.getDispatcher();
     // origin => Pool Instance
-    const clients: Map<string, WeakRef<Pool>> | undefined = agent[undiciSymbols.kClients];
+    const clients: Map<string, WeakRef<Pool>> | undefined = Reflect.get(agent, undiciSymbols.kClients);
     const poolStatsMap: Record<string, PoolStat> = {};
     if (!clients) {
       return poolStatsMap;
@@ -451,9 +440,11 @@ export class HttpClient extends EventEmitter {
         } else if (typeof args.files === 'string' || Buffer.isBuffer(args.files)) {
           uploadFiles.push([ 'file', args.files ]);
         } else if (typeof args.files === 'object') {
-          for (const field in args.files) {
+          const files = args.files as Record<string, string | Readable | Buffer>;
+          for (const field in files) {
             // set custom fileName
-            uploadFiles.push([ field, args.files[field], field ]);
+            const file = files[field];
+            uploadFiles.push([ field, file, field ]);
           }
         }
         // set normal fields first
@@ -478,18 +469,7 @@ export class HttpClient extends EventEmitter {
             isStreamingRequest = true;
           }
         }
-
-        if (FormDataNative) {
-          requestOptions.body = formData;
-        } else {
-          // Node.js 14 does not support spec-compliant FormData
-          // https://github.com/octet-stream/form-data#usage
-          const encoder = new FormDataEncoder(formData as any);
-          Object.assign(headers, encoder.headers);
-          // fix "Content-Length":"NaN"
-          delete headers['Content-Length'];
-          requestOptions.body = Readable.from(encoder);
-        }
+        requestOptions.body = formData;
       } else if (args.content) {
         if (!isGETOrHEAD) {
           // handle content
@@ -507,7 +487,7 @@ export class HttpClient extends EventEmitter {
           || isReadable(args.data);
         if (isGETOrHEAD) {
           if (!isStringOrBufferOrReadable) {
-            let query;
+            let query: string;
             if (args.nestedQuerystring) {
               query = qs.stringify(args.data);
             } else {
@@ -608,9 +588,6 @@ export class HttpClient extends EventEmitter {
           res = Object.assign(response.body, res);
         }
       } else if (args.writeStream) {
-        if (isNode14Or16 && args.writeStream.destroyed) {
-          throw new Error('writeStream is destroyed');
-        }
         if (args.compressed === true && isCompressedContent) {
           const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
           await pipelinePromise(response.body, decoder, args.writeStream);

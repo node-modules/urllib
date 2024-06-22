@@ -1,4 +1,4 @@
-import LRU from 'ylru';
+import { LRU } from 'ylru';
 import { HttpClient, HEADER_USER_AGENT } from './HttpClient.js';
 import { RequestOptions, RequestURL } from './Request.js';
 

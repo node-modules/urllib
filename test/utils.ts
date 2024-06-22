@@ -5,12 +5,6 @@ import { join } from 'node:path';
 import { tmpdir, platform } from 'node:os';
 import { randomUUID } from 'node:crypto';
 
-export async function sleep(ms: number) {
-  await new Promise(resolve => {
-    setTimeout(resolve, ms);
-  });
-}
-
 export async function readableToBytes(stream: Readable | ReadableStream) {
   const chunks: Buffer[] = [];
   let chunk: Buffer;

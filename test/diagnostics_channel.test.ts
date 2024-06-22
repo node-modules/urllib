@@ -1,14 +1,14 @@
 import { strict as assert } from 'node:assert';
 import diagnosticsChannel from 'node:diagnostics_channel';
+import { setTimeout as sleep } from 'node:timers/promises';
 import { describe, it, beforeEach, afterEach } from 'vitest';
-import urllib from '../src';
+import urllib from '../src/index.js';
 import type {
   RequestDiagnosticsMessage,
   ResponseDiagnosticsMessage,
-} from '../src';
-import symbols from '../src/symbols';
-import { startServer } from './fixtures/server';
-import { sleep } from './utils';
+} from '../src/index.js';
+import symbols from '../src/symbols.js';
+import { startServer } from './fixtures/server.js';
 
 describe('diagnostics_channel.test.ts', () => {
   let close: any;

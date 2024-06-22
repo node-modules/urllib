@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import fs from 'fs/promises';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 async function main() {
   const root = process.cwd();
@@ -12,9 +12,9 @@ async function main() {
   ];
   for (const file of files) {
     const content = await fs.readFile(file, 'utf-8');
-    // replace "('node-urllib', 'VERSION')" to "('node-urllib', 'pkg.version')"
-    const newContent = content.replace(/\(\'node-urllib\', \'VERSION\'\)/, (match) => {
-      const after = `('node-urllib', '${pkg.version}')`;
+    // replace "const VERSION = 'VERSION';" to "const VERSION = '4.0.0';"
+    const newContent = content.replace(/const VERSION = 'VERSION';/, match => {
+      const after = `const VERSION = '${pkg.version}';`;
       console.log('[%s] %s => %s', file, match, after);
       return after;
     });
