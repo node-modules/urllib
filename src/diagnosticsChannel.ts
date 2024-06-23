@@ -20,15 +20,14 @@ let initedDiagnosticsChannel = false;
 //   -> undici:request:trailers => { request, trailers }
 
 function subscribe(name: string, listener: (message: unknown, channelName: string | symbol) => void) {
-  if (typeof diagnosticsChannel.subscribe === 'function') {
-    diagnosticsChannel.subscribe(name, listener);
-  } else {
-    // TODO: support Node.js 14, will be removed on the next major version
-    diagnosticsChannel.channel(name).subscribe(listener);
-  }
+  diagnosticsChannel.subscribe(name, listener);
 }
 
-function formatSocket(socket: Socket) {
+type SocketExtend = Socket & {
+  [key: symbol]: string | number | Date | undefined;
+};
+
+function formatSocket(socket: SocketExtend) {
   if (!socket) return socket;
   return {
     localAddress: socket[symbols.kSocketLocalAddress],
@@ -41,8 +40,7 @@ function formatSocket(socket: Socket) {
 }
 
 // make sure error contains socket info
-const kDestroy = Symbol('kDestroy');
-Socket.prototype[kDestroy] = Socket.prototype.destroy;
+const destroySocket = Socket.prototype.destroy;
 Socket.prototype.destroy = function(err?: any) {
   if (err) {
     Object.defineProperty(err, symbols.kErrorSocket, {
@@ -51,12 +49,12 @@ Socket.prototype.destroy = function(err?: any) {
       value: this,
     });
   }
-  return this[kDestroy](err);
+  return destroySocket.call(this, err);
 };
 
 function getRequestOpaque(request: DiagnosticsChannel.Request, kHandler?: symbol) {
   if (!kHandler) return;
-  const handler = request[kHandler];
+  const handler = Reflect.get(request, kHandler);
   // maxRedirects = 0 will get [Symbol(handler)]: RequestHandler {
   // responseHeaders: null,
   // opaque: {
@@ -70,7 +68,7 @@ function getRequestOpaque(request: DiagnosticsChannel.Request, kHandler?: symbol
 }
 
 export function initDiagnosticsChannel() {
-  // makre sure init global DiagnosticsChannel once
+  // make sure init global DiagnosticsChannel once
   if (initedDiagnosticsChannel) return;
   initedDiagnosticsChannel = true;
 
@@ -97,29 +95,27 @@ export function initDiagnosticsChannel() {
     opaque[symbols.kRequestTiming].queuing = performanceTime(opaque[symbols.kRequestStartTime]);
   });
 
-  // diagnosticsChannel.channel('undici:client:beforeConnect')
-
   subscribe('undici:client:connectError', (message, name) => {
-    const { error, connectParams } = message as DiagnosticsChannel.ClientConnectErrorMessage & { error: any };
-    let { socket } = message as DiagnosticsChannel.ClientConnectErrorMessage;
-    if (!socket && error[symbols.kErrorSocket]) {
-      socket = error[symbols.kErrorSocket];
+    const { error, connectParams, socket } = message as DiagnosticsChannel.ClientConnectErrorMessage & { error: any, socket: SocketExtend };
+    let sock = socket;
+    if (!sock && error[symbols.kErrorSocket]) {
+      sock = error[symbols.kErrorSocket];
     }
-    if (socket) {
-      socket[symbols.kSocketId] = globalId('UndiciSocket');
-      socket[symbols.kSocketConnectErrorTime] = new Date();
-      socket[symbols.kHandledRequests] = 0;
-      socket[symbols.kHandledResponses] = 0;
+    if (sock) {
+      sock[symbols.kSocketId] = globalId('UndiciSocket');
+      sock[symbols.kSocketConnectErrorTime] = new Date();
+      sock[symbols.kHandledRequests] = 0;
+      sock[symbols.kHandledResponses] = 0;
       // copy local address to symbol, avoid them be reset after request error throw
-      if (socket.localAddress) {
-        socket[symbols.kSocketLocalAddress] = socket.localAddress;
-        socket[symbols.kSocketLocalPort] = socket.localPort;
+      if (sock.localAddress) {
+        sock[symbols.kSocketLocalAddress] = sock.localAddress;
+        sock[symbols.kSocketLocalPort] = sock.localPort;
       }
-      socket[symbols.kSocketConnectProtocol] = connectParams.protocol;
-      socket[symbols.kSocketConnectHost] = connectParams.host;
-      socket[symbols.kSocketConnectPort] = connectParams.port;
+      sock[symbols.kSocketConnectProtocol] = connectParams.protocol;
+      sock[symbols.kSocketConnectHost] = connectParams.host;
+      sock[symbols.kSocketConnectPort] = connectParams.port;
       debug('[%s] Socket#%d connectError, connectParams: %o, error: %s, (sock: %o)',
-        name, socket[symbols.kSocketId], connectParams, (error as Error).message, formatSocket(socket));
+        name, sock[symbols.kSocketId], connectParams, (error as Error).message, formatSocket(sock));
     } else {
       debug('[%s] connectError, connectParams: %o, error: %o',
         name, connectParams, error);
@@ -128,7 +124,7 @@ export function initDiagnosticsChannel() {
 
   // This message is published after a connection is established.
   subscribe('undici:client:connected', (message, name) => {
-    const { socket, connectParams } = message as DiagnosticsChannel.ClientConnectedMessage;
+    const { socket, connectParams } = message as DiagnosticsChannel.ClientConnectedMessage & { socket: SocketExtend };
     socket[symbols.kSocketId] = globalId('UndiciSocket');
     socket[symbols.kSocketStartTime] = performance.now();
     socket[symbols.kSocketConnectedTime] = new Date();
@@ -145,11 +141,11 @@ export function initDiagnosticsChannel() {
 
   // This message is published right before the first byte of the request is written to the socket.
   subscribe('undici:client:sendHeaders', (message, name) => {
-    const { request, socket } = message as DiagnosticsChannel.ClientSendHeadersMessage;
+    const { request, socket } = message as DiagnosticsChannel.ClientSendHeadersMessage & { socket: SocketExtend };
     const opaque = getRequestOpaque(request, kHandler);
     if (!opaque || !opaque[symbols.kRequestId]) return;
 
-    socket[symbols.kHandledRequests]++;
+    (socket[symbols.kHandledRequests] as number)++;
     // attach socket to opaque
     opaque[symbols.kRequestSocket] = socket;
     debug('[%s] Request#%d send headers on Socket#%d (handled %d requests, sock: %o)',
@@ -158,11 +154,11 @@ export function initDiagnosticsChannel() {
 
     if (!opaque[symbols.kEnableRequestTiming]) return;
     opaque[symbols.kRequestTiming].requestHeadersSent = performanceTime(opaque[symbols.kRequestStartTime]);
-    // first socket need to caculate the connected time
+    // first socket need to calculate the connected time
     if (socket[symbols.kHandledRequests] === 1) {
       // kSocketStartTime - kRequestStartTime = connected time
       opaque[symbols.kRequestTiming].connected =
-        performanceTime(opaque[symbols.kRequestStartTime], socket[symbols.kSocketStartTime]);
+        performanceTime(opaque[symbols.kRequestStartTime], socket[symbols.kSocketStartTime] as number);
     }
   });
 

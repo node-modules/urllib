@@ -2,10 +2,10 @@ import { strict as assert } from 'node:assert';
 import { pipeline } from 'node:stream';
 import { createBrotliDecompress } from 'node:zlib';
 import { describe, it, beforeEach, afterEach } from 'vitest';
-import urllib from '../src';
-import { isReadable } from '../src/utils';
-import { startServer } from './fixtures/server';
-import { readableToBytes } from './utils';
+import urllib from '../src/index.js';
+import { isReadable } from '../src/utils.js';
+import { startServer } from './fixtures/server.js';
+import { readableToBytes } from './utils.js';
 
 describe('options.streaming.test.ts', () => {
   let close: any;

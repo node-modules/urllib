@@ -1,14 +1,14 @@
 import { strict as assert } from 'node:assert';
 import diagnosticsChannel from 'node:diagnostics_channel';
+import { setTimeout as sleep } from 'node:timers/promises';
 import { describe, it, beforeEach, afterEach } from 'vitest';
-import urllib from '../src';
+import urllib from '../src/index.js';
 import type {
   RequestDiagnosticsMessage,
   ResponseDiagnosticsMessage,
-} from '../src';
-import symbols from '../src/symbols';
-import { startServer } from './fixtures/server';
-import { sleep } from './utils';
+} from '../src/index.js';
+import symbols from '../src/symbols.js';
+import { startServer } from './fixtures/server.js';
 
 describe('diagnostics_channel.test.ts', () => {
   let close: any;
@@ -62,9 +62,9 @@ describe('diagnostics_channel.test.ts', () => {
       lastRequestOpaque = opaque;
       // console.log(request);
     }
-    diagnosticsChannel.channel('undici:client:connected').subscribe(onMessage);
-    diagnosticsChannel.channel('undici:client:sendHeaders').subscribe(onMessage);
-    diagnosticsChannel.channel('undici:request:trailers').subscribe(onMessage);
+    diagnosticsChannel.subscribe('undici:client:connected', onMessage);
+    diagnosticsChannel.subscribe('undici:client:sendHeaders', onMessage);
+    diagnosticsChannel.subscribe('undici:request:trailers', onMessage);
 
     let traceId = `mock-traceid-${Date.now()}`;
     // _url = 'https://registry.npmmirror.com/';
@@ -130,9 +130,9 @@ describe('diagnostics_channel.test.ts', () => {
       assert.equal(lastRequestOpaque.tracer.socket.requests, 2 + 1000 - count);
     }
 
-    diagnosticsChannel.channel('undici:client:connected').unsubscribe(onMessage);
-    diagnosticsChannel.channel('undici:client:sendHeaders').unsubscribe(onMessage);
-    diagnosticsChannel.channel('undici:request:trailers').unsubscribe(onMessage);
+    diagnosticsChannel.unsubscribe('undici:client:connected', onMessage);
+    diagnosticsChannel.unsubscribe('undici:client:sendHeaders', onMessage);
+    diagnosticsChannel.unsubscribe('undici:request:trailers', onMessage);
   });
 
   it('should support trace request by urllib:request and urllib:response', async () => {
@@ -147,8 +147,8 @@ describe('diagnostics_channel.test.ts', () => {
       socket = response.socket;
       assert.equal(request.args.opaque, lastRequestOpaque);
     }
-    diagnosticsChannel.channel('urllib:request').subscribe(onRequestMessage);
-    diagnosticsChannel.channel('urllib:response').subscribe(onResponseMessage);
+    diagnosticsChannel.subscribe('urllib:request', onRequestMessage);
+    diagnosticsChannel.subscribe('urllib:response', onResponseMessage);
 
     let traceId = `mock-traceid-${Date.now()}`;
     // _url = 'https://registry.npmmirror.com/';
@@ -218,8 +218,8 @@ describe('diagnostics_channel.test.ts', () => {
       assert.equal(socket.handledResponses, 2 + 1000 - count);
     }
 
-    diagnosticsChannel.channel('urllib:request').unsubscribe(onRequestMessage);
-    diagnosticsChannel.channel('urllib:response').unsubscribe(onResponseMessage);
+    diagnosticsChannel.unsubscribe('urllib:request', onRequestMessage);
+    diagnosticsChannel.unsubscribe('urllib:response', onResponseMessage);
   });
 
   it('should support trace request error by urllib:request and urllib:response', async () => {
@@ -236,8 +236,8 @@ describe('diagnostics_channel.test.ts', () => {
       assert.equal(request.args.opaque, lastRequestOpaque);
       lastError = error;
     }
-    diagnosticsChannel.channel('urllib:request').subscribe(onRequestMessage);
-    diagnosticsChannel.channel('urllib:response').subscribe(onResponseMessage);
+    diagnosticsChannel.subscribe('urllib:request', onRequestMessage);
+    diagnosticsChannel.subscribe('urllib:response', onResponseMessage);
 
     let traceId = `mock-traceid-${Date.now()}`;
     // handle network error
@@ -311,7 +311,7 @@ describe('diagnostics_channel.test.ts', () => {
     assert.equal(socket.handledRequests, 2);
     assert.equal(socket.handledResponses, 2);
 
-    diagnosticsChannel.channel('urllib:request').unsubscribe(onRequestMessage);
-    diagnosticsChannel.channel('urllib:response').unsubscribe(onResponseMessage);
+    diagnosticsChannel.unsubscribe('urllib:request', onRequestMessage);
+    diagnosticsChannel.unsubscribe('urllib:response', onResponseMessage);
   });
 });

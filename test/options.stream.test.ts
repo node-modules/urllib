@@ -7,10 +7,10 @@ import { Readable } from 'node:stream';
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import tar from 'tar-stream';
 import FormStream from 'formstream';
-import urllib from '../src';
-import { isReadable } from '../src/utils';
-import { startServer } from './fixtures/server';
-import { createTempfile } from './utils';
+import urllib from '../src/index.js';
+import { isReadable } from '../src/utils.js';
+import { startServer } from './fixtures/server.js';
+import { createTempfile } from './utils.js';
 
 describe('options.stream.test.ts', () => {
   let close: any;

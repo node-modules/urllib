@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import urllib from '../src';
-import { startServer } from './fixtures/server';
+import urllib from '../src/index.js';
+import { startServer } from './fixtures/server.js';
 
 // https://github.com/node-modules/urllib/issues/198
 describe('non-ascii-request-header.test.ts', () => {

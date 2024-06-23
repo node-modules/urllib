@@ -3,7 +3,7 @@ import { Readable } from 'node:stream';
 import { performance } from 'node:perf_hooks';
 import type { FixJSONCtlChars } from './Request.js';
 
-const JSONCtlCharsMap = {
+const JSONCtlCharsMap: Record<string, string> = {
   '"': '\\"', // \u0022
   '\\': '\\\\', // \u005c
   '\b': '\\b', // \u0008
@@ -47,12 +47,6 @@ export function parseJSON(data: string, fixJSONCtlChars?: FixJSONCtlChars) {
     throw err;
   }
   return data;
-}
-
-export function sleep(ms: number) {
-  return new Promise<void>(resolve => {
-    setTimeout(resolve, ms);
-  });
 }
 
 function md5(s: string) {

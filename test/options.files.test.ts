@@ -4,8 +4,8 @@ import fs from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { Readable } from 'node:stream';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import urllib from '../src';
-import { startServer } from './fixtures/server';
+import urllib from '../src/index.js';
+import { startServer } from './fixtures/server.js';
 
 describe('options.files.test.ts', () => {
   let close: any;
@@ -274,7 +274,8 @@ describe('options.files.test.ts', () => {
     const response = await urllib.request(`${_url}multipart`, {
       files: {
         'buffer.js': Buffer.from(rawData),
-        'readable.js': Readable.from([ rawData ]),
+        // Readable.from data must be Buffer or Bytes
+        'readable.js': Readable.from([ Buffer.from(rawData) ]),
       },
       data: {
         hello: 'hello world，😄😓',

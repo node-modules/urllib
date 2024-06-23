@@ -1,9 +1,9 @@
 import { strict as assert } from 'node:assert';
 import { createWriteStream, createReadStream } from 'node:fs';
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
-import urllib from '../src';
-import { startServer } from './fixtures/server';
-import { createTempfile } from './utils';
+import urllib from '../src/index.js';
+import { startServer } from './fixtures/server.js';
+import { createTempfile } from './utils.js';
 
 describe('options.socketErrorRetry.test.ts', () => {
   let close: any;

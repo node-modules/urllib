@@ -1,9 +1,9 @@
 import { strict as assert } from 'node:assert';
 import { EventEmitter } from 'node:events';
+import { setTimeout as sleep } from 'node:timers/promises';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import urllib from '../src';
-import { startServer } from './fixtures/server';
-import { sleep } from './utils';
+import urllib from '../src/index.js';
+import { startServer } from './fixtures/server.js';
 
 describe('options.signal.test.ts', () => {
   let close: any;
@@ -18,7 +18,7 @@ describe('options.signal.test.ts', () => {
     await close();
   });
 
-  it.skipIf(typeof global.AbortController === 'undefined')('should throw error when AbortController abort', async () => {
+  it('should throw error when AbortController abort', async () => {
     await assert.rejects(async () => {
       const abortController = new AbortController();
       const p = urllib.request(`${_url}?timeout=2000`, {
@@ -28,10 +28,9 @@ describe('options.signal.test.ts', () => {
       abortController.abort();
       await p;
     }, (err: any) => {
-      // console.error(err);
       assert.equal(err.name, 'AbortError');
-      assert.equal(err.message, 'Request aborted');
-      assert.equal(err.code, 'UND_ERR_ABORTED');
+      assert.equal(err.message, 'This operation was aborted');
+      assert.equal(err.code, 20);
       return true;
     });
   });

@@ -1,8 +1,8 @@
 import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import setup from 'proxy';
-import { request, ProxyAgent, getGlobalDispatcher, setGlobalDispatcher, Agent } from '../src';
-import { startServer } from './fixtures/server';
+import { request, ProxyAgent, getGlobalDispatcher, setGlobalDispatcher, Agent } from '../src/index.js';
+import { startServer } from './fixtures/server.js';
 
 describe('options.dispatcher.test.ts', () => {
   let close: any;

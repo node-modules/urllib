@@ -3,11 +3,12 @@ import { createServer, Server, IncomingMessage, ServerResponse } from 'node:http
 import { createServer as createHttpsServer } from 'node:https';
 import { createBrotliCompress, createGzip, gzipSync, brotliCompressSync } from 'node:zlib';
 import { createReadStream } from 'node:fs';
+import { setTimeout as sleep } from 'node:timers/promises';
 import busboy from 'busboy';
 import iconv from 'iconv-lite';
 import selfsigned from 'selfsigned';
 import qs from 'qs';
-import { readableToBytes, sleep } from '../utils';
+import { readableToBytes } from '../utils.js';
 
 const requestsPerSocket = Symbol('requestsPerSocket');
 

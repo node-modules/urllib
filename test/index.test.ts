@@ -2,10 +2,12 @@ import { strict as assert } from 'node:assert';
 import { parse as urlparse } from 'node:url';
 import { readFileSync } from 'node:fs';
 import { describe, it, beforeAll, afterAll, afterEach, beforeEach } from 'vitest';
-import urllib, { HttpClient, getDefaultHttpClient } from '../src';
-import { MockAgent, setGlobalDispatcher, getGlobalDispatcher } from '../src';
-import { startServer } from './fixtures/server';
-import { readableToBytes } from './utils';
+import urllib, {
+  HttpClient, getDefaultHttpClient,
+  MockAgent, setGlobalDispatcher, getGlobalDispatcher,
+} from '../src/index.js';
+import { startServer } from './fixtures/server.js';
+import { readableToBytes } from './utils.js';
 
 describe('index.test.ts', () => {
   let close: any;

@@ -2,8 +2,8 @@ import { strict as assert } from 'node:assert';
 import { createReadStream } from 'node:fs';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import fs from 'node:fs/promises';
-import urllib from '../src';
-import { startServer } from './fixtures/server';
+import urllib from '../src/index.js';
+import { startServer } from './fixtures/server.js';
 
 describe('options.content.test.ts', () => {
   let close: any;

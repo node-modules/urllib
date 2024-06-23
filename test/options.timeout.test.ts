@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import urllib, { HttpClientRequestTimeoutError } from '../src';
-import { startServer } from './fixtures/server';
+import urllib, { HttpClientRequestTimeoutError } from '../src/index.js';
+import { startServer } from './fixtures/server.js';
 
 describe('options.timeout.test.ts', () => {
   let close: any;
@@ -25,12 +25,9 @@ describe('options.timeout.test.ts', () => {
       // console.error(err);
       assert.equal(err.name, 'HttpClientRequestTimeoutError');
       assert.equal(err.message, 'Request timeout for 10 ms');
-      if (err.cause) {
-        // not work on Node.js 14
-        assert.equal(err.cause.name, 'HeadersTimeoutError');
-        assert.equal(err.cause.message, 'Headers Timeout Error');
-        assert.equal(err.cause.code, 'UND_ERR_HEADERS_TIMEOUT');
-      }
+      assert.equal(err.cause.name, 'HeadersTimeoutError');
+      assert.equal(err.cause.message, 'Headers Timeout Error');
+      assert.equal(err.cause.code, 'UND_ERR_HEADERS_TIMEOUT');
 
       assert.equal(err.res.status, -1);
       assert(err.res.rt > 10, `actual ${err.res.rt}`);

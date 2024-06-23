@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { HttpClient } from '../src';
-import { startServer } from './fixtures/server';
+import { HttpClient } from '../src/index.js';
+import { startServer } from './fixtures/server.js';
 
 describe('HttpClient.connect.rejectUnauthorized.test.ts', () => {
   let close: any;
