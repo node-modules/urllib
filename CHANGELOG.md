@@ -1,5 +1,50 @@
 # Changelog
 
+## [4.0.0](https://github.com/node-modules/urllib/compare/v3.25.1...v4.0.0) (2024-06-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop Node.js < 18.19.0 support
+
+part of https://github.com/eggjs/egg/issues/3644
+
+<!-- This is an auto-generated comment: release notes by coderabbit.ai
+-->
+
+## Summary by CodeRabbit
+
+- **New Features**
+	- Updated dynamic badge for contributors in `README.md`.
+	- Enhanced form data handling in `HttpClient`.
+
+- **Bug Fixes**
+	- Improved error handling and performance tracking in `Socket` methods.
+	- Adjusted imports for better compatibility and error handling.
+
+- **Refactor**
+	- Updated Node.js versions in CI workflow.
+- Revised `exports` and `scripts` in `package.json` for better
+consistency.
+	- Simplified `subscribe` function in diagnostics channel.
+
+- **Chores**
+	- Removed outdated configurations from `.eslintrc`.
+	- Updated TypeScript compiler options in `tsconfig.json`.
+
+- **Documentation**
+	- Linked license section to `contributors-img` in `README.md`.
+
+- **Tests**
+- Refined import paths and added new imports for better error handling
+in test files.
+
+<!-- end of auto-generated comment: release notes by coderabbit.ai -->
+
+### Features
+
+* use undici v6 ([#514](https://github.com/node-modules/urllib/issues/514)) ([989d228](https://github.com/node-modules/urllib/commit/989d2280e3d6cec0902a32560dbf7a8a0a307043))
+
 ## [3.25.1](https://github.com/node-modules/urllib/compare/v3.25.0...v3.25.1) (2024-06-01)
 
 
