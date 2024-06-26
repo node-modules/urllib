@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.26.0](https://github.com/node-modules/urllib/compare/v3.25.1...v3.26.0) (2024-06-26)
+
+
+### Features
+
+* support HTTP2 ([#516](https://github.com/node-modules/urllib/issues/516)) ([d1e4add](https://github.com/node-modules/urllib/commit/d1e4add8014ac27c2031f41d12330cc54fb3a971))
+
 ## [3.25.1](https://github.com/node-modules/urllib/compare/v3.25.0...v3.25.1) (2024-06-01)
 
 
