@@ -31,15 +31,38 @@ describe('HttpClient.test.ts', () => {
 
   describe('clientOptions.allowH2', () => {
     it('should work with allowH2 = true', async () => {
-      const httpclient = new HttpClient({
+      const httpClient = new HttpClient({
         allowH2: true,
       });
-      assert(httpclient);
-      const response = await httpclient.request('https://registry.npmmirror.com/urllib');
+      assert(httpClient);
+      let response = await httpClient.request('https://registry.npmmirror.com/urllib');
       assert.equal(response.status, 200);
-      assert(sensitiveHeaders in response.headers);
+      assert.equal(sensitiveHeaders in response.headers, true);
       assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
-      assert.notEqual(httpclient.getDispatcher(), getGlobalDispatcher());
+      assert.notEqual(httpClient.getDispatcher(), getGlobalDispatcher());
+      response = await httpClient.request('https://registry.npmmirror.com/urllib');
+      assert.equal(response.status, 200);
+      assert.equal(sensitiveHeaders in response.headers, true);
+      assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
+      response = await httpClient.request('https://registry.npmmirror.com/urllib');
+      assert.equal(response.status, 200);
+      assert.equal(sensitiveHeaders in response.headers, true);
+      assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
+
+      // should request http 1.1 server work
+      let response2 = await httpClient.request(_url);
+      assert.equal(response2.status, 200);
+      assert.equal(sensitiveHeaders in response2.headers, false);
+      assert.equal(response2.headers['content-type'], 'application/json');
+      response2 = await httpClient.request(_url);
+      assert.equal(response2.status, 200);
+      assert.equal(sensitiveHeaders in response2.headers, false);
+      assert.equal(response2.headers['content-type'], 'application/json');
+      response2 = await httpClient.request(_url);
+      assert.equal(response2.status, 200);
+      assert.equal(sensitiveHeaders in response2.headers, false);
+      assert.equal(response2.headers['content-type'], 'application/json');
+      console.log(httpClient.getDispatcherPoolStats());
     });
   });
 
