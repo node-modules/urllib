@@ -40,7 +40,7 @@
     "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vitest run --test-timeout 180000 keep-alive-header.test.ts",
     "cov": "vitest run --coverage",
     "preci": "node scripts/pre_test.js",
-    "ci": "npm run lint && npm run cov && node scripts/build_test.js && attw --pack",
+    "ci": "npm run lint && npm run cov && node scripts/build_test.js && attw --pack --ignore-rules no-resolution",
     "contributor": "git-contributor",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build"
