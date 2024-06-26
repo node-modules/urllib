@@ -1,7 +1,8 @@
 import { strict as assert } from 'node:assert';
 import dns from 'node:dns';
+import { sensitiveHeaders } from 'node:http2';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { HttpClient } from '../src';
+import { HttpClient, getGlobalDispatcher } from '../src';
 import { RawResponseWithMeta } from '../src/Response';
 import { startServer } from './fixtures/server';
 
@@ -25,6 +26,20 @@ describe('HttpClient.test.ts', () => {
       assert.equal(response.status, 200);
       response = await httpclient.curl(_url, { method: 'GET' });
       assert.equal(response.status, 200);
+    });
+  });
+
+  describe('clientOptions.allowH2', () => {
+    it('should work with allowH2 = true', async () => {
+      const httpclient = new HttpClient({
+        allowH2: true,
+      });
+      assert(httpclient);
+      const response = await httpclient.request('https://registry.npmmirror.com/urllib');
+      assert.equal(response.status, 200);
+      assert(sensitiveHeaders in response.headers);
+      assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
+      assert.notEqual(httpclient.getDispatcher(), getGlobalDispatcher());
     });
   });
 
