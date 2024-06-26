@@ -48,6 +48,14 @@ describe('HttpClient.test.ts', () => {
       assert.equal(response.status, 200);
       assert.equal(sensitiveHeaders in response.headers, true);
       assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
+      response = await httpClient.request('https://registry.npmmirror.com/urllib');
+      assert.equal(response.status, 200);
+      assert.equal(sensitiveHeaders in response.headers, true);
+      assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
+      response = await httpClient.request('https://registry.npmmirror.com/urllib');
+      assert.equal(response.status, 200);
+      assert.equal(sensitiveHeaders in response.headers, true);
+      assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
 
       // should request http 1.1 server work
       let response2 = await httpClient.request(_url);
@@ -62,7 +70,17 @@ describe('HttpClient.test.ts', () => {
       assert.equal(response2.status, 200);
       assert.equal(sensitiveHeaders in response2.headers, false);
       assert.equal(response2.headers['content-type'], 'application/json');
+      response2 = await httpClient.request(_url);
+      assert.equal(response2.status, 200);
+      assert.equal(sensitiveHeaders in response2.headers, false);
+      assert.equal(response2.headers['content-type'], 'application/json');
+      response2 = await httpClient.request(_url);
+      assert.equal(response2.status, 200);
+      assert.equal(sensitiveHeaders in response2.headers, false);
+      assert.equal(response2.headers['content-type'], 'application/json');
       console.log(httpClient.getDispatcherPoolStats());
+      assert.equal(httpClient.getDispatcherPoolStats()['https://registry.npmmirror.com'].connected, 1);
+      assert(httpClient.getDispatcherPoolStats()[_url.substring(0, _url.length - 1)].connected > 1);
     });
   });
 
