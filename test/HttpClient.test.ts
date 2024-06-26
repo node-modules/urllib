@@ -1,7 +1,8 @@
 import { strict as assert } from 'node:assert';
 import dns from 'node:dns';
+import { sensitiveHeaders } from 'node:http2';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import { HttpClient, RawResponseWithMeta } from '../src/index.js';
+import { HttpClient, RawResponseWithMeta, getGlobalDispatcher } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
 describe('HttpClient.test.ts', () => {
@@ -24,6 +25,74 @@ describe('HttpClient.test.ts', () => {
       assert.equal(response.status, 200);
       response = await httpclient.curl(_url, { method: 'GET' });
       assert.equal(response.status, 200);
+    });
+  });
+
+  describe('clientOptions.allowH2', () => {
+    it('should work with allowH2 = true', async () => {
+      const httpClient = new HttpClient({
+        allowH2: true,
+      });
+      assert(httpClient);
+      let response = await httpClient.request('https://registry.npmmirror.com/urllib');
+      assert.equal(response.status, 200);
+      console.log(response);
+      // assert.equal(sensitiveHeaders in response.headers, true);
+      assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
+      assert.notEqual(httpClient.getDispatcher(), getGlobalDispatcher());
+      response = await httpClient.request('https://registry.npmmirror.com/urllib');
+      assert.equal(response.status, 200);
+      // assert.equal(sensitiveHeaders in response.headers, true);
+      assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
+      response = await httpClient.request('https://registry.npmmirror.com/urllib');
+      assert.equal(response.status, 200);
+      // assert.equal(sensitiveHeaders in response.headers, true);
+      assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
+      response = await httpClient.request('https://registry.npmmirror.com/urllib');
+      assert.equal(response.status, 200);
+      // assert.equal(sensitiveHeaders in response.headers, true);
+      assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
+      response = await httpClient.request('https://registry.npmmirror.com/urllib');
+      assert.equal(response.status, 200);
+      // assert.equal(sensitiveHeaders in response.headers, true);
+      assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
+      await Promise.all([
+        httpClient.request('https://registry.npmmirror.com/urllib'),
+        httpClient.request('https://registry.npmmirror.com/urllib'),
+        httpClient.request('https://registry.npmmirror.com/urllib'),
+        httpClient.request('https://registry.npmmirror.com/urllib'),
+      ]);
+
+      // should request http 1.1 server work
+      let response2 = await httpClient.request(_url);
+      assert.equal(response2.status, 200);
+      assert.equal(sensitiveHeaders in response2.headers, false);
+      assert.equal(response2.headers['content-type'], 'application/json');
+      response2 = await httpClient.request(_url);
+      assert.equal(response2.status, 200);
+      assert.equal(sensitiveHeaders in response2.headers, false);
+      assert.equal(response2.headers['content-type'], 'application/json');
+      response2 = await httpClient.request(_url);
+      assert.equal(response2.status, 200);
+      assert.equal(sensitiveHeaders in response2.headers, false);
+      assert.equal(response2.headers['content-type'], 'application/json');
+      response2 = await httpClient.request(_url);
+      assert.equal(response2.status, 200);
+      assert.equal(sensitiveHeaders in response2.headers, false);
+      assert.equal(response2.headers['content-type'], 'application/json');
+      response2 = await httpClient.request(_url);
+      assert.equal(response2.status, 200);
+      assert.equal(sensitiveHeaders in response2.headers, false);
+      assert.equal(response2.headers['content-type'], 'application/json');
+      await Promise.all([
+        httpClient.request(_url),
+        httpClient.request(_url),
+        httpClient.request(_url),
+        httpClient.request(_url),
+      ]);
+      console.log(httpClient.getDispatcherPoolStats());
+      assert.equal(httpClient.getDispatcherPoolStats()['https://registry.npmmirror.com'].connected, 1);
+      assert(httpClient.getDispatcherPoolStats()[_url.substring(0, _url.length - 1)].connected > 1);
     });
   });
 

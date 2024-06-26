@@ -209,6 +209,22 @@ Response is normal object, it contains:
 NODE_DEBUG=urllib:* npm test
 ```
 
+## Request with HTTP2
+
+Create a HttpClient with `options.allowH2 = true`
+
+```ts
+import { HttpClient } from 'urllib';
+
+const httpClient = new HttpClient({
+  allowH2: true,
+});
+
+const response = await httpClient.request('https://node.js.org');
+console.log(response.status);
+console.log(response.headers);
+```
+
 ## Mocking Request
 
 export from [undici](https://undici.nodejs.org/#/docs/best-practices/mocking-request)
