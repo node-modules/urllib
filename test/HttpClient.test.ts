@@ -1,9 +1,22 @@
 import { strict as assert } from 'node:assert';
 import dns from 'node:dns';
 import { sensitiveHeaders } from 'node:http2';
+import { PerformanceObserver } from 'node:perf_hooks';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import { HttpClient, RawResponseWithMeta, getGlobalDispatcher } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
+
+if (process.env.ENABLE_PERF) {
+  const obs = new PerformanceObserver(items => {
+    items.getEntries().forEach(item => {
+      console.log('%j', item);
+    });
+  });
+  obs.observe({
+    entryTypes: [ 'net', 'dns', 'function', 'gc', 'http', 'http2', 'node' ],
+    buffered: true,
+  });
+}
 
 describe('HttpClient.test.ts', () => {
   let close: any;
@@ -33,10 +46,15 @@ describe('HttpClient.test.ts', () => {
       const httpClient = new HttpClient({
         allowH2: true,
       });
-      assert(httpClient);
+      const httpClient1 = new HttpClient({
+        allowH2: false,
+      });
       let response = await httpClient.request('https://registry.npmmirror.com/urllib');
       assert.equal(response.status, 200);
-      console.log(response);
+      console.log(response.res.socket, response.res.timing);
+      response = await httpClient1.request('https://registry.npmmirror.com/urllib');
+      assert.equal(response.status, 200);
+      console.log(response.res.socket, response.res.timing);
       // assert.equal(sensitiveHeaders in response.headers, true);
       assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
       assert.notEqual(httpClient.getDispatcher(), getGlobalDispatcher());
@@ -56,6 +74,7 @@ describe('HttpClient.test.ts', () => {
       assert.equal(response.status, 200);
       // assert.equal(sensitiveHeaders in response.headers, true);
       assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
+      console.log(response.res.socket, response.res.timing);
       await Promise.all([
         httpClient.request('https://registry.npmmirror.com/urllib'),
         httpClient.request('https://registry.npmmirror.com/urllib'),
