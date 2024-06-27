@@ -12,6 +12,7 @@ export type HttpAgentOptions = {
   lookup?: LookupFunction;
   checkAddress?: CheckAddressFunction;
   connect?: buildConnector.BuildOptions,
+  allowH2?: boolean;
 };
 
 class IllegalAddressError extends Error {
@@ -62,7 +63,7 @@ export class HttpAgent extends Agent {
       });
     };
     super({
-      connect: { ...options.connect, lookup },
+      connect: { ...options.connect, lookup, allowH2: options.allowH2 },
     });
     this.#checkAddress = options.checkAddress;
   }

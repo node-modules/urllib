@@ -57,6 +57,8 @@ const debug = debuglog('urllib:HttpClient');
 
 export type ClientOptions = {
   defaultArgs?: RequestOptions;
+  /** Allow to use HTTP2 first. Default is `false` */
+  allowH2?: boolean;
   /**
    * Custom DNS lookup function, default is `dns.lookup`.
    */
@@ -177,10 +179,17 @@ export class HttpClient extends EventEmitter {
         lookup: clientOptions.lookup,
         checkAddress: clientOptions.checkAddress,
         connect: clientOptions.connect,
+        allowH2: clientOptions.allowH2,
       });
     } else if (clientOptions?.connect) {
       this.#dispatcher = new Agent({
         connect: clientOptions.connect,
+        allowH2: clientOptions.allowH2,
+      });
+    } else if (clientOptions?.allowH2) {
+      // Support HTTP2
+      this.#dispatcher = new Agent({
+        allowH2: clientOptions.allowH2,
       });
     }
     initDiagnosticsChannel();
