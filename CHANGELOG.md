@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/node-modules/urllib/compare/v4.0.0...v4.1.0) (2024-06-27)
+
+
+### Features
+
+* support HTTP2 ([#518](https://github.com/node-modules/urllib/issues/518)) ([21d4260](https://github.com/node-modules/urllib/commit/21d4260410ca7ca53bc60af34a2f86dc9b4f8e8a))
+
 ## [4.0.0](https://github.com/node-modules/urllib/compare/v3.25.1...v4.0.0) (2024-06-23)
 
 
