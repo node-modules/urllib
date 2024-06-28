@@ -1,5 +1,4 @@
 {
-	"extends": ["@tsconfig/strictest/tsconfig", "@tsconfig/node18/tsconfig"],
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
 		"outDir": "dist",

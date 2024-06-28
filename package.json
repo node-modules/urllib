@@ -23,7 +23,7 @@
     "url": "git://github.com/node-modules/urllib.git"
   },
   "scripts": {
-    "lint": "eslint src test --ext .ts --cache",
+    "lint": "oxlint",
     "prebuild": "npm run clean",
     "build": "tsc --version && tshy && tshy-after && npm run build:version",
     "postbuild": "rm -rf *.tsbuildinfo",
@@ -54,8 +54,6 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.15.3",
     "@eggjs/tsconfig": "^1.3.3",
-    "@tsconfig/node18": "^18.2.1",
-    "@tsconfig/strictest": "^2.0.2",
     "@types/busboy": "^1.5.0",
     "@types/mime-types": "^2.1.1",
     "@types/node": "^20.2.1",
@@ -66,9 +64,8 @@
     "@vitest/coverage-v8": "^1.6.0",
     "busboy": "^1.6.0",
     "cross-env": "^7.0.3",
-    "eslint": "8",
-    "eslint-config-egg": "13",
     "iconv-lite": "^0.6.3",
+    "oxlint": "^0.5.0",
     "proxy": "^1.0.2",
     "selfsigned": "^2.0.1",
     "tar-stream": "^2.2.0",

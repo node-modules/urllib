@@ -12,7 +12,6 @@ const JSONCtlCharsMap: Record<string, string> = {
   '\r': '\\r', // \u000d
   '\t': '\\t', // \u0009
 };
-/* eslint no-control-regex: "off"*/
 const JSONCtlCharsRE = /[\u0000-\u001F\u005C]/g;
 
 function replaceOneChar(c: string) {
