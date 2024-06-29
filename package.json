@@ -23,7 +23,7 @@
     "url": "git://github.com/node-modules/urllib.git"
   },
   "scripts": {
-    "lint": "oxlint",
+    "lint": "oxlint -c oxlintrc.json",
     "prebuild": "npm run clean",
     "build": "tsc --version && tshy && tshy-after && npm run build:version",
     "postbuild": "rm -rf *.tsbuildinfo",

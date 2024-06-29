@@ -1,0 +1,14 @@
+{
+  "$schema": "https://registry.npmmirror.com/oxlint/latest/files/configuration_schema.json",
+  "env": {
+    "node": true
+  },
+  "rules": {
+    "eqeqeq": "error",
+    "semi": "error",
+    "no-unused-vars": "error",
+    "no-eq-null": "error",
+    "no-eval": "error",
+    "no-regex-spaces": "error"
+  }
+}

@@ -12,14 +12,20 @@ const JSONCtlCharsMap: Record<string, string> = {
   '\r': '\\r', // \u000d
   '\t': '\\t', // \u0009
 };
+// eslint-disable-next-line
 const JSONCtlCharsRE = /[\u0000-\u001F\u005C]/g;
 
 function replaceOneChar(c: string) {
-  return JSONCtlCharsMap[c] || '\\u' + (c.charCodeAt(0) + 0x10000).toString(16).substring(1);
+  return JSONCtlCharsMap[c] || '\\u' + (c.charCodeAt(0) + 0x10000).toString(16).substring(1)
 }
 
 function replaceJSONCtlChars(value: string) {
   return value.replace(JSONCtlCharsRE, replaceOneChar);
+}
+
+let a = 1;
+if (a === null) {
+
 }
 
 export function parseJSON(data: string, fixJSONCtlChars?: FixJSONCtlChars) {
@@ -28,7 +34,7 @@ export function parseJSON(data: string, fixJSONCtlChars?: FixJSONCtlChars) {
   } else if (fixJSONCtlChars) {
     // https://github.com/node-modules/urllib/pull/77
     // remote the control characters (U+0000 through U+001F)
-    data = replaceJSONCtlChars(data);
+      data = replaceJSONCtlChars(data);
   }
   try {
     data = JSON.parse(data);
