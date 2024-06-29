@@ -67,7 +67,7 @@
     "busboy": "^1.6.0",
     "cross-env": "^7.0.3",
     "eslint": "8",
-    "eslint-config-egg": "13",
+    "eslint-config-egg": "14",
     "iconv-lite": "^0.6.3",
     "proxy": "^1.0.2",
     "selfsigned": "^2.0.1",
