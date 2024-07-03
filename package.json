@@ -39,7 +39,7 @@
     "test": "npm run lint && vitest run",
     "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vitest run --test-timeout 180000 keep-alive-header.test.ts",
     "cov": "vitest run --coverage",
-    "ci": "npm run lint && npm run cov && npm run prepublishOnly && attw --pack",
+    "ci": "npm run lint && npm run cov && npm run prepublishOnly && npm pack && attw --pack",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build"
   },
