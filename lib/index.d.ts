@@ -32,7 +32,7 @@ export interface RequestOptions {
   writeStream?: Writable;
   /** consume the writeStream, invoke the callback after writeStream close. */
   consumeWriteStream?: boolean;
-  /** 
+  /**
     * The files will send with multipart/form-data format, base on formstream.
     * If method not set, will use POST method by default.
     */
@@ -130,7 +130,7 @@ export interface RequestOptions {
    * It receive two arguments(ip and family) and should return true or false to identified the address is legal or not.
    * It rely on lookup and have the same version requirement.
    */
-  checkAddress?: (ip: string, family: number | string) => boolean;
+  checkAddress?: (ip: string, family: number | string, hostname: string) => boolean;
   /**
    * UNIX domain socket path. (Windows is not supported)
    */
