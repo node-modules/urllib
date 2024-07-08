@@ -2076,6 +2076,22 @@ describe('test/urllib.test.js', function () {
           done();
         });
       });
+
+      it('should work with hostname', function(done) {
+        let hostname;
+        urllib.request('http://check-ssrf-host.com/redirect_to_domain', {
+          checkAddress: function(address, family, aHostname) {
+            hostname = aHostname;
+            return true;
+          },
+          lookup: function(host, options, callback) {
+            callback(null, '10.10.10.10');
+          },
+        }, function () {
+          assert.equal(hostname, 'check-ssrf-host.com');
+          done();
+        });
+      });
     });
   }
 });
