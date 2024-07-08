@@ -6,7 +6,7 @@ import {
   buildConnector,
 } from 'undici';
 
-export type CheckAddressFunction = (ip: string, family: number | string) => boolean;
+export type CheckAddressFunction = (ip: string, family: number | string, hostname: string) => boolean;
 
 export type HttpAgentOptions = {
   lookup?: LookupFunction;
@@ -46,13 +46,13 @@ export class HttpAgent extends Agent {
         if (options.checkAddress) {
           // dnsOptions.all set to default on Node.js >= 20, dns.lookup will return address array object
           if (typeof address === 'string') {
-            if (!options.checkAddress(address, family)) {
+            if (!options.checkAddress(address, family, hostname)) {
               err = new IllegalAddressError(hostname, address, family);
             }
           } else if (Array.isArray(address)) {
             const addresses = address as { address: string, family: number }[];
             for (const addr of addresses) {
-              if (!options.checkAddress(addr.address, addr.family)) {
+              if (!options.checkAddress(addr.address, addr.family, hostname)) {
                 err = new IllegalAddressError(hostname, addr.address, addr.family);
                 break;
               }
@@ -79,7 +79,7 @@ export class HttpAgent extends Agent {
       const family = isIP(hostname);
       if (family === 4 || family === 6) {
         // if request hostname is ip, custom lookup won't execute
-        if (!this.#checkAddress(hostname, family)) {
+        if (!this.#checkAddress(hostname, family, hostname)) {
           throw new IllegalAddressError(hostname, hostname, family);
         }
       }
