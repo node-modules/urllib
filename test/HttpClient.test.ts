@@ -322,7 +322,11 @@ describe('HttpClient.test.ts', () => {
           return true;
         },
         lookup(hostname, options, callback) {
-          if (process.version.startsWith('v18')) {
+          if (
+            process.version.startsWith('v18')
+            || process.version.startsWith('v16')
+            || process.version.startsWith('v14')
+          ) {
             return callback(null, '127.0.0.1', 4);
           }
           return callback(null, [{
