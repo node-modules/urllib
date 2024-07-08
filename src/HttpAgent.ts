@@ -42,6 +42,7 @@ export class HttpAgent extends Agent {
         // address will be array on Node.js >= 20
         const address = args[0];
         const family = args[1];
+        console.log('args: ', args, address, family);
         if (err) return (callback as any)(err, address, family);
         if (options.checkAddress) {
           // dnsOptions.all set to default on Node.js >= 20, dns.lookup will return address array object
