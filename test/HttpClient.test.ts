@@ -313,5 +313,32 @@ describe('HttpClient.test.ts', () => {
         return true;
       });
     });
+
+    it('should allow hostname check', async () => {
+      let hostname: string;
+      const httpclient = new HttpClient({
+        checkAddress(ip, family, aHostname) {
+          hostname = aHostname;
+          return true;
+        },
+        lookup(hostname, options, callback) {
+          if (
+            process.version.startsWith('v18')
+            || process.version.startsWith('v16')
+            || process.version.startsWith('v14')
+          ) {
+            return callback(null, '127.0.0.1', 4);
+          }
+          return callback(null, [{
+            address: '127.0.0.1',
+            family: 4,
+          }]);
+        },
+      });
+
+      const response = await httpclient.request(_url.replace('localhost', 'check-host-ssrf.com'));
+      assert.equal(hostname, 'check-host-ssrf.com');
+      assert.equal(response.status, 200);
+    });
   });
 });
