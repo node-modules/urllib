@@ -337,13 +337,17 @@ describe('HttpClient.test.ts', () => {
       let hostname: string;
       const httpclient = new HttpClient({
         checkAddress(ip, family, aHostname) {
-          console.log('ip: ', ip, family, aHostname);
           hostname = aHostname;
           return true;
         },
         lookup(hostname, options, callback) {
-          console.log('lookup: ', hostname, options);
-          return callback(null, '127.0.0.1', 4);
+          if (process.version.startsWith('v18')) {
+            return callback(null, '127.0.0.1', 4);
+          }
+          return callback(null, [{
+            address: '127.0.0.1',
+            family: 4,
+          }]);
         },
       });
 
