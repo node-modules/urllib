@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.27.0](https://github.com/node-modules/urllib/compare/v3.26.0...v3.27.0) (2024-07-08)
+
+
+### Features
+
+* add hostname for checkAddress ([#525](https://github.com/node-modules/urllib/issues/525)) ([#528](https://github.com/node-modules/urllib/issues/528)) ([0022641](https://github.com/node-modules/urllib/commit/002264127a37d8c7eb7c76ec4ac8a06ae7b82f1a))
+
 ## [3.26.0](https://github.com/node-modules/urllib/compare/v3.25.1...v3.26.0) (2024-06-26)
 
 
