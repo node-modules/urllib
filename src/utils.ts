@@ -98,7 +98,9 @@ export function digestAuthHeader(method: string, uri: string, wwwAuthenticate: s
   }
 
   let qop = opts.qop || '';
-  const [ user, pass ] = userpass.split(':');
+  const index = userpass.indexOf(':');
+  const user = userpass.substring(0, index);
+  const pass = userpass.substring(index + 1);
 
   let nc = String(++NC);
   nc = `${NC_PAD.substring(nc.length)}${nc}`;
