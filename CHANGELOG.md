@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.1](https://github.com/node-modules/urllib/compare/v4.2.0...v4.2.1) (2024-09-11)
+
+
+### Bug Fixes
+
+* allow ":" character in digestAuth password ([#532](https://github.com/node-modules/urllib/issues/532)) ([c6b6f88](https://github.com/node-modules/urllib/commit/c6b6f881bb1f33fc944482d9060d3576788c7c74))
+
 ## [4.2.0](https://github.com/node-modules/urllib/compare/v4.1.0...v4.2.0) (2024-07-08)
 
 
