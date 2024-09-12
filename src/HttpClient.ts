@@ -546,10 +546,10 @@ export class HttpClient extends EventEmitter {
       }
 
       let response = await undiciRequest(requestUrl, requestOptions as UndiciRequestOption);
-      if (response.statusCode === 401 && response.headers['www-authenticate'] &&
+      if (response.statusCode === 401 && (response.headers['www-authenticate'] || response.headers['x-www-authenticate']) &&
         !requestOptions.headers.authorization && args.digestAuth) {
         // handle digest auth
-        const authenticateHeaders = response.headers['www-authenticate'];
+        const authenticateHeaders = response.headers['www-authenticate'] ?? response.headers['x-www-authenticate'];
         const authenticate = Array.isArray(authenticateHeaders)
           ? authenticateHeaders.find(authHeader => authHeader.startsWith('Digest '))
           : authenticateHeaders;
