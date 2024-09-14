@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.0](https://github.com/node-modules/urllib/compare/v4.2.2...v4.3.0) (2024-09-14)
+
+
+### Features
+
+* Added support for x-www-authenticate header ([#533](https://github.com/node-modules/urllib/issues/533)) ([d52a3e0](https://github.com/node-modules/urllib/commit/d52a3e0b32db305e7839af2aa8464201319c0504))
+
 ## [4.2.2](https://github.com/node-modules/urllib/compare/v4.2.1...v4.2.2) (2024-09-14)
 
 
