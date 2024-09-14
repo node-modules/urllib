@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.27.1](https://github.com/node-modules/urllib/compare/v3.27.0...v3.27.1) (2024-09-14)
+
+
+### Bug Fixes
+
+* uncaught exception due to second response with digest auth ([#534](https://github.com/node-modules/urllib/issues/534)) ([162cf78](https://github.com/node-modules/urllib/commit/162cf78194ef87068d4421c2099131b74ec30878))
+
 ## [3.27.0](https://github.com/node-modules/urllib/compare/v3.26.0...v3.27.0) (2024-07-08)
 
 
