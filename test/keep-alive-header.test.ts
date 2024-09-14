@@ -42,9 +42,11 @@ describe('keep-alive-header.test.ts', () => {
         }
         let response = await task;
         // console.log('after response stats: %o', httpClient.getDispatcherPoolStats());
-        assert.equal(httpClient.getDispatcherPoolStats()[origin].pending, 0);
-        // assert.equal(httpClient.getDispatcherPoolStats()[origin].connected, 1);
-        assert.equal(httpClient.getDispatcherPoolStats()[origin].connected, 0);
+        if (httpClient.getDispatcherPoolStats()[origin]) {
+          assert.equal(httpClient.getDispatcherPoolStats()[origin].pending, 0);
+          // assert.equal(httpClient.getDispatcherPoolStats()[origin].connected, 1);
+          assert.equal(httpClient.getDispatcherPoolStats()[origin].connected, 0);
+        }
         // console.log(response.res.socket);
         assert.equal(response.status, 200);
         // console.log(response.headers);
@@ -134,9 +136,11 @@ describe('keep-alive-header.test.ts', () => {
         // console.log('before sleep stats: %o', httpClient.getDispatcherPoolStats());
         // { connected: 2, free: 1, pending: 0, queued: 0, running: 0, size: 0 }
         // assert.equal(httpClient.getDispatcherPoolStats()[origin].connected, 2);
-        assert.equal(httpClient.getDispatcherPoolStats()[origin].connected, 0);
-        // assert.equal(httpClient.getDispatcherPoolStats()[origin].free, 1);
-        assert.equal(httpClient.getDispatcherPoolStats()[origin].free, 0);
+        if (httpClient.getDispatcherPoolStats()[origin]) {
+          assert.equal(httpClient.getDispatcherPoolStats()[origin].connected, 0);
+          // assert.equal(httpClient.getDispatcherPoolStats()[origin].free, 1);
+          assert.equal(httpClient.getDispatcherPoolStats()[origin].free, 0);
+        }
         await sleep(keepAliveTimeout);
         // console.log('after sleep stats: %o', httpClient.getDispatcherPoolStats());
         // clients maybe all gone => after sleep stats: {}

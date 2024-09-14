@@ -51,6 +51,17 @@ describe('options.digestAuth.test.ts', () => {
     });
   });
 
+  it('should auth fail on x-www-authenticate', async () => {
+    const response = await urllib.request(`${_url}digestAuth2`, {
+      digestAuth: 'invailduser:pwd',
+      dataType: 'json',
+    });
+    assert.equal(response.status, 401);
+    assert.deepEqual(response.data, {
+      error: 'authorization invaild',
+    });
+  });
+
   it('should digest auth required', async () => {
     const response = await urllib.request(`${_url}digestAuth?t=123123`, {
       dataType: 'json',

@@ -100,6 +100,27 @@ export async function startServer(options?: {
       }));
     }
 
+    if (pathname === '/digestAuth2') {
+      const authorization = req.headers.authorization;
+      if (!authorization) {
+        res.setHeader('x-www-authenticate', 'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"');
+        res.statusCode = 401;
+        return res.end(JSON.stringify({
+          error: 'authorization required',
+        }));
+      }
+      if (!authorization.includes('Digest username="user"')) {
+        res.setHeader('x-www-authenticate', 'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"');
+        res.statusCode = 401;
+        return res.end(JSON.stringify({
+          error: 'authorization invaild',
+        }));
+      }
+      return res.end(JSON.stringify({
+        authorization,
+      }));
+    }
+
     if (pathname === '/digestAuth/multi') {
       const authorization = req.headers.authorization;
       if (!authorization) {
