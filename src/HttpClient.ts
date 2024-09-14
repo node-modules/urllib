@@ -562,6 +562,8 @@ export class HttpClient extends EventEmitter {
             // FIXME: merge exists cookie header
             requestOptions.headers.cookie = response.headers['set-cookie'].join(';');
           }
+          // Ensure the previous response is consumed as we re-use the same variable
+          await response.body.arrayBuffer();
           response = await undiciRequest(requestUrl, requestOptions as UndiciRequestOption);
         }
       }
