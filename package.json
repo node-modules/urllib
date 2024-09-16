@@ -66,7 +66,7 @@
     "@vitest/coverage-v8": "^2.0.0",
     "busboy": "^1.6.0",
     "cross-env": "^7.0.3",
-    "eslint": "8",
+    "eslint": "9",
     "eslint-config-egg": "14",
     "iconv-lite": "^0.6.3",
     "proxy": "^1.0.2",
