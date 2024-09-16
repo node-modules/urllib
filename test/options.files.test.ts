@@ -269,7 +269,8 @@ describe('options.files.test.ts', () => {
     assert.equal(response.data.form.foo, 'bar');
   });
 
-  it('should support custom fileName when use files:object', async () => {
+  // will hang on Node.js 22
+  it.skipIf(process.version.startsWith('v22.'))('should support custom fileName when use files:object', async () => {
     const rawData = JSON.stringify({ a: 1 });
     const response = await urllib.request(`${_url}multipart`, {
       files: {
