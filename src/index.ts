@@ -43,13 +43,15 @@ export {
 // HttpClient2 is keep compatible with urllib@2 HttpClient2
 export {
   HttpClient, HttpClient as HttpClient2, HEADER_USER_AGENT as USER_AGENT,
-  RequestDiagnosticsMessage, ResponseDiagnosticsMessage,
+  RequestDiagnosticsMessage, ResponseDiagnosticsMessage, ClientOptions,
 } from './HttpClient.js';
 // RequestOptions2 is keep compatible with urllib@2 RequestOptions2
 export {
   RequestOptions, RequestOptions as RequestOptions2, RequestURL, HttpMethod,
   FixJSONCtlCharsHandler, FixJSONCtlChars,
 } from './Request.js';
+
+export { CheckAddressFunction } from './HttpAgent.js';
 
 export {
   SocketInfo, Timing, RawResponseWithMeta, HttpClientResponse,
