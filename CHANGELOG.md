@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.1](https://github.com/node-modules/urllib/compare/v4.3.0...v4.3.1) (2024-09-19)
+
+
+### Bug Fixes
+
+* add export type ([#540](https://github.com/node-modules/urllib/issues/540)) ([1765806](https://github.com/node-modules/urllib/commit/1765806792c7aaf91c6095fa45e37ca98ede9496))
+
 ## [4.3.0](https://github.com/node-modules/urllib/compare/v4.2.2...v4.3.0) (2024-09-14)
 
 
