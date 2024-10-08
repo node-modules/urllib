@@ -3,6 +3,7 @@ import type { EventEmitter } from 'node:events';
 import type { Dispatcher } from 'undici';
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import type { HttpClientResponse } from './Response.js';
+import { Request } from 'undici';
 
 export type HttpMethod = Dispatcher.HttpMethod;
 
@@ -160,4 +161,9 @@ export type RequestMeta = {
   args: RequestOptions;
   ctx?: unknown;
   retries: number;
+};
+
+export type FetchMeta = {
+  requestId: number;
+  request: Request,
 };
