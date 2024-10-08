@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.0](https://github.com/node-modules/urllib/compare/v4.3.1...v4.4.0) (2024-10-08)
+
+
+### Features
+
+* impl fetch ([#542](https://github.com/node-modules/urllib/issues/542)) ([55a634c](https://github.com/node-modules/urllib/commit/55a634c1784365f35ab69139549b47d24f500069))
+
 ## [4.3.1](https://github.com/node-modules/urllib/compare/v4.3.0...v4.3.1) (2024-09-19)
 
 
