@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from 'node:async_hooks';
 import {
   fetch as UndiciFetch,
   RequestInfo,
@@ -6,10 +7,8 @@ import {
   Response,
   Agent,
   getGlobalDispatcher,
-  Pool, Dispatcher,
-  // interceptors,
-  // Request,
-  // HeadersInit,
+  Pool,
+  Dispatcher,
 } from 'undici';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -20,27 +19,28 @@ import undiciFetchSymbols from 'undici/lib/web/fetch/symbols.js';
 import {
   channels,
   ClientOptions,
-  PoolStat, RequestDiagnosticsMessage, ResponseDiagnosticsMessage, UnidiciTimingInfo,
-  // RequestDiagnosticsMessage,
+  PoolStat,
+  RequestDiagnosticsMessage,
+  ResponseDiagnosticsMessage,
+  UnidiciTimingInfo,
 } from './HttpClient.js';
 import {
-  HttpAgent, HttpAgentOptions,
-  // CheckAddressFunction,
+  HttpAgent,
+  HttpAgentOptions,
 } from './HttpAgent.js';
 import { initDiagnosticsChannel } from './diagnosticsChannel.js';
 import { convertHeader, globalId, performanceTime, updateSocketInfo } from './utils.js';
 import symbols from './symbols.js';
 import {
-  FetchMeta, HttpMethod, RequestMeta,
-  // RequestMeta,
+  FetchMeta,
+  HttpMethod,
+  RequestMeta,
 } from './Request.js';
-import { AsyncLocalStorage } from 'node:async_hooks';
 import { FetchOpaque, fetchOpaqueInterceptor } from './FetchOpaqueInterceptor.js';
 import { RawResponseWithMeta, SocketInfo } from './Response.js';
 import { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 
 export interface UrllibRequestInit extends RequestInit {
-  // checkAddress?: CheckAddressFunction;
   // default is true
   timing?: boolean;
 }
@@ -179,9 +179,6 @@ export class FetchFactory {
       requestId,
       request,
     };
-    // const request = new Request(input, {
-    //
-    // });
     const socketInfo: SocketInfo = {
       id: 0,
       localAddress: '',
