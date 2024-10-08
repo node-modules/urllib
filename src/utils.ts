@@ -2,6 +2,9 @@ import { randomBytes, createHash } from 'node:crypto';
 import { Readable } from 'node:stream';
 import { performance } from 'node:perf_hooks';
 import type { FixJSONCtlChars } from './Request.js';
+import { SocketInfo } from './Response.js';
+import symbols from './symbols.js';
+import { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 
 const JSONCtlCharsMap: Record<string, string> = {
   '"': '\\"', // \u0022
@@ -150,4 +153,55 @@ export function isReadable(stream: any) {
     && stream.readable !== false
     && typeof stream._read === 'function'
     && typeof stream._readableState === 'object';
+}
+
+export function updateSocketInfo(socketInfo: SocketInfo, internalOpaque: any, err?: any) {
+  const socket = internalOpaque[symbols.kRequestSocket] ?? err?.[symbols.kErrorSocket];
+  if (socket) {
+    socketInfo.id = socket[symbols.kSocketId];
+    socketInfo.handledRequests = socket[symbols.kHandledRequests];
+    socketInfo.handledResponses = socket[symbols.kHandledResponses];
+    if (socket[symbols.kSocketLocalAddress]) {
+      socketInfo.localAddress = socket[symbols.kSocketLocalAddress];
+      socketInfo.localPort = socket[symbols.kSocketLocalPort];
+    }
+    if (socket.remoteAddress) {
+      socketInfo.remoteAddress = socket.remoteAddress;
+      socketInfo.remotePort = socket.remotePort;
+      socketInfo.remoteFamily = socket.remoteFamily;
+    }
+    socketInfo.bytesRead = socket.bytesRead;
+    socketInfo.bytesWritten = socket.bytesWritten;
+    if (socket[symbols.kSocketConnectErrorTime]) {
+      socketInfo.connectErrorTime = socket[symbols.kSocketConnectErrorTime];
+      if (Array.isArray(socket.autoSelectFamilyAttemptedAddresses)) {
+        socketInfo.attemptedRemoteAddresses = socket.autoSelectFamilyAttemptedAddresses;
+      }
+      socketInfo.connectProtocol = socket[symbols.kSocketConnectProtocol];
+      socketInfo.connectHost = socket[symbols.kSocketConnectHost];
+      socketInfo.connectPort = socket[symbols.kSocketConnectPort];
+    }
+    if (socket[symbols.kSocketConnectedTime]) {
+      socketInfo.connectedTime = socket[symbols.kSocketConnectedTime];
+    }
+    if (socket[symbols.kSocketRequestEndTime]) {
+      socketInfo.lastRequestEndTime = socket[symbols.kSocketRequestEndTime];
+    }
+    socket[symbols.kSocketRequestEndTime] = new Date();
+  }
+}
+
+export function convertHeader(headers: Headers): IncomingHttpHeaders {
+  const res: IncomingHttpHeaders = {};
+  for (const [ key, value ] of headers.entries()) {
+    if (res[key]) {
+      if (!Array.isArray(res[key])) {
+        res[key] = [ res[key] ];
+      }
+      res[key].push(value);
+    } else {
+      res[key] = value;
+    }
+  }
+  return res;
 }

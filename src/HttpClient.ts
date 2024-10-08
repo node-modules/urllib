@@ -37,7 +37,7 @@ import { HttpAgent, CheckAddressFunction } from './HttpAgent.js';
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import { RequestURL, RequestOptions, HttpMethod, RequestMeta } from './Request.js';
 import { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response.js';
-import { parseJSON, digestAuthHeader, globalId, performanceTime, isReadable } from './utils.js';
+import { parseJSON, digestAuthHeader, globalId, performanceTime, isReadable, updateSocketInfo } from './utils.js';
 import symbols from './symbols.js';
 import { initDiagnosticsChannel } from './diagnosticsChannel.js';
 import { HttpClientConnectTimeoutError, HttpClientRequestTimeoutError } from './HttpClientError.js';
@@ -47,7 +47,28 @@ type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;
 type PropertyShouldBe<T, K extends keyof T, V> = Omit<T, K> & { [P in K]: V };
 type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', IncomingHttpHeaders>;
 
-const PROTO_RE = /^https?:\/\//i;
+export const PROTO_RE = /^https?:\/\//i;
+
+export interface UnidiciTimingInfo {
+  startTime: number;
+  redirectStartTime: number;
+  redirectEndTime: number;
+  postRedirectStartTime: number;
+  finalServiceWorkerStartTime: number;
+  finalNetworkResponseStartTime: number;
+  finalNetworkRequestStartTime: number;
+  endTime: number;
+  encodedBodySize: number;
+  decodedBodySize: number;
+  finalConnectionTimingInfo: {
+    domainLookupStartTime: number;
+    domainLookupEndTime: number;
+    connectionStartTime: number;
+    connectionEndTime: number;
+    secureConnectionStartTime: number;
+    // ALPNNegotiatedProtocol: undefined
+  };
+}
 
 function noop() {
   // noop
@@ -137,9 +158,11 @@ export type RequestContext = {
   requestStartTime?: number;
 };
 
-const channels = {
+export const channels = {
   request: diagnosticsChannel.channel('urllib:request'),
   response: diagnosticsChannel.channel('urllib:response'),
+  fetchRequest: diagnosticsChannel.channel('urllib:fetch:request'),
+  fetchResponse: diagnosticsChannel.channel('urllib:fetch:response'),
 };
 
 export type RequestDiagnosticsMessage = {
@@ -631,7 +654,7 @@ export class HttpClient extends EventEmitter {
       }
       res.rt = performanceTime(requestStartTime);
       // get real socket info from internalOpaque
-      this.#updateSocketInfo(socketInfo, internalOpaque);
+      updateSocketInfo(socketInfo, internalOpaque);
 
       const clientResponse: HttpClientResponse = {
         opaque: originalOpaque,
@@ -707,7 +730,7 @@ export class HttpClient extends EventEmitter {
         res.requestUrls.push(requestUrl.href);
       }
       res.rt = performanceTime(requestStartTime);
-      this.#updateSocketInfo(socketInfo, internalOpaque, rawError);
+      updateSocketInfo(socketInfo, internalOpaque, rawError);
 
       channels.response.publish({
         request: reqMeta,
@@ -727,42 +750,6 @@ export class HttpClient extends EventEmitter {
         });
       }
       throw err;
-    }
-  }
-
-  #updateSocketInfo(socketInfo: SocketInfo, internalOpaque: any, err?: any) {
-    const socket = internalOpaque[symbols.kRequestSocket] ?? err?.[symbols.kErrorSocket];
-    if (socket) {
-      socketInfo.id = socket[symbols.kSocketId];
-      socketInfo.handledRequests = socket[symbols.kHandledRequests];
-      socketInfo.handledResponses = socket[symbols.kHandledResponses];
-      if (socket[symbols.kSocketLocalAddress]) {
-        socketInfo.localAddress = socket[symbols.kSocketLocalAddress];
-        socketInfo.localPort = socket[symbols.kSocketLocalPort];
-      }
-      if (socket.remoteAddress) {
-        socketInfo.remoteAddress = socket.remoteAddress;
-        socketInfo.remotePort = socket.remotePort;
-        socketInfo.remoteFamily = socket.remoteFamily;
-      }
-      socketInfo.bytesRead = socket.bytesRead;
-      socketInfo.bytesWritten = socket.bytesWritten;
-      if (socket[symbols.kSocketConnectErrorTime]) {
-        socketInfo.connectErrorTime = socket[symbols.kSocketConnectErrorTime];
-        if (Array.isArray(socket.autoSelectFamilyAttemptedAddresses)) {
-          socketInfo.attemptedRemoteAddresses = socket.autoSelectFamilyAttemptedAddresses;
-        }
-        socketInfo.connectProtocol = socket[symbols.kSocketConnectProtocol];
-        socketInfo.connectHost = socket[symbols.kSocketConnectHost];
-        socketInfo.connectPort = socket[symbols.kSocketConnectPort];
-      }
-      if (socket[symbols.kSocketConnectedTime]) {
-        socketInfo.connectedTime = socket[symbols.kSocketConnectedTime];
-      }
-      if (socket[symbols.kSocketRequestEndTime]) {
-        socketInfo.lastRequestEndTime = socket[symbols.kSocketRequestEndTime];
-      }
-      socket[symbols.kSocketRequestEndTime] = new Date();
     }
   }
 }

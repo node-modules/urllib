@@ -8,12 +8,12 @@ import {
 
 export type CheckAddressFunction = (ip: string, family: number | string, hostname: string) => boolean;
 
-export type HttpAgentOptions = {
+export interface HttpAgentOptions extends Agent.Options {
   lookup?: LookupFunction;
   checkAddress?: CheckAddressFunction;
   connect?: buildConnector.BuildOptions,
   allowH2?: boolean;
-};
+}
 
 class IllegalAddressError extends Error {
   hostname: string;
@@ -36,9 +36,10 @@ export class HttpAgent extends Agent {
 
   constructor(options: HttpAgentOptions) {
     /* eslint node/prefer-promises/dns: off*/
-    const _lookup = options.lookup ?? dns.lookup;
-    const lookup: LookupFunction = (hostname, dnsOptions, callback) => {
-      _lookup(hostname, dnsOptions, (err, ...args: any[]) => {
+    const { lookup = dns.lookup, ...baseOpts } = options;
+
+    const lookupFunction: LookupFunction = (hostname, dnsOptions, callback) => {
+      lookup(hostname, dnsOptions, (err, ...args: any[]) => {
         // address will be array on Node.js >= 20
         const address = args[0];
         const family = args[1];
@@ -63,7 +64,8 @@ export class HttpAgent extends Agent {
       });
     };
     super({
-      connect: { ...options.connect, lookup, allowH2: options.allowH2 },
+      ...baseOpts,
+      connect: { ...options.connect, lookup: lookupFunction, allowH2: options.allowH2 },
     });
     this.#checkAddress = options.checkAddress;
   }

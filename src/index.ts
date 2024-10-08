@@ -39,6 +39,8 @@ export async function curl<T = any>(url: RequestURL, options?: RequestOptions) {
 export {
   MockAgent, ProxyAgent, Agent, Dispatcher,
   setGlobalDispatcher, getGlobalDispatcher,
+  Request, RequestInfo, RequestInit,
+  Response,
 } from 'undici';
 // HttpClient2 is keep compatible with urllib@2 HttpClient2
 export {
@@ -60,6 +62,7 @@ export {
   IncomingHttpHeaders,
 } from './IncomingHttpHeaders.js';
 export * from './HttpClientError.js';
+export { FetchFactory, fetch } from './fetch.js';
 
 export default {
   request,
