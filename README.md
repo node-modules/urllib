@@ -345,8 +345,6 @@ Node.js v22.3.0
 
 [MIT](LICENSE)
 
-<!-- GITCONTRIBUTOR_START -->
-
 ## Contributors
 
 [![Contributors](https://contrib.rocks/image?repo=node-modules/urllib)](https://github.com/node-modules/urllib/graphs/contributors)
