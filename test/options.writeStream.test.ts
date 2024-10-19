@@ -117,8 +117,13 @@ describe('options.writeStream.test.ts', () => {
       // only Node.js >= 18 has stream.emitError
       if (err.message !== 'writeStream is destroyed') {
         assert.equal(err.name, 'Error');
-        assert.equal(err.code, 'ENOENT');
-        assert.match(err.message, /no such file or directory/);
+        assert.match(err.code, /^ENOENT|ERR_STREAM_UNABLE_TO_PIPE$/);
+        if (err.code === 'ERR_STREAM_UNABLE_TO_PIPE') {
+          // change to ERR_STREAM_UNABLE_TO_PIPE on Node.js >= 23
+          assert.equal(err.message, 'Cannot pipe to a closed or destroyed stream');
+        } else {
+          assert.match(err.message, /no such file or directory/);
+        }
       }
       return true;
     });
