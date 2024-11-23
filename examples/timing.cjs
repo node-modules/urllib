@@ -16,7 +16,7 @@ async function request(index) {
   }
   const res = await httpClient.request(url + '?index=' + index, {
     // data: { wd: 'nodejs' },
-    dataType: 'json',
+    // dataType: 'json',
   });
   console.log('---------------------------');
   console.log('No#%d: %s, content size: %d, requestUrls: %o, socket: %o, rt: %o',

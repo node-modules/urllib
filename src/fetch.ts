@@ -163,7 +163,7 @@ export class FetchFactory {
       [symbols.kEnableRequestTiming]: !!(init.timing ?? true),
       [symbols.kRequestTiming]: timing,
       // [symbols.kRequestOriginalOpaque]: originalOpaque,
-    };
+    } as FetchOpaque;
     const reqMeta: RequestMeta = {
       requestId,
       url: request.url,
