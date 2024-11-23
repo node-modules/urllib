@@ -91,12 +91,10 @@
   "exports": {
     ".": {
       "import": {
-        "source": "./src/index.ts",
         "types": "./dist/esm/index.d.ts",
         "default": "./dist/esm/index.js"
       },
       "require": {
-        "source": "./src/index.ts",
         "types": "./dist/commonjs/index.d.ts",
         "default": "./dist/commonjs/index.js"
       }
@@ -108,5 +106,6 @@
     "src"
   ],
   "types": "./dist/commonjs/index.d.ts",
-  "main": "./dist/commonjs/index.js"
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/esm/index.js"
 }
