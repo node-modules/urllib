@@ -8,6 +8,7 @@ urllib.request('https://api.github.com/legacy/user/search/location:china', {
   timeout: 10000,
 }).then(response => {
   console.log(response);
+  console.log(response.data);
 });
 
 // var https = require('https');
