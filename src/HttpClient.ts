@@ -49,7 +49,7 @@ type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', Inc
 
 export const PROTO_RE = /^https?:\/\//i;
 
-export interface UnidiciTimingInfo {
+export interface UndiciTimingInfo {
   startTime: number;
   redirectStartTime: number;
   redirectEndTime: number;
@@ -69,6 +69,9 @@ export interface UnidiciTimingInfo {
     // ALPNNegotiatedProtocol: undefined
   };
 }
+
+// keep typo compatibility
+export interface UnidiciTimingInfo extends UndiciTimingInfo {}
 
 function noop() {
   // noop
@@ -701,7 +704,8 @@ export class HttpClient extends EventEmitter {
 
       return clientResponse;
     } catch (rawError: any) {
-      debug('Request#%d throw error: %s', requestId, rawError);
+      debug('Request#%d throw error: %s, socketErrorRetry: %s, socketErrorRetries: %s',
+        requestId, rawError, args.socketErrorRetry, requestContext.socketErrorRetries);
       let err = rawError;
       if (err.name === 'HeadersTimeoutError') {
         err = new HttpClientRequestTimeoutError(headersTimeout, { cause: err });
@@ -713,6 +717,8 @@ export class HttpClient extends EventEmitter {
         // auto retry on socket error, https://github.com/node-modules/urllib/issues/454
         if (args.socketErrorRetry > 0 && requestContext.socketErrorRetries < args.socketErrorRetry) {
           requestContext.socketErrorRetries++;
+          debug('Request#%d retry on socket error, socketErrorRetries: %d',
+            requestId, requestContext.socketErrorRetries);
           return await this.#requestInternal(url, options, requestContext);
         }
       }
