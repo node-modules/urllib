@@ -1,6 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import urllib from '../src/index.js';
+import { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
 describe('options.followRedirect.test.ts', () => {
@@ -79,15 +80,31 @@ describe('options.followRedirect.test.ts', () => {
     assert.equal(requestUrls.length, 2);
   });
 
-  it('should redirect `location: /redirect-full-301-to-url`', async () => {
+  it('should urllib.redirect `location: /redirect-full-301-to-url`', async () => {
     const requestURL = `${_url}redirect-full-301`;
     const { data, res, redirected, url, requestUrls } = await urllib.request<Buffer>(requestURL, {
       followRedirect: true,
     });
     // console.log(res.headers, res.status);
     assert.equal(res.statusCode, 200);
+    // console.log(data.toString());
     assert(data.length > 100);
-    assert(redirected);
+    assert.equal(redirected, true);
+    assert.equal(url, `${_url}redirect-full-301-to-url`);
+    assert.equal(requestUrls.length, 2);
+  });
+
+  it('should httpClient.redirect `location: /redirect-full-301-to-url`', async () => {
+    const requestURL = `${_url}redirect-full-301`;
+    const httpClient = new HttpClient();
+    const { data, res, redirected, url, requestUrls } = await httpClient.request<Buffer>(requestURL, {
+      followRedirect: true,
+    });
+    // console.log(res.headers, res.status);
+    assert.equal(res.statusCode, 200);
+    // console.log(data.toString());
+    assert(data.length > 100);
+    assert.equal(redirected, true);
     assert.equal(url, `${_url}redirect-full-301-to-url`);
     assert.equal(requestUrls.length, 2);
   });

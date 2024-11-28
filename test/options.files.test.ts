@@ -215,6 +215,7 @@ describe('options.files.test.ts', () => {
     const stat = await fs.stat(__filename);
     const largeFormValue = await fs.readFile(__filename, 'utf-8');
     const txtEmoji = path.join(__dirname, 'fixtures', '😄foo😭.txt');
+    const txtEmojiStat = await fs.stat(txtEmoji);
     const txt = path.join(__dirname, 'fixtures', 'foo.txt');
     const txtValue = await fs.readFile(txt, 'utf-8');
     const response = await urllib.request(`${_url}multipart`, {
@@ -237,7 +238,7 @@ describe('options.files.test.ts', () => {
     assert.equal(response.data.files.file.size, stat.size);
     assert.equal(response.data.files.file1.filename, '😄foo😭.txt');
     assert.equal(response.data.files.file1.mimeType, 'text/plain');
-    assert.equal(response.data.files.file1.size, 24);
+    assert.equal(response.data.files.file1.size, txtEmojiStat.size);
     assert.equal(response.data.form.hello, 'hello world，😄😓');
     assert.equal(
       JSON.stringify(decodeURIComponent(response.data.form.txtValue)),
