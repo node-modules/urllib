@@ -9,7 +9,6 @@ import {
   gunzipSync,
   brotliDecompressSync,
 } from 'node:zlib';
-import { Blob } from 'node:buffer';
 import { Readable, pipeline } from 'node:stream';
 import { pipeline as pipelinePromise } from 'node:stream/promises';
 import { basename } from 'node:path';
@@ -19,13 +18,13 @@ import { performance } from 'node:perf_hooks';
 import querystring from 'node:querystring';
 import { setTimeout as sleep } from 'node:timers/promises';
 import {
-  FormData,
   request as undiciRequest,
   Dispatcher,
   Agent,
   getGlobalDispatcher,
   Pool,
 } from 'undici';
+import { FormData } from './FormData.js';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import undiciSymbols from 'undici/lib/core/symbols.js';
@@ -115,28 +114,6 @@ export type ClientOptions = {
     timeout?: number;
   },
 };
-
-// https://github.com/octet-stream/form-data
-class BlobFromStream {
-  #stream;
-  #type;
-  constructor(stream: Readable, type: string) {
-    this.#stream = stream;
-    this.#type = type;
-  }
-
-  stream() {
-    return this.#stream;
-  }
-
-  get type(): string {
-    return this.#type;
-  }
-
-  get [Symbol.toStringTag]() {
-    return 'Blob';
-  }
-}
 
 export const VERSION = 'VERSION';
 // 'node-urllib/4.0.0 Node.js/18.19.0 (darwin; x64)'
@@ -490,21 +467,28 @@ export class HttpClient extends EventEmitter {
           }
         }
         for (const [ index, [ field, file, customFileName ]] of uploadFiles.entries()) {
+          let fileName = '';
+          let value: any;
           if (typeof file === 'string') {
-            // FIXME: support non-ascii filename
-            // const fileName = encodeURIComponent(basename(file));
-            // formData.append(field, await fileFromPath(file, `utf-8''${fileName}`, { type: mime.lookup(fileName) || '' }));
-            const fileName = basename(file);
-            const fileReadable = createReadStream(file);
-            formData.append(field, new BlobFromStream(fileReadable, mime.lookup(fileName) || ''), fileName);
+            fileName = basename(file);
+            value = createReadStream(file);
           } else if (Buffer.isBuffer(file)) {
-            formData.append(field, new Blob([ file ]), customFileName || `bufferfile${index}`);
+            fileName = customFileName || `bufferfile${index}`;
+            value = file;
           } else if (file instanceof Readable || isReadable(file as any)) {
-            const fileName = getFileName(file) || customFileName || `streamfile${index}`;
-            formData.append(field, new BlobFromStream(file, mime.lookup(fileName) || ''), fileName);
+            fileName = getFileName(file) || customFileName || `streamfile${index}`;
             isStreamingRequest = true;
+            value = file;
           }
+          const mimeType = mime.lookup(fileName) || '';
+          formData.append(field, value, {
+            filename: fileName,
+            contentType: mimeType,
+          });
+          debug('formData append field: %s, mimeType: %s, fileName: %s',
+            field, mimeType, fileName);
         }
+        Object.assign(headers, formData.getHeaders());
         requestOptions.body = formData;
       } else if (args.content) {
         if (!isGETOrHEAD) {
@@ -561,8 +545,8 @@ export class HttpClient extends EventEmitter {
         args.socketErrorRetry = 0;
       }
 
-      debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s, isStreamingRequest: %s',
-        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout, isStreamingRequest);
+      debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s, isStreamingRequest: %s, maxRedirections: %s',
+        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout, isStreamingRequest, requestOptions.maxRedirections);
       requestOptions.headers = headers;
       channels.request.publish({
         request: reqMeta,

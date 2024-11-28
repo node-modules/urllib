@@ -3,7 +3,7 @@ import { describe, it, beforeAll, afterAll } from 'vitest';
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
-describe('options.followRedirect.test.js', () => {
+describe('options.followRedirect.test.ts', () => {
   let close: any;
   let _url: string;
   beforeAll(async () => {
@@ -79,14 +79,14 @@ describe('options.followRedirect.test.js', () => {
     assert.equal(requestUrls.length, 2);
   });
 
-  it('should redirect `location: /redirec-full-301-to-url`', async () => {
+  it('should redirect `location: /redirect-full-301-to-url`', async () => {
     const requestURL = `${_url}redirect-full-301`;
-    const { data, res, redirected, url, requestUrls } = await urllib.request(requestURL, {
+    const { data, res, redirected, url, requestUrls } = await urllib.request<Buffer>(requestURL, {
       followRedirect: true,
     });
-    // console.log(res.headers);
+    // console.log(res.headers, res.status);
     assert.equal(res.statusCode, 200);
-    assert((data as Buffer).length > 100);
+    assert(data.length > 100);
     assert(redirected);
     assert.equal(url, `${_url}redirect-full-301-to-url`);
     assert.equal(requestUrls.length, 2);

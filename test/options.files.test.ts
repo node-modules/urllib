@@ -214,13 +214,12 @@ describe('options.files.test.ts', () => {
   it('should upload a file with args.data success', async () => {
     const stat = await fs.stat(__filename);
     const largeFormValue = await fs.readFile(__filename, 'utf-8');
-    // emoji not work on windows node.js >= 20
-    // const txt = path.join(__dirname, 'fixtures', '😄foo😭.txt');
+    const txtEmoji = path.join(__dirname, 'fixtures', '😄foo😭.txt');
     const txt = path.join(__dirname, 'fixtures', 'foo.txt');
     const txtValue = await fs.readFile(txt, 'utf-8');
     const response = await urllib.request(`${_url}multipart`, {
       method: 'HEAD',
-      files: [ __filename ],
+      files: [ __filename, txtEmoji ],
       data: {
         hello: 'hello world，😄😓',
         // \r\n => \n, should encodeURIComponent first
@@ -236,8 +235,13 @@ describe('options.files.test.ts', () => {
     assert.equal(response.data.files.file.filename, 'options.files.test.ts');
     assert.equal(response.data.files.file.mimeType, 'video/mp2t');
     assert.equal(response.data.files.file.size, stat.size);
+    assert.equal(response.data.files.file1.filename, '😄foo😭.txt');
+    assert.equal(response.data.files.file1.mimeType, 'text/plain');
+    assert.equal(response.data.files.file1.size, 24);
     assert.equal(response.data.form.hello, 'hello world，😄😓');
-    assert.equal(JSON.stringify(decodeURIComponent(response.data.form.txtValue)), JSON.stringify(txtValue));
+    assert.equal(
+      JSON.stringify(decodeURIComponent(response.data.form.txtValue)),
+      JSON.stringify(txtValue));
     assert.equal(decodeURIComponent(response.data.form.txtValue), txtValue);
     assert.equal(decodeURIComponent(response.data.form.large), largeFormValue);
   });
@@ -293,7 +297,7 @@ describe('options.files.test.ts', () => {
     assert.equal(response.data.files['readable.js'].mimeType, 'application/javascript');
 
     assert.equal(response.data.files['buffer.js'].filename, 'buffer.js');
-    assert.equal(response.data.files['buffer.js'].mimeType, 'application/octet-stream');
+    assert.equal(response.data.files['buffer.js'].mimeType, 'application/javascript');
     assert.equal(response.data.files['buffer.js'].size, rawData.length);
 
     assert.equal(response.data.form.hello, 'hello world，😄😓');
