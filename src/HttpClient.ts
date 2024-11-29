@@ -136,6 +136,8 @@ export type RequestContext = {
   retries: number;
   socketErrorRetries: number;
   requestStartTime?: number;
+  redirects: number;
+  history: string[];
 };
 
 export const channels = {
@@ -169,6 +171,15 @@ export interface PoolStat {
   /** Number of active, pending, or queued requests across all clients in this pool. */
   size: number;
 }
+
+// https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
+const RedirectStatusCodes = [
+  301, // Moved Permanently
+  302, // Found
+  303, // See Other
+  307, // Temporary Redirect
+  308, // Permanent Redirect
+];
 
 export class HttpClient extends EventEmitter {
   #defaultArgs?: RequestOptions;
@@ -274,11 +285,14 @@ export class HttpClient extends EventEmitter {
     requestContext = {
       retries: 0,
       socketErrorRetries: 0,
+      redirects: 0,
+      history: [],
       ...requestContext,
     };
     if (!requestContext.requestStartTime) {
       requestContext.requestStartTime = performance.now();
     }
+    requestContext.history.push(requestUrl.href);
     const requestStartTime = requestContext.requestStartTime;
 
     // https://developer.chrome.com/docs/devtools/network/reference/?utm_source=devtools#timing-explanation
@@ -338,7 +352,7 @@ export class HttpClient extends EventEmitter {
       aborted: false,
       rt: 0,
       keepAliveSocket: true,
-      requestUrls: [],
+      requestUrls: requestContext.history,
       timing,
       socket: socketInfo,
       retries: requestContext.retries,
@@ -399,10 +413,13 @@ export class HttpClient extends EventEmitter {
       isStreamingRequest = true;
     }
 
+    let maxRedirects = args.maxRedirects ?? 10;
+
     try {
       const requestOptions: IUndiciRequestOption = {
         method,
-        maxRedirections: args.maxRedirects ?? 10,
+        // disable undici auto redirect handler
+        maxRedirections: 0,
         headersTimeout,
         headers,
         bodyTimeout,
@@ -417,7 +434,7 @@ export class HttpClient extends EventEmitter {
         requestOptions.reset = args.reset;
       }
       if (args.followRedirect === false) {
-        requestOptions.maxRedirections = 0;
+        maxRedirects = 0;
       }
 
       const isGETOrHEAD = requestOptions.method === 'GET' || requestOptions.method === 'HEAD';
@@ -545,8 +562,8 @@ export class HttpClient extends EventEmitter {
         args.socketErrorRetry = 0;
       }
 
-      debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s, isStreamingRequest: %s, maxRedirections: %s',
-        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout, isStreamingRequest, requestOptions.maxRedirections);
+      debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s, isStreamingRequest: %s, maxRedirections: %s, redirects: %s',
+        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout, isStreamingRequest, maxRedirects, requestContext.redirects);
       requestOptions.headers = headers;
       channels.request.publish({
         request: reqMeta,
@@ -577,18 +594,6 @@ export class HttpClient extends EventEmitter {
           response = await undiciRequest(requestUrl, requestOptions as UndiciRequestOption);
         }
       }
-
-      const context = response.context as { history: URL[] };
-      let lastUrl = '';
-      if (context?.history) {
-        for (const urlObject of context?.history) {
-          res.requestUrls.push(urlObject.href);
-          lastUrl = urlObject.href;
-        }
-      } else {
-        res.requestUrls.push(requestUrl.href);
-        lastUrl = requestUrl.href;
-      }
       const contentEncoding = response.headers['content-encoding'];
       const isCompressedContent = contentEncoding === 'gzip' || contentEncoding === 'br';
 
@@ -597,6 +602,19 @@ export class HttpClient extends EventEmitter {
       res.statusMessage = res.statusText = STATUS_CODES[res.status] || '';
       if (res.headers['content-length']) {
         res.size = parseInt(res.headers['content-length']);
+      }
+
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
+      if (RedirectStatusCodes.includes(res.statusCode) && maxRedirects > 0 && requestContext.redirects < maxRedirects && !isStreamingRequest) {
+        if (res.headers.location) {
+          requestContext.redirects++;
+          const nextUrl = new URL(res.headers.location, requestUrl.href);
+          // Ensure the response is consumed
+          await response.body.arrayBuffer();
+          debug('Request#%d got response, status: %s, headers: %j, timing: %j, redirect to %s',
+            requestId, res.status, res.headers, res.timing, nextUrl.href);
+          return await this.#requestInternal(nextUrl.href, options, requestContext);
+        }
       }
 
       let data: any = null;
@@ -650,11 +668,14 @@ export class HttpClient extends EventEmitter {
         statusCode: res.status,
         statusText: res.statusText,
         headers: res.headers,
-        url: lastUrl,
-        redirected: res.requestUrls.length > 1,
+        url: requestUrl.href,
+        redirected: requestContext.history.length > 1,
         requestUrls: res.requestUrls,
         res,
       };
+
+      debug('Request#%d got response, status: %s, headers: %j, timing: %j',
+        requestId, res.status, res.headers, res.timing);
 
       if (args.retry > 0 && requestContext.retries < args.retry) {
         const isRetry = args.isRetry ?? defaultIsRetry;
@@ -667,8 +688,6 @@ export class HttpClient extends EventEmitter {
         }
       }
 
-      debug('Request#%d got response, status: %s, headers: %j, timing: %j',
-        requestId, res.status, res.headers, res.timing);
       channels.response.publish({
         request: reqMeta,
         response: res,
@@ -715,10 +734,6 @@ export class HttpClient extends EventEmitter {
         err._rawSocket = err.socket;
       }
       err.socket = socketInfo;
-      // make sure requestUrls not empty
-      if (res.requestUrls.length === 0) {
-        res.requestUrls.push(requestUrl.href);
-      }
       res.rt = performanceTime(requestStartTime);
       updateSocketInfo(socketInfo, internalOpaque, rawError);
 

@@ -170,6 +170,67 @@ describe('HttpClient.test.ts', () => {
       // console.log(response.res.socket, response.res.timing);
       assert.equal(response.data, 'hello h2!');
     });
+
+    it('should auto redirect work', async () => {
+      const server = createSecureServer(pem);
+
+      let count = 0;
+      server.on('stream', (stream, headers) => {
+        count++;
+        // console.log(count, headers);
+        if (count === 2) {
+          stream.respond({
+            'content-type': 'text/plain; charset=utf-8',
+            'x-custom-h2': 'hello',
+            location: '/see-other',
+            ':status': 302,
+          });
+          stream.end();
+          return;
+        }
+        assert.equal(headers[':method'], 'GET');
+        stream.respond({
+          'content-type': 'text/plain; charset=utf-8',
+          'x-custom-h2': 'hello',
+          ':status': 200,
+        });
+        stream.end('hello h2!');
+      });
+
+      server.listen(0);
+      await once(server, 'listening');
+
+      const httpClient = new HttpClient({
+        allowH2: true,
+        connect: {
+          rejectUnauthorized: false,
+        },
+      });
+
+      const url = `https://localhost:${server.address()!.port}`;
+      let response = await httpClient.request<string>(url, {
+        dataType: 'text',
+        headers: {
+          'x-my-header': 'foo',
+        },
+      });
+      assert.equal(response.status, 200);
+      assert.equal(response.headers['x-custom-h2'], 'hello');
+      // console.log(response.res.socket, response.res.timing);
+      assert.equal(response.data, 'hello h2!');
+      await sleep(200);
+      response = await httpClient.request<string>(url, {
+        dataType: 'text',
+        headers: {
+          'x-my-header': 'foo2',
+        },
+        followRedirect: true,
+      });
+      assert.equal(response.status, 200);
+      assert.equal(response.headers['x-custom-h2'], 'hello');
+      // console.log(response.res.socket, response.res.timing);
+      assert.equal(response.data, 'hello h2!');
+    });
   });
 
   describe('clientOptions.defaultArgs', () => {
