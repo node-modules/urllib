@@ -720,6 +720,8 @@ export class HttpClient extends EventEmitter {
         err = new HttpClientRequestTimeoutError(headersTimeout, { cause: err });
       } else if (err.name === 'BodyTimeoutError') {
         err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: err });
+      } else if (err.name === 'InformationalError' && err.message.includes('stream timeout')) {
+        err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: err });
       } else if (err.code === 'UND_ERR_CONNECT_TIMEOUT') {
         err = new HttpClientConnectTimeoutError(err.message, err.code, { cause: err });
       } else if (err.code === 'UND_ERR_SOCKET' || err.code === 'ECONNRESET') {
