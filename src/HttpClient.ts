@@ -409,8 +409,9 @@ export class HttpClient extends EventEmitter {
 
     // streaming request should disable socketErrorRetry and retry
     let isStreamingRequest = false;
+    let isStreamingResponse = false;
     if (args.dataType === 'stream' || args.writeStream) {
-      isStreamingRequest = true;
+      isStreamingResponse = true;
     }
 
     let maxRedirects = args.maxRedirects ?? 10;
@@ -560,10 +561,15 @@ export class HttpClient extends EventEmitter {
       if (isStreamingRequest) {
         args.retry = 0;
         args.socketErrorRetry = 0;
+        maxRedirects = 0;
+      }
+      if (isStreamingResponse) {
+        args.retry = 0;
+        args.socketErrorRetry = 0;
       }
 
-      debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s, isStreamingRequest: %s, maxRedirections: %s, redirects: %s',
-        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout, isStreamingRequest, maxRedirects, requestContext.redirects);
+      debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s, isStreamingRequest: %s, isStreamingResponse: %s, maxRedirections: %s, redirects: %s',
+        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout, isStreamingRequest, isStreamingResponse, maxRedirects, requestContext.redirects);
       requestOptions.headers = headers;
       channels.request.publish({
         request: reqMeta,
@@ -605,7 +611,7 @@ export class HttpClient extends EventEmitter {
       }
 
       // https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
-      if (RedirectStatusCodes.includes(res.statusCode) && maxRedirects > 0 && requestContext.redirects < maxRedirects && !isStreamingRequest) {
+      if (RedirectStatusCodes.includes(res.statusCode) && maxRedirects > 0 && requestContext.redirects < maxRedirects) {
         if (res.headers.location) {
           requestContext.redirects++;
           const nextUrl = new URL(res.headers.location, requestUrl.href);
