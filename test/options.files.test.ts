@@ -36,6 +36,21 @@ describe('options.files.test.ts', () => {
     assert.equal(response.data.files.file.size, stat.size);
   });
 
+  it('should upload not exists file throw error', async () => {
+    const file = path.join(__dirname, 'cjs', 'index.js-not-exists');
+    await assert.rejects(async () => {
+      await urllib.request(`${_url}multipart`, {
+        files: [ file ],
+        dataType: 'json',
+      });
+    }, (err: any) => {
+      assert.equal(err.code, 'ENOENT');
+      assert.equal(err.res.status, -1);
+      assert.equal(err.status, -1);
+      return true;
+    });
+  });
+
   it('should upload files = [filepath] success with default POST method', async () => {
     const file = path.join(__dirname, 'cjs', 'index.js');
     const stat = await fs.stat(file);
