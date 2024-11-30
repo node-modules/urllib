@@ -8,20 +8,21 @@ import {
   Agent,
   getGlobalDispatcher,
   Pool,
+  Dispatcher,
 } from 'undici';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import undiciSymbols from 'undici/lib/core/symbols.js';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { getResponseState } from 'undici/lib/web/fetch/response.js';
+import undiciFetchSymbols from 'undici/lib/web/fetch/symbols.js';
 import {
   channels,
   ClientOptions,
   PoolStat,
   RequestDiagnosticsMessage,
   ResponseDiagnosticsMessage,
-  UndiciTimingInfo,
+  UnidiciTimingInfo,
 } from './HttpClient.js';
 import {
   HttpAgent,
@@ -50,7 +51,7 @@ export type FetchDiagnosticsMessage = {
 
 export type FetchResponseDiagnosticsMessage = {
   fetch: FetchMeta;
-  timingInfo?: UndiciTimingInfo;
+  timingInfo?: UnidiciTimingInfo;
   response?: Response;
   error?: Error;
 };
@@ -235,8 +236,8 @@ export class FetchFactory {
       throw e;
     }
 
-    // get undici internal response
-    const state = getResponseState(res!);
+    // get unidici internal response
+    const state = Reflect.get(res!, undiciFetchSymbols.kState) as Dispatcher.ResponseData;
     updateSocketInfo(socketInfo, internalOpaque /* , rawError */);
 
     urllibResponse.headers = convertHeader(res!.headers);
@@ -249,7 +250,7 @@ export class FetchFactory {
 
     channels.fetchResponse.publish({
       fetch: fetchMeta,
-      timingInfo: state.timingInfo,
+      timingInfo: (state as any).timingInfo,
       response: res!,
     } as FetchResponseDiagnosticsMessage);
     channels.response.publish({

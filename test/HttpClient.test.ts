@@ -1,11 +1,8 @@
 import { strict as assert } from 'node:assert';
 import dns from 'node:dns';
-import { once } from 'node:events';
-import { sensitiveHeaders, createSecureServer } from 'node:http2';
+import { sensitiveHeaders } from 'node:http2';
 import { PerformanceObserver } from 'node:perf_hooks';
-import { setTimeout as sleep } from 'node:timers/promises';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import pem from 'https-pem';
 import { HttpClient, RawResponseWithMeta, getGlobalDispatcher } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -54,10 +51,10 @@ describe('HttpClient.test.ts', () => {
       });
       let response = await httpClient.request('https://registry.npmmirror.com/urllib');
       assert.equal(response.status, 200);
-      // console.log(response.res.socket, response.res.timing);
+      console.log(response.res.socket, response.res.timing);
       response = await httpClient1.request('https://registry.npmmirror.com/urllib');
       assert.equal(response.status, 200);
-      // console.log(response.res.socket, response.res.timing);
+      console.log(response.res.socket, response.res.timing);
       // assert.equal(sensitiveHeaders in response.headers, true);
       assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
       assert.notEqual(httpClient.getDispatcher(), getGlobalDispatcher());
@@ -77,7 +74,7 @@ describe('HttpClient.test.ts', () => {
       assert.equal(response.status, 200);
       // assert.equal(sensitiveHeaders in response.headers, true);
       assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
-      // console.log(response.res.socket, response.res.timing);
+      console.log(response.res.socket, response.res.timing);
       await Promise.all([
         httpClient.request('https://registry.npmmirror.com/urllib'),
         httpClient.request('https://registry.npmmirror.com/urllib'),
@@ -112,124 +109,9 @@ describe('HttpClient.test.ts', () => {
         httpClient.request(_url),
         httpClient.request(_url),
       ]);
-      // console.log(httpClient.getDispatcherPoolStats());
+      console.log(httpClient.getDispatcherPoolStats());
       assert.equal(httpClient.getDispatcherPoolStats()['https://registry.npmmirror.com'].connected, 4);
       assert(httpClient.getDispatcherPoolStats()[_url.substring(0, _url.length - 1)].connected > 1);
-    });
-
-    it('should not exit after other side closed error', async () => {
-      const server = createSecureServer(pem);
-
-      let count = 0;
-      server.on('stream', (stream, headers) => {
-        count++;
-        if (count === 2) {
-          // SocketError: HTTP/2: "GOAWAY" frame received with code 0
-          stream.session!.destroy();
-          return;
-        }
-        assert.equal(headers[':method'], 'GET');
-        stream.respond({
-          'content-type': 'text/plain; charset=utf-8',
-          'x-custom-h2': 'hello',
-          ':status': 200,
-        });
-        stream.end('hello h2!');
-      });
-
-      server.listen(0);
-      await once(server, 'listening');
-
-      const httpClient = new HttpClient({
-        allowH2: true,
-        connect: {
-          rejectUnauthorized: false,
-        },
-      });
-
-      const url = `https://localhost:${server.address()!.port}`;
-      let response = await httpClient.request<string>(url, {
-        dataType: 'text',
-        headers: {
-          'x-my-header': 'foo',
-        },
-      });
-      assert.equal(response.status, 200);
-      assert.equal(response.headers['x-custom-h2'], 'hello');
-      // console.log(response.res.socket, response.res.timing);
-      assert.equal(response.data, 'hello h2!');
-      await sleep(200);
-      response = await httpClient.request<string>(url, {
-        dataType: 'text',
-        headers: {
-          'x-my-header': 'foo2',
-        },
-      });
-      assert.equal(response.status, 200);
-      assert.equal(response.headers['x-custom-h2'], 'hello');
-      // console.log(response.res.socket, response.res.timing);
-      assert.equal(response.data, 'hello h2!');
-    });
-
-    it('should auto redirect work', async () => {
-      const server = createSecureServer(pem);
-
-      let count = 0;
-      server.on('stream', (stream, headers) => {
-        count++;
-        // console.log(count, headers);
-        if (count === 2) {
-          stream.respond({
-            'content-type': 'text/plain; charset=utf-8',
-            'x-custom-h2': 'hello',
-            location: '/see-other',
-            ':status': 302,
-          });
-          stream.end();
-          return;
-        }
-        assert.equal(headers[':method'], 'GET');
-        stream.respond({
-          'content-type': 'text/plain; charset=utf-8',
-          'x-custom-h2': 'hello',
-          ':status': 200,
-        });
-        stream.end('hello h2!');
-      });
-
-      server.listen(0);
-      await once(server, 'listening');
-
-      const httpClient = new HttpClient({
-        allowH2: true,
-        connect: {
-          rejectUnauthorized: false,
-        },
-      });
-
-      const url = `https://localhost:${server.address()!.port}`;
-      let response = await httpClient.request<string>(url, {
-        dataType: 'text',
-        headers: {
-          'x-my-header': 'foo',
-        },
-      });
-      assert.equal(response.status, 200);
-      assert.equal(response.headers['x-custom-h2'], 'hello');
-      // console.log(response.res.socket, response.res.timing);
-      assert.equal(response.data, 'hello h2!');
-      await sleep(200);
-      response = await httpClient.request<string>(url, {
-        dataType: 'text',
-        headers: {
-          'x-my-header': 'foo2',
-        },
-        followRedirect: true,
-      });
-      assert.equal(response.status, 200);
-      assert.equal(response.headers['x-custom-h2'], 'hello');
-      // console.log(response.res.socket, response.res.timing);
-      assert.equal(response.data, 'hello h2!');
     });
   });
 

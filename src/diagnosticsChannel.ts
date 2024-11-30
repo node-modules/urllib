@@ -143,10 +143,7 @@ export function initDiagnosticsChannel() {
   subscribe('undici:client:sendHeaders', (message, name) => {
     const { request, socket } = message as DiagnosticsChannel.ClientSendHeadersMessage & { socket: SocketExtend };
     const opaque = getRequestOpaque(request, kHandler);
-    if (!opaque || !opaque[symbols.kRequestId]) {
-      debug('[%s] opaque not found', name);
-      return;
-    }
+    if (!opaque || !opaque[symbols.kRequestId]) return;
 
     (socket[symbols.kHandledRequests] as number)++;
     // attach socket to opaque
@@ -168,10 +165,7 @@ export function initDiagnosticsChannel() {
   subscribe('undici:request:bodySent', (message, name) => {
     const { request } = message as DiagnosticsChannel.RequestBodySentMessage;
     const opaque = getRequestOpaque(request, kHandler);
-    if (!opaque || !opaque[symbols.kRequestId]) {
-      debug('[%s] opaque not found', name);
-      return;
-    }
+    if (!opaque || !opaque[symbols.kRequestId]) return;
 
     debug('[%s] Request#%d send body', name, opaque[symbols.kRequestId]);
     if (!opaque[symbols.kEnableRequestTiming]) return;
@@ -182,10 +176,7 @@ export function initDiagnosticsChannel() {
   subscribe('undici:request:headers', (message, name) => {
     const { request, response } = message as DiagnosticsChannel.RequestHeadersMessage;
     const opaque = getRequestOpaque(request, kHandler);
-    if (!opaque || !opaque[symbols.kRequestId]) {
-      debug('[%s] opaque not found', name);
-      return;
-    }
+    if (!opaque || !opaque[symbols.kRequestId]) return;
 
     // get socket from opaque
     const socket = opaque[symbols.kRequestSocket];
@@ -208,7 +199,6 @@ export function initDiagnosticsChannel() {
     const { request } = message as DiagnosticsChannel.RequestTrailersMessage;
     const opaque = getRequestOpaque(request, kHandler);
     if (!opaque || !opaque[symbols.kRequestId]) {
-      debug('[%s] opaque not found', name);
       return;
     }
 

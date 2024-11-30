@@ -43,10 +43,7 @@ describe('diagnostics_channel.test.ts', () => {
           }
         }
       }
-      const handler = request[kHandler];
-      let opaque = handler.opaque || handler.opts?.opaque;
-      assert(opaque);
-      opaque = opaque[symbols.kRequestOriginalOpaque];
+      const opaque = request[kHandler].opts.opaque[symbols.kRequestOriginalOpaque];
       if (opaque && name === 'undici:client:sendHeaders' && socket) {
         socket[kRequests]++;
         opaque.tracer.socket = {

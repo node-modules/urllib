@@ -1,29 +1,19 @@
 import { strict as assert } from 'node:assert';
-import { createWriteStream } from 'node:fs';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import urllib from '../src/index.js';
-import { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
-import { createTempfile } from './utils.js';
 
-describe('options.followRedirect.test.ts', () => {
+describe('options.followRedirect.test.js', () => {
   let close: any;
   let _url: string;
-  let tmpfile: string;
-  let cleanup: any;
-
   beforeAll(async () => {
     const { closeServer, url } = await startServer();
     close = closeServer;
     _url = url;
-    const item = await createTempfile();
-    tmpfile = item.tmpfile;
-    cleanup = item.cleanup;
   });
 
   afterAll(async () => {
     await close();
-    await cleanup();
   });
 
   it('should redirect `location: /redirect-to-url`', async () => {
@@ -36,22 +26,6 @@ describe('options.followRedirect.test.ts', () => {
     assert.equal(response.statusText, 'OK');
     assert((response.data as Buffer).length > 100);
     assert.equal(response.url, `${_url}redirect-to-url`);
-    assert.equal(response.requestUrls.length, 2);
-  });
-
-  it('should follow redirect on writeStream ', async () => {
-    const requestURL = `${_url}redirect`;
-    const httpClient = new HttpClient({
-      allowH2: true,
-    });
-    const response = await httpClient.request(requestURL, {
-      followRedirect: true,
-      writeStream: createWriteStream(tmpfile),
-    });
-    assert.equal(response.res.statusCode, 200);
-    assert.equal(response.statusCode, response.res.statusCode);
-    assert.equal(response.statusText, 'OK');
-    assert.equal(response.data, null);
     assert.equal(response.requestUrls.length, 2);
   });
 
@@ -105,31 +79,15 @@ describe('options.followRedirect.test.ts', () => {
     assert.equal(requestUrls.length, 2);
   });
 
-  it('should urllib.redirect `location: /redirect-full-301-to-url`', async () => {
+  it('should redirect `location: /redirec-full-301-to-url`', async () => {
     const requestURL = `${_url}redirect-full-301`;
-    const { data, res, redirected, url, requestUrls } = await urllib.request<Buffer>(requestURL, {
+    const { data, res, redirected, url, requestUrls } = await urllib.request(requestURL, {
       followRedirect: true,
     });
-    // console.log(res.headers, res.status);
+    // console.log(res.headers);
     assert.equal(res.statusCode, 200);
-    // console.log(data.toString());
-    assert(data.length > 100);
-    assert.equal(redirected, true);
-    assert.equal(url, `${_url}redirect-full-301-to-url`);
-    assert.equal(requestUrls.length, 2);
-  });
-
-  it('should httpClient.redirect `location: /redirect-full-301-to-url`', async () => {
-    const requestURL = `${_url}redirect-full-301`;
-    const httpClient = new HttpClient();
-    const { data, res, redirected, url, requestUrls } = await httpClient.request<Buffer>(requestURL, {
-      followRedirect: true,
-    });
-    // console.log(res.headers, res.status);
-    assert.equal(res.statusCode, 200);
-    // console.log(data.toString());
-    assert(data.length > 100);
-    assert.equal(redirected, true);
+    assert((data as Buffer).length > 100);
+    assert(redirected);
     assert.equal(url, `${_url}redirect-full-301-to-url`);
     assert.equal(requestUrls.length, 2);
   });

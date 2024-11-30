@@ -70,7 +70,7 @@ export class HttpAgent extends Agent {
     this.#checkAddress = options.checkAddress;
   }
 
-  dispatch(options: Agent.DispatchOptions, handler: Dispatcher.DispatchHandler): boolean {
+  dispatch(options: Agent.DispatchOptions, handler: Dispatcher.DispatchHandlers): boolean {
     if (this.#checkAddress && options.origin) {
       const originUrl = typeof options.origin === 'string' ? new URL(options.origin) : options.origin;
       let hostname = originUrl.hostname;
