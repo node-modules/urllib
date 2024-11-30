@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.5.0](https://github.com/node-modules/urllib/compare/v4.4.0...v4.5.0) (2024-11-30)
+
+
+### Features
+
+* upgrade to undici v7 ([#547](https://github.com/node-modules/urllib/issues/547)) ([9803c4e](https://github.com/node-modules/urllib/commit/9803c4e1fda2b56a7540eb45dde57caf25f969d6))
+
 ## [4.4.0](https://github.com/node-modules/urllib/compare/v4.3.1...v4.4.0) (2024-10-08)
 
 
