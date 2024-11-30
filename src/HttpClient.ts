@@ -24,7 +24,6 @@ import {
   getGlobalDispatcher,
   Pool,
 } from 'undici';
-import { FormData } from './FormData.js';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import undiciSymbols from 'undici/lib/core/symbols.js';
@@ -32,6 +31,7 @@ import mime from 'mime-types';
 import qs from 'qs';
 // Compatible with old style formstream
 import FormStream from 'formstream';
+import { FormData } from './FormData.js';
 import { HttpAgent, CheckAddressFunction } from './HttpAgent.js';
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import { RequestURL, RequestOptions, HttpMethod, RequestMeta } from './Request.js';
