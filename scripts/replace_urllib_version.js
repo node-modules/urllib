@@ -13,8 +13,9 @@ async function main() {
   for (const file of files) {
     const content = await fs.readFile(file, 'utf-8');
     // replace "const VERSION = 'VERSION';" to "const VERSION = '4.0.0';"
-    const newContent = content.replace(/const VERSION = 'VERSION';/, match => {
-      const after = `const VERSION = '${pkg.version}';`;
+    // "exports.VERSION = 'VERSION';" => "exports.VERSION = '4.0.0';"
+    const newContent = content.replace(/ = 'VERSION';/, match => {
+      const after = ` = '${pkg.version}';`;
       console.log('[%s] %s => %s', file, match, after);
       return after;
     });

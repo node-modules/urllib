@@ -1,6 +1,9 @@
 import { strict as assert } from 'node:assert';
+import { createSecureServer } from 'node:http2';
+import { once } from 'node:events';
+import pem from 'https-pem';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import urllib, { HttpClientRequestTimeoutError } from '../src/index.js';
+import urllib, { HttpClientRequestTimeoutError, HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
 describe('options.timeout.test.ts', () => {
@@ -28,6 +31,42 @@ describe('options.timeout.test.ts', () => {
       assert.equal(err.cause.name, 'HeadersTimeoutError');
       assert.equal(err.cause.message, 'Headers Timeout Error');
       assert.equal(err.cause.code, 'UND_ERR_HEADERS_TIMEOUT');
+
+      assert.equal(err.res.status, -1);
+      assert(err.res.rt > 10, `actual ${err.res.rt}`);
+      assert.equal(typeof err.res.rt, 'number');
+      return true;
+    });
+  });
+
+  it('should timeout on h2', async () => {
+    const httpClient = new HttpClient({
+      allowH2: true,
+      connect: {
+        rejectUnauthorized: false,
+      },
+    });
+    const server = createSecureServer(pem);
+
+    server.on('stream', () => {
+      // wait for timeout
+    });
+
+    server.listen(0);
+    await once(server, 'listening');
+
+    const url = `https://localhost:${server.address()!.port}`;
+    await assert.rejects(async () => {
+      await httpClient.request(url, {
+        timeout: 10,
+      });
+    }, (err: any) => {
+      // console.error(err);
+      assert.equal(err.name, 'HttpClientRequestTimeoutError');
+      assert.equal(err.message, 'Request timeout for 10 ms');
+      assert.equal(err.cause.name, 'InformationalError');
+      assert.equal(err.cause.message, 'HTTP/2: "stream timeout after 10"');
+      assert.equal(err.cause.code, 'UND_ERR_INFO');
 
       assert.equal(err.res.status, -1);
       assert(err.res.rt > 10, `actual ${err.res.rt}`);

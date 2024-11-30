@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
+import diagnosticsChannel from 'node:diagnostics_channel';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import { startServer } from './fixtures/server.js';
-import { fetch, FetchDiagnosticsMessage, FetchFactory, FetchResponseDiagnosticsMessage } from '../src/fetch.js';
+import {
+  fetch, FetchDiagnosticsMessage, FetchFactory, FetchResponseDiagnosticsMessage,
+} from '../src/fetch.js';
 import { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../src/HttpClient.js';
-import diagnosticsChannel from 'node:diagnostics_channel';
 
 describe('fetch.test.ts', () => {
   let close: any;

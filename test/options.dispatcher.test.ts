@@ -40,7 +40,7 @@ describe('options.dispatcher.test.ts', () => {
     assert.equal(response.status, 200);
     assert.equal(response.data, '<h1>hello</h1>');
 
-    const response2 = await request('http://registry.npmmirror.com/urllib/latest', {
+    const response2 = await request('https://registry.npmmirror.com/urllib/latest', {
       dispatcher: proxyAgent,
       dataType: 'json',
       timing: true,

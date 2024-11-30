@@ -1,6 +1,6 @@
 {
   "name": "urllib",
-  "version": "4.4.0",
+  "version": "4.5.0-beta.3",
   "publishConfig": {
     "tag": "latest"
   },
@@ -44,11 +44,12 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "form-data": "^4.0.1",
     "formstream": "^1.5.1",
     "mime-types": "^2.1.35",
     "qs": "^6.12.1",
     "type-fest": "^4.20.1",
-    "undici": "^6.19.2",
+    "undici": "^7.0.0",
     "ylru": "^2.0.0"
   },
   "devDependencies": {
@@ -68,6 +69,7 @@
     "cross-env": "^7.0.3",
     "eslint": "8",
     "eslint-config-egg": "14",
+    "https-pem": "^3.0.0",
     "iconv-lite": "^0.6.3",
     "proxy": "^1.0.2",
     "selfsigned": "^2.0.1",

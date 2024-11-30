@@ -9,7 +9,6 @@ import {
   gunzipSync,
   brotliDecompressSync,
 } from 'node:zlib';
-import { Blob } from 'node:buffer';
 import { Readable, pipeline } from 'node:stream';
 import { pipeline as pipelinePromise } from 'node:stream/promises';
 import { basename } from 'node:path';
@@ -19,7 +18,6 @@ import { performance } from 'node:perf_hooks';
 import querystring from 'node:querystring';
 import { setTimeout as sleep } from 'node:timers/promises';
 import {
-  FormData,
   request as undiciRequest,
   Dispatcher,
   Agent,
@@ -33,6 +31,7 @@ import mime from 'mime-types';
 import qs from 'qs';
 // Compatible with old style formstream
 import FormStream from 'formstream';
+import { FormData } from './FormData.js';
 import { HttpAgent, CheckAddressFunction } from './HttpAgent.js';
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import { RequestURL, RequestOptions, HttpMethod, RequestMeta } from './Request.js';
@@ -49,7 +48,7 @@ type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', Inc
 
 export const PROTO_RE = /^https?:\/\//i;
 
-export interface UnidiciTimingInfo {
+export interface UndiciTimingInfo {
   startTime: number;
   redirectStartTime: number;
   redirectEndTime: number;
@@ -69,6 +68,9 @@ export interface UnidiciTimingInfo {
     // ALPNNegotiatedProtocol: undefined
   };
 }
+
+// keep typo compatibility
+export interface UnidiciTimingInfo extends UndiciTimingInfo {}
 
 function noop() {
   // noop
@@ -113,28 +115,6 @@ export type ClientOptions = {
   },
 };
 
-// https://github.com/octet-stream/form-data
-class BlobFromStream {
-  #stream;
-  #type;
-  constructor(stream: Readable, type: string) {
-    this.#stream = stream;
-    this.#type = type;
-  }
-
-  stream() {
-    return this.#stream;
-  }
-
-  get type(): string {
-    return this.#type;
-  }
-
-  get [Symbol.toStringTag]() {
-    return 'Blob';
-  }
-}
-
 export const VERSION = 'VERSION';
 // 'node-urllib/4.0.0 Node.js/18.19.0 (darwin; x64)'
 export const HEADER_USER_AGENT =
@@ -156,6 +136,8 @@ export type RequestContext = {
   retries: number;
   socketErrorRetries: number;
   requestStartTime?: number;
+  redirects: number;
+  history: string[];
 };
 
 export const channels = {
@@ -189,6 +171,15 @@ export interface PoolStat {
   /** Number of active, pending, or queued requests across all clients in this pool. */
   size: number;
 }
+
+// https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
+const RedirectStatusCodes = [
+  301, // Moved Permanently
+  302, // Found
+  303, // See Other
+  307, // Temporary Redirect
+  308, // Permanent Redirect
+];
 
 export class HttpClient extends EventEmitter {
   #defaultArgs?: RequestOptions;
@@ -294,11 +285,14 @@ export class HttpClient extends EventEmitter {
     requestContext = {
       retries: 0,
       socketErrorRetries: 0,
+      redirects: 0,
+      history: [],
       ...requestContext,
     };
     if (!requestContext.requestStartTime) {
       requestContext.requestStartTime = performance.now();
     }
+    requestContext.history.push(requestUrl.href);
     const requestStartTime = requestContext.requestStartTime;
 
     // https://developer.chrome.com/docs/devtools/network/reference/?utm_source=devtools#timing-explanation
@@ -358,7 +352,7 @@ export class HttpClient extends EventEmitter {
       aborted: false,
       rt: 0,
       keepAliveSocket: true,
-      requestUrls: [],
+      requestUrls: requestContext.history,
       timing,
       socket: socketInfo,
       retries: requestContext.retries,
@@ -415,14 +409,18 @@ export class HttpClient extends EventEmitter {
 
     // streaming request should disable socketErrorRetry and retry
     let isStreamingRequest = false;
+    let isStreamingResponse = false;
     if (args.dataType === 'stream' || args.writeStream) {
-      isStreamingRequest = true;
+      isStreamingResponse = true;
     }
+
+    let maxRedirects = args.maxRedirects ?? 10;
 
     try {
       const requestOptions: IUndiciRequestOption = {
         method,
-        maxRedirections: args.maxRedirects ?? 10,
+        // disable undici auto redirect handler
+        maxRedirections: 0,
         headersTimeout,
         headers,
         bodyTimeout,
@@ -437,7 +435,7 @@ export class HttpClient extends EventEmitter {
         requestOptions.reset = args.reset;
       }
       if (args.followRedirect === false) {
-        requestOptions.maxRedirections = 0;
+        maxRedirects = 0;
       }
 
       const isGETOrHEAD = requestOptions.method === 'GET' || requestOptions.method === 'HEAD';
@@ -487,21 +485,28 @@ export class HttpClient extends EventEmitter {
           }
         }
         for (const [ index, [ field, file, customFileName ]] of uploadFiles.entries()) {
+          let fileName = '';
+          let value: any;
           if (typeof file === 'string') {
-            // FIXME: support non-ascii filename
-            // const fileName = encodeURIComponent(basename(file));
-            // formData.append(field, await fileFromPath(file, `utf-8''${fileName}`, { type: mime.lookup(fileName) || '' }));
-            const fileName = basename(file);
-            const fileReadable = createReadStream(file);
-            formData.append(field, new BlobFromStream(fileReadable, mime.lookup(fileName) || ''), fileName);
+            fileName = basename(file);
+            value = createReadStream(file);
           } else if (Buffer.isBuffer(file)) {
-            formData.append(field, new Blob([ file ]), customFileName || `bufferfile${index}`);
+            fileName = customFileName || `bufferfile${index}`;
+            value = file;
           } else if (file instanceof Readable || isReadable(file as any)) {
-            const fileName = getFileName(file) || customFileName || `streamfile${index}`;
-            formData.append(field, new BlobFromStream(file, mime.lookup(fileName) || ''), fileName);
+            fileName = getFileName(file) || customFileName || `streamfile${index}`;
             isStreamingRequest = true;
+            value = file;
           }
+          const mimeType = mime.lookup(fileName) || '';
+          formData.append(field, value, {
+            filename: fileName,
+            contentType: mimeType,
+          });
+          debug('formData append field: %s, mimeType: %s, fileName: %s',
+            field, mimeType, fileName);
         }
+        Object.assign(headers, formData.getHeaders());
         requestOptions.body = formData;
       } else if (args.content) {
         if (!isGETOrHEAD) {
@@ -556,10 +561,15 @@ export class HttpClient extends EventEmitter {
       if (isStreamingRequest) {
         args.retry = 0;
         args.socketErrorRetry = 0;
+        maxRedirects = 0;
+      }
+      if (isStreamingResponse) {
+        args.retry = 0;
+        args.socketErrorRetry = 0;
       }
 
-      debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s, isStreamingRequest: %s',
-        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout, isStreamingRequest);
+      debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s, isStreamingRequest: %s, isStreamingResponse: %s, maxRedirections: %s, redirects: %s',
+        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout, isStreamingRequest, isStreamingResponse, maxRedirects, requestContext.redirects);
       requestOptions.headers = headers;
       channels.request.publish({
         request: reqMeta,
@@ -590,18 +600,6 @@ export class HttpClient extends EventEmitter {
           response = await undiciRequest(requestUrl, requestOptions as UndiciRequestOption);
         }
       }
-
-      const context = response.context as { history: URL[] };
-      let lastUrl = '';
-      if (context?.history) {
-        for (const urlObject of context?.history) {
-          res.requestUrls.push(urlObject.href);
-          lastUrl = urlObject.href;
-        }
-      } else {
-        res.requestUrls.push(requestUrl.href);
-        lastUrl = requestUrl.href;
-      }
       const contentEncoding = response.headers['content-encoding'];
       const isCompressedContent = contentEncoding === 'gzip' || contentEncoding === 'br';
 
@@ -610,6 +608,19 @@ export class HttpClient extends EventEmitter {
       res.statusMessage = res.statusText = STATUS_CODES[res.status] || '';
       if (res.headers['content-length']) {
         res.size = parseInt(res.headers['content-length']);
+      }
+
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
+      if (RedirectStatusCodes.includes(res.statusCode) && maxRedirects > 0 && requestContext.redirects < maxRedirects) {
+        if (res.headers.location) {
+          requestContext.redirects++;
+          const nextUrl = new URL(res.headers.location, requestUrl.href);
+          // Ensure the response is consumed
+          await response.body.arrayBuffer();
+          debug('Request#%d got response, status: %s, headers: %j, timing: %j, redirect to %s',
+            requestId, res.status, res.headers, res.timing, nextUrl.href);
+          return await this.#requestInternal(nextUrl.href, options, requestContext);
+        }
       }
 
       let data: any = null;
@@ -663,11 +674,14 @@ export class HttpClient extends EventEmitter {
         statusCode: res.status,
         statusText: res.statusText,
         headers: res.headers,
-        url: lastUrl,
-        redirected: res.requestUrls.length > 1,
+        url: requestUrl.href,
+        redirected: requestContext.history.length > 1,
         requestUrls: res.requestUrls,
         res,
       };
+
+      debug('Request#%d got response, status: %s, headers: %j, timing: %j',
+        requestId, res.status, res.headers, res.timing);
 
       if (args.retry > 0 && requestContext.retries < args.retry) {
         const isRetry = args.isRetry ?? defaultIsRetry;
@@ -680,8 +694,6 @@ export class HttpClient extends EventEmitter {
         }
       }
 
-      debug('Request#%d got response, status: %s, headers: %j, timing: %j',
-        requestId, res.status, res.headers, res.timing);
       channels.response.publish({
         request: reqMeta,
         response: res,
@@ -701,11 +713,14 @@ export class HttpClient extends EventEmitter {
 
       return clientResponse;
     } catch (rawError: any) {
-      debug('Request#%d throw error: %s', requestId, rawError);
+      debug('Request#%d throw error: %s, socketErrorRetry: %s, socketErrorRetries: %s',
+        requestId, rawError, args.socketErrorRetry, requestContext.socketErrorRetries);
       let err = rawError;
       if (err.name === 'HeadersTimeoutError') {
         err = new HttpClientRequestTimeoutError(headersTimeout, { cause: err });
       } else if (err.name === 'BodyTimeoutError') {
+        err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: err });
+      } else if (err.name === 'InformationalError' && err.message.includes('stream timeout')) {
         err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: err });
       } else if (err.code === 'UND_ERR_CONNECT_TIMEOUT') {
         err = new HttpClientConnectTimeoutError(err.message, err.code, { cause: err });
@@ -713,6 +728,8 @@ export class HttpClient extends EventEmitter {
         // auto retry on socket error, https://github.com/node-modules/urllib/issues/454
         if (args.socketErrorRetry > 0 && requestContext.socketErrorRetries < args.socketErrorRetry) {
           requestContext.socketErrorRetries++;
+          debug('Request#%d retry on socket error, socketErrorRetries: %d',
+            requestId, requestContext.socketErrorRetries);
           return await this.#requestInternal(url, options, requestContext);
         }
       }
@@ -725,10 +742,6 @@ export class HttpClient extends EventEmitter {
         err._rawSocket = err.socket;
       }
       err.socket = socketInfo;
-      // make sure requestUrls not empty
-      if (res.requestUrls.length === 0) {
-        res.requestUrls.push(requestUrl.href);
-      }
       res.rt = performanceTime(requestStartTime);
       updateSocketInfo(socketInfo, internalOpaque, rawError);
 

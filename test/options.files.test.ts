@@ -36,6 +36,21 @@ describe('options.files.test.ts', () => {
     assert.equal(response.data.files.file.size, stat.size);
   });
 
+  it('should upload not exists file throw error', async () => {
+    const file = path.join(__dirname, 'cjs', 'index.js-not-exists');
+    await assert.rejects(async () => {
+      await urllib.request(`${_url}multipart`, {
+        files: [ file ],
+        dataType: 'json',
+      });
+    }, (err: any) => {
+      assert.equal(err.code, 'ENOENT');
+      assert.equal(err.res.status, -1);
+      assert.equal(err.status, -1);
+      return true;
+    });
+  });
+
   it('should upload files = [filepath] success with default POST method', async () => {
     const file = path.join(__dirname, 'cjs', 'index.js');
     const stat = await fs.stat(file);
@@ -214,13 +229,13 @@ describe('options.files.test.ts', () => {
   it('should upload a file with args.data success', async () => {
     const stat = await fs.stat(__filename);
     const largeFormValue = await fs.readFile(__filename, 'utf-8');
-    // emoji not work on windows node.js >= 20
-    // const txt = path.join(__dirname, 'fixtures', '😄foo😭.txt');
+    const txtEmoji = path.join(__dirname, 'fixtures', '😄foo😭.txt');
+    const txtEmojiStat = await fs.stat(txtEmoji);
     const txt = path.join(__dirname, 'fixtures', 'foo.txt');
     const txtValue = await fs.readFile(txt, 'utf-8');
     const response = await urllib.request(`${_url}multipart`, {
       method: 'HEAD',
-      files: [ __filename ],
+      files: [ __filename, txtEmoji ],
       data: {
         hello: 'hello world，😄😓',
         // \r\n => \n, should encodeURIComponent first
@@ -236,8 +251,13 @@ describe('options.files.test.ts', () => {
     assert.equal(response.data.files.file.filename, 'options.files.test.ts');
     assert.equal(response.data.files.file.mimeType, 'video/mp2t');
     assert.equal(response.data.files.file.size, stat.size);
+    assert.equal(response.data.files.file1.filename, '😄foo😭.txt');
+    assert.equal(response.data.files.file1.mimeType, 'text/plain');
+    assert.equal(response.data.files.file1.size, txtEmojiStat.size);
     assert.equal(response.data.form.hello, 'hello world，😄😓');
-    assert.equal(JSON.stringify(decodeURIComponent(response.data.form.txtValue)), JSON.stringify(txtValue));
+    assert.equal(
+      JSON.stringify(decodeURIComponent(response.data.form.txtValue)),
+      JSON.stringify(txtValue));
     assert.equal(decodeURIComponent(response.data.form.txtValue), txtValue);
     assert.equal(decodeURIComponent(response.data.form.large), largeFormValue);
   });
@@ -293,7 +313,7 @@ describe('options.files.test.ts', () => {
     assert.equal(response.data.files['readable.js'].mimeType, 'application/javascript');
 
     assert.equal(response.data.files['buffer.js'].filename, 'buffer.js');
-    assert.equal(response.data.files['buffer.js'].mimeType, 'application/octet-stream');
+    assert.equal(response.data.files['buffer.js'].mimeType, 'application/javascript');
     assert.equal(response.data.files['buffer.js'].size, rawData.length);
 
     assert.equal(response.data.form.hello, 'hello world，😄😓');
