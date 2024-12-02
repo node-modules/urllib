@@ -1,6 +1,8 @@
 import { randomBytes, createHash } from 'node:crypto';
 import { Readable } from 'node:stream';
 import { performance } from 'node:perf_hooks';
+import { ReadableStream } from 'node:stream/web';
+import { Blob } from 'node:buffer';
 import type { FixJSONCtlChars } from './Request.js';
 import { SocketInfo } from './Response.js';
 import symbols from './symbols.js';
@@ -204,4 +206,30 @@ export function convertHeader(headers: Headers): IncomingHttpHeaders {
     }
   }
   return res;
+}
+
+// support require from Node.js 16
+export function patchForNode16() {
+  if (typeof global.ReadableStream === 'undefined') {
+    // @ts-ignore
+    global.ReadableStream = ReadableStream;
+  }
+  if (typeof global.Blob === 'undefined') {
+    // @ts-ignore
+    global.Blob = Blob;
+  }
+  if (typeof global.DOMException === 'undefined') {
+    // @ts-ignore
+    global.DOMException = getDOMExceptionClass();
+  }
+}
+
+// https://github.com/jimmywarting/node-domexception/blob/main/index.js
+function getDOMExceptionClass() {
+  try {
+    // @ts-ignore
+    atob(0);
+  } catch (err: any) {
+    return err.constructor;
+  }
 }
