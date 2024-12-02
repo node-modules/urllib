@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.5.1](https://github.com/node-modules/urllib/compare/v4.5.0...v4.5.1) (2024-12-02)
+
+
+### Bug Fixes
+
+* support use on Node.js 16 ([#550](https://github.com/node-modules/urllib/issues/550)) ([78e1336](https://github.com/node-modules/urllib/commit/78e1336997dc0f86b8e7da98f572753da0de91cb))
+
 ## [4.5.0](https://github.com/node-modules/urllib/compare/v4.4.0...v4.5.0) (2024-11-30)
 
 
