@@ -1,4 +1,8 @@
 import { LRU } from 'ylru';
+import { patchForNode16 } from './utils.js';
+
+patchForNode16();
+
 import { HttpClient, HEADER_USER_AGENT } from './HttpClient.js';
 import { RequestOptions, RequestURL } from './Request.js';
 
