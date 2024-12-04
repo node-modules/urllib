@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.2](https://github.com/node-modules/urllib/compare/v4.6.1...v4.6.2) (2024-12-04)
+
+
+### Bug Fixes
+
+* fix socket info if fetch failed ([#556](https://github.com/node-modules/urllib/issues/556)) ([e9f4258](https://github.com/node-modules/urllib/commit/e9f425885aaa51258180048c5178d62af6da91d3))
+
 ## [4.6.1](https://github.com/node-modules/urllib/compare/v4.6.0...v4.6.1) (2024-12-04)
 
 
