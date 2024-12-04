@@ -173,13 +173,13 @@ export function updateSocketInfo(socketInfo: SocketInfo, internalOpaque: any, er
       socketInfo.remotePort = socket.remotePort;
       socketInfo.remoteFamily = socket.remoteFamily;
     }
+    if (Array.isArray(socket.autoSelectFamilyAttemptedAddresses)) {
+      socketInfo.attemptedRemoteAddresses = socket.autoSelectFamilyAttemptedAddresses;
+    }
     socketInfo.bytesRead = socket.bytesRead;
     socketInfo.bytesWritten = socket.bytesWritten;
     if (socket[symbols.kSocketConnectErrorTime]) {
       socketInfo.connectErrorTime = socket[symbols.kSocketConnectErrorTime];
-      if (Array.isArray(socket.autoSelectFamilyAttemptedAddresses)) {
-        socketInfo.attemptedRemoteAddresses = socket.autoSelectFamilyAttemptedAddresses;
-      }
       socketInfo.connectProtocol = socket[symbols.kSocketConnectProtocol];
       socketInfo.connectHost = socket[symbols.kSocketConnectHost];
       socketInfo.connectPort = socket[symbols.kSocketConnectPort];
