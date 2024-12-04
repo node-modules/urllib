@@ -45,7 +45,7 @@ export {
   setGlobalDispatcher, getGlobalDispatcher,
   Request, RequestInfo, RequestInit,
   Response, BodyInit, ResponseInit,
-  Headers, FormData, File,
+  Headers, FormData,
 } from 'undici';
 // HttpClient2 is keep compatible with urllib@2 HttpClient2
 export {

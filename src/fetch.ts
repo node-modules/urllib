@@ -225,7 +225,7 @@ export class FetchFactory {
     } catch (e: any) {
       channels.fetchResponse.publish({
         fetch: fetchMeta,
-        error: e,n
+        error: e,
       } as FetchResponseDiagnosticsMessage);
       channels.response.publish({
         request: reqMeta,
