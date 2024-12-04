@@ -57,4 +57,44 @@ describe('fetch.test.ts', () => {
     assert(stats);
     assert(Object.keys(stats).length > 0);
   });
+
+  it('fetch error should has socket info', async () => {
+    let requestDiagnosticsMessage: RequestDiagnosticsMessage;
+    let responseDiagnosticsMessage: ResponseDiagnosticsMessage;
+    let fetchDiagnosticsMessage: FetchDiagnosticsMessage;
+    let fetchResponseDiagnosticsMessage: FetchResponseDiagnosticsMessage;
+    diagnosticsChannel.subscribe('urllib:request', msg => {
+      requestDiagnosticsMessage = msg as RequestDiagnosticsMessage;
+    });
+    diagnosticsChannel.subscribe('urllib:response', msg => {
+      responseDiagnosticsMessage = msg as ResponseDiagnosticsMessage;
+    });
+    diagnosticsChannel.subscribe('urllib:fetch:request', msg => {
+      fetchDiagnosticsMessage = msg as FetchDiagnosticsMessage;
+    });
+    diagnosticsChannel.subscribe('urllib:fetch:response', msg => {
+      fetchResponseDiagnosticsMessage = msg as FetchResponseDiagnosticsMessage;
+    });
+    FetchFactory.setClientOptions({});
+
+    try {
+      await fetch(`${_url}html?timeout=9999`, {
+        signal: AbortSignal.timeout(100),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    assert(requestDiagnosticsMessage!.request);
+    assert(responseDiagnosticsMessage!.request);
+    assert(responseDiagnosticsMessage!.response);
+    assert([ '127.0.0.1', '::1' ].includes(responseDiagnosticsMessage!.response.socket.localAddress));
+
+    assert(fetchDiagnosticsMessage!.fetch);
+    assert(fetchResponseDiagnosticsMessage!.fetch);
+
+    const stats = FetchFactory.getDispatcherPoolStats();
+    assert(stats);
+    assert(Object.keys(stats).length > 0);
+  });
 });

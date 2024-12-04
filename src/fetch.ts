@@ -218,6 +218,8 @@ export class FetchFactory {
         res = await UndiciFetch(input, init);
       });
     } catch (e: any) {
+      updateSocketInfo(socketInfo, internalOpaque /* , rawError */);
+      urllibResponse.rt = performanceTime(requestStartTime);
       channels.fetchResponse.publish({
         fetch: fetchMeta,
         error: e,

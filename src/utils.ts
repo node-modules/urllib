@@ -159,6 +159,7 @@ export function isReadable(stream: any) {
 
 export function updateSocketInfo(socketInfo: SocketInfo, internalOpaque: any, err?: any) {
   const socket = internalOpaque[symbols.kRequestSocket] ?? err?.[symbols.kErrorSocket];
+
   if (socket) {
     socketInfo.id = socket[symbols.kSocketId];
     socketInfo.handledRequests = socket[symbols.kHandledRequests];
