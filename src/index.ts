@@ -44,7 +44,8 @@ export {
   MockAgent, ProxyAgent, Agent, Dispatcher,
   setGlobalDispatcher, getGlobalDispatcher,
   Request, RequestInfo, RequestInit,
-  Response,
+  Response, BodyInit, ResponseInit,
+  Headers, FormData,
 } from 'undici';
 // HttpClient2 is keep compatible with urllib@2 HttpClient2
 export {
