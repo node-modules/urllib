@@ -223,11 +223,11 @@ export class FetchFactory {
         res = await UndiciFetch(input, init);
       });
     } catch (e: any) {
-      channels.response.publish({
-        fetch: fetchMeta,
-        error: e,
-      } as FetchResponseDiagnosticsMessage);
       channels.fetchResponse.publish({
+        fetch: fetchMeta,
+        error: e,n
+      } as FetchResponseDiagnosticsMessage);
+      channels.response.publish({
         request: reqMeta,
         response: urllibResponse,
         error: e,
