@@ -46,7 +46,7 @@ describe('fetch.test.ts', () => {
     assert(requestDiagnosticsMessage!.request);
     assert(responseDiagnosticsMessage!.request);
     assert(responseDiagnosticsMessage!.response);
-    assert.equal(responseDiagnosticsMessage!.response.socket.localAddress, '127.0.0.1');
+    assert([ '127.0.0.1', '::1' ].includes(responseDiagnosticsMessage!.response.socket.localAddress));
 
     assert(fetchDiagnosticsMessage!.fetch);
     assert(fetchResponseDiagnosticsMessage!.fetch);
