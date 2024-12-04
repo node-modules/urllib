@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.1](https://github.com/node-modules/urllib/compare/v4.6.0...v4.6.1) (2024-12-04)
+
+
+### Bug Fixes
+
+* fix socket info in response ([#555](https://github.com/node-modules/urllib/issues/555)) ([629c7a3](https://github.com/node-modules/urllib/commit/629c7a304998f921b5a9678808be3f28ac267f81))
+
 ## [4.6.0](https://github.com/node-modules/urllib/compare/v4.5.1...v4.6.0) (2024-12-04)
 
 
