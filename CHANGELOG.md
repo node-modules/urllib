@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.0](https://github.com/node-modules/urllib/compare/v4.5.1...v4.6.0) (2024-12-04)
+
+
+### Features
+
+* exports undici ([#554](https://github.com/node-modules/urllib/issues/554)) ([3c9fca7](https://github.com/node-modules/urllib/commit/3c9fca7c339753fa6d6430fb5659e6d11fc20997))
+
 ## [4.5.1](https://github.com/node-modules/urllib/compare/v4.5.0...v4.5.1) (2024-12-02)
 
 
