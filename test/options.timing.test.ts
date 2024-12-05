@@ -17,55 +17,68 @@ describe('options.timing.test.ts', () => {
     await close();
   });
 
-  it.only('should timing = true work', async () => {
-    // _url = _url.replace('localhost', '127.0.0.1');
+  it('should timing = true work', async () => {
+    _url = _url.replace('localhost', '127.0.0.1');
     let response = await urllib.request(`${_url}?content-encoding=gzip`, {
       dataType: 'json',
       timing: true,
     });
     assert.equal(response.status, 200);
     let res = response.res as RawResponseWithMeta;
-    console.log(res.timing);
-    // assert(res.timing.waiting > 0);
-    // assert(res.timing.dnslookup > 0);
-    // assert(res.timing.queuing > 0);
-    // assert(res.timing.connected > 0);
-    // assert(res.timing.requestHeadersSent > 0);
-    // assert(res.timing.requestSent > 0);
-    // assert(res.timing.contentDownload > 0);
-    // assert(res.timing.contentDownload > res.timing.waiting);
-    // assert(res.timing.contentDownload <= res.rt);
-    assert(res.socket.handledResponses === 1);
+    // console.log(res.timing);
+    assert(res.timing.waiting > 0);
+    assert(res.timing.dnslookup > 0);
+    assert(res.timing.queuing > 0);
+    assert(res.timing.connected > 0);
+    assert(res.timing.requestHeadersSent > 0);
+    assert(res.timing.requestSent > 0);
+    assert(res.timing.contentDownload > 0);
+    assert(res.timing.contentDownload > res.timing.waiting);
+    assert(res.timing.contentDownload <= res.rt);
+    assert.equal(res.socket.handledRequests, 1);
+    assert.equal(res.socket.handledResponses, 1);
 
     // again connected should be zero
-    await sleep(1000);
+    await sleep(1);
 
     response = await urllib.request(`${_url}?content-encoding=gzip`, {
       dataType: 'json',
       timing: true,
     });
-    await sleep(1000);
-    console.log(response);
     assert.equal(response.status, 200);
     res = response.res as RawResponseWithMeta;
-    console.log(res.timing);
-    // assert.equal(res.timing.waiting, 0);
-    // assert(res.timing.dnslookup > 0);
-    // assert(res.timing.queuing > 0);
-    // assert.equal(res.timing.connected, 0);
-    // assert(res.timing.requestHeadersSent > 0);
-    // assert(res.timing.requestSent > 0);
-    // assert(res.timing.contentDownload > 0);
-    // assert(res.timing.contentDownload > res.timing.waiting);
-    // assert(res.timing.contentDownload <= res.rt);
-    // assert(res.socket.handledResponses === 2);
+    // console.log(res.timing);
+    assert(res.timing.waiting > 0);
+    assert(res.timing.dnslookup > 0);
+    assert(res.timing.queuing > 0);
+    assert.equal(res.timing.connected, 0);
+    assert(res.timing.requestHeadersSent > 0);
+    assert(res.timing.requestSent > 0);
+    assert(res.timing.contentDownload > 0);
+    assert(res.timing.contentDownload > res.timing.waiting);
+    assert(res.timing.contentDownload <= res.rt);
+    assert.equal(res.socket.handledRequests, 2);
+    assert.equal(res.socket.handledResponses, 2);
+
+    await sleep(1);
 
     response = await urllib.request(`${_url}?content-encoding=gzip`, {
       dataType: 'json',
       timing: true,
     });
-    await sleep(1000);
-    console.log(response);
+    res = response.res as RawResponseWithMeta;
+    // console.log(res.timing);
+    assert(res.timing.waiting > 0);
+    assert(res.timing.dnslookup > 0);
+    assert(res.timing.queuing > 0);
+    assert.equal(res.timing.connected, 0);
+    assert(res.timing.requestHeadersSent > 0);
+    assert(res.timing.requestSent > 0);
+    assert(res.timing.contentDownload > 0);
+    assert(res.timing.contentDownload > res.timing.waiting);
+    assert(res.timing.contentDownload <= res.rt);
+    assert.equal(res.socket.handledRequests, 3);
+    assert.equal(res.socket.handledResponses, 3);
   });
 
   it('should timing = false work', async () => {
@@ -88,7 +101,7 @@ describe('options.timing.test.ts', () => {
     assert.equal(response.status, 200);
     const res = response.res as RawResponseWithMeta;
     // console.log(res.timing);
-    assert.equal(res.timing.waiting, 0);
+    assert(res.timing.waiting > 0);
     assert(res.timing.dnslookup > 0);
     assert(res.timing.contentDownload > 0);
     assert(res.rt > 0);

@@ -252,7 +252,7 @@ export class HttpClient extends EventEmitter {
     const internalStore = {
       requestId,
       requestStartTime: performance.now(),
-      enableRequestTiming: !!options?.timing,
+      enableRequestTiming: !!(options?.timing ?? true),
     } as InternalStore;
     return await asyncLocalStorage.run(internalStore, async () => {
       return await this.#requestInternal<T>(url, options);
@@ -275,8 +275,6 @@ export class HttpClient extends EventEmitter {
             debug('Request#%d dns lookup %sms, servername: %s, origin: %s',
               store.requestId, dnslookup, options.servername, options.origin);
           }
-          console.log(options);
-          handler.opaque = options.opaque;
           return dispatch(options, handler);
         };
       },
@@ -344,7 +342,6 @@ export class HttpClient extends EventEmitter {
       contentDownload: 0,
     };
     internalStore.requestTiming = timing;
-    internalStore.enableRequestTiming = !!args.timing;
     const originalOpaque = args.opaque;
     const reqMeta = {
       requestId,

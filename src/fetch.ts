@@ -150,7 +150,7 @@ export class FetchFactory {
     const internalStore = {
       requestId,
       requestStartTime: performance.now(),
-      enableRequestTiming: !!init.timing,
+      enableRequestTiming: !!(init.timing ?? true),
       requestTiming: timing,
     } as InternalStore;
     const reqMeta: RequestMeta = {
