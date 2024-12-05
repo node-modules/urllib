@@ -41,7 +41,7 @@ import { parseJSON, digestAuthHeader, globalId, performanceTime, isReadable, upd
 import symbols from './symbols.js';
 import { initDiagnosticsChannel } from './diagnosticsChannel.js';
 import { HttpClientConnectTimeoutError, HttpClientRequestTimeoutError } from './HttpClientError.js';
-import { asyncLocalStorage } from './AsyncLocalStorage.js';
+import { asyncLocalStorage } from './asyncLocalStorage2.js';
 
 type Exists<T> = T extends undefined ? never : T;
 type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;
@@ -260,9 +260,12 @@ export class HttpClient extends EventEmitter {
       (dispatch: any) => {
         return function dnsAfterInterceptor(options: any, handler: any) {
           const opaque = options.opaque;
-          const dnslookup = opaque[symbols.kRequestTiming].dnslookup = performanceTime(opaque[symbols.kRequestStartTime]);
-          debug('Request#%d dns lookup %sms, servername: %s, origin: %s',
-            opaque[symbols.kRequestId], dnslookup, options.servername, options.origin);
+          if (opaque?.[symbols.kEnableRequestTiming]) {
+            const dnslookup = opaque[symbols.kRequestTiming].dnslookup =
+              performanceTime(opaque[symbols.kRequestStartTime]);
+            debug('Request#%d dns lookup %sms, servername: %s, origin: %s',
+              opaque[symbols.kRequestId], dnslookup, options.servername, options.origin);
+          }
           return dispatch(options, handler);
         };
       },
@@ -702,8 +705,8 @@ export class HttpClient extends EventEmitter {
         res,
       };
 
-      debug('Request#%d got response, status: %s, headers: %j, timing: %j',
-        requestId, res.status, res.headers, res.timing);
+      debug('Request#%d got response, status: %s, headers: %j, timing: %j, socket: %j',
+        requestId, res.status, res.headers, res.timing, res.socket);
 
       if (args.retry > 0 && requestContext.retries < args.retry) {
         const isRetry = args.isRetry ?? defaultIsRetry;
@@ -735,8 +738,9 @@ export class HttpClient extends EventEmitter {
 
       return clientResponse;
     } catch (rawError: any) {
-      debug('Request#%d throw error: %s, socketErrorRetry: %s, socketErrorRetries: %s',
-        requestId, rawError, args.socketErrorRetry, requestContext.socketErrorRetries);
+      updateSocketInfo(socketInfo, internalOpaque, rawError);
+      debug('Request#%d throw error: %s, socketErrorRetry: %s, socketErrorRetries: %s, socket: %j',
+        requestId, rawError, args.socketErrorRetry, requestContext.socketErrorRetries, socketInfo);
       let err = rawError;
       if (err.name === 'HeadersTimeoutError') {
         err = new HttpClientRequestTimeoutError(headersTimeout, { cause: err });
@@ -765,7 +769,6 @@ export class HttpClient extends EventEmitter {
       }
       err.socket = socketInfo;
       res.rt = performanceTime(requestStartTime);
-      updateSocketInfo(socketInfo, internalOpaque, rawError);
 
       channels.response.publish({
         request: reqMeta,

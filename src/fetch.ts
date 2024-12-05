@@ -38,7 +38,7 @@ import {
 } from './Request.js';
 import { RawResponseWithMeta, SocketInfo } from './Response.js';
 import { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
-import { asyncLocalStorage } from './AsyncLocalStorage.js';
+import { asyncLocalStorage } from './asyncLocalStorage2.js';
 
 const debug = debuglog('urllib:fetch');
 

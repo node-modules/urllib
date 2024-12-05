@@ -5,7 +5,7 @@ import { Socket } from 'node:net';
 import { DiagnosticsChannel } from 'undici';
 import symbols from './symbols.js';
 import { globalId, performanceTime } from './utils.js';
-import { asyncLocalStorage } from './AsyncLocalStorage.js';
+import { asyncLocalStorage } from './asyncLocalStorage2.js';
 
 const debug = debuglog('urllib:DiagnosticsChannel');
 let initedDiagnosticsChannel = false;
