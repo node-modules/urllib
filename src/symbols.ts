@@ -12,10 +12,6 @@ export default {
   kHandledRequests: Symbol('handled requests per socket'),
   kHandledResponses: Symbol('handled responses per socket'),
   kRequestSocket: Symbol('request on the socket'),
-  kRequestId: Symbol('request id'),
-  kRequestStartTime: Symbol('request start time'),
-  kEnableRequestTiming: Symbol('enable request timing or not'),
-  kRequestTiming: Symbol('request timing'),
-  kRequestOriginalOpaque: Symbol('request original opaque'),
+  kRequestStore: Symbol('request store'),
   kErrorSocket: Symbol('socket of error'),
 };

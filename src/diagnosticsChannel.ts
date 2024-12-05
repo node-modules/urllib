@@ -6,6 +6,7 @@ import { DiagnosticsChannel } from 'undici';
 import symbols from './symbols.js';
 import { globalId, performanceTime } from './utils.js';
 import { asyncLocalStorage } from './asyncLocalStorage.js';
+import { InternalStore } from './Response.js';
 
 const debug = debuglog('urllib:DiagnosticsChannel');
 let initedDiagnosticsChannel = false;
@@ -67,6 +68,7 @@ export function initDiagnosticsChannel() {
       debug('[%s] store not found', name);
       return;
     }
+    Reflect.set(request, symbols.kRequestStore, store);
     let queuing = 0;
     if (store.enableRequestTiming) {
       queuing = store.requestTiming.queuing = performanceTime(store.requestStartTime);
@@ -161,8 +163,8 @@ export function initDiagnosticsChannel() {
 
   // This message is published after the response headers have been received, i.e. the response has been completed.
   subscribe('undici:request:headers', (message, name) => {
-    const { response } = message as DiagnosticsChannel.RequestHeadersMessage;
-    const store = asyncLocalStorage.getStore();
+    const { request, response } = message as DiagnosticsChannel.RequestHeadersMessage;
+    const store = Reflect.get(request, symbols.kRequestStore) as InternalStore;
     if (!store?.requestId) {
       debug('[%s] store not found', name);
       return;
@@ -170,7 +172,6 @@ export function initDiagnosticsChannel() {
 
     // get socket from opaque
     const socket = store.requestSocket as any;
-    // console.log(name, opaque[symbols.kRequestId], formatSocket(socket), performanceTime(opaque[symbols.kRequestStartTime]), opaque[symbols.kEnableRequestTiming]);
     if (socket) {
       socket[symbols.kHandledResponses]++;
       debug('[%s] Request#%d get %s response headers on Socket#%d (handled %d responses, sock: %o)',
@@ -183,22 +184,19 @@ export function initDiagnosticsChannel() {
     }
 
     if (!store.enableRequestTiming) return;
-    // console.log(name, opaque[symbols.kRequestId], 'waiting', opaque[symbols.kRequestTiming]);
     store.requestTiming.waiting = performanceTime(store.requestStartTime);
-    // console.log(name, opaque[symbols.kRequestId], 'waiting', opaque[symbols.kRequestTiming]);
   });
 
   // This message is published after the response body and trailers have been received, i.e. the response has been completed.
-  subscribe('undici:request:trailers', (_message, name) => {
-    // const { request } = message as DiagnosticsChannel.RequestTrailersMessage;
-    const store = asyncLocalStorage.getStore();
+  subscribe('undici:request:trailers', (message, name) => {
+    const { request } = message as DiagnosticsChannel.RequestTrailersMessage;
+    const store = Reflect.get(request, symbols.kRequestStore) as InternalStore;
     if (!store?.requestId) {
       debug('[%s] store not found', name);
       return;
     }
 
     debug('[%s] Request#%d get response body and trailers', name, store.requestId);
-
     if (!store.enableRequestTiming) return;
     store.requestTiming.contentDownload = performanceTime(store.requestStartTime);
   });

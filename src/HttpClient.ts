@@ -37,7 +37,9 @@ import { HttpAgent, CheckAddressFunction } from './HttpAgent.js';
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import { RequestURL, RequestOptions, HttpMethod, RequestMeta } from './Request.js';
 import { RawResponseWithMeta, HttpClientResponse, SocketInfo, InternalStore } from './Response.js';
-import { parseJSON, digestAuthHeader, globalId, performanceTime, isReadable, updateSocketInfo } from './utils.js';
+import {
+  parseJSON, digestAuthHeader, globalId, performanceTime, isReadable, updateSocketInfo,
+} from './utils.js';
 import { initDiagnosticsChannel } from './diagnosticsChannel.js';
 import { HttpClientConnectTimeoutError, HttpClientRequestTimeoutError } from './HttpClientError.js';
 import { asyncLocalStorage } from './asyncLocalStorage.js';
@@ -273,6 +275,8 @@ export class HttpClient extends EventEmitter {
             debug('Request#%d dns lookup %sms, servername: %s, origin: %s',
               store.requestId, dnslookup, options.servername, options.origin);
           }
+          console.log(options);
+          handler.opaque = options.opaque;
           return dispatch(options, handler);
         };
       },
@@ -445,7 +449,10 @@ export class HttpClient extends EventEmitter {
         headersTimeout,
         headers,
         bodyTimeout,
-        opaque: originalOpaque,
+        opaque: {
+          originalOpaque,
+          internalStore,
+        },
         dispatcher: args.dispatcher ?? this.#dispatcher,
         signal: args.signal,
       };

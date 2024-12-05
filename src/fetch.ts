@@ -30,13 +30,12 @@ import {
 } from './HttpAgent.js';
 import { initDiagnosticsChannel } from './diagnosticsChannel.js';
 import { convertHeader, globalId, performanceTime, updateSocketInfo } from './utils.js';
-import symbols from './symbols.js';
 import {
   FetchMeta,
   HttpMethod,
   RequestMeta,
 } from './Request.js';
-import { RawResponseWithMeta, SocketInfo } from './Response.js';
+import { InternalStore, RawResponseWithMeta, SocketInfo } from './Response.js';
 import { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import { asyncLocalStorage } from './asyncLocalStorage.js';
 
@@ -135,7 +134,7 @@ export class FetchFactory {
       // socket assigned
       queuing: 0,
       // dns lookup time
-      // dnslookup: 0,
+      dnslookup: 0,
       // socket connected
       connected: 0,
       // request headers sent
@@ -147,14 +146,13 @@ export class FetchFactory {
       // the response body and trailers have been received
       contentDownload: 0,
     };
-
-    // using opaque to diagnostics channel, binding request and socket
-    const internalOpaque = {
-      [symbols.kRequestId]: requestId,
-      [symbols.kRequestStartTime]: requestStartTime,
-      [symbols.kEnableRequestTiming]: !!(init.timing ?? true),
-      [symbols.kRequestTiming]: timing,
-    };
+    // using store to diagnostics channel, binding request and socket
+    const internalStore = {
+      requestId,
+      requestStartTime: performance.now(),
+      enableRequestTiming: !!init.timing,
+      requestTiming: timing,
+    } as InternalStore;
     const reqMeta: RequestMeta = {
       requestId,
       url: request.url,
@@ -211,11 +209,11 @@ export class FetchFactory {
       socketErrorRetries: 0,
     } as any as RawResponseWithMeta;
     try {
-      await asyncLocalStorage.run(internalOpaque, async () => {
+      await asyncLocalStorage.run(internalStore, async () => {
         res = await UndiciFetch(input, init);
       });
     } catch (e: any) {
-      updateSocketInfo(socketInfo, internalOpaque, e);
+      updateSocketInfo(socketInfo, internalStore, e);
       debug('Request#%d throw error: %s', requestId, e);
       urllibResponse.rt = performanceTime(requestStartTime);
       channels.fetchResponse.publish({
@@ -232,7 +230,7 @@ export class FetchFactory {
 
     // get undici internal response
     const state = getResponseState(res!);
-    updateSocketInfo(socketInfo, internalOpaque);
+    updateSocketInfo(socketInfo, internalStore);
 
     urllibResponse.headers = convertHeader(res!.headers);
     urllibResponse.status = urllibResponse.statusCode = res!.status;
