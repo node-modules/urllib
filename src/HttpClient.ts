@@ -23,6 +23,7 @@ import {
   Agent,
   getGlobalDispatcher,
   Pool,
+  interceptors,
 } from 'undici';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -40,6 +41,7 @@ import { parseJSON, digestAuthHeader, globalId, performanceTime, isReadable, upd
 import symbols from './symbols.js';
 import { initDiagnosticsChannel } from './diagnosticsChannel.js';
 import { HttpClientConnectTimeoutError, HttpClientRequestTimeoutError } from './HttpClientError.js';
+import { asyncLocalStorage } from './AsyncLocalStorage.js';
 
 type Exists<T> = T extends undefined ? never : T;
 type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;
@@ -205,7 +207,10 @@ export class HttpClient extends EventEmitter {
       this.#dispatcher = new Agent({
         allowH2: clientOptions.allowH2,
       });
+    } else {
+      this.#dispatcher = new Agent();
     }
+    this.#dispatcher = this.#dispatcher.compose(this.#setInterceptors());
     initDiagnosticsChannel();
   }
 
@@ -248,6 +253,21 @@ export class HttpClient extends EventEmitter {
   // alias to request, keep compatible with urllib@2 HttpClient.curl
   async curl<T = any>(url: RequestURL, options?: RequestOptions) {
     return await this.request<T>(url, options);
+  }
+
+  #setInterceptors() {
+    return [
+      (dispatch: any) => {
+        return function dnsAfterInterceptor(options: any, handler: any) {
+          const opaque = options.opaque;
+          const dnslookup = opaque[symbols.kRequestTiming].dnslookup = performanceTime(opaque[symbols.kRequestStartTime]);
+          debug('Request#%d dns lookup %sms, servername: %s, origin: %s',
+            opaque[symbols.kRequestId], dnslookup, options.servername, options.origin);
+          return dispatch(options, handler);
+        };
+      },
+      interceptors.dns(),
+    ];
   }
 
   async #requestInternal<T>(url: RequestURL, options?: RequestOptions, requestContext?: RequestContext): Promise<HttpClientResponse<T>> {
@@ -300,7 +320,7 @@ export class HttpClient extends EventEmitter {
       // socket assigned
       queuing: 0,
       // dns lookup time
-      // dnslookup: 0,
+      dnslookup: 0,
       // socket connected
       connected: 0,
       // request headers sent
@@ -578,9 +598,11 @@ export class HttpClient extends EventEmitter {
         this.emit('request', reqMeta);
       }
 
-      let response = await undiciRequest(requestUrl, requestOptions as UndiciRequestOption);
-      if (response.statusCode === 401 && (response.headers['www-authenticate'] || response.headers['x-www-authenticate']) &&
-        !requestOptions.headers.authorization && args.digestAuth) {
+      let response = await this.#undiciRequest(internalOpaque, requestUrl, requestOptions as UndiciRequestOption);
+      if (response.statusCode === 401
+        && (response.headers['www-authenticate'] || response.headers['x-www-authenticate'])
+        && !requestOptions.headers.authorization
+        && args.digestAuth) {
         // handle digest auth
         const authenticateHeaders = response.headers['www-authenticate'] ?? response.headers['x-www-authenticate'];
         const authenticate = Array.isArray(authenticateHeaders)
@@ -597,7 +619,7 @@ export class HttpClient extends EventEmitter {
           }
           // Ensure the previous response is consumed as we re-use the same variable
           await response.body.arrayBuffer();
-          response = await undiciRequest(requestUrl, requestOptions as UndiciRequestOption);
+          response = await this.#undiciRequest(internalOpaque, requestUrl, requestOptions as UndiciRequestOption);
         }
       }
       const contentEncoding = response.headers['content-encoding'];
@@ -764,5 +786,11 @@ export class HttpClient extends EventEmitter {
       }
       throw err;
     }
+  }
+
+  async #undiciRequest(internalOpaque: unknown, requestUrl: URL, requestOptions: UndiciRequestOption) {
+    return await asyncLocalStorage.run(internalOpaque, async () => {
+      return await undiciRequest(requestUrl, requestOptions);
+    });
   }
 }

@@ -5,11 +5,10 @@ import {
   Dispatcher,
   buildConnector,
 } from 'undici';
-import { BaseAgent, BaseAgentOptions } from './BaseAgent.js';
 
 export type CheckAddressFunction = (ip: string, family: number | string, hostname: string) => boolean;
 
-export interface HttpAgentOptions extends BaseAgentOptions {
+export interface HttpAgentOptions extends Agent.Options {
   lookup?: LookupFunction;
   checkAddress?: CheckAddressFunction;
   connect?: buildConnector.BuildOptions,
@@ -32,7 +31,7 @@ class IllegalAddressError extends Error {
   }
 }
 
-export class HttpAgent extends BaseAgent {
+export class HttpAgent extends Agent {
   #checkAddress?: CheckAddressFunction;
 
   constructor(options: HttpAgentOptions) {

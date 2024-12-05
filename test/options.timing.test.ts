@@ -25,6 +25,7 @@ describe('options.timing.test.ts', () => {
     assert.equal(response.status, 200);
     let res = response.res as RawResponseWithMeta;
     assert(res.timing.waiting > 0);
+    assert(res.timing.dnslookup > 0);
     assert(res.timing.queuing > 0);
     assert(res.timing.connected > 0);
     assert(res.timing.requestHeadersSent > 0);
@@ -44,6 +45,7 @@ describe('options.timing.test.ts', () => {
     assert.equal(response.status, 200);
     res = response.res as RawResponseWithMeta;
     assert(res.timing.waiting > 0);
+    assert(res.timing.dnslookup > 0);
     assert(res.timing.queuing > 0);
     assert(res.timing.connected === 0);
     assert(res.timing.requestHeadersSent > 0);
@@ -62,6 +64,7 @@ describe('options.timing.test.ts', () => {
     assert.equal(response.status, 200);
     const res = response.res as RawResponseWithMeta;
     assert.equal(res.timing.waiting, 0);
+    assert.equal(res.timing.dnslookup, 0);
     assert.equal(res.timing.contentDownload, 0);
     assert(res.rt > 0);
   });
@@ -72,7 +75,9 @@ describe('options.timing.test.ts', () => {
     });
     assert.equal(response.status, 200);
     const res = response.res as RawResponseWithMeta;
+    console.log(res.timing);
     assert(res.timing.waiting > 0);
+    assert(res.timing.dnslookup > 0);
     assert(res.timing.contentDownload > 0);
     assert(res.rt > 0);
   });

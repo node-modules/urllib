@@ -5,6 +5,7 @@ import { Socket } from 'node:net';
 import { DiagnosticsChannel } from 'undici';
 import symbols from './symbols.js';
 import { globalId, performanceTime } from './utils.js';
+import { asyncLocalStorage } from './AsyncLocalStorage.js';
 
 const debug = debuglog('urllib:DiagnosticsChannel');
 let initedDiagnosticsChannel = false;
@@ -52,47 +53,27 @@ Socket.prototype.destroy = function(err?: any) {
   return destroySocket.call(this, err);
 };
 
-function getRequestOpaque(request: DiagnosticsChannel.Request, kHandler?: symbol) {
-  if (!kHandler) return;
-  const handler = Reflect.get(request, kHandler);
-  // maxRedirects = 0 will get [Symbol(handler)]: RequestHandler {
-  // responseHeaders: null,
-  // opaque: {
-  //   [Symbol(request id)]: 1,
-  //   [Symbol(request start time)]: 465.0712921619415,
-  //   [Symbol(enable request timing or not)]: true,
-  //   [Symbol(request timing)]: [Object],
-  //   [Symbol(request original opaque)]: undefined
-  // }
-  return handler?.opts?.opaque ?? handler?.opaque;
-}
-
 export function initDiagnosticsChannel() {
   // make sure init global DiagnosticsChannel once
   if (initedDiagnosticsChannel) return;
   initedDiagnosticsChannel = true;
 
-  let kHandler: symbol;
   // This message is published when a new outgoing request is created.
   // Note: a request is only loosely completed to a given socket.
   subscribe('undici:request:create', (message, name) => {
     const { request } = message as DiagnosticsChannel.RequestCreateMessage;
-    if (!kHandler) {
-      const symbols = Object.getOwnPropertySymbols(request);
-      for (const symbol of symbols) {
-        if (symbol.description === 'handler') {
-          kHandler = symbol;
-          break;
-        }
-      }
+    const opaque = asyncLocalStorage.getStore();
+    if (!opaque?.[symbols.kRequestId]) {
+      debug('[%s] opaque not found', name);
+      return;
     }
-    const opaque = getRequestOpaque(request, kHandler);
-    // ignore non HttpClient Request
-    if (!opaque || !opaque[symbols.kRequestId]) return;
-    debug('[%s] Request#%d %s %s, path: %s, headers: %o',
-      name, opaque[symbols.kRequestId], request.method, request.origin, request.path, request.headers);
-    if (!opaque[symbols.kEnableRequestTiming]) return;
-    opaque[symbols.kRequestTiming].queuing = performanceTime(opaque[symbols.kRequestStartTime]);
+    let queuing = 0;
+    if (opaque[symbols.kEnableRequestTiming]) {
+      queuing = opaque[symbols.kRequestTiming].queuing = performanceTime(opaque[symbols.kRequestStartTime]);
+    }
+    debug('[%s] Request#%d %s %s, path: %s, headers: %o, queuing: %d',
+      name, opaque[symbols.kRequestId], request.method, request.origin, request.path,
+      request.headers, queuing);
   });
 
   subscribe('undici:client:connectError', (message, name) => {
@@ -141,9 +122,9 @@ export function initDiagnosticsChannel() {
 
   // This message is published right before the first byte of the request is written to the socket.
   subscribe('undici:client:sendHeaders', (message, name) => {
-    const { request, socket } = message as DiagnosticsChannel.ClientSendHeadersMessage & { socket: SocketExtend };
-    const opaque = getRequestOpaque(request, kHandler);
-    if (!opaque || !opaque[symbols.kRequestId]) {
+    const { socket } = message as DiagnosticsChannel.ClientSendHeadersMessage & { socket: SocketExtend };
+    const opaque = asyncLocalStorage.getStore();
+    if (!opaque?.[symbols.kRequestId]) {
       debug('[%s] opaque not found', name);
       return;
     }
@@ -165,10 +146,10 @@ export function initDiagnosticsChannel() {
     }
   });
 
-  subscribe('undici:request:bodySent', (message, name) => {
-    const { request } = message as DiagnosticsChannel.RequestBodySentMessage;
-    const opaque = getRequestOpaque(request, kHandler);
-    if (!opaque || !opaque[symbols.kRequestId]) {
+  subscribe('undici:request:bodySent', (_message, name) => {
+    // const { request } = message as DiagnosticsChannel.RequestBodySentMessage;
+    const opaque = asyncLocalStorage.getStore();
+    if (!opaque?.[symbols.kRequestId]) {
       debug('[%s] opaque not found', name);
       return;
     }
@@ -180,9 +161,9 @@ export function initDiagnosticsChannel() {
 
   // This message is published after the response headers have been received, i.e. the response has been completed.
   subscribe('undici:request:headers', (message, name) => {
-    const { request, response } = message as DiagnosticsChannel.RequestHeadersMessage;
-    const opaque = getRequestOpaque(request, kHandler);
-    if (!opaque || !opaque[symbols.kRequestId]) {
+    const { response } = message as DiagnosticsChannel.RequestHeadersMessage;
+    const opaque = asyncLocalStorage.getStore();
+    if (!opaque?.[symbols.kRequestId]) {
       debug('[%s] opaque not found', name);
       return;
     }
@@ -204,10 +185,10 @@ export function initDiagnosticsChannel() {
   });
 
   // This message is published after the response body and trailers have been received, i.e. the response has been completed.
-  subscribe('undici:request:trailers', (message, name) => {
-    const { request } = message as DiagnosticsChannel.RequestTrailersMessage;
-    const opaque = getRequestOpaque(request, kHandler);
-    if (!opaque || !opaque[symbols.kRequestId]) {
+  subscribe('undici:request:trailers', (_message, name) => {
+    // const { request } = message as DiagnosticsChannel.RequestTrailersMessage;
+    const opaque = asyncLocalStorage.getStore();
+    if (!opaque?.[symbols.kRequestId]) {
       debug('[%s] opaque not found', name);
       return;
     }

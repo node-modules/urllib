@@ -69,6 +69,7 @@ export {
 export * from './HttpClientError.js';
 export { FetchFactory, fetch } from './fetch.js';
 export { FormData as WebFormData } from './FormData.js';
+export { asyncLocalStorage } from './AsyncLocalStorage.js';
 
 export default {
   request,

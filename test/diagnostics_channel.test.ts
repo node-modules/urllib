@@ -2,7 +2,7 @@ import { strict as assert } from 'node:assert';
 import diagnosticsChannel from 'node:diagnostics_channel';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { describe, it, beforeEach, afterEach } from 'vitest';
-import urllib from '../src/index.js';
+import urllib, { asyncLocalStorage } from '../src/index.js';
 import type {
   RequestDiagnosticsMessage,
   ResponseDiagnosticsMessage,
@@ -26,30 +26,19 @@ describe('diagnostics_channel.test.ts', () => {
   it('should support trace socket info by undici:client:sendHeaders and undici:request:trailers', async () => {
     const kRequests = Symbol('requests');
     let lastRequestOpaque: any;
-    let kHandler: any;
     function onMessage(message: any, name: string | symbol) {
       if (name === 'undici:client:connected') {
-        // console.log('%s %j', name, message.connectParams);
+        console.log('%s %j', name, message.connectParams);
         message.socket[kRequests] = 0;
         return;
       }
-      const { request, socket } = message;
-      if (!kHandler) {
-        const symbols = Object.getOwnPropertySymbols(request);
-        for (const symbol of symbols) {
-          if (symbol.description === 'handler') {
-            kHandler = symbol;
-            break;
-          }
-        }
-      }
-      const handler = request[kHandler];
-      let opaque = handler.opaque || handler.opts?.opaque;
+      const { socket } = message;
+      const opaque = asyncLocalStorage.getStore();
       assert(opaque);
-      opaque = opaque[symbols.kRequestOriginalOpaque];
-      if (opaque && name === 'undici:client:sendHeaders' && socket) {
+      const requestOpaque = opaque[symbols.kRequestOriginalOpaque];
+      if (requestOpaque && name === 'undici:client:sendHeaders' && socket) {
         socket[kRequests]++;
-        opaque.tracer.socket = {
+        requestOpaque.tracer.socket = {
           localAddress: socket.localAddress,
           localPort: socket.localPort,
           remoteAddress: socket.remoteAddress,
@@ -60,17 +49,19 @@ describe('diagnostics_channel.test.ts', () => {
           bytesRead: socket.bytesRead,
           requests: socket[kRequests],
         };
+        lastRequestOpaque = requestOpaque;
       }
-      // console.log('%s emit, %s %s, opaque: %j', name, request.method, request.origin, opaque);
-      lastRequestOpaque = opaque;
+      // console.log('%s emit, %s %s, lastRequestOpaque: %j, request#%o',
+      //   name, message.request.method, message.request.origin, lastRequestOpaque, opaque[symbols.kRequestId]);
       // console.log(request);
     }
     diagnosticsChannel.subscribe('undici:client:connected', onMessage);
     diagnosticsChannel.subscribe('undici:client:sendHeaders', onMessage);
     diagnosticsChannel.subscribe('undici:request:trailers', onMessage);
 
-    let traceId = `mock-traceid-${Date.now()}`;
+    let traceId = `mock-traceid-1-${Date.now()}`;
     // _url = 'https://registry.npmmirror.com/';
+    _url = _url.replace('localhost', '127.0.0.1');
     let response = await urllib.request(_url, {
       method: 'HEAD',
       dataType: 'json',
@@ -88,7 +79,7 @@ describe('diagnostics_channel.test.ts', () => {
     // HEAD 请求不会 keepalive
     // GET 请求会走 keepalive
     await sleep(1);
-    traceId = `mock-traceid-${Date.now()}`;
+    traceId = `mock-traceid-2-${Date.now()}`;
     response = await urllib.request(_url, {
       method: 'GET',
       dataType: 'json',
@@ -102,7 +93,7 @@ describe('diagnostics_channel.test.ts', () => {
     assert.equal(lastRequestOpaque.tracer.socket.requests, 1);
 
     await sleep(1);
-    traceId = `mock-traceid-${Date.now()}`;
+    traceId = `mock-traceid-3-${Date.now()}`;
     response = await urllib.request(_url, {
       method: 'GET',
       dataType: 'json',
@@ -119,7 +110,7 @@ describe('diagnostics_channel.test.ts', () => {
     let count = 1000;
     while (count-- > 0) {
       await sleep(1);
-      traceId = `mock-traceid-${Date.now()}`;
+      traceId = `mock-traceid-count-${count}-${Date.now()}`;
       response = await urllib.request(_url, {
         method: 'GET',
         dataType: 'json',
@@ -155,6 +146,7 @@ describe('diagnostics_channel.test.ts', () => {
 
     let traceId = `mock-traceid-${Date.now()}`;
     // _url = 'https://registry.npmmirror.com/';
+    _url = _url.replace('localhost', '127.0.0.1');
     let response = await urllib.request(_url, {
       method: 'HEAD',
       dataType: 'json',
@@ -242,6 +234,7 @@ describe('diagnostics_channel.test.ts', () => {
     diagnosticsChannel.subscribe('urllib:request', onRequestMessage);
     diagnosticsChannel.subscribe('urllib:response', onResponseMessage);
 
+    _url = _url.replace('localhost', '127.0.0.1');
     let traceId = `mock-traceid-${Date.now()}`;
     // handle network error
     await assert.rejects(async () => {
