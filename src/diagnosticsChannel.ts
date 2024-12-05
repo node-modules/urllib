@@ -5,7 +5,7 @@ import { Socket } from 'node:net';
 import { DiagnosticsChannel } from 'undici';
 import symbols from './symbols.js';
 import { globalId, performanceTime } from './utils.js';
-import { asyncLocalStorage } from './asyncLocalStorage2.js';
+import { asyncLocalStorage } from './asyncLocalStorage.js';
 
 const debug = debuglog('urllib:DiagnosticsChannel');
 let initedDiagnosticsChannel = false;
@@ -62,17 +62,17 @@ export function initDiagnosticsChannel() {
   // Note: a request is only loosely completed to a given socket.
   subscribe('undici:request:create', (message, name) => {
     const { request } = message as DiagnosticsChannel.RequestCreateMessage;
-    const opaque = asyncLocalStorage.getStore();
-    if (!opaque?.[symbols.kRequestId]) {
-      debug('[%s] opaque not found', name);
+    const store = asyncLocalStorage.getStore();
+    if (!store?.requestId) {
+      debug('[%s] store not found', name);
       return;
     }
     let queuing = 0;
-    if (opaque[symbols.kEnableRequestTiming]) {
-      queuing = opaque[symbols.kRequestTiming].queuing = performanceTime(opaque[symbols.kRequestStartTime]);
+    if (store.enableRequestTiming) {
+      queuing = store.requestTiming.queuing = performanceTime(store.requestStartTime);
     }
     debug('[%s] Request#%d %s %s, path: %s, headers: %o, queuing: %d',
-      name, opaque[symbols.kRequestId], request.method, request.origin, request.path,
+      name, store.requestId, request.method, request.origin, request.path,
       request.headers, queuing);
   });
 
@@ -123,80 +123,84 @@ export function initDiagnosticsChannel() {
   // This message is published right before the first byte of the request is written to the socket.
   subscribe('undici:client:sendHeaders', (message, name) => {
     const { socket } = message as DiagnosticsChannel.ClientSendHeadersMessage & { socket: SocketExtend };
-    const opaque = asyncLocalStorage.getStore();
-    if (!opaque?.[symbols.kRequestId]) {
-      debug('[%s] opaque not found', name);
+    const store = asyncLocalStorage.getStore();
+    if (!store?.requestId) {
+      debug('[%s] store not found', name);
       return;
     }
 
     (socket[symbols.kHandledRequests] as number)++;
-    // attach socket to opaque
-    opaque[symbols.kRequestSocket] = socket;
+    // attach socket to store
+    store.requestSocket = socket;
     debug('[%s] Request#%d send headers on Socket#%d (handled %d requests, sock: %o)',
-      name, opaque[symbols.kRequestId], socket[symbols.kSocketId], socket[symbols.kHandledRequests],
+      name, store.requestId, socket[symbols.kSocketId], socket[symbols.kHandledRequests],
       formatSocket(socket));
 
-    if (!opaque[symbols.kEnableRequestTiming]) return;
-    opaque[symbols.kRequestTiming].requestHeadersSent = performanceTime(opaque[symbols.kRequestStartTime]);
+    if (!store.enableRequestTiming) return;
+    store.requestTiming.requestHeadersSent = performanceTime(store.requestStartTime);
     // first socket need to calculate the connected time
     if (socket[symbols.kHandledRequests] === 1) {
       // kSocketStartTime - kRequestStartTime = connected time
-      opaque[symbols.kRequestTiming].connected =
-        performanceTime(opaque[symbols.kRequestStartTime], socket[symbols.kSocketStartTime] as number);
+      store.requestTiming.connected =
+        performanceTime(store.requestStartTime, socket[symbols.kSocketStartTime] as number);
     }
   });
 
   subscribe('undici:request:bodySent', (_message, name) => {
     // const { request } = message as DiagnosticsChannel.RequestBodySentMessage;
-    const opaque = asyncLocalStorage.getStore();
-    if (!opaque?.[symbols.kRequestId]) {
-      debug('[%s] opaque not found', name);
+    const store = asyncLocalStorage.getStore();
+    if (!store?.requestId) {
+      debug('[%s] store not found', name);
       return;
     }
 
-    debug('[%s] Request#%d send body', name, opaque[symbols.kRequestId]);
-    if (!opaque[symbols.kEnableRequestTiming]) return;
-    opaque[symbols.kRequestTiming].requestSent = performanceTime(opaque[symbols.kRequestStartTime]);
+    debug('[%s] Request#%d send body', name, store.requestId);
+    if (!store.enableRequestTiming) return;
+    store.requestTiming.requestSent = performanceTime(store.requestStartTime);
   });
 
   // This message is published after the response headers have been received, i.e. the response has been completed.
   subscribe('undici:request:headers', (message, name) => {
     const { response } = message as DiagnosticsChannel.RequestHeadersMessage;
-    const opaque = asyncLocalStorage.getStore();
-    if (!opaque?.[symbols.kRequestId]) {
-      debug('[%s] opaque not found', name);
+    const store = asyncLocalStorage.getStore();
+    if (!store?.requestId) {
+      debug('[%s] store not found', name);
       return;
     }
 
     // get socket from opaque
-    const socket = opaque[symbols.kRequestSocket];
+    const socket = store.requestSocket as any;
+    // console.log(name, opaque[symbols.kRequestId], formatSocket(socket), performanceTime(opaque[symbols.kRequestStartTime]), opaque[symbols.kEnableRequestTiming]);
     if (socket) {
       socket[symbols.kHandledResponses]++;
       debug('[%s] Request#%d get %s response headers on Socket#%d (handled %d responses, sock: %o)',
-        name, opaque[symbols.kRequestId], response.statusCode, socket[symbols.kSocketId], socket[symbols.kHandledResponses],
+        name, store.requestId, response.statusCode,
+        socket[symbols.kSocketId], socket[symbols.kHandledResponses],
         formatSocket(socket));
     } else {
       debug('[%s] Request#%d get %s response headers on Unknown Socket',
-        name, opaque[symbols.kRequestId], response.statusCode);
+        name, store.requestId, response.statusCode);
     }
 
-    if (!opaque[symbols.kEnableRequestTiming]) return;
-    opaque[symbols.kRequestTiming].waiting = performanceTime(opaque[symbols.kRequestStartTime]);
+    if (!store.enableRequestTiming) return;
+    // console.log(name, opaque[symbols.kRequestId], 'waiting', opaque[symbols.kRequestTiming]);
+    store.requestTiming.waiting = performanceTime(store.requestStartTime);
+    // console.log(name, opaque[symbols.kRequestId], 'waiting', opaque[symbols.kRequestTiming]);
   });
 
   // This message is published after the response body and trailers have been received, i.e. the response has been completed.
   subscribe('undici:request:trailers', (_message, name) => {
     // const { request } = message as DiagnosticsChannel.RequestTrailersMessage;
-    const opaque = asyncLocalStorage.getStore();
-    if (!opaque?.[symbols.kRequestId]) {
-      debug('[%s] opaque not found', name);
+    const store = asyncLocalStorage.getStore();
+    if (!store?.requestId) {
+      debug('[%s] store not found', name);
       return;
     }
 
-    debug('[%s] Request#%d get response body and trailers', name, opaque[symbols.kRequestId]);
+    debug('[%s] Request#%d get response body and trailers', name, store.requestId);
 
-    if (!opaque[symbols.kEnableRequestTiming]) return;
-    opaque[symbols.kRequestTiming].contentDownload = performanceTime(opaque[symbols.kRequestStartTime]);
+    if (!store.enableRequestTiming) return;
+    store.requestTiming.contentDownload = performanceTime(store.requestStartTime);
   });
 
   // This message is published if the request is going to error, but it has not errored yet.

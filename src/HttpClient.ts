@@ -36,12 +36,11 @@ import { FormData } from './FormData.js';
 import { HttpAgent, CheckAddressFunction } from './HttpAgent.js';
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import { RequestURL, RequestOptions, HttpMethod, RequestMeta } from './Request.js';
-import { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response.js';
+import { RawResponseWithMeta, HttpClientResponse, SocketInfo, InternalStore } from './Response.js';
 import { parseJSON, digestAuthHeader, globalId, performanceTime, isReadable, updateSocketInfo } from './utils.js';
-import symbols from './symbols.js';
 import { initDiagnosticsChannel } from './diagnosticsChannel.js';
 import { HttpClientConnectTimeoutError, HttpClientRequestTimeoutError } from './HttpClientError.js';
-import { asyncLocalStorage } from './asyncLocalStorage2.js';
+import { asyncLocalStorage } from './asyncLocalStorage.js';
 
 type Exists<T> = T extends undefined ? never : T;
 type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;
@@ -137,7 +136,6 @@ function defaultIsRetry(response: HttpClientResponse) {
 export type RequestContext = {
   retries: number;
   socketErrorRetries: number;
-  requestStartTime?: number;
   redirects: number;
   history: string[];
 };
@@ -247,7 +245,16 @@ export class HttpClient extends EventEmitter {
   }
 
   async request<T = any>(url: RequestURL, options?: RequestOptions) {
-    return await this.#requestInternal<T>(url, options);
+    // using opaque to diagnostics channel, binding request and socket
+    const requestId = globalId('HttpClientRequest');
+    const internalStore = {
+      requestId,
+      requestStartTime: performance.now(),
+      enableRequestTiming: !!options?.timing,
+    } as InternalStore;
+    return await asyncLocalStorage.run(internalStore, async () => {
+      return await this.#requestInternal<T>(url, options);
+    });
   }
 
   // alias to request, keep compatible with urllib@2 HttpClient.curl
@@ -259,12 +266,12 @@ export class HttpClient extends EventEmitter {
     return [
       (dispatch: any) => {
         return function dnsAfterInterceptor(options: any, handler: any) {
-          const opaque = options.opaque;
-          if (opaque?.[symbols.kEnableRequestTiming]) {
-            const dnslookup = opaque[symbols.kRequestTiming].dnslookup =
-              performanceTime(opaque[symbols.kRequestStartTime]);
+          const store = asyncLocalStorage.getStore();
+          if (store?.enableRequestTiming) {
+            const dnslookup = store.requestTiming.dnslookup =
+              performanceTime(store.requestStartTime);
             debug('Request#%d dns lookup %sms, servername: %s, origin: %s',
-              opaque[symbols.kRequestId], dnslookup, options.servername, options.origin);
+              store.requestId, dnslookup, options.servername, options.origin);
           }
           return dispatch(options, handler);
         };
@@ -274,7 +281,6 @@ export class HttpClient extends EventEmitter {
   }
 
   async #requestInternal<T>(url: RequestURL, options?: RequestOptions, requestContext?: RequestContext): Promise<HttpClientResponse<T>> {
-    const requestId = globalId('HttpClientRequest');
     let requestUrl: URL;
     if (typeof url === 'string') {
       if (!PROTO_RE.test(url)) {
@@ -298,7 +304,6 @@ export class HttpClient extends EventEmitter {
     const args = {
       retry: 0,
       socketErrorRetry: 1,
-      timing: true,
       ...this.#defaultArgs,
       ...options,
       // keep method and headers exists on args for request event handler to easy use
@@ -312,12 +317,11 @@ export class HttpClient extends EventEmitter {
       history: [],
       ...requestContext,
     };
-    if (!requestContext.requestStartTime) {
-      requestContext.requestStartTime = performance.now();
-    }
     requestContext.history.push(requestUrl.href);
-    const requestStartTime = requestContext.requestStartTime;
 
+    const internalStore = asyncLocalStorage.getStore()!;
+    const requestStartTime = internalStore.requestStartTime;
+    const requestId = internalStore.requestId;
     // https://developer.chrome.com/docs/devtools/network/reference/?utm_source=devtools#timing-explanation
     const timing = {
       // socket assigned
@@ -335,15 +339,9 @@ export class HttpClient extends EventEmitter {
       // the response body and trailers have been received
       contentDownload: 0,
     };
+    internalStore.requestTiming = timing;
+    internalStore.enableRequestTiming = !!args.timing;
     const originalOpaque = args.opaque;
-    // using opaque to diagnostics channel, binding request and socket
-    const internalOpaque = {
-      [symbols.kRequestId]: requestId,
-      [symbols.kRequestStartTime]: requestStartTime,
-      [symbols.kEnableRequestTiming]: !!args.timing,
-      [symbols.kRequestTiming]: timing,
-      [symbols.kRequestOriginalOpaque]: originalOpaque,
-    };
     const reqMeta = {
       requestId,
       url: requestUrl.href,
@@ -447,7 +445,7 @@ export class HttpClient extends EventEmitter {
         headersTimeout,
         headers,
         bodyTimeout,
-        opaque: internalOpaque,
+        opaque: originalOpaque,
         dispatcher: args.dispatcher ?? this.#dispatcher,
         signal: args.signal,
       };
@@ -592,7 +590,9 @@ export class HttpClient extends EventEmitter {
       }
 
       debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s, isStreamingRequest: %s, isStreamingResponse: %s, maxRedirections: %s, redirects: %s',
-        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout, isStreamingRequest, isStreamingResponse, maxRedirects, requestContext.redirects);
+        requestId, requestOptions.method, requestUrl.href, headers,
+        headersTimeout, bodyTimeout, isStreamingRequest, isStreamingResponse,
+        maxRedirects, requestContext.redirects);
       requestOptions.headers = headers;
       channels.request.publish({
         request: reqMeta,
@@ -601,7 +601,7 @@ export class HttpClient extends EventEmitter {
         this.emit('request', reqMeta);
       }
 
-      let response = await this.#undiciRequest(internalOpaque, requestUrl, requestOptions as UndiciRequestOption);
+      let response = await undiciRequest(requestUrl, requestOptions as UndiciRequestOption);
       if (response.statusCode === 401
         && (response.headers['www-authenticate'] || response.headers['x-www-authenticate'])
         && !requestOptions.headers.authorization
@@ -622,7 +622,7 @@ export class HttpClient extends EventEmitter {
           }
           // Ensure the previous response is consumed as we re-use the same variable
           await response.body.arrayBuffer();
-          response = await this.#undiciRequest(internalOpaque, requestUrl, requestOptions as UndiciRequestOption);
+          response = await undiciRequest(requestUrl, requestOptions as UndiciRequestOption);
         }
       }
       const contentEncoding = response.headers['content-encoding'];
@@ -690,7 +690,7 @@ export class HttpClient extends EventEmitter {
       }
       res.rt = performanceTime(requestStartTime);
       // get real socket info from internalOpaque
-      updateSocketInfo(socketInfo, internalOpaque);
+      updateSocketInfo(socketInfo, internalStore);
 
       const clientResponse: HttpClientResponse = {
         opaque: originalOpaque,
@@ -738,7 +738,7 @@ export class HttpClient extends EventEmitter {
 
       return clientResponse;
     } catch (rawError: any) {
-      updateSocketInfo(socketInfo, internalOpaque, rawError);
+      updateSocketInfo(socketInfo, internalStore, rawError);
       debug('Request#%d throw error: %s, socketErrorRetry: %s, socketErrorRetries: %s, socket: %j',
         requestId, rawError, args.socketErrorRetry, requestContext.socketErrorRetries, socketInfo);
       let err = rawError;
@@ -789,11 +789,5 @@ export class HttpClient extends EventEmitter {
       }
       throw err;
     }
-  }
-
-  async #undiciRequest(internalOpaque: unknown, requestUrl: URL, requestOptions: UndiciRequestOption) {
-    return await asyncLocalStorage.run(internalOpaque, async () => {
-      return await undiciRequest(requestUrl, requestOptions);
-    });
   }
 }

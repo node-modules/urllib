@@ -4,9 +4,9 @@ import { performance } from 'node:perf_hooks';
 import { ReadableStream } from 'node:stream/web';
 import { Blob } from 'node:buffer';
 import type { FixJSONCtlChars } from './Request.js';
-import { SocketInfo } from './Response.js';
+import type { InternalStore, SocketInfo } from './Response.js';
 import symbols from './symbols.js';
-import { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
+import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 
 const JSONCtlCharsMap: Record<string, string> = {
   '"': '\\"', // \u0022
@@ -157,8 +157,8 @@ export function isReadable(stream: any) {
     && typeof stream._readableState === 'object';
 }
 
-export function updateSocketInfo(socketInfo: SocketInfo, internalOpaque: any, err?: any) {
-  const socket = internalOpaque[symbols.kRequestSocket] ?? err?.[symbols.kErrorSocket];
+export function updateSocketInfo(socketInfo: SocketInfo, internalStore: InternalStore, err?: any) {
+  const socket = internalStore.requestSocket ?? err?.[symbols.kErrorSocket];
 
   if (socket) {
     socketInfo.id = socket[symbols.kSocketId];

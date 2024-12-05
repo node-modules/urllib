@@ -1,4 +1,5 @@
 import type { Readable } from 'node:stream';
+import type { Socket } from 'node:net';
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 
 export type SocketInfo = {
@@ -40,6 +41,14 @@ export type Timing = {
   // the response body and trailers have been received
   contentDownload: number;
 };
+
+export interface InternalStore {
+  requestId: number;
+  requestStartTime: number;
+  enableRequestTiming: boolean;
+  requestTiming: Timing;
+  requestSocket?: Socket;
+}
 
 export type RawResponseWithMeta = Readable & {
   status: number;
