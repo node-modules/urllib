@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.3](https://github.com/node-modules/urllib/compare/v4.6.2...v4.6.3) (2024-12-05)
+
+
+### Bug Fixes
+
+* only set extend notation on non-ascii filename ([#558](https://github.com/node-modules/urllib/issues/558)) ([0cd9b06](https://github.com/node-modules/urllib/commit/0cd9b06031eb5bed08677b6503a8a0fba4ac7fd8))
+
 ## [4.6.2](https://github.com/node-modules/urllib/compare/v4.6.1...v4.6.2) (2024-12-04)
 
 
