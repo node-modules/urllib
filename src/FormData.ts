@@ -2,7 +2,7 @@ import path from 'node:path';
 import _FormData from 'form-data';
 
 // eslint-disable-next-line
-const ASCII_RE = /[^\x00-\x7F]/i;
+const NON_ASCII_RE = /[^\x00-\x7F]/i;
 
 export class FormData extends _FormData {
   _getContentDisposition(value: any, options: any) {
@@ -28,7 +28,7 @@ export class FormData extends _FormData {
       // https://datatracker.ietf.org/doc/html/rfc6266#section-4.1
       // support non-ascii filename
       contentDisposition = 'filename="' + filename + '"';
-      if (ASCII_RE.test(filename)) {
+      if (NON_ASCII_RE.test(filename)) {
         contentDisposition += '; filename*=UTF-8\'\'' + encodeURIComponent(filename);
       }
     }
