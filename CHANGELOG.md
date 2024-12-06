@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.4](https://github.com/node-modules/urllib/compare/v4.6.3...v4.6.4) (2024-12-06)
+
+
+### Bug Fixes
+
+* export WebFormData ([#559](https://github.com/node-modules/urllib/issues/559)) ([dec6b12](https://github.com/node-modules/urllib/commit/dec6b1248ef68c1679f3d7f32c5544655e726045))
+
 ## [4.6.3](https://github.com/node-modules/urllib/compare/v4.6.2...v4.6.3) (2024-12-05)
 
 
