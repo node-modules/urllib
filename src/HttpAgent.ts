@@ -45,6 +45,7 @@ export class HttpAgent extends Agent {
         const family = args[1];
         if (err) return (callback as any)(err, address, family);
         if (options.checkAddress) {
+          console.error(hostname, dnsOptions, options.checkAddress.toString(), options);
           // dnsOptions.all set to default on Node.js >= 20, dns.lookup will return address array object
           if (typeof address === 'string') {
             if (!options.checkAddress(address, family, hostname)) {
@@ -82,6 +83,7 @@ export class HttpAgent extends Agent {
       if (family === 4 || family === 6) {
         // if request hostname is ip, custom lookup won't execute
         if (!this.#checkAddress(hostname, family, hostname)) {
+          console.error(options);
           throw new IllegalAddressError(hostname, hostname, family);
         }
       }

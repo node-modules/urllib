@@ -35,10 +35,11 @@ describe('HttpClient.test.ts', () => {
   });
 
   describe('.curl()', () => {
-    it('should curl alias to request()', async () => {
-      const httpclient = new HttpClient({ defaultArgs: { timeout: 1000 } });
+    it.only('should curl alias to request()', async () => {
+      const httpClient = new HttpClient({ defaultArgs: { timeout: 1000 } });
+      console.log(httpClient.getDispatcher());
       _url = 'https://npmmirror.com/package/foo';
-      const response1 = await httpclient.curl(_url);
+      const response1 = await httpClient.curl(_url);
       assert.equal(response1.status, 200);
       // const response2 = await httpclient.curl(_url, { method: 'GET' });
       // assert.equal(response2.status, 200);
@@ -322,7 +323,7 @@ describe('HttpClient.test.ts', () => {
       assert.equal(Object.keys(httpclient.getDispatcherPoolStats()).length, 1);
     });
 
-    it.skip('should check non-ip hostname with custom lookup', async () => {
+    it.only('should check non-ip hostname with custom lookup', async () => {
       let count = 0;
       let lookupCallCounter = 0;
       const httpClient = new HttpClient({
@@ -332,12 +333,14 @@ describe('HttpClient.test.ts', () => {
             dns.lookup(...args);
           }, 100);
         },
-        checkAddress() {
+        checkAddress(...args) {
           count++;
+          console.error(count, args);
           if (count === 1) return false;
           return true;
         },
       });
+      console.log(httpClient.getDispatcher());
 
       await assert.rejects(async () => {
         await httpClient.request(_url);
