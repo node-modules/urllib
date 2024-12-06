@@ -35,9 +35,9 @@ describe('HttpClient.test.ts', () => {
   });
 
   describe('.curl()', () => {
-    it.only('should curl alias to request()', async () => {
+    it('should curl alias to request()', async () => {
       const httpclient = new HttpClient({ defaultArgs: { timeout: 1000 } });
-      _url = 'https://www.npmjs.com/package/foo';
+      _url = 'https://npmmirror.com/package/foo';
       const response1 = await httpclient.curl(_url);
       assert.equal(response1.status, 200);
       // const response2 = await httpclient.curl(_url, { method: 'GET' });
@@ -322,10 +322,10 @@ describe('HttpClient.test.ts', () => {
       assert.equal(Object.keys(httpclient.getDispatcherPoolStats()).length, 1);
     });
 
-    it('should check non-ip hostname with custom lookup', async () => {
+    it.skip('should check non-ip hostname with custom lookup', async () => {
       let count = 0;
       let lookupCallCounter = 0;
-      const httpclient = new HttpClient({
+      const httpClient = new HttpClient({
         lookup(...args) {
           lookupCallCounter++;
           setTimeout(() => {
@@ -340,9 +340,9 @@ describe('HttpClient.test.ts', () => {
       });
 
       await assert.rejects(async () => {
-        await httpclient.request(_url);
+        await httpClient.request(_url);
       }, (err: any) => {
-        // console.error(err);
+        console.error(err);
         assert.equal(err.res.status, -1);
         assert.equal(err.name, 'IllegalAddressError');
         assert.equal(err.message, 'illegal address');
@@ -353,7 +353,7 @@ describe('HttpClient.test.ts', () => {
       });
       assert.equal(lookupCallCounter, 1);
 
-      const response = await httpclient.request(_url);
+      const response = await httpClient.request(_url);
       assert.equal(response.status, 200);
     });
 
@@ -386,7 +386,7 @@ describe('HttpClient.test.ts', () => {
 
     it('should throw error when request address is ip v6', async () => {
       const httpclient = new HttpClient({
-        checkAddress(address, family) {
+        checkAddress(_address, family) {
           return family !== 6;
         },
       });

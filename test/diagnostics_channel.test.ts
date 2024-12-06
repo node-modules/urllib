@@ -7,7 +7,6 @@ import type {
   RequestDiagnosticsMessage,
   ResponseDiagnosticsMessage,
 } from '../src/index.js';
-import symbols from '../src/symbols.js';
 import { startServer } from './fixtures/server.js';
 
 describe('diagnostics_channel.test.ts', () => {
@@ -35,7 +34,7 @@ describe('diagnostics_channel.test.ts', () => {
       const { socket } = message;
       const opaque = asyncLocalStorage.getStore();
       assert(opaque);
-      const requestOpaque = opaque[symbols.kRequestOriginalOpaque];
+      const requestOpaque = opaque.requestOriginalOpaque as any;
       if (requestOpaque && name === 'undici:client:sendHeaders' && socket) {
         socket[kRequests]++;
         requestOpaque.tracer.socket = {

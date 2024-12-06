@@ -27,6 +27,7 @@ describe('keep-alive-header.test.ts', () => {
     const max = process.env.TEST_KEEPALIVE_COUNT ? parseInt(process.env.TEST_KEEPALIVE_COUNT) : 3;
     let otherSideClosed = 0;
     let readECONNRESET = 0;
+    _url = _url.replace('localhost', '127.0.0.1');
     const origin = _url.substring(0, _url.length - 1);
     while (count < max) {
       count++;

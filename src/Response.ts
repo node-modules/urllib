@@ -48,6 +48,7 @@ export interface InternalStore {
   enableRequestTiming: boolean;
   requestTiming: Timing;
   requestSocket?: Socket;
+  requestOriginalOpaque?: unknown;
 }
 
 export type RawResponseWithMeta = Readable & {

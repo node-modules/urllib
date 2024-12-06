@@ -124,8 +124,8 @@ export function initDiagnosticsChannel() {
 
   // This message is published right before the first byte of the request is written to the socket.
   subscribe('undici:client:sendHeaders', (message, name) => {
-    const { socket } = message as DiagnosticsChannel.ClientSendHeadersMessage & { socket: SocketExtend };
-    const store = asyncLocalStorage.getStore();
+    const { request, socket } = message as DiagnosticsChannel.ClientSendHeadersMessage & { socket: SocketExtend };
+    const store = Reflect.get(request, symbols.kRequestStore) as InternalStore;
     if (!store?.requestId) {
       debug('[%s] store not found', name);
       return;
@@ -148,9 +148,9 @@ export function initDiagnosticsChannel() {
     }
   });
 
-  subscribe('undici:request:bodySent', (_message, name) => {
-    // const { request } = message as DiagnosticsChannel.RequestBodySentMessage;
-    const store = asyncLocalStorage.getStore();
+  subscribe('undici:request:bodySent', (message, name) => {
+    const { request } = message as DiagnosticsChannel.RequestBodySentMessage;
+    const store = Reflect.get(request, symbols.kRequestStore) as InternalStore;
     if (!store?.requestId) {
       debug('[%s] store not found', name);
       return;
@@ -174,8 +174,8 @@ export function initDiagnosticsChannel() {
     const socket = store.requestSocket as any;
     if (socket) {
       socket[symbols.kHandledResponses]++;
-      debug('[%s] Request#%d get %s response headers on Socket#%d (handled %d responses, sock: %o)',
-        name, store.requestId, response.statusCode,
+      debug('[%s] Request#%d get %s response headers(%d bytes) on Socket#%d (handled %d responses, sock: %o)',
+        name, store.requestId, response.statusCode, response.headers.length,
         socket[symbols.kSocketId], socket[symbols.kHandledResponses],
         formatSocket(socket));
     } else {

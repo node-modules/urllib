@@ -137,7 +137,7 @@ export async function startServer(options?: {
         res.setHeader('www-authenticate', 'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"');
         res.statusCode = 401;
         return res.end(JSON.stringify({
-          error: 'authorization invaild',
+          error: 'authorization invalid',
         }));
       }
       return res.end(JSON.stringify({

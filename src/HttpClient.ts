@@ -23,7 +23,6 @@ import {
   Agent,
   getGlobalDispatcher,
   Pool,
-  interceptors,
 } from 'undici';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -186,6 +185,7 @@ const RedirectStatusCodes = [
 export class HttpClient extends EventEmitter {
   #defaultArgs?: RequestOptions;
   #dispatcher?: Dispatcher;
+  #isUnixSocket = false;
 
   constructor(clientOptions?: ClientOptions) {
     super();
@@ -207,10 +207,10 @@ export class HttpClient extends EventEmitter {
       this.#dispatcher = new Agent({
         allowH2: clientOptions.allowH2,
       });
-    } else {
-      this.#dispatcher = new Agent();
     }
-    this.#dispatcher = this.#dispatcher.compose(this.#setInterceptors());
+    if (clientOptions?.connect?.socketPath) {
+      this.#isUnixSocket = true;
+    }
     initDiagnosticsChannel();
   }
 
@@ -264,24 +264,6 @@ export class HttpClient extends EventEmitter {
     return await this.request<T>(url, options);
   }
 
-  #setInterceptors() {
-    return [
-      (dispatch: any) => {
-        return function dnsAfterInterceptor(options: any, handler: any) {
-          const store = asyncLocalStorage.getStore();
-          if (store?.enableRequestTiming) {
-            const dnslookup = store.requestTiming.dnslookup =
-              performanceTime(store.requestStartTime);
-            debug('Request#%d dns lookup %sms, servername: %s, origin: %s',
-              store.requestId, dnslookup, options.servername, options.origin);
-          }
-          return dispatch(options, handler);
-        };
-      },
-      interceptors.dns(),
-    ];
-  }
-
   async #requestInternal<T>(url: RequestURL, options?: RequestOptions, requestContext?: RequestContext): Promise<HttpClientResponse<T>> {
     let requestUrl: URL;
     if (typeof url === 'string') {
@@ -298,6 +280,11 @@ export class HttpClient extends EventEmitter {
         // or even if not, we clone to avoid mutating it
         requestUrl = new URL(url.toString());
       }
+    }
+    const originHostname = requestUrl.hostname;
+    if (this.#isUnixSocket) {
+      // ignore dns lookup
+      requestUrl.hostname = '127.0.0.1';
     }
 
     const method = (options?.type || options?.method || 'GET').toUpperCase() as HttpMethod;
@@ -343,6 +330,7 @@ export class HttpClient extends EventEmitter {
     };
     internalStore.requestTiming = timing;
     const originalOpaque = args.opaque;
+    internalStore.requestOriginalOpaque = originalOpaque;
     const reqMeta = {
       requestId,
       url: requestUrl.href,
@@ -446,11 +434,8 @@ export class HttpClient extends EventEmitter {
         headersTimeout,
         headers,
         bodyTimeout,
-        opaque: {
-          originalOpaque,
-          internalStore,
-        },
-        dispatcher: args.dispatcher ?? this.#dispatcher,
+        opaque: originalOpaque,
+        dispatcher: args.dispatcher ?? this.getDispatcher(),
         signal: args.signal,
       };
       if (typeof args.highWaterMark === 'number') {
@@ -615,8 +600,8 @@ export class HttpClient extends EventEmitter {
         const authenticate = Array.isArray(authenticateHeaders)
           ? authenticateHeaders.find(authHeader => authHeader.startsWith('Digest '))
           : authenticateHeaders;
+        debug('Request#%d %s: got digest auth header WWW-Authenticate: %j', requestId, requestUrl.href, authenticate);
         if (authenticate && authenticate.startsWith('Digest ')) {
-          debug('Request#%d %s: got digest auth header WWW-Authenticate: %s', requestId, requestUrl.href, authenticate);
           requestOptions.headers.authorization = digestAuthHeader(requestOptions.method!,
             `${requestUrl.pathname}${requestUrl.search}`, authenticate, args.digestAuth);
           debug('Request#%d %s: auth with digest header: %s', requestId, url, requestOptions.headers.authorization);
@@ -696,6 +681,7 @@ export class HttpClient extends EventEmitter {
       // get real socket info from internalOpaque
       updateSocketInfo(socketInfo, internalStore);
 
+      requestUrl.hostname = originHostname;
       const clientResponse: HttpClientResponse = {
         opaque: originalOpaque,
         data,

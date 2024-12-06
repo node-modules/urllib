@@ -21,7 +21,9 @@ export async function request<T = any>(url: RequestURL, options?: RequestOptions
     let domainSocketHttpclient = domainSocketHttpClients.get<HttpClient>(options.socketPath);
     if (!domainSocketHttpclient) {
       domainSocketHttpclient = new HttpClient({
-        connect: { socketPath: options.socketPath },
+        connect: {
+          socketPath: options.socketPath,
+        },
       });
       domainSocketHttpClients.set(options.socketPath, domainSocketHttpclient);
     }
