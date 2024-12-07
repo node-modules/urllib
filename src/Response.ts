@@ -28,7 +28,7 @@ export type Timing = {
   // socket assigned
   queuing: number;
   // dns lookup time
-  // dnslookup: number;
+  dnslookup: number;
   // socket connected
   connected: number;
   // request headers sent

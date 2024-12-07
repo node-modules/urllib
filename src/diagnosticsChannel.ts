@@ -89,7 +89,9 @@ export function initDiagnosticsChannel() {
     const opaque = getRequestOpaque(request, kHandler);
     // ignore non HttpClient Request
     if (!opaque || !opaque[symbols.kRequestId]) return;
-    debug('[%s] Request#%d %s %s, path: %s, headers: %o',
+
+    Reflect.set(request, symbols.kRequestInternalOpaque, opaque);
+    debug('[%s] Request#%d %s %s, path: %s, headers: %j',
       name, opaque[symbols.kRequestId], request.method, request.origin, request.path, request.headers);
     if (!opaque[symbols.kEnableRequestTiming]) return;
     opaque[symbols.kRequestTiming].queuing = performanceTime(opaque[symbols.kRequestStartTime]);
@@ -114,10 +116,10 @@ export function initDiagnosticsChannel() {
       sock[symbols.kSocketConnectProtocol] = connectParams.protocol;
       sock[symbols.kSocketConnectHost] = connectParams.host;
       sock[symbols.kSocketConnectPort] = connectParams.port;
-      debug('[%s] Socket#%d connectError, connectParams: %o, error: %s, (sock: %o)',
+      debug('[%s] Socket#%d connectError, connectParams: %j, error: %s, (sock: %j)',
         name, sock[symbols.kSocketId], connectParams, (error as Error).message, formatSocket(sock));
     } else {
-      debug('[%s] connectError, connectParams: %o, error: %o',
+      debug('[%s] connectError, connectParams: %j, error: %o',
         name, connectParams, error);
     }
   });
@@ -136,13 +138,13 @@ export function initDiagnosticsChannel() {
     socket[symbols.kSocketConnectProtocol] = connectParams.protocol;
     socket[symbols.kSocketConnectHost] = connectParams.host;
     socket[symbols.kSocketConnectPort] = connectParams.port;
-    debug('[%s] Socket#%d connected (sock: %o)', name, socket[symbols.kSocketId], formatSocket(socket));
+    debug('[%s] Socket#%d connected (sock: %j)', name, socket[symbols.kSocketId], formatSocket(socket));
   });
 
   // This message is published right before the first byte of the request is written to the socket.
   subscribe('undici:client:sendHeaders', (message, name) => {
     const { request, socket } = message as DiagnosticsChannel.ClientSendHeadersMessage & { socket: SocketExtend };
-    const opaque = getRequestOpaque(request, kHandler);
+    const opaque = Reflect.get(request, symbols.kRequestInternalOpaque);
     if (!opaque || !opaque[symbols.kRequestId]) {
       debug('[%s] opaque not found', name);
       return;
@@ -151,7 +153,7 @@ export function initDiagnosticsChannel() {
     (socket[symbols.kHandledRequests] as number)++;
     // attach socket to opaque
     opaque[symbols.kRequestSocket] = socket;
-    debug('[%s] Request#%d send headers on Socket#%d (handled %d requests, sock: %o)',
+    debug('[%s] Request#%d send headers on Socket#%d (handled %d requests, sock: %j)',
       name, opaque[symbols.kRequestId], socket[symbols.kSocketId], socket[symbols.kHandledRequests],
       formatSocket(socket));
 
@@ -167,7 +169,7 @@ export function initDiagnosticsChannel() {
 
   subscribe('undici:request:bodySent', (message, name) => {
     const { request } = message as DiagnosticsChannel.RequestBodySentMessage;
-    const opaque = getRequestOpaque(request, kHandler);
+    const opaque = Reflect.get(request, symbols.kRequestInternalOpaque);
     if (!opaque || !opaque[symbols.kRequestId]) {
       debug('[%s] opaque not found', name);
       return;
@@ -181,7 +183,7 @@ export function initDiagnosticsChannel() {
   // This message is published after the response headers have been received, i.e. the response has been completed.
   subscribe('undici:request:headers', (message, name) => {
     const { request, response } = message as DiagnosticsChannel.RequestHeadersMessage;
-    const opaque = getRequestOpaque(request, kHandler);
+    const opaque = Reflect.get(request, symbols.kRequestInternalOpaque);
     if (!opaque || !opaque[symbols.kRequestId]) {
       debug('[%s] opaque not found', name);
       return;
@@ -191,7 +193,7 @@ export function initDiagnosticsChannel() {
     const socket = opaque[symbols.kRequestSocket];
     if (socket) {
       socket[symbols.kHandledResponses]++;
-      debug('[%s] Request#%d get %s response headers on Socket#%d (handled %d responses, sock: %o)',
+      debug('[%s] Request#%d get %s response headers on Socket#%d (handled %d responses, sock: %j)',
         name, opaque[symbols.kRequestId], response.statusCode, socket[symbols.kSocketId], socket[symbols.kHandledResponses],
         formatSocket(socket));
     } else {
@@ -206,7 +208,7 @@ export function initDiagnosticsChannel() {
   // This message is published after the response body and trailers have been received, i.e. the response has been completed.
   subscribe('undici:request:trailers', (message, name) => {
     const { request } = message as DiagnosticsChannel.RequestTrailersMessage;
-    const opaque = getRequestOpaque(request, kHandler);
+    const opaque = Reflect.get(request, symbols.kRequestInternalOpaque);
     if (!opaque || !opaque[symbols.kRequestId]) {
       debug('[%s] opaque not found', name);
       return;

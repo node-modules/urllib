@@ -32,7 +32,7 @@ describe('options.timing.test.ts', () => {
     assert(res.timing.contentDownload > 0);
     assert(res.timing.contentDownload > res.timing.waiting);
     assert(res.timing.contentDownload <= res.rt);
-    assert(res.socket.handledResponses === 1);
+    assert.equal(res.socket.handledResponses, 1);
 
     // again connected should be zero
     await sleep(1);
@@ -45,13 +45,14 @@ describe('options.timing.test.ts', () => {
     res = response.res as RawResponseWithMeta;
     assert(res.timing.waiting > 0);
     assert(res.timing.queuing > 0);
-    assert(res.timing.connected === 0);
+    assert.equal(res.timing.connected, 0);
     assert(res.timing.requestHeadersSent > 0);
     assert(res.timing.requestSent > 0);
     assert(res.timing.contentDownload > 0);
     assert(res.timing.contentDownload > res.timing.waiting);
     assert(res.timing.contentDownload <= res.rt);
-    assert(res.socket.handledResponses === 2);
+    assert.equal(res.socket.handledResponses, 2);
+    // console.log(res.timing);
   });
 
   it('should timing = false work', async () => {

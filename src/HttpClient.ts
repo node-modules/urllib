@@ -300,7 +300,7 @@ export class HttpClient extends EventEmitter {
       // socket assigned
       queuing: 0,
       // dns lookup time
-      // dnslookup: 0,
+      dnslookup: 0,
       // socket connected
       connected: 0,
       // request headers sent
