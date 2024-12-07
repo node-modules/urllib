@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import diagnosticsChannel from 'node:diagnostics_channel';
+import { setTimeout as sleep } from 'node:timers/promises';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import { startServer } from './fixtures/server.js';
 import {
@@ -20,7 +21,6 @@ describe('fetch.test.ts', () => {
     await close();
   });
 
-
   it('fetch should work', async () => {
     let requestDiagnosticsMessage: RequestDiagnosticsMessage;
     let responseDiagnosticsMessage: ResponseDiagnosticsMessage;
@@ -40,18 +40,26 @@ describe('fetch.test.ts', () => {
     });
     FetchFactory.setClientOptions({});
 
-    const response = await fetch(`${_url}html`);
+    let response = await fetch(`${_url}html`);
 
     assert(response);
     assert(requestDiagnosticsMessage!.request);
     assert(responseDiagnosticsMessage!.request);
     assert(responseDiagnosticsMessage!.response);
+    assert(responseDiagnosticsMessage!.response.socket.localAddress);
     assert([ '127.0.0.1', '::1' ].includes(responseDiagnosticsMessage!.response.socket.localAddress));
 
     assert(fetchDiagnosticsMessage!.fetch);
     assert(fetchResponseDiagnosticsMessage!.fetch);
     assert(fetchResponseDiagnosticsMessage!.response);
     assert(fetchResponseDiagnosticsMessage!.timingInfo);
+
+    await sleep(1);
+    // again, keep alive
+    response = await fetch(`${_url}html`);
+    // console.log(responseDiagnosticsMessage!.response.socket);
+    assert(responseDiagnosticsMessage!.response.socket.handledRequests > 1);
+    assert(responseDiagnosticsMessage!.response.socket.handledResponses > 1);
 
     const stats = FetchFactory.getDispatcherPoolStats();
     assert(stats);
@@ -77,17 +85,21 @@ describe('fetch.test.ts', () => {
     });
     FetchFactory.setClientOptions({});
 
-    try {
+    await assert.rejects(async () => {
       await fetch(`${_url}html?timeout=9999`, {
         signal: AbortSignal.timeout(100),
       });
-    } catch (error) {
-      console.log(error);
-    }
+    }, (err: any) => {
+      assert.equal(err.name, 'TimeoutError');
+      assert.equal(err.message, 'The operation was aborted due to timeout');
+      return true;
+    });
 
     assert(requestDiagnosticsMessage!.request);
     assert(responseDiagnosticsMessage!.request);
     assert(responseDiagnosticsMessage!.response);
+    // console.log(responseDiagnosticsMessage!.response.socket);
+    assert(responseDiagnosticsMessage!.response.socket.localAddress);
     assert([ '127.0.0.1', '::1' ].includes(responseDiagnosticsMessage!.response.socket.localAddress));
 
     assert(fetchDiagnosticsMessage!.fetch);

@@ -17,5 +17,6 @@ export default {
   kEnableRequestTiming: Symbol('enable request timing or not'),
   kRequestTiming: Symbol('request timing'),
   kRequestOriginalOpaque: Symbol('request original opaque'),
+  kRequestInternalOpaque: Symbol('request internal opaque'),
   kErrorSocket: Symbol('socket of error'),
 };
