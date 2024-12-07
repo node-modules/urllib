@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.5](https://github.com/node-modules/urllib/compare/v4.6.4...v4.6.5) (2024-12-07)
+
+
+### Bug Fixes
+
+* set opaque on request ([#560](https://github.com/node-modules/urllib/issues/560)) ([8cf5c3b](https://github.com/node-modules/urllib/commit/8cf5c3ba50eee03f6363ad68416db8ef618adffd))
+
 ## [4.6.4](https://github.com/node-modules/urllib/compare/v4.6.3...v4.6.4) (2024-12-06)
 
 
