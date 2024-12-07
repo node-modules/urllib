@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.6](https://github.com/node-modules/urllib/compare/v4.6.5...v4.6.6) (2024-12-07)
+
+
+### Bug Fixes
+
+* allow set rejectUnauthorized = true on urllib.request options ([#561](https://github.com/node-modules/urllib/issues/561)) ([88785e1](https://github.com/node-modules/urllib/commit/88785e16560f60989f388f2a4354f076693d2876))
+
 ## [4.6.5](https://github.com/node-modules/urllib/compare/v4.6.4...v4.6.5) (2024-12-07)
 
 
