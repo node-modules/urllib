@@ -6,7 +6,7 @@ import selfsigned from 'selfsigned';
 import urllib, { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
-describe('options.rejectUnauthorized-false.test.ts', () => {
+describe('urllib.options.rejectUnauthorized-false.test.ts', () => {
   let close: any;
   let _url: string;
   beforeAll(async () => {
