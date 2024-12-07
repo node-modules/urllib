@@ -5,7 +5,7 @@ import { sensitiveHeaders, createSecureServer } from 'node:http2';
 import { PerformanceObserver } from 'node:perf_hooks';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { describe, it, beforeAll, afterAll } from 'vitest';
-import pem from 'https-pem';
+import selfsigned from 'selfsigned';
 import { HttpClient, RawResponseWithMeta, getGlobalDispatcher } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -118,7 +118,11 @@ describe('HttpClient.test.ts', () => {
     });
 
     it('should not exit after other side closed error', async () => {
-      const server = createSecureServer(pem);
+      const pem = selfsigned.generate();
+      const server = createSecureServer({
+        key: pem.private,
+        cert: pem.cert,
+      });
 
       let count = 0;
       server.on('stream', (stream, headers) => {
@@ -172,7 +176,11 @@ describe('HttpClient.test.ts', () => {
     });
 
     it('should auto redirect work', async () => {
-      const server = createSecureServer(pem);
+      const pem = selfsigned.generate();
+      const server = createSecureServer({
+        key: pem.private,
+        cert: pem.cert,
+      });
 
       let count = 0;
       server.on('stream', (stream, headers) => {
@@ -452,13 +460,13 @@ describe('HttpClient.test.ts', () => {
     });
 
     it('should allow hostname check', async () => {
-      let hostname: string;
+      let hostname = '';
       const httpclient = new HttpClient({
-        checkAddress(ip, family, aHostname) {
+        checkAddress(_ip, _family, aHostname) {
           hostname = aHostname;
           return true;
         },
-        lookup(hostname, options, callback) {
+        lookup(_hostname, _options, callback) {
           if (process.version.startsWith('v18')) {
             return callback(null, '127.0.0.1', 4);
           }

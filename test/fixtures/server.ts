@@ -370,10 +370,10 @@ export async function startServer(options?: {
   };
 
   if (options?.https) {
-    const pems = selfsigned.generate();
+    const pem = selfsigned.generate();
     server = createHttpsServer({
-      key: pems.private,
-      cert: pems.cert,
+      key: pem.private,
+      cert: pem.cert,
     }, requestHandler);
   } else {
     server = createServer(requestHandler);

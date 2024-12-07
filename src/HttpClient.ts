@@ -100,8 +100,9 @@ export type ClientOptions = {
     */
     cert?: string | Buffer;
     /**
-    * If true, the server certificate is verified against the list of supplied CAs.
-    * An 'error' event is emitted if verification fails.Default: true.
+    * If `true`, the server certificate is verified against the list of supplied CAs.
+    * An 'error' event is emitted if verification fails.
+    * Default: `true`
     */
     rejectUnauthorized?: boolean;
     /**

@@ -7,16 +7,62 @@ import { HttpClient, HEADER_USER_AGENT } from './HttpClient.js';
 import { RequestOptions, RequestURL } from './Request.js';
 
 let httpClient: HttpClient;
+let allowH2HttpClient: HttpClient;
+let allowUnauthorizedHttpClient: HttpClient;
+let allowH2AndUnauthorizedHttpClient: HttpClient;
 const domainSocketHttpClients = new LRU(50);
 
-export function getDefaultHttpClient(): HttpClient {
+export function getDefaultHttpClient(rejectUnauthorized?: boolean, allowH2?: boolean): HttpClient {
+  if (rejectUnauthorized === false) {
+    if (allowH2) {
+      if (!allowH2AndUnauthorizedHttpClient) {
+        allowH2AndUnauthorizedHttpClient = new HttpClient({
+          allowH2,
+          connect: {
+            rejectUnauthorized,
+          },
+        });
+      }
+      return allowH2AndUnauthorizedHttpClient;
+    }
+
+    if (!allowUnauthorizedHttpClient) {
+      allowUnauthorizedHttpClient = new HttpClient({
+        connect: {
+          rejectUnauthorized,
+        },
+      });
+    }
+    return allowUnauthorizedHttpClient;
+  }
+
+  if (allowH2) {
+    if (!allowH2HttpClient) {
+      allowH2HttpClient = new HttpClient({
+        allowH2,
+      });
+    }
+    return allowH2HttpClient;
+  }
+
   if (!httpClient) {
     httpClient = new HttpClient();
   }
   return httpClient;
 }
 
-export async function request<T = any>(url: RequestURL, options?: RequestOptions) {
+interface UrllibRequestOptions extends RequestOptions {
+  /**
+   * If `true`, the server certificate is verified against the list of supplied CAs.
+   * An 'error' event is emitted if verification fails.
+   * Default: `true`
+   */
+  rejectUnauthorized?: boolean;
+  /** Allow to use HTTP2 first. Default is `false` */
+  allowH2?: boolean;
+}
+
+export async function request<T = any>(url: RequestURL, options?: UrllibRequestOptions) {
   if (options?.socketPath) {
     let domainSocketHttpclient = domainSocketHttpClients.get<HttpClient>(options.socketPath);
     if (!domainSocketHttpclient) {
@@ -28,7 +74,7 @@ export async function request<T = any>(url: RequestURL, options?: RequestOptions
     return await domainSocketHttpclient.request<T>(url, options);
   }
 
-  return await getDefaultHttpClient().request<T>(url, options);
+  return await getDefaultHttpClient(options?.rejectUnauthorized, options?.allowH2).request<T>(url, options);
 }
 
 // export curl method is keep compatible with urllib.curl()
@@ -36,7 +82,7 @@ export async function request<T = any>(url: RequestURL, options?: RequestOptions
 // import * as urllib from 'urllib';
 // urllib.curl(url);
 // ```
-export async function curl<T = any>(url: RequestURL, options?: RequestOptions) {
+export async function curl<T = any>(url: RequestURL, options?: UrllibRequestOptions) {
   return await request<T>(url, options);
 }
 

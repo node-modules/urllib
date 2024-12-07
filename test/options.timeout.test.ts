@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { createSecureServer } from 'node:http2';
 import { once } from 'node:events';
-import pem from 'https-pem';
+import selfsigned from 'selfsigned';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import urllib, { HttpClientRequestTimeoutError, HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
@@ -46,7 +46,11 @@ describe('options.timeout.test.ts', () => {
         rejectUnauthorized: false,
       },
     });
-    const server = createSecureServer(pem);
+    const pem = selfsigned.generate();
+    const server = createSecureServer({
+      key: pem.private,
+      cert: pem.cert,
+    });
 
     server.on('stream', () => {
       // wait for timeout
