@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.8](https://github.com/node-modules/urllib/compare/v4.6.7...v4.6.8) (2024-12-11)
+
+
+### Bug Fixes
+
+* patch TransformStream on Node.js 16 ([#564](https://github.com/node-modules/urllib/issues/564)) ([503dbd8](https://github.com/node-modules/urllib/commit/503dbd8908320d4aa468c058221eb286f3df3cf2))
+
 ## [4.6.7](https://github.com/node-modules/urllib/compare/v4.6.6...v4.6.7) (2024-12-11)
 
 
