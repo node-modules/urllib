@@ -218,7 +218,7 @@ export class FetchFactory {
     } as any as RawResponseWithMeta;
     try {
       await FetchFactory.#opaqueLocalStorage.run(internalOpaque, async () => {
-        res = await UndiciFetch(request, init);
+        res = await UndiciFetch(request);
       });
     } catch (e: any) {
       updateSocketInfo(socketInfo, internalOpaque, e);
