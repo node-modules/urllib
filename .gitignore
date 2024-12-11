@@ -16,3 +16,4 @@ test/fixtures/ts-cjs-es2021/*.js
 test/fixtures/ts-esm/*.js
 .eslintcache
 .tshy*
+.idea/
