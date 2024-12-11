@@ -7,6 +7,7 @@ import {
   fetch, FetchDiagnosticsMessage, FetchFactory, FetchResponseDiagnosticsMessage,
 } from '../src/fetch.js';
 import { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../src/HttpClient.js';
+import { Request } from 'undici';
 
 describe('fetch.test.ts', () => {
   let close: any;
@@ -108,5 +109,15 @@ describe('fetch.test.ts', () => {
     const stats = FetchFactory.getDispatcherPoolStats();
     assert(stats);
     assert(Object.keys(stats).length > 0);
+  });
+
+  it('fetch request with post should work', async () => {
+    await assert.doesNotReject(async () => {
+      const request = new Request(_url, {
+        method: 'POST',
+        body: 'test-body',
+      });
+      await fetch(request);
+    }, /Cannot construct a Request with a Request object that has already been used/);
   });
 });
