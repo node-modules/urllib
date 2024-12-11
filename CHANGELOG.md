@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.7](https://github.com/node-modules/urllib/compare/v4.6.6...v4.6.7) (2024-12-11)
+
+
+### Bug Fixes
+
+* should not throw when fetch a Request with post ([#563](https://github.com/node-modules/urllib/issues/563)) ([6f9f353](https://github.com/node-modules/urllib/commit/6f9f353c57cd5327b1a00564774830eac29cbcbd))
+
 ## [4.6.6](https://github.com/node-modules/urllib/compare/v4.6.5...v4.6.6) (2024-12-07)
 
 
