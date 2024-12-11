@@ -12,5 +12,8 @@ export default defineConfig({
       ],
     },
     pool: 'threads',
+    setupFiles: [
+      'test/setup.ts'
+    ],
   },
 });

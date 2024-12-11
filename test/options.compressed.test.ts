@@ -166,7 +166,7 @@ describe('options.compressed.test.ts', () => {
     assert.match(response.data, /export async function startServer/);
   });
 
-  it('should throw error when gzip content invaild', async () => {
+  it('should throw error when gzip content invalid', async () => {
     await assert.rejects(async () => {
       await urllib.request(`${_url}error-gzip`, {
         dataType: 'text',
@@ -193,7 +193,7 @@ describe('options.compressed.test.ts', () => {
       // console.error(err);
       assert.equal(err.name, 'UnzipError');
       assert.equal(err.message, 'Decompression failed');
-      if (process.version !== 'v18.19.0') {
+      if (process.version !== 'v18.19.0' && !process.version.startsWith('v16.')) {
         assert.equal(err.code, 'ERR__ERROR_FORMAT_PADDING_1');
       } else {
         assert.equal(err.code, 'ERR_PADDING_1');
