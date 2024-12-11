@@ -1,7 +1,7 @@
 import { randomBytes, createHash } from 'node:crypto';
 import { Readable } from 'node:stream';
 import { performance } from 'node:perf_hooks';
-import { ReadableStream } from 'node:stream/web';
+import { ReadableStream, TransformStream } from 'node:stream/web';
 import { Blob } from 'node:buffer';
 import type { FixJSONCtlChars } from './Request.js';
 import { SocketInfo } from './Response.js';
@@ -215,6 +215,11 @@ export function patchForNode16() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     global.ReadableStream = ReadableStream;
+  }
+  if (typeof global.TransformStream === 'undefined') {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    global.TransformStream = TransformStream;
   }
   if (typeof global.Blob === 'undefined') {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
