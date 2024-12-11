@@ -100,9 +100,9 @@ describe('options.writeStream.test.ts', () => {
     assert.equal(writeStreamClosed, true);
   });
 
-  // writeStream only work with error handle on Node.js >= 18
+  // writeStream only work with error handle on Node.js >= 18, skip on Node.js 16
   // bugfix: https://github.com/node-modules/urllib/issues/459
-  it('should throw request error when writeStream error', async () => {
+  it.skipIf(process.version.startsWith('v16.'))('should throw request error when writeStream error', async () => {
     const tmpfile = join(__dirname, 'not-exists-dir', 'foo.txt');
     const writeStream = createWriteStream(tmpfile);
     let writeStreamError = false;

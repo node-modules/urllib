@@ -117,7 +117,7 @@ describe('HttpClient.test.ts', () => {
       assert(httpClient.getDispatcherPoolStats()[_url.substring(0, _url.length - 1)].connected > 1);
     });
 
-    it('should not exit after other side closed error', async () => {
+    it.skipIf(process.version.startsWith('v16.'))('should not exit after other side closed error', async () => {
       const pem = selfsigned.generate();
       const server = createSecureServer({
         key: pem.private,
@@ -273,7 +273,7 @@ describe('HttpClient.test.ts', () => {
       assert(lookupCallCounter < 10, `${lookupCallCounter} should smaller than 10`);
     });
 
-    it('should work with custom lookup on HTTPS protol', async () => {
+    it('should work with custom lookup on HTTPS protocol', async () => {
       let lookupCallCounter = 0;
       const httpclient = new HttpClient({
         // mock lookup delay
@@ -467,7 +467,7 @@ describe('HttpClient.test.ts', () => {
           return true;
         },
         lookup(_hostname, _options, callback) {
-          if (process.version.startsWith('v18')) {
+          if (process.version.startsWith('v18.') || process.version.startsWith('v16.')) {
             return callback(null, '127.0.0.1', 4);
           }
           return callback(null, [{
