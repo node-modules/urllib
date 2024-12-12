@@ -9,14 +9,14 @@ import {
   gunzipSync,
   brotliDecompressSync,
 } from 'node:zlib';
-import { Readable, pipeline } from 'node:stream';
-import { pipeline as pipelinePromise } from 'node:stream/promises';
+import { Readable, pipeline, promises as streamPromises } from 'node:stream';
 import { basename } from 'node:path';
 import { createReadStream } from 'node:fs';
 import { format as urlFormat } from 'node:url';
 import { performance } from 'node:perf_hooks';
 import querystring from 'node:querystring';
-import { setTimeout as sleep } from 'node:timers/promises';
+// import { setTimeout as sleep } from 'node:timers/promises';
+import { sleep } from './utils.js';
 import {
   request as undiciRequest,
   Dispatcher,
@@ -637,9 +637,9 @@ export class HttpClient extends EventEmitter {
       } else if (args.writeStream) {
         if (args.compressed === true && isCompressedContent) {
           const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
-          await pipelinePromise(response.body, decoder, args.writeStream);
+          await streamPromises.pipeline(response.body, decoder, args.writeStream);
         } else {
-          await pipelinePromise(response.body, args.writeStream);
+          await streamPromises.pipeline(response.body, args.writeStream);
         }
       } else {
         // buffer

@@ -1,7 +1,8 @@
 import { randomBytes, createHash } from 'node:crypto';
 import { Readable } from 'node:stream';
 import { performance } from 'node:perf_hooks';
-import { ReadableStream, TransformStream } from 'node:stream/web';
+// import { ReadableStream, TransformStream } from 'node:stream/web';
+import 'web-streams-polyfill/polyfill';
 import { Blob } from 'node:buffer';
 import type { FixJSONCtlChars } from './Request.js';
 import { SocketInfo } from './Response.js';
@@ -207,6 +208,12 @@ export function convertHeader(headers: Headers): IncomingHttpHeaders {
     }
   }
   return res;
+}
+
+export function sleep(ms: number) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
 }
 
 // support require from Node.js 16
