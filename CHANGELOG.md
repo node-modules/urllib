@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.9](https://github.com/node-modules/urllib/compare/v4.6.8...v4.6.9) (2024-12-17)
+
+
+### Bug Fixes
+
+* should got undici:client:sendHeaders message on H2 ([#553](https://github.com/node-modules/urllib/issues/553)) ([bd19f6d](https://github.com/node-modules/urllib/commit/bd19f6d9e6b845ca0d31c1c7a77d744dfa87f894))
+
 ## [4.6.8](https://github.com/node-modules/urllib/compare/v4.6.7...v4.6.8) (2024-12-11)
 
 
