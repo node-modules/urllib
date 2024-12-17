@@ -4,7 +4,7 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import { createSecureServer } from 'node:http2';
 import { once } from 'node:events';
 import { describe, it, beforeEach, afterEach } from 'vitest';
-import pem from 'https-pem';
+import selfsigned from 'selfsigned';
 import urllib, { HttpClient } from '../src/index.js';
 import type {
   RequestDiagnosticsMessage,
@@ -142,7 +142,11 @@ describe('diagnostics_channel.test.ts', () => {
   });
 
   it('should support trace socket info with H2 by undici:client:sendHeaders and undici:request:trailers', async () => {
-    const server = createSecureServer(pem);
+    const pem = selfsigned.generate();
+    const server = createSecureServer({
+      key: pem.private,
+      cert: pem.cert,
+    });
     server.on('stream', (stream, headers) => {
       stream.respond({
         'content-type': 'text/plain; charset=utf-8',
