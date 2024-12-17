@@ -681,8 +681,8 @@ export class HttpClient extends EventEmitter {
         res,
       };
 
-      debug('Request#%d got response, status: %s, headers: %j, timing: %j',
-        requestId, res.status, res.headers, res.timing);
+      debug('Request#%d got response, status: %s, headers: %j, timing: %j, socket: %j',
+        requestId, res.status, res.headers, res.timing, res.socket);
 
       if (args.retry > 0 && requestContext.retries < args.retry) {
         const isRetry = args.isRetry ?? defaultIsRetry;
