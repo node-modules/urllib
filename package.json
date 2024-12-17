@@ -50,7 +50,7 @@
     "mime-types": "^2.1.35",
     "qs": "^6.12.1",
     "type-fest": "^4.20.1",
-    "undici": "^7.0.0",
+    "undici": "^7.1.1",
     "ylru": "^2.0.0"
   },
   "devDependencies": {
