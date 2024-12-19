@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.10](https://github.com/node-modules/urllib/compare/v4.6.9...v4.6.10) (2024-12-19)
+
+
+### Bug Fixes
+
+* should HEAD request keepalive by default ([#566](https://github.com/node-modules/urllib/issues/566)) ([54c4a2c](https://github.com/node-modules/urllib/commit/54c4a2cc3950e091ef7bdbd0f1cfa3a0c032f6e6))
+
 ## [4.6.9](https://github.com/node-modules/urllib/compare/v4.6.8...v4.6.9) (2024-12-17)
 
 
