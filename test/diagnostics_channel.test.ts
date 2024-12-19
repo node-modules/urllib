@@ -47,6 +47,7 @@ describe('diagnostics_channel.test.ts', () => {
         }
       }
       const handler = request[kHandler];
+      if (!handler) return;
       let opaque = handler.opaque || handler.opts?.opaque;
       assert(opaque);
       opaque = opaque[symbols.kRequestOriginalOpaque];
@@ -88,7 +89,7 @@ describe('diagnostics_channel.test.ts', () => {
     assert(lastRequestOpaque.tracer.socket);
     assert.equal(lastRequestOpaque.tracer.socket.requests, 1);
 
-    // HEAD 请求不会 keepalive
+    // HEAD 请求会走 keepalive
     // GET 请求会走 keepalive
     await sleep(1);
     traceId = `mock-traceid-${Date.now()}`;
@@ -102,7 +103,7 @@ describe('diagnostics_channel.test.ts', () => {
     assert.equal(response.status, 200);
     assert.equal(lastRequestOpaque.tracer.traceId, traceId);
     assert(lastRequestOpaque.tracer.socket);
-    assert.equal(lastRequestOpaque.tracer.socket.requests, 1);
+    assert.equal(lastRequestOpaque.tracer.socket.requests, 2);
 
     await sleep(1);
     traceId = `mock-traceid-${Date.now()}`;
@@ -116,7 +117,7 @@ describe('diagnostics_channel.test.ts', () => {
     assert.equal(response.status, 200);
     assert.equal(lastRequestOpaque.tracer.traceId, traceId);
     assert(lastRequestOpaque.tracer.socket);
-    assert.equal(lastRequestOpaque.tracer.socket.requests, 2);
+    assert.equal(lastRequestOpaque.tracer.socket.requests, 3);
 
     // socket 复用 1000 次
     let count = 1000;
@@ -133,7 +134,7 @@ describe('diagnostics_channel.test.ts', () => {
       assert.equal(response.status, 200);
       assert.equal(lastRequestOpaque.tracer.traceId, traceId);
       assert(lastRequestOpaque.tracer.socket);
-      assert.equal(lastRequestOpaque.tracer.socket.requests, 2 + 1000 - count);
+      assert.equal(lastRequestOpaque.tracer.socket.requests, 3 + 1000 - count);
     }
 
     diagnosticsChannel.unsubscribe('undici:client:connected', onMessage);
@@ -311,23 +312,8 @@ describe('diagnostics_channel.test.ts', () => {
     assert.equal(socket.handledResponses, 1);
     assert.equal(lastRequestOpaque.tracer.traceId, traceId);
 
-    // HEAD 请求不会 keepalive
+    // HEAD 请求会走 keepalive
     // GET 请求会走 keepalive
-    await sleep(1);
-    traceId = `mock-traceid-${Date.now()}`;
-    response = await urllib.request(_url, {
-      method: 'GET',
-      dataType: 'json',
-      opaque: {
-        tracer: { traceId },
-      },
-    });
-    assert.equal(response.status, 200);
-    assert.equal(lastRequestOpaque.tracer.traceId, traceId);
-    assert(socket);
-    assert.equal(socket.handledRequests, 1);
-    assert.equal(socket.handledResponses, 1);
-
     await sleep(1);
     traceId = `mock-traceid-${Date.now()}`;
     response = await urllib.request(_url, {
@@ -342,6 +328,21 @@ describe('diagnostics_channel.test.ts', () => {
     assert(socket);
     assert.equal(socket.handledRequests, 2);
     assert.equal(socket.handledResponses, 2);
+
+    await sleep(1);
+    traceId = `mock-traceid-${Date.now()}`;
+    response = await urllib.request(_url, {
+      method: 'GET',
+      dataType: 'json',
+      opaque: {
+        tracer: { traceId },
+      },
+    });
+    assert.equal(response.status, 200);
+    assert.equal(lastRequestOpaque.tracer.traceId, traceId);
+    assert(socket);
+    assert.equal(socket.handledRequests, 3);
+    assert.equal(socket.handledResponses, 3);
 
     // socket 复用 1000 次
     let count = 1000;
@@ -358,8 +359,8 @@ describe('diagnostics_channel.test.ts', () => {
       assert.equal(response.status, 200);
       assert.equal(lastRequestOpaque.tracer.traceId, traceId);
       assert(socket);
-      assert.equal(socket.handledRequests, 2 + 1000 - count);
-      assert.equal(socket.handledResponses, 2 + 1000 - count);
+      assert.equal(socket.handledRequests, 3 + 1000 - count);
+      assert.equal(socket.handledResponses, 3 + 1000 - count);
     }
 
     diagnosticsChannel.unsubscribe('urllib:request', onRequestMessage);

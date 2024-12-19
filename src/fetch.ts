@@ -42,7 +42,7 @@ import { RawResponseWithMeta, SocketInfo } from './Response.js';
 import { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import { BaseAgent, BaseAgentOptions } from './BaseAgent.js';
 
-const debug = debuglog('urllib:fetch');
+const debug = debuglog('urllib/fetch');
 
 export interface UrllibRequestInit extends RequestInit {
   // default is true

@@ -15,7 +15,7 @@ const requestsPerSocket = Symbol('requestsPerSocket');
 export async function startServer(options?: {
   keepAliveTimeout?: number;
   https?: boolean;
-}): Promise<{ server: Server, url: string, closeServer: any }> {
+}): Promise<{ server: Server, url: string, urlWithDns: string, closeServer: any }> {
   let server: Server;
   const requestHandler = async (req: IncomingMessage, res: ServerResponse) => {
     const startTime = Date.now();
@@ -398,6 +398,7 @@ export async function startServer(options?: {
       const address: any = server.address();
       resolve({
         url: `${protocol}://localhost:${address.port}/`,
+        urlWithDns: `${protocol}://127.0.0.1:${address.port}/`,
         server,
         closeServer() {
           if (hasCloseAllConnections) {

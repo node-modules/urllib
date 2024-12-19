@@ -148,7 +148,7 @@ export type RequestOptions = {
    * unix domain socket file path
    */
   socketPath?: string | null;
-  /** Whether the request should stablish a keep-alive or not. Default `undefined` */
+  /** Whether the request should stablish a keep-alive or not. Default `false`, try to keep alive by default */
   reset?: boolean;
   /** Default: `64 KiB` */
   highWaterMark?: number;

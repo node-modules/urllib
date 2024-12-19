@@ -3,10 +3,12 @@ import { performance } from 'node:perf_hooks';
 import { debuglog } from 'node:util';
 import { Socket } from 'node:net';
 import { DiagnosticsChannel } from 'undici';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import symbols from './symbols.js';
 import { globalId, performanceTime } from './utils.js';
 
-const debug = debuglog('urllib:DiagnosticsChannel');
+const debug = debuglog('urllib/diagnosticsChannel');
 let initedDiagnosticsChannel = false;
 // https://undici.nodejs.org/#/docs/api/DiagnosticsChannel
 // client --> server
@@ -24,11 +26,21 @@ function subscribe(name: string, listener: (message: unknown, channelName: strin
 }
 
 type SocketExtend = Socket & {
-  [key: symbol]: string | number | Date | undefined;
+  [key: symbol]: string | number | Date | undefined | boolean;
 };
 
+let kSocketReset: symbol;
 function formatSocket(socket: SocketExtend) {
   if (!socket) return socket;
+  if (!kSocketReset) {
+    const symbols = Object.getOwnPropertySymbols(socket);
+    for (const symbol of symbols) {
+      if (symbol.description === 'reset') {
+        kSocketReset = symbol;
+        break;
+      }
+    }
+  }
   return {
     localAddress: socket[symbols.kSocketLocalAddress],
     localPort: socket[symbols.kSocketLocalPort],
@@ -36,6 +48,7 @@ function formatSocket(socket: SocketExtend) {
     remotePort: socket.remotePort,
     attemptedAddresses: socket.autoSelectFamilyAttemptedAddresses,
     connecting: socket.connecting,
+    reset: socket[kSocketReset],
   };
 }
 
