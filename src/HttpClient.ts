@@ -428,6 +428,7 @@ export class HttpClient extends EventEmitter {
         opaque: internalOpaque,
         dispatcher: args.dispatcher ?? this.#dispatcher,
         signal: args.signal,
+        reset: false,
       };
       if (typeof args.highWaterMark === 'number') {
         requestOptions.highWaterMark = args.highWaterMark;
