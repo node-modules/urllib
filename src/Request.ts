@@ -105,7 +105,7 @@ export type RequestOptions = {
   formatRedirectUrl?: (a: any, b: any) => void;
   /** Before request hook, you can change every thing here. */
   beforeRequest?: (...args: any[]) => void;
-  /** Accept `gzip, br` response content and auto decode it, default is `true`. */
+  /** Accept `gzip, br` response content and auto decode it, default is `false`. */
   compressed?: boolean;
   /**
    * @deprecated
