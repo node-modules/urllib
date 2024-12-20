@@ -73,7 +73,7 @@ console.log('status: %s, body size: %d, headers: %j', res.status, data.length, r
   - ***formatRedirectUrl*** Function - Format the redirect url by your self. Default is `url.resolve(from, to)`.
   - ***beforeRequest*** Function - Before request hook, you can change every thing here.
   - ***streaming*** Boolean - let you get the `res` object when request  connected, default `false`. alias `customResponse`
-  - ***compressed*** Boolean - Accept `gzip, br` response content and auto decode it, default is `true`.
+  - ***compressed*** Boolean - Accept `gzip, br` response content and auto decode it, default is `false`.
   - ***timing*** Boolean - Enable timing or not, default is `true`.
   - ***socketPath*** String | null - request a unix socket service, default is `null`.
   - ***highWaterMark*** Number - default is `67108864`, 64 KiB.
