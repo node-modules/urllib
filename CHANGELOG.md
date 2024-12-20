@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.11](https://github.com/node-modules/urllib/compare/v4.6.10...v4.6.11) (2024-12-20)
+
+
+### Bug Fixes
+
+* compressed option should be false by default ([#567](https://github.com/node-modules/urllib/issues/567)) ([a0a8dc5](https://github.com/node-modules/urllib/commit/a0a8dc565ed5fcbe21c8a8e4e07d6bb51b185c96))
+
 ## [4.6.10](https://github.com/node-modules/urllib/compare/v4.6.9...v4.6.10) (2024-12-19)
 
 
