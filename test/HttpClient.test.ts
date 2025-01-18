@@ -9,6 +9,8 @@ import selfsigned from 'selfsigned';
 import { HttpClient, RawResponseWithMeta, getGlobalDispatcher } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
+const pems = selfsigned.generate();
+
 if (process.env.ENABLE_PERF) {
   const obs = new PerformanceObserver(items => {
     items.getEntries().forEach(item => {
@@ -118,10 +120,9 @@ describe('HttpClient.test.ts', () => {
     });
 
     it.skipIf(process.version.startsWith('v16.'))('should not exit after other side closed error', async () => {
-      const pem = selfsigned.generate();
       const server = createSecureServer({
-        key: pem.private,
-        cert: pem.cert,
+        key: pems.private,
+        cert: pems.cert,
       });
 
       let count = 0;
@@ -176,10 +177,9 @@ describe('HttpClient.test.ts', () => {
     });
 
     it('should auto redirect work', async () => {
-      const pem = selfsigned.generate();
       const server = createSecureServer({
-        key: pem.private,
-        cert: pem.cert,
+        key: pems.private,
+        cert: pems.cert,
       });
 
       let count = 0;
