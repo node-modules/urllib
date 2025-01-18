@@ -6,6 +6,8 @@ import { describe, it, beforeAll, afterAll } from 'vitest';
 import urllib, { HttpClientRequestTimeoutError, HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
+const pems = selfsigned.generate();
+
 describe('options.timeout.test.ts', () => {
   let close: any;
   let _url: string;
@@ -46,10 +48,10 @@ describe('options.timeout.test.ts', () => {
         rejectUnauthorized: false,
       },
     });
-    const pem = selfsigned.generate();
+
     const server = createSecureServer({
-      key: pem.private,
-      cert: pem.cert,
+      key: pems.private,
+      cert: pems.cert,
     });
 
     server.on('stream', () => {

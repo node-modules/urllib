@@ -13,7 +13,7 @@ export default defineConfig({
     },
     pool: 'threads',
     setupFiles: [
-      'test/setup.ts'
+      'test/setup.ts',
     ],
   },
 });
