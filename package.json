@@ -78,7 +78,7 @@
     "git-contributor": "^2.0.0",
     "iconv-lite": "^0.6.3",
     "proxy": "^1.0.2",
-    "selfsigned": "^2.0.1",
+    "selfsigned": "^2.4.1",
     "tar-stream": "^2.2.0",
     "tshy": "^1.0.0",
     "tshy-after": "^1.0.0",
