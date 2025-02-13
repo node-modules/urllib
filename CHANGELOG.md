@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.27.2](https://github.com/node-modules/urllib/compare/v3.27.1...v3.27.2) (2025-02-13)
+
+
+### Bug Fixes
+
+* allow set rejectUnauthorized = true on urllib.request options ([#573](https://github.com/node-modules/urllib/issues/573)) ([4a8bff9](https://github.com/node-modules/urllib/commit/4a8bff91a73964f735ca8b9d64bce45ad1a9ddf6))
+
 ## [3.27.1](https://github.com/node-modules/urllib/compare/v3.27.0...v3.27.1) (2024-09-14)
 
 
