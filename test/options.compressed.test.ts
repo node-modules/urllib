@@ -193,7 +193,7 @@ describe('options.compressed.test.ts', () => {
       // console.error(err);
       assert.equal(err.name, 'UnzipError');
       assert.equal(err.message, 'Decompression failed');
-      if (nodeMajorVersion() >= 20) {
+      if (nodeMajorVersion() >= 18) {
         assert.equal(err.code, 'ERR__ERROR_FORMAT_PADDING_1');
       } else {
         assert.equal(err.code, 'ERR_PADDING_1');
