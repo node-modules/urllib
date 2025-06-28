@@ -2,6 +2,7 @@ import { createServer, Server } from 'node:http';
 
 const socketPathPrefix = '/tmp/urllib.unix.sock';
 let index = 0;
+
 export async function startServer(): Promise<{
   server: Server,
   url: string,

@@ -19,7 +19,7 @@ describe.skipIf(isWindows())('options.socketPath.test.ts', () => {
 
   afterAll(async () => {
     await close();
-    await server2.closeServer();
+    await server2?.closeServer();
   });
 
   it('should request socket successfully', async () => {
