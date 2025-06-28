@@ -39,7 +39,7 @@
     "test": "npm run lint -- --fix && vitest run",
     "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vitest run --test-timeout 180000 keep-alive-header.test.ts",
     "test-node16": "node examples/httpclient.cjs && node examples/search_github.cjs && node examples/timing.cjs",
-    "cov": "cross-env NODE_OPTIONS='--require ./test/patch-structuredClone.cjs' vitest run --coverage",
+    "cov": "cross-env NODE_OPTIONS='--require ./test/patch-for-node16.cjs' vitest run --coverage",
     "ci": "npm run lint && npm run cov && npm run prepublishOnly && npm pack && attw --pack",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build"
@@ -78,7 +78,7 @@
     "tshy": "^3.0.0",
     "tshy-after": "^1.0.0",
     "typescript": "^5.0.4",
-    "vitest": "^3.0.2"
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">= 18.19.0"
