@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.12](https://github.com/node-modules/urllib/compare/v4.6.11...v4.6.12) (2025-06-28)
+
+
+### Bug Fixes
+
+* compatible with pool stats reading ([#578](https://github.com/node-modules/urllib/issues/578)) ([13a29af](https://github.com/node-modules/urllib/commit/13a29af659ed3fb9f0c924a80ae7d760c1997f55))
+
 ## [4.6.11](https://github.com/node-modules/urllib/compare/v4.6.10...v4.6.11) (2024-12-20)
 
 
