@@ -41,7 +41,7 @@
     "test-node16": "node examples/httpclient.cjs && node examples/search_github.cjs && node examples/timing.cjs",
     "cov": "cross-env NODE_OPTIONS='--require ./test/patch-for-node16.cjs' vitest run --coverage",
     "ci": "npm run lint && npm run cov && npm run prepublishOnly && npm pack && attw --pack",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist && tsc -b --clean",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {

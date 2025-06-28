@@ -108,7 +108,7 @@ describe('fetch.test.ts', () => {
 
     const stats = FetchFactory.getDispatcherPoolStats();
     assert(stats);
-    assert(Object.keys(stats).length > 0);
+    assert(Object.keys(stats).length > 0, `dispatcher pool stats: ${JSON.stringify(stats)}`);
   });
 
   it('fetch request with post should work', async () => {
