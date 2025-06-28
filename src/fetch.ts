@@ -114,9 +114,11 @@ export class FetchFactory {
       return poolStatsMap;
     }
     for (const [ key, ref ] of clients) {
-      const pool = typeof ref.deref === 'function' ? ref.deref() : ref as unknown as Pool;
-      const stats = pool?.stats;
+      const pool = (typeof ref.deref === 'function' ? ref.deref() : ref) as unknown as (Pool & { dispatcher: Pool });
+      // NOTE: pool become to { dispatcher: Pool } in undici@v7
+      const stats = pool?.stats ?? pool?.dispatcher?.stats;
       if (!stats) continue;
+
       poolStatsMap[key] = {
         connected: stats.connected,
         free: stats.free,

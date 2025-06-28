@@ -136,7 +136,7 @@ content-type: application/json
 }
 ```
 
-This exmaple can use `options.data` with `application/json` content type:
+This example can use `options.data` with `application/json` content type:
 
 ```js
 await request('https://example.com', {

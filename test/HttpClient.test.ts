@@ -326,7 +326,8 @@ describe('HttpClient.test.ts', () => {
 
       const response = await httpclient.request(_url);
       assert.equal(response.status, 200);
-      assert.equal(Object.keys(httpclient.getDispatcherPoolStats()).length, 1);
+      assert.equal(Object.keys(httpclient.getDispatcherPoolStats()).length, 1,
+        `dispatcher pool stats: ${JSON.stringify(httpclient.getDispatcherPoolStats())}`);
     });
 
     it('should check non-ip hostname with custom lookup', async () => {
