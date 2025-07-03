@@ -9,7 +9,7 @@ import {
 import { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../src/HttpClient.js';
 import { Request } from 'undici';
 
-describe('fetch.test.ts', () => {
+describe.only('fetch.test.ts', () => {
   let close: any;
   let _url: string;
   beforeAll(async () => {
@@ -58,7 +58,6 @@ describe('fetch.test.ts', () => {
     await sleep(1);
     // again, keep alive
     response = await fetch(`${_url}html`);
-    // console.log(responseDiagnosticsMessage!.response.socket);
     assert(responseDiagnosticsMessage!.response.socket.handledRequests > 1);
     assert(responseDiagnosticsMessage!.response.socket.handledResponses > 1);
 
@@ -99,7 +98,6 @@ describe('fetch.test.ts', () => {
     assert(requestDiagnosticsMessage!.request);
     assert(responseDiagnosticsMessage!.request);
     assert(responseDiagnosticsMessage!.response);
-    // console.log(responseDiagnosticsMessage!.response.socket);
     assert(responseDiagnosticsMessage!.response.socket.localAddress);
     assert([ '127.0.0.1', '::1' ].includes(responseDiagnosticsMessage!.response.socket.localAddress));
 
@@ -119,5 +117,49 @@ describe('fetch.test.ts', () => {
       });
       await fetch(request);
     }, /Cannot construct a Request with a Request object that has already been used/);
+  });
+
+  it('fetch with new FetchFactory instance should work', async () => {
+    let requestDiagnosticsMessage: RequestDiagnosticsMessage;
+    let responseDiagnosticsMessage: ResponseDiagnosticsMessage;
+    let fetchDiagnosticsMessage: FetchDiagnosticsMessage;
+    let fetchResponseDiagnosticsMessage: FetchResponseDiagnosticsMessage;
+    diagnosticsChannel.subscribe('urllib:request', msg => {
+      requestDiagnosticsMessage = msg as RequestDiagnosticsMessage;
+    });
+    diagnosticsChannel.subscribe('urllib:response', msg => {
+      responseDiagnosticsMessage = msg as ResponseDiagnosticsMessage;
+    });
+    diagnosticsChannel.subscribe('urllib:fetch:request', msg => {
+      fetchDiagnosticsMessage = msg as FetchDiagnosticsMessage;
+    });
+    diagnosticsChannel.subscribe('urllib:fetch:response', msg => {
+      fetchResponseDiagnosticsMessage = msg as FetchResponseDiagnosticsMessage;
+    });
+    const factory = new FetchFactory();
+    factory.setClientOptions({});
+    let response = await factory.fetch(`${_url}html`);
+
+    assert(response);
+    assert(requestDiagnosticsMessage!.request);
+    assert(responseDiagnosticsMessage!.request);
+    assert(responseDiagnosticsMessage!.response);
+    assert(responseDiagnosticsMessage!.response.socket.localAddress);
+    assert([ '127.0.0.1', '::1' ].includes(responseDiagnosticsMessage!.response.socket.localAddress));
+
+    assert(fetchDiagnosticsMessage!.fetch);
+    assert(fetchResponseDiagnosticsMessage!.fetch);
+    assert(fetchResponseDiagnosticsMessage!.response);
+    assert(fetchResponseDiagnosticsMessage!.timingInfo);
+
+    await sleep(1);
+    // again, keep alive
+    response = await factory.fetch(`${_url}html`);
+    assert(responseDiagnosticsMessage!.response.socket.handledRequests > 1);
+    assert(responseDiagnosticsMessage!.response.socket.handledResponses > 1);
+
+    const stats = factory.getDispatcherPoolStats();
+    assert(stats);
+    assert(Object.keys(stats).length > 0);
   });
 });
