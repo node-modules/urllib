@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.7.0](https://github.com/node-modules/urllib/compare/v4.6.12...v4.7.0) (2025-07-03)
+
+
+### Features
+
+* support multiple fetch_factory instances ([#579](https://github.com/node-modules/urllib/issues/579)) ([d09d316](https://github.com/node-modules/urllib/commit/d09d3166b431874dc513d975bfd73a83671edf2a))
+
 ## [4.6.12](https://github.com/node-modules/urllib/compare/v4.6.11...v4.6.12) (2025-06-28)
 
 
