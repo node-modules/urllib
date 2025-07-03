@@ -61,20 +61,14 @@ export type FetchResponseDiagnosticsMessage = {
 };
 
 export class FetchFactory {
-  static #dispatcher: Dispatcher.ComposedDispatcher;
-  static #opaqueLocalStorage = new AsyncLocalStorage<FetchOpaque>();
+  #dispatcher?: Dispatcher.ComposedDispatcher;
+  #opaqueLocalStorage = new AsyncLocalStorage<FetchOpaque>();
 
-  static getDispatcher() {
-    return FetchFactory.#dispatcher ?? getGlobalDispatcher();
-  }
+  static #instance = new FetchFactory();
 
-  static setDispatcher(dispatcher: Agent) {
-    FetchFactory.#dispatcher = dispatcher;
-  }
-
-  static setClientOptions(clientOptions: ClientOptions) {
+  setClientOptions(clientOptions: ClientOptions) {
     let dispatcherOption: BaseAgentOptions = {
-      opaqueLocalStorage: FetchFactory.#opaqueLocalStorage,
+      opaqueLocalStorage: this.#opaqueLocalStorage,
     };
     let dispatcherClazz: new (options: BaseAgentOptions) => BaseAgent = BaseAgent;
     if (clientOptions?.lookup || clientOptions?.checkAddress) {
@@ -101,12 +95,20 @@ export class FetchFactory {
       } as HttpAgentOptions;
       dispatcherClazz = BaseAgent;
     }
-    FetchFactory.#dispatcher = new dispatcherClazz(dispatcherOption);
+    this.#dispatcher = new dispatcherClazz(dispatcherOption);
     initDiagnosticsChannel();
   }
 
-  static getDispatcherPoolStats() {
-    const agent = FetchFactory.getDispatcher();
+  getDispatcher() {
+    return this.#dispatcher ?? getGlobalDispatcher();
+  }
+
+  setDispatcher(dispatcher: Agent) {
+    this.#dispatcher = dispatcher;
+  }
+
+  getDispatcherPoolStats() {
+    const agent = this.getDispatcher();
     // origin => Pool Instance
     const clients: Map<string, WeakRef<Pool>> | undefined = Reflect.get(agent, undiciSymbols.kClients);
     const poolStatsMap: Record<string, PoolStat> = {};
@@ -131,10 +133,18 @@ export class FetchFactory {
     return poolStatsMap;
   }
 
-  static async fetch(input: RequestInfo, init?: UrllibRequestInit): Promise<Response> {
+  static setClientOptions(clientOptions: ClientOptions) {
+    FetchFactory.#instance.setClientOptions(clientOptions);
+  }
+
+  static getDispatcherPoolStats() {
+    return FetchFactory.#instance.getDispatcherPoolStats();
+  }
+
+  async fetch(input: RequestInfo, init?: UrllibRequestInit): Promise<Response> {
     const requestStartTime = performance.now();
     init = init ?? {};
-    init.dispatcher = init.dispatcher ?? FetchFactory.#dispatcher;
+    init.dispatcher = init.dispatcher ?? this.#dispatcher;
     const request = new Request(input, init);
     const requestId = globalId('HttpClientRequest');
     // https://developer.chrome.com/docs/devtools/network/reference/?utm_source=devtools#timing-explanation
@@ -219,7 +229,7 @@ export class FetchFactory {
       socketErrorRetries: 0,
     } as any as RawResponseWithMeta;
     try {
-      await FetchFactory.#opaqueLocalStorage.run(internalOpaque, async () => {
+      await this.#opaqueLocalStorage.run(internalOpaque, async () => {
         res = await UndiciFetch(request);
       });
     } catch (e: any) {
@@ -261,6 +271,18 @@ export class FetchFactory {
       response: urllibResponse,
     } as ResponseDiagnosticsMessage);
     return res!;
+  }
+
+  static getDispatcher() {
+    return FetchFactory.#instance.getDispatcher();
+  }
+
+  static setDispatcher(dispatcher: Agent) {
+    FetchFactory.#instance.setDispatcher(dispatcher);
+  }
+
+  static async fetch(input: RequestInfo, init?: UrllibRequestInit): Promise<Response> {
+    return FetchFactory.#instance.fetch(input, init);
   }
 }
 
