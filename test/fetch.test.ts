@@ -9,7 +9,7 @@ import {
 import { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../src/HttpClient.js';
 import { Request } from 'undici';
 
-describe.only('fetch.test.ts', () => {
+describe('fetch.test.ts', () => {
   let close: any;
   let _url: string;
   beforeAll(async () => {
