@@ -369,7 +369,8 @@ export class HttpClient extends EventEmitter {
         headersTimeout = args.timeout[0] ?? headersTimeout;
         bodyTimeout = args.timeout[1] ?? bodyTimeout;
       } else {
-        headersTimeout = bodyTimeout = args.timeout;
+        // compatible with urllib@2 timeout string format
+        headersTimeout = bodyTimeout = typeof args.timeout === 'string' ? parseInt(args.timeout) : args.timeout;
       }
     }
     if (originalHeaders) {

@@ -41,6 +41,27 @@ describe('options.timeout.test.ts', () => {
     });
   });
 
+  it('should timeout support string format', async () => {
+    await assert.rejects(async () => {
+      await urllib.request(`${_url}?timeout=2000`, {
+        // @ts-expect-error check string format
+        timeout: '10',
+      });
+    }, (err: any) => {
+      // console.error(err);
+      assert.equal(err.name, 'HttpClientRequestTimeoutError');
+      assert.equal(err.message, 'Request timeout for 10 ms');
+      assert.equal(err.cause.name, 'HeadersTimeoutError');
+      assert.equal(err.cause.message, 'Headers Timeout Error');
+      assert.equal(err.cause.code, 'UND_ERR_HEADERS_TIMEOUT');
+
+      assert.equal(err.res.status, -1);
+      assert(err.res.rt > 10, `actual ${err.res.rt}`);
+      assert.equal(typeof err.res.rt, 'number');
+      return true;
+    });
+  });
+
   it('should timeout on h2', async () => {
     const httpClient = new HttpClient({
       allowH2: true,
