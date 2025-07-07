@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.7.1](https://github.com/node-modules/urllib/compare/v4.7.0...v4.7.1) (2025-07-07)
+
+
+### Bug Fixes
+
+* compatible with urllib@2 timeout string format ([#580](https://github.com/node-modules/urllib/issues/580)) ([5eaf790](https://github.com/node-modules/urllib/commit/5eaf790d89b9ffebbadbc079ef9926b91f6130fd))
+
 ## [4.7.0](https://github.com/node-modules/urllib/compare/v4.6.12...v4.7.0) (2025-07-03)
 
 
