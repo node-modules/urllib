@@ -40,6 +40,7 @@ import { parseJSON, digestAuthHeader, globalId, performanceTime, isReadable, upd
 import symbols from './symbols.js';
 import { initDiagnosticsChannel } from './diagnosticsChannel.js';
 import { HttpClientConnectTimeoutError, HttpClientRequestTimeoutError } from './HttpClientError.js';
+import { FetchOpaque } from './FetchOpaqueInterceptor.js';
 
 type Exists<T> = T extends undefined ? never : T;
 type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;
@@ -150,12 +151,16 @@ export const channels = {
 
 export type RequestDiagnosticsMessage = {
   request: RequestMeta;
+  isSentByFetch?: boolean;
+  fetchOpaque?: FetchOpaque;
 };
 
 export type ResponseDiagnosticsMessage = {
   request: RequestMeta;
   response: RawResponseWithMeta;
   error?: Error;
+  isSentByFetch?: boolean;
+  fetchOpaque?: FetchOpaque;
 };
 
 export interface PoolStat {

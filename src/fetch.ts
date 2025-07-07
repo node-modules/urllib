@@ -51,10 +51,12 @@ export interface UrllibRequestInit extends RequestInit {
 
 export type FetchDiagnosticsMessage = {
   fetch: FetchMeta;
+  fetchOpaque: FetchOpaque;
 };
 
 export type FetchResponseDiagnosticsMessage = {
   fetch: FetchMeta;
+  fetchOpaque: FetchOpaque;
   timingInfo?: UndiciTimingInfo;
   response?: Response;
   error?: Error;
@@ -202,9 +204,12 @@ export class FetchFactory {
     };
     channels.request.publish({
       request: reqMeta,
+      isSentByFetch: true,
+      fetchOpaque: internalOpaque,
     } as RequestDiagnosticsMessage);
     channels.fetchRequest.publish({
       fetch: fetchMeta,
+      fetchOpaque: internalOpaque,
     } as FetchDiagnosticsMessage);
 
     let res: Response;
@@ -239,11 +244,14 @@ export class FetchFactory {
       channels.fetchResponse.publish({
         fetch: fetchMeta,
         error: e,
+        fetchOpaque: internalOpaque,
       } as FetchResponseDiagnosticsMessage);
       channels.response.publish({
         request: reqMeta,
         response: urllibResponse,
         error: e,
+        isSentByFetch: true,
+        fetchOpaque: internalOpaque,
       } as ResponseDiagnosticsMessage);
       throw e;
     }
@@ -265,10 +273,13 @@ export class FetchFactory {
       fetch: fetchMeta,
       timingInfo: state.timingInfo,
       response: res!,
+      fetchOpaque: internalOpaque,
     } as FetchResponseDiagnosticsMessage);
     channels.response.publish({
       request: reqMeta,
       response: urllibResponse,
+      isSentByFetch: true,
+      fetchOpaque: internalOpaque,
     } as ResponseDiagnosticsMessage);
     return res!;
   }
