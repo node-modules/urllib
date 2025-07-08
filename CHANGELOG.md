@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.8.0](https://github.com/node-modules/urllib/compare/v4.7.1...v4.8.0) (2025-07-08)
+
+
+### Features
+
+* add isSentByFetch/fetchOpaque to urllib message ([#581](https://github.com/node-modules/urllib/issues/581)) ([d7e9f40](https://github.com/node-modules/urllib/commit/d7e9f40504dabdedeaf9081fc3a5015e545aba45))
+
 ## [4.7.1](https://github.com/node-modules/urllib/compare/v4.7.0...v4.7.1) (2025-07-07)
 
 
