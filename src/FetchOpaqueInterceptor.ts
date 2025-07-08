@@ -13,7 +13,7 @@ export interface FetchOpaque {
   [symbols.kRequestStartTime]: number;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  [symbols.kEnableRequestTiming]: number;
+  [symbols.kEnableRequestTiming]: boolean;
 }
 
 // const internalOpaque = {
