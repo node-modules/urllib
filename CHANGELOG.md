@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.27.3](https://github.com/node-modules/urllib/compare/v3.27.2...v3.27.3) (2025-07-22)
+
+
+### Bug Fixes
+
+* global dispatcher ([#583](https://github.com/node-modules/urllib/issues/583)) ([25e90ab](https://github.com/node-modules/urllib/commit/25e90abce7aa564e700e72b468ba614d3486e90c))
+
 ## [3.27.2](https://github.com/node-modules/urllib/compare/v3.27.1...v3.27.2) (2025-02-13)
 
 
