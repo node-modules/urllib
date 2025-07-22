@@ -180,11 +180,15 @@ describe('index.test.ts', () => {
     const globalAgent = getGlobalDispatcher();
     beforeEach(() => {
       mockAgent = new MockAgent();
+      const httpClient = getDefaultHttpClient();
+      httpClient.setDispatcher(mockAgent);
       setGlobalDispatcher(mockAgent);
     });
 
     afterEach(async () => {
       setGlobalDispatcher(globalAgent);
+      const httpClient = getDefaultHttpClient();
+      httpClient.setDispatcher();
       await mockAgent.close();
     });
 

@@ -1,8 +1,9 @@
 import { strict as assert } from 'node:assert';
 import diagnosticsChannel from 'node:diagnostics_channel';
 import { describe, it, beforeEach, afterEach } from 'vitest';
-import urllib from '../src';
-import type {
+import urllib, { getGlobalDispatcher, setGlobalDispatcher } from '../src';
+import {
+  MockAgent,
   RequestDiagnosticsMessage,
   ResponseDiagnosticsMessage,
 } from '../src';
@@ -13,14 +14,22 @@ import { sleep } from './utils';
 describe('diagnostics_channel.test.ts', () => {
   let close: any;
   let _url: string;
+
+  let mockAgent: MockAgent;
+  const globalAgent = getGlobalDispatcher();
+
   beforeEach(async () => {
     const { closeServer, url } = await startServer();
     close = closeServer;
     _url = url;
+    mockAgent = new MockAgent();
+    setGlobalDispatcher(mockAgent);
   });
 
   afterEach(async () => {
     await close();
+    setGlobalDispatcher(globalAgent);
+    await mockAgent.close();
   });
 
   it('should support trace socket info by undici:client:sendHeaders and undici:request:trailers', async () => {
