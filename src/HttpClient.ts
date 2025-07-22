@@ -22,8 +22,9 @@ import {
   request as undiciRequest,
   Dispatcher,
   Agent,
-  getGlobalDispatcher,
   Pool,
+  getGlobalDispatcher,
+  MockAgent,
 } from 'undici';
 import undiciSymbols from 'undici/lib/core/symbols.js';
 import { FormData as FormDataNode } from 'formdata-node';
@@ -207,10 +208,23 @@ export class HttpClient extends EventEmitter {
   }
 
   getDispatcher() {
-    return this.#dispatcher ?? getGlobalDispatcher();
+    if (this.#dispatcher) {
+      return this.#dispatcher;
+    }
+    // In a multi-version undici environment
+    // the global dispatcher is the highest version of undici
+    // which will conflict with the maxRedirects field and report an error
+    // so we need to create it that use 5.x version
+    const globalDispatcher = getGlobalDispatcher();
+    if (!(globalDispatcher instanceof Agent) && !(globalDispatcher instanceof MockAgent)) {
+      const dispatcher = globalDispatcher.constructor.name === 'MockAgent' ? new MockAgent() : new Agent();
+      this.setDispatcher(dispatcher);
+      return dispatcher;
+    }
+    return globalDispatcher;
   }
 
-  setDispatcher(dispatcher: Dispatcher) {
+  setDispatcher(dispatcher?: Dispatcher) {
     this.#dispatcher = dispatcher;
   }
 
@@ -415,7 +429,7 @@ export class HttpClient extends EventEmitter {
         headers,
         bodyTimeout,
         opaque: internalOpaque,
-        dispatcher: args.dispatcher ?? this.#dispatcher,
+        dispatcher: args.dispatcher ?? this.getDispatcher(),
         signal: args.signal,
       };
       if (typeof args.highWaterMark === 'number') {

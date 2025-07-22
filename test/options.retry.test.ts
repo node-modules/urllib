@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { createWriteStream, createReadStream } from 'node:fs';
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
-import urllib from '../src';
+import urllib, { getGlobalDispatcher, MockAgent, setGlobalDispatcher } from '../src';
 import { startServer } from './fixtures/server';
 import { readableToString, createTempfile } from './utils';
 
@@ -10,6 +10,9 @@ describe('options.retry.test.ts', () => {
   let _url: string;
   let tmpfile: string;
   let cleanup: any;
+
+  let mockAgent: MockAgent;
+  const globalAgent = getGlobalDispatcher();
 
   beforeAll(async () => {
     const { closeServer, url } = await startServer();
@@ -24,9 +27,13 @@ describe('options.retry.test.ts', () => {
     const item = await createTempfile();
     tmpfile = item.tmpfile;
     cleanup = item.cleanup;
+    mockAgent = new MockAgent();
+    setGlobalDispatcher(mockAgent);
   });
   afterEach(async () => {
     await cleanup();
+    setGlobalDispatcher(globalAgent);
+    await mockAgent.close();
   });
 
   it('should not retry on 400', async () => {
