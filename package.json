@@ -73,7 +73,7 @@
     "eslint-config-egg": "14",
     "iconv-lite": "^0.6.3",
     "proxy": "^1.0.2",
-    "selfsigned": "^2.4.1",
+    "selfsigned": "^3.0.0",
     "string.prototype.towellformed": "^1.0.2",
     "tar-stream": "^2.2.0",
     "tshy": "^3.0.0",
