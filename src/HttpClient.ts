@@ -429,7 +429,7 @@ export class HttpClient extends EventEmitter {
       const requestOptions: IUndiciRequestOption = {
         method,
         // disable undici auto redirect handler
-        maxRedirections: 0,
+        // maxRedirections: 0,
         headersTimeout,
         headers,
         bodyTimeout,

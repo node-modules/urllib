@@ -12,6 +12,7 @@ import type {
 } from '../src/index.js';
 import symbols from '../src/symbols.js';
 import { startServer } from './fixtures/server.js';
+import { nodeMajorVersion } from './utils.js';
 
 describe('diagnostics_channel.test.ts', () => {
   let close: any;
@@ -143,7 +144,9 @@ describe('diagnostics_channel.test.ts', () => {
   });
 
   it('should support trace socket info with H2 by undici:client:sendHeaders and undici:request:trailers', async () => {
-    const pem = selfsigned.generate();
+    const pem = selfsigned.generate([], {
+      keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,
+    });
     const server = createSecureServer({
       key: pem.private,
       cert: pem.cert,
