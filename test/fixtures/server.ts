@@ -8,7 +8,7 @@ import busboy from 'busboy';
 import iconv from 'iconv-lite';
 import selfsigned from 'selfsigned';
 import qs from 'qs';
-import { readableToBytes } from '../utils.js';
+import { nodeMajorVersion, readableToBytes } from '../utils.js';
 
 const requestsPerSocket = Symbol('requestsPerSocket');
 
@@ -370,7 +370,9 @@ export async function startServer(options?: {
   };
 
   if (options?.https) {
-    const pem = selfsigned.generate();
+    const pem = selfsigned.generate([], {
+      keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,
+    });
     server = createHttpsServer({
       key: pem.private,
       cert: pem.cert,
