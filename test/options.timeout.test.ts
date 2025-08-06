@@ -5,8 +5,11 @@ import selfsigned from 'selfsigned';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import urllib, { HttpClientRequestTimeoutError, HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
+import { nodeMajorVersion } from './utils.js';
 
-const pems = selfsigned.generate();
+const pems = selfsigned.generate([], {
+  keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,
+});
 
 describe('options.timeout.test.ts', () => {
   let close: any;
