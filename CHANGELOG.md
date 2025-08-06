@@ -1,5 +1,13 @@
 # Changelog
 
+## <small>4.8.1 (2025-08-06)</small>
+
+* chore: add GIT_TOKEN ([baabae9](https://github.com/node-modules/urllib/commit/baabae9))
+* chore: use npm trusted publisher (#589) ([8f2ed13](https://github.com/node-modules/urllib/commit/8f2ed13)), closes [#589](https://github.com/node-modules/urllib/issues/589)
+* chore(deps): update dependency cross-env to v10 (#584) ([ad4405a](https://github.com/node-modules/urllib/commit/ad4405a)), closes [#584](https://github.com/node-modules/urllib/issues/584)
+* chore(deps): update dependency selfsigned to v3 (#582) ([9e62fb1](https://github.com/node-modules/urllib/commit/9e62fb1)), closes [#582](https://github.com/node-modules/urllib/issues/582)
+* fix: patch undici File support on Node.js < 20 (#588) ([0e5ad19](https://github.com/node-modules/urllib/commit/0e5ad19)), closes [#588](https://github.com/node-modules/urllib/issues/588)
+
 ## [4.8.0](https://github.com/node-modules/urllib/compare/v4.7.1...v4.8.0) (2025-07-08)
 
 
