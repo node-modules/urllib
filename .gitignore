@@ -17,3 +17,4 @@ test/fixtures/ts-esm/*.js
 .eslintcache
 .tshy*
 .idea/
+pnpm-lock.yaml
