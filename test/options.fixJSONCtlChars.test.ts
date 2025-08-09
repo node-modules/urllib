@@ -24,7 +24,7 @@ describe('options.fixJSONCtlChars.test.ts', () => {
     assert.equal(response.status, 200);
     // console.log(response.data);
     assert.deepEqual(response.data, {
-      foo: '\b\f\n\r\tbar\u000e!1!\u0086!2\!\u0000\!3\!\u001f\!4\!\\\!5\!end\\\\',
+      foo: '\b\f\n\r\tbar\u000e!1!\u0086!2!\u0000!3!\u001f!4!\\\!5!end\\\\',
     });
   });
 
