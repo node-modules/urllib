@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "env": {
+    "node": true
+  },
+  "categories": {
+    "correctness": "error",
+    "suspicious": "allow",
+    "pedantic": "allow",
+    "style": "allow",
+    "nursery": "allow",
+    "restriction": "allow"
+  },
+  "plugins": [
+    "oxc"
+  ],
+  "rules": {
+    "no-extend-native": "warn",
+    "no-control-regex": "allow",
+    "no-unused-private-class-members": "allow"
+  }
+}

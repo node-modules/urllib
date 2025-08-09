@@ -1,8 +1,0 @@
-{
-  "extends": [
-    "eslint-config-egg/typescript"
-  ],
-  "rules": {
-    "no-extend-native": "warn"
-  }
-}

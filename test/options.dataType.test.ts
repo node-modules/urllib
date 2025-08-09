@@ -141,7 +141,7 @@ describe('options.dataType.test.ts', () => {
     }, (err: any) => {
       // console.error(err);
       assert.equal(err.name, 'JSONResponseFormatError');
-      assert.match(err.message, /\" \.\.\.skip\.\.\. \"/);
+      assert.match(err.message, /" \.\.\.skip\.\.\. "/);
       assert.equal(err.res.status, 200);
       assert.equal(err.res.headers['content-type'], 'application/json');
       return true;
