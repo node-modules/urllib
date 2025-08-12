@@ -1,5 +1,12 @@
 # Changelog
 
+## <small>4.8.2 (2025-08-12)</small>
+
+* fix: enumerable WellFormed ([0b1e89d](https://github.com/node-modules/urllib/commit/0b1e89d))
+* chore: ignore pnpm-lock.yaml ([3cc8971](https://github.com/node-modules/urllib/commit/3cc8971))
+* chore: migrate from ESLint to oxlint with @eggjs/oxlint-config extension (#590) ([1ae3fd7](https://github.com/node-modules/urllib/commit/1ae3fd7)), closes [#590](https://github.com/node-modules/urllib/issues/590)
+* chore: typo fix on release task name ([54aa22a](https://github.com/node-modules/urllib/commit/54aa22a))
+
 ## <small>4.8.1 (2025-08-06)</small>
 
 * chore: add GIT_TOKEN ([baabae9](https://github.com/node-modules/urllib/commit/baabae9))
