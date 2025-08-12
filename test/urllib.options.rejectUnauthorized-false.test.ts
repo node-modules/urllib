@@ -5,7 +5,6 @@ import { describe, it, beforeAll, afterAll } from 'vitest';
 import selfsigned from 'selfsigned';
 import urllib, { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
-import { nodeMajorVersion } from './utils.js';
 
 describe('urllib.options.rejectUnauthorized-false.test.ts', () => {
   let close: any;
@@ -30,9 +29,7 @@ describe('urllib.options.rejectUnauthorized-false.test.ts', () => {
   });
 
   it('should 200 with H2 on options.rejectUnauthorized = false', async () => {
-    const pem = selfsigned.generate([], {
-      keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,
-    });
+    const pem = selfsigned.generate();
     const server = createSecureServer({
       key: pem.private,
       cert: pem.cert,

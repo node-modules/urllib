@@ -94,7 +94,7 @@ describe('options.stream.test.ts', () => {
     assert.equal(response.headers['content-type'], 'application/json');
     assert.equal(response.data.method, 'POST');
     // console.log(response.data);
-    // assert.match(response.data.headers['content-type'], /^multipart\/form-data; boundary=--------------------------\d+$/);
+    assert.match(response.data.headers['content-type'], /^multipart\/form-data; boundary=--------------------------\d+$/);
     assert.equal(response.data.files.file.filename, 'options.stream.test.ts');
     assert.equal(response.data.form.hello, '你好 urllib 3');
     const raw = await readFile(__filename);

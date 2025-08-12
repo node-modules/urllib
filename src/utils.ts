@@ -2,8 +2,7 @@ import { randomBytes, createHash } from 'node:crypto';
 import { Readable } from 'node:stream';
 import { performance } from 'node:perf_hooks';
 import { ReadableStream, TransformStream } from 'node:stream/web';
-import { Blob, File } from 'node:buffer';
-import { toUSVString } from 'node:util';
+import { Blob } from 'node:buffer';
 import type { FixJSONCtlChars } from './Request.js';
 import { SocketInfo } from './Response.js';
 import symbols from './symbols.js';
@@ -232,37 +231,6 @@ export function patchForNode16() {
     // @ts-ignore
     global.DOMException = getDOMExceptionClass();
   }
-  // multi undici version in node version less than 20 https://github.com/nodejs/undici/issues/4374
-  if (typeof global.File === 'undefined') {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    global.File = File;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  if (String.prototype.toWellFormed === undefined) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    String.prototype.toWellFormed = function() {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return toUSVString(this);
-    };
-  }
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  if (String.prototype.isWellFormed === undefined) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    String.prototype.isWellFormed = function() {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return toUSVString(this) === this;
-    };
-  }
-
 }
 
 // https://github.com/jimmywarting/node-domexception/blob/main/index.js

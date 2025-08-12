@@ -8,11 +8,8 @@ import { describe, it, beforeAll, afterAll } from 'vitest';
 import selfsigned from 'selfsigned';
 import { HttpClient, RawResponseWithMeta, getGlobalDispatcher } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
-import { nodeMajorVersion } from './utils.js';
 
-const pems = selfsigned.generate([], {
-  keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,
-});
+const pems = selfsigned.generate();
 
 if (process.env.ENABLE_PERF) {
   const obs = new PerformanceObserver(items => {
