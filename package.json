@@ -73,7 +73,7 @@
     "iconv-lite": "^0.6.3",
     "oxlint": "^1.11.0",
     "proxy": "^1.0.2",
-    "selfsigned": "^3.0.0",
+    "selfsigned": "^4.0.0",
     "string.prototype.towellformed": "^1.0.2",
     "tar-stream": "^2.2.0",
     "tshy": "^3.0.0",
