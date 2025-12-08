@@ -89,7 +89,7 @@ describe('options.stream.test.ts', () => {
     const response = await urllib.request(`${_url}multipart`, {
       method: 'post',
       dataType: 'json',
-      stream: form,
+      stream: form as any,
       headers: form.headers(),
     });
     assert.equal(response.status, 200);

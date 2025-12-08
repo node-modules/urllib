@@ -8,6 +8,7 @@ import { describe, it, beforeAll, afterAll } from 'vitest';
 import urllib, { HttpClientRequestTimeoutError, HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion } from './utils.js';
+import { AddressInfo } from 'node:net';
 
 const pems = selfsigned.generate([], {
   keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,
@@ -93,7 +94,7 @@ describe('options.timeout.test.ts', () => {
     server.listen(0);
     await once(server, 'listening');
 
-    const url = `https://localhost:${server.address()!.port}`;
+    const url = `https://localhost:${(server.address() as AddressInfo).port}`;
     await assert.rejects(
       async () => {
         await httpClient.request(url, {
@@ -171,7 +172,7 @@ describe('options.timeout.test.ts', () => {
         assert.equal(err.res!.status, -1);
         assert(err.headers);
         assert.equal(err.status, -1);
-        err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
+        err.cause && assert.equal((err.cause as any).name, 'HeadersTimeoutError');
         return true;
       },
     );

@@ -8,6 +8,7 @@ import { describe, it, beforeAll, afterAll } from 'vitest';
 import urllib, { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion } from './utils.js';
+import { AddressInfo } from 'node:net';
 
 describe('urllib.options.rejectUnauthorized-false.test.ts', () => {
   let close: any;
@@ -60,7 +61,7 @@ describe('urllib.options.rejectUnauthorized-false.test.ts', () => {
       },
     });
 
-    const url = `https://localhost:${server.address()!.port}`;
+    const url = `https://localhost:${(server.address() as AddressInfo).port}`;
     const response1 = await httpClient.request(url, {});
     assert.equal(response1.status, 200);
     assert.equal(response1.data.toString(), 'hello h2!');

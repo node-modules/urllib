@@ -12,7 +12,7 @@ export async function startServer(): Promise<{
   const socketPath = `${socketPathPrefix}_${index++}`;
   const unixSocketServer = createServer();
 
-  unixSocketServer.on('request', (req, res) => {
+  unixSocketServer.on('request', (_req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.write(JSON.stringify({ a: 1 }));
     res.end();

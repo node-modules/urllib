@@ -11,6 +11,7 @@ import { describe, it, beforeAll, afterAll } from 'vitest';
 import { HttpClient, RawResponseWithMeta, getGlobalDispatcher } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion } from './utils.js';
+import { AddressInfo } from 'node:net';
 
 const pems = selfsigned.generate([], {
   keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,
@@ -157,7 +158,7 @@ describe('HttpClient.test.ts', () => {
         },
       });
 
-      const url = `https://localhost:${server.address()!.port}`;
+      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
       let response = await httpClient.request<string>(url, {
         dataType: 'text',
         headers: {
@@ -220,7 +221,7 @@ describe('HttpClient.test.ts', () => {
         },
       });
 
-      const url = `https://localhost:${server.address()!.port}`;
+      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
       let response = await httpClient.request<string>(url, {
         dataType: 'text',
         headers: {
@@ -254,7 +255,7 @@ describe('HttpClient.test.ts', () => {
   });
 
   describe('clientOptions.lookup', () => {
-    it('should work with custom lookup on HTTP protol', async () => {
+    it('should work with custom lookup on HTTP protocol', async () => {
       let lookupCallCounter = 0;
       const httpclient = new HttpClient({
         // mock lookup delay
@@ -411,7 +412,7 @@ describe('HttpClient.test.ts', () => {
 
     it('should throw error when request address is ip v6', async () => {
       const httpclient = new HttpClient({
-        checkAddress(address, family) {
+        checkAddress(_address, family) {
           return family !== 6;
         },
       });

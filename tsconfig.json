@@ -7,4 +7,5 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
   },
+  "exclude": ["test/fixtures/ts*"],
 }

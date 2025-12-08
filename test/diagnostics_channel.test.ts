@@ -12,6 +12,7 @@ import type { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../s
 import symbols from '../src/symbols.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion } from './utils.js';
+import { AddressInfo } from 'node:net';
 
 describe('diagnostics_channel.test.ts', () => {
   let close: any;
@@ -217,7 +218,7 @@ describe('diagnostics_channel.test.ts', () => {
     });
 
     let traceId = `mock-traceid-${Date.now()}`;
-    _url = `https://localhost:${server.address().port}`;
+    _url = `https://localhost:${(server.address() as AddressInfo).port}`;
     let response = await httpClient.request(`${_url}?head=true`, {
       method: 'HEAD',
       opaque: {

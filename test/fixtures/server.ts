@@ -21,13 +21,14 @@ export async function startServer(options?: {
   let server: Server;
   const requestHandler = async (req: IncomingMessage, res: ServerResponse) => {
     const startTime = Date.now();
-    req.socket[requestsPerSocket] = (req.socket[requestsPerSocket] || 0) + 1;
+    const socket = req.socket as any;
+    socket[requestsPerSocket] = (socket[requestsPerSocket] || 0) + 1;
     if (server.keepAliveTimeout) {
       res.setHeader('Keep-Alive', 'timeout=' + server.keepAliveTimeout / 1000);
     }
     const urlObject = new URL(req.url!, `http://${req.headers.host}`);
     const pathname = urlObject.pathname;
-    res.setHeader('x-requests-persocket', req.socket[requestsPerSocket]);
+    res.setHeader('x-requests-persocket', socket[requestsPerSocket]);
     res.setHeader('x-requests-socket-port', req.socket.remotePort!);
     res.setHeader('X-Foo', 'bar');
     res.setHeader('x-href', urlObject.href);
@@ -321,8 +322,8 @@ export async function startServer(options?: {
         url: req.url,
         href: urlObject.href,
         headers: req.headers,
-        files: {},
-        form: {},
+        files: {} as Record<string, any>,
+        form: {} as Record<string, any>,
       };
       bb.on('file', (name, file, info) => {
         const { filename, encoding, mimeType } = info;
