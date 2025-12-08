@@ -2,6 +2,7 @@ import { strict as assert } from 'node:assert';
 import dns from 'node:dns';
 import { once } from 'node:events';
 import { sensitiveHeaders, createSecureServer } from 'node:http2';
+import { AddressInfo } from 'node:net';
 import { PerformanceObserver } from 'node:perf_hooks';
 import { setTimeout as sleep } from 'node:timers/promises';
 
@@ -11,7 +12,6 @@ import { describe, it, beforeAll, afterAll } from 'vitest';
 import { HttpClient, RawResponseWithMeta, getGlobalDispatcher } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion } from './utils.js';
-import { AddressInfo } from 'node:net';
 
 const pems = selfsigned.generate([], {
   keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,

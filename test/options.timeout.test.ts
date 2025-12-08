@@ -1,6 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { once } from 'node:events';
 import { createSecureServer } from 'node:http2';
+import { AddressInfo } from 'node:net';
 
 import selfsigned from 'selfsigned';
 import { describe, it, beforeAll, afterAll } from 'vitest';
@@ -8,7 +9,6 @@ import { describe, it, beforeAll, afterAll } from 'vitest';
 import urllib, { HttpClientRequestTimeoutError, HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion } from './utils.js';
-import { AddressInfo } from 'node:net';
 
 const pems = selfsigned.generate([], {
   keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,

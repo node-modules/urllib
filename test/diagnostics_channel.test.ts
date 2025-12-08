@@ -2,6 +2,7 @@ import { strict as assert } from 'node:assert';
 import diagnosticsChannel from 'node:diagnostics_channel';
 import { once } from 'node:events';
 import { createSecureServer } from 'node:http2';
+import { AddressInfo } from 'node:net';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 import selfsigned from 'selfsigned';
@@ -12,7 +13,6 @@ import type { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../s
 import symbols from '../src/symbols.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion } from './utils.js';
-import { AddressInfo } from 'node:net';
 
 describe('diagnostics_channel.test.ts', () => {
   let close: any;
