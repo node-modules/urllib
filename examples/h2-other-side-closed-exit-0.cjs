@@ -1,8 +1,10 @@
 const { request, Agent, setGlobalDispatcher } = require('undici');
 
-setGlobalDispatcher(new Agent({
-  allowH2: true,
-}));
+setGlobalDispatcher(
+  new Agent({
+    allowH2: true,
+  }),
+);
 
 async function main() {
   for (let i = 0; i < 100; i++) {
@@ -21,13 +23,15 @@ async function main() {
   }
 }
 
-main().then(() => {
-  console.log('main end');
-}).catch(err => {
-  console.error('main error throw: %s', err);
-  // console.error(err);
-  process.exit(1);
-});
+main()
+  .then(() => {
+    console.log('main end');
+  })
+  .catch((err) => {
+    console.error('main error throw: %s', err);
+    // console.error(err);
+    process.exit(1);
+  });
 
 process.on('beforeExit', (...args) => {
   console.error('beforeExit', args);

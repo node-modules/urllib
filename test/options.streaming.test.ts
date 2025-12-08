@@ -1,7 +1,9 @@
 import { strict as assert } from 'node:assert';
 import { pipeline } from 'node:stream';
 import { createBrotliDecompress } from 'node:zlib';
+
 import { describe, it, beforeEach, afterEach } from 'vitest';
+
 import urllib from '../src/index.js';
 import { isReadable } from '../src/utils.js';
 import { startServer } from './fixtures/server.js';
@@ -78,16 +80,20 @@ describe('options.streaming.test.ts', () => {
     assert.equal(response.headers['content-encoding'], 'br');
     // console.log(response.headers);
     requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
-    assert(!requestHeaders['accept-encoding'],
-      `should not contains accept-encoding header: ${requestHeaders['accept-encoding']}`);
+    assert(
+      !requestHeaders['accept-encoding'],
+      `should not contains accept-encoding header: ${requestHeaders['accept-encoding']}`,
+    );
     assert.equal(response.data, null);
     // console.log(response.res);
     // response.res stream is not decompressed
     assert(isReadable(response.res));
     let decoder = createBrotliDecompress();
-    bytes = await readableToBytes(pipeline(response.res, decoder, () => {
-      return;
-    }));
+    bytes = await readableToBytes(
+      pipeline(response.res, decoder, () => {
+        return;
+      }),
+    );
     data = bytes.toString();
     assert.match(data, /export async function startServer/);
 
@@ -108,9 +114,11 @@ describe('options.streaming.test.ts', () => {
     // response.res stream is not decompressed
     assert(isReadable(response.res));
     decoder = createBrotliDecompress();
-    bytes = await readableToBytes(pipeline(response.res, decoder, () => {
-      return;
-    }));
+    bytes = await readableToBytes(
+      pipeline(response.res, decoder, () => {
+        return;
+      }),
+    );
     data = bytes.toString();
     assert.match(data, /export async function startServer/);
   });

@@ -1,10 +1,8 @@
 import dns from 'node:dns';
 import { LookupFunction, isIP } from 'node:net';
-import {
-  Agent,
-  Dispatcher,
-  buildConnector,
-} from 'undici';
+
+import { Agent, Dispatcher, buildConnector } from 'undici';
+
 import { BaseAgent, BaseAgentOptions } from './BaseAgent.js';
 
 export type CheckAddressFunction = (ip: string, family: number | string, hostname: string) => boolean;
@@ -12,7 +10,7 @@ export type CheckAddressFunction = (ip: string, family: number | string, hostnam
 export interface HttpAgentOptions extends BaseAgentOptions {
   lookup?: LookupFunction;
   checkAddress?: CheckAddressFunction;
-  connect?: buildConnector.BuildOptions,
+  connect?: buildConnector.BuildOptions;
   allowH2?: boolean;
 }
 
@@ -52,7 +50,7 @@ export class HttpAgent extends BaseAgent {
               err = new IllegalAddressError(hostname, address, family);
             }
           } else if (Array.isArray(address)) {
-            const addresses = address as { address: string, family: number }[];
+            const addresses = address as { address: string; family: number }[];
             for (const addr of addresses) {
               if (!options.checkAddress(addr.address, addr.family, hostname)) {
                 err = new IllegalAddressError(hostname, addr.address, addr.family);

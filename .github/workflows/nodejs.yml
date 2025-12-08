@@ -2,13 +2,49 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
   merge_group:
 
 jobs:
-  Job:
+  typecheck:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: typecheck-${{ github.workflow }}-#${{ github.event.pull_request.number || github.head_ref || github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run lint
+        run: pnpm run lint
+
+      - name: Check dedupe
+        run: pnpm dedupe --check
+
+      - name: Run typecheck
+        run: pnpm run typecheck
+
+      - name: Run format check
+        run: pnpm run fmtcheck
+
+      - name: Run build
+        run: pnpm run build
+
+  test:
     name: Node.js
     uses: node-modules/github-actions/.github/workflows/node-test.yml@master
     with:

@@ -1,8 +1,10 @@
 import diagnosticsChannel from 'node:diagnostics_channel';
+import { Socket } from 'node:net';
 import { performance } from 'node:perf_hooks';
 import { debuglog } from 'node:util';
-import { Socket } from 'node:net';
+
 import { DiagnosticsChannel } from 'undici';
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import symbols from './symbols.js';
@@ -54,7 +56,7 @@ function formatSocket(socket: SocketExtend) {
 
 // make sure error contains socket info
 const destroySocket = Socket.prototype.destroy;
-Socket.prototype.destroy = function(err?: any) {
+Socket.prototype.destroy = function (err?: any) {
   if (err) {
     Object.defineProperty(err, symbols.kErrorSocket, {
       // don't show on console log
@@ -104,14 +106,24 @@ export function initDiagnosticsChannel() {
     if (!opaque || !opaque[symbols.kRequestId]) return;
 
     Reflect.set(request, symbols.kRequestInternalOpaque, opaque);
-    debug('[%s] Request#%d %s %s, path: %s, headers: %j',
-      name, opaque[symbols.kRequestId], request.method, request.origin, request.path, request.headers);
+    debug(
+      '[%s] Request#%d %s %s, path: %s, headers: %j',
+      name,
+      opaque[symbols.kRequestId],
+      request.method,
+      request.origin,
+      request.path,
+      request.headers,
+    );
     if (!opaque[symbols.kEnableRequestTiming]) return;
     opaque[symbols.kRequestTiming].queuing = performanceTime(opaque[symbols.kRequestStartTime]);
   });
 
   subscribe('undici:client:connectError', (message, name) => {
-    const { error, connectParams, socket } = message as DiagnosticsChannel.ClientConnectErrorMessage & { error: any, socket: SocketExtend };
+    const { error, connectParams, socket } = message as DiagnosticsChannel.ClientConnectErrorMessage & {
+      error: any;
+      socket: SocketExtend;
+    };
     let sock = socket;
     if (!sock && error[symbols.kErrorSocket]) {
       sock = error[symbols.kErrorSocket];
@@ -129,11 +141,16 @@ export function initDiagnosticsChannel() {
       sock[symbols.kSocketConnectProtocol] = connectParams.protocol;
       sock[symbols.kSocketConnectHost] = connectParams.host;
       sock[symbols.kSocketConnectPort] = connectParams.port;
-      debug('[%s] Socket#%d connectError, connectParams: %j, error: %s, (sock: %j)',
-        name, sock[symbols.kSocketId], connectParams, (error as Error).message, formatSocket(sock));
+      debug(
+        '[%s] Socket#%d connectError, connectParams: %j, error: %s, (sock: %j)',
+        name,
+        sock[symbols.kSocketId],
+        connectParams,
+        (error as Error).message,
+        formatSocket(sock),
+      );
     } else {
-      debug('[%s] connectError, connectParams: %j, error: %o',
-        name, connectParams, error);
+      debug('[%s] connectError, connectParams: %j, error: %o', name, connectParams, error);
     }
   });
 
@@ -166,17 +183,24 @@ export function initDiagnosticsChannel() {
     (socket[symbols.kHandledRequests] as number)++;
     // attach socket to opaque
     opaque[symbols.kRequestSocket] = socket;
-    debug('[%s] Request#%d send headers on Socket#%d (handled %d requests, sock: %j)',
-      name, opaque[symbols.kRequestId], socket[symbols.kSocketId], socket[symbols.kHandledRequests],
-      formatSocket(socket));
+    debug(
+      '[%s] Request#%d send headers on Socket#%d (handled %d requests, sock: %j)',
+      name,
+      opaque[symbols.kRequestId],
+      socket[symbols.kSocketId],
+      socket[symbols.kHandledRequests],
+      formatSocket(socket),
+    );
 
     if (!opaque[symbols.kEnableRequestTiming]) return;
     opaque[symbols.kRequestTiming].requestHeadersSent = performanceTime(opaque[symbols.kRequestStartTime]);
     // first socket need to calculate the connected time
     if (socket[symbols.kHandledRequests] === 1) {
       // kSocketStartTime - kRequestStartTime = connected time
-      opaque[symbols.kRequestTiming].connected =
-        performanceTime(opaque[symbols.kRequestStartTime], socket[symbols.kSocketStartTime] as number);
+      opaque[symbols.kRequestTiming].connected = performanceTime(
+        opaque[symbols.kRequestStartTime],
+        socket[symbols.kSocketStartTime] as number,
+      );
     }
   });
 
@@ -206,12 +230,22 @@ export function initDiagnosticsChannel() {
     const socket = opaque[symbols.kRequestSocket];
     if (socket) {
       socket[symbols.kHandledResponses]++;
-      debug('[%s] Request#%d get %s response headers on Socket#%d (handled %d responses, sock: %j)',
-        name, opaque[symbols.kRequestId], response.statusCode, socket[symbols.kSocketId], socket[symbols.kHandledResponses],
-        formatSocket(socket));
+      debug(
+        '[%s] Request#%d get %s response headers on Socket#%d (handled %d responses, sock: %j)',
+        name,
+        opaque[symbols.kRequestId],
+        response.statusCode,
+        socket[symbols.kSocketId],
+        socket[symbols.kHandledResponses],
+        formatSocket(socket),
+      );
     } else {
-      debug('[%s] Request#%d get %s response headers on Unknown Socket',
-        name, opaque[symbols.kRequestId], response.statusCode);
+      debug(
+        '[%s] Request#%d get %s response headers on Unknown Socket',
+        name,
+        opaque[symbols.kRequestId],
+        response.statusCode,
+      );
     }
 
     if (!opaque[symbols.kEnableRequestTiming]) return;

@@ -1,5 +1,7 @@
 import { strict as assert } from 'node:assert';
+
 import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -18,20 +20,23 @@ describe('non-ascii-request-header.test.ts', () => {
   });
 
   it('should throw error when request headers contain non ascii', async () => {
-    await assert.rejects(async () => {
-      const response = await urllib.request(_url, {
-        headers: { 'x-test': '中文' },
-        dataType: 'json',
-      });
-      console.log(response);
-    }, (err: any) => {
-      // console.error(err);
-      assert.equal(err.name, 'InvalidArgumentError');
-      assert.equal(err.message, 'invalid x-test header');
-      assert.equal(err.code, 'UND_ERR_INVALID_ARG');
-      assert(err.res);
-      assert.equal(err.res.status, -1);
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        const response = await urllib.request(_url, {
+          headers: { 'x-test': '中文' },
+          dataType: 'json',
+        });
+        console.log(response);
+      },
+      (err: any) => {
+        // console.error(err);
+        assert.equal(err.name, 'InvalidArgumentError');
+        assert.equal(err.message, 'invalid x-test header');
+        assert.equal(err.code, 'UND_ERR_INVALID_ARG');
+        assert(err.res);
+        assert.equal(err.res.status, -1);
+        return true;
+      },
+    );
   });
 });

@@ -4,10 +4,10 @@ const socketPathPrefix = '/tmp/urllib.unix.sock';
 let index = 0;
 
 export async function startServer(): Promise<{
-  server: Server,
-  url: string,
-  socketPath: string,
-  closeServer: any,
+  server: Server;
+  url: string;
+  socketPath: string;
+  closeServer: any;
 }> {
   const socketPath = `${socketPathPrefix}_${index++}`;
   const unixSocketServer = createServer();
@@ -18,13 +18,13 @@ export async function startServer(): Promise<{
     res.end();
   });
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     unixSocketServer.listen(socketPath, () => {
       resolve({
         url: 'http://localhost/',
         server: unixSocketServer,
         socketPath,
-        closeServer: () => new Promise(resolve => unixSocketServer.close(resolve)),
+        closeServer: () => new Promise((resolve) => unixSocketServer.close(resolve)),
       });
     });
   });

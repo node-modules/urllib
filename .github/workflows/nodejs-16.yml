@@ -2,13 +2,12 @@ name: Node.js 16 CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -20,4 +19,4 @@ jobs:
       - run: npm install
       - run: npm run prepublishOnly
       - run: node -v
-      - run: npm run test-node16 
+      - run: npm run test-node16

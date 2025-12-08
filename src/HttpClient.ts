@@ -1,46 +1,37 @@
 import diagnosticsChannel from 'node:diagnostics_channel';
 import { EventEmitter } from 'node:events';
-import { LookupFunction } from 'node:net';
-import { STATUS_CODES } from 'node:http';
-import { debuglog } from 'node:util';
-import {
-  createGunzip,
-  createBrotliDecompress,
-  gunzipSync,
-  brotliDecompressSync,
-} from 'node:zlib';
-import { Readable, pipeline } from 'node:stream';
-import { pipeline as pipelinePromise } from 'node:stream/promises';
-import { basename } from 'node:path';
 import { createReadStream } from 'node:fs';
-import { format as urlFormat } from 'node:url';
+import { STATUS_CODES } from 'node:http';
+import { LookupFunction } from 'node:net';
+import { basename } from 'node:path';
 import { performance } from 'node:perf_hooks';
 import querystring from 'node:querystring';
+import { Readable, pipeline } from 'node:stream';
+import { pipeline as pipelinePromise } from 'node:stream/promises';
 import { setTimeout as sleep } from 'node:timers/promises';
-import {
-  request as undiciRequest,
-  Dispatcher,
-  Agent,
-  getGlobalDispatcher,
-  Pool,
-} from 'undici';
+import { format as urlFormat } from 'node:url';
+import { debuglog } from 'node:util';
+import { createGunzip, createBrotliDecompress, gunzipSync, brotliDecompressSync } from 'node:zlib';
+
+// Compatible with old style formstream
+import FormStream from 'formstream';
+import mime from 'mime-types';
+import qs from 'qs';
+import { request as undiciRequest, Dispatcher, Agent, getGlobalDispatcher, Pool } from 'undici';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import undiciSymbols from 'undici/lib/core/symbols.js';
-import mime from 'mime-types';
-import qs from 'qs';
-// Compatible with old style formstream
-import FormStream from 'formstream';
+
+import { initDiagnosticsChannel } from './diagnosticsChannel.js';
+import { FetchOpaque } from './FetchOpaqueInterceptor.js';
 import { FormData } from './FormData.js';
 import { HttpAgent, CheckAddressFunction } from './HttpAgent.js';
+import { HttpClientConnectTimeoutError, HttpClientRequestTimeoutError } from './HttpClientError.js';
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import { RequestURL, RequestOptions, HttpMethod, RequestMeta } from './Request.js';
 import { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response.js';
-import { parseJSON, digestAuthHeader, globalId, performanceTime, isReadable, updateSocketInfo } from './utils.js';
 import symbols from './symbols.js';
-import { initDiagnosticsChannel } from './diagnosticsChannel.js';
-import { HttpClientConnectTimeoutError, HttpClientRequestTimeoutError } from './HttpClientError.js';
-import { FetchOpaque } from './FetchOpaqueInterceptor.js';
+import { parseJSON, digestAuthHeader, globalId, performanceTime, isReadable, updateSocketInfo } from './utils.js';
 
 type Exists<T> = T extends undefined ? never : T;
 type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;
@@ -88,23 +79,23 @@ export type ClientOptions = {
    */
   lookup?: LookupFunction;
   /**
-    * check request address to protect from SSRF and similar attacks.
-    * It receive two arguments(ip and family) and should return true or false to identified the address is legal or not.
-    * It rely on lookup and have the same version requirement.
-    */
+   * check request address to protect from SSRF and similar attacks.
+   * It receive two arguments(ip and family) and should return true or false to identified the address is legal or not.
+   * It rely on lookup and have the same version requirement.
+   */
   checkAddress?: CheckAddressFunction;
   connect?: {
     key?: string | Buffer;
     /**
-    * A string or Buffer containing the certificate key of the client in PEM format.
-    * Notes: This is necessary only if using the client certificate authentication
-    */
+     * A string or Buffer containing the certificate key of the client in PEM format.
+     * Notes: This is necessary only if using the client certificate authentication
+     */
     cert?: string | Buffer;
     /**
-    * If `true`, the server certificate is verified against the list of supplied CAs.
-    * An 'error' event is emitted if verification fails.
-    * Default: `true`
-    */
+     * If `true`, the server certificate is verified against the list of supplied CAs.
+     * An 'error' event is emitted if verification fails.
+     * Default: `true`
+     */
     rejectUnauthorized?: boolean;
     /**
      * socketPath string | null (optional) - Default: null - An IPC endpoint, either Unix domain socket or Windows named pipe
@@ -114,13 +105,12 @@ export type ClientOptions = {
      * connect timeout, default is 10000ms
      */
     timeout?: number;
-  },
+  };
 };
 
 export const VERSION = 'VERSION';
 // 'node-urllib/4.0.0 Node.js/18.19.0 (darwin; x64)'
-export const HEADER_USER_AGENT =
-  `node-urllib/${VERSION} Node.js/${process.version.substring(1)} (${process.platform}; ${process.arch})`;
+export const HEADER_USER_AGENT = `node-urllib/${VERSION} Node.js/${process.version.substring(1)} (${process.platform}; ${process.arch})`;
 
 function getFileName(stream: Readable) {
   const filePath: string = (stream as any).path;
@@ -231,8 +221,8 @@ export class HttpClient extends EventEmitter {
     if (!clients) {
       return poolStatsMap;
     }
-    for (const [ key, ref ] of clients) {
-      const pool = (typeof ref.deref === 'function' ? ref.deref() : ref) as unknown as (Pool & { dispatcher: Pool });
+    for (const [key, ref] of clients) {
+      const pool = (typeof ref.deref === 'function' ? ref.deref() : ref) as unknown as Pool & { dispatcher: Pool };
       // NOTE: pool become to { dispatcher: Pool } in undici@v7
       const stats = pool?.stats ?? pool?.dispatcher?.stats;
       if (!stats) continue;
@@ -258,7 +248,11 @@ export class HttpClient extends EventEmitter {
     return await this.request<T>(url, options);
   }
 
-  async #requestInternal<T>(url: RequestURL, options?: RequestOptions, requestContext?: RequestContext): Promise<HttpClientResponse<T>> {
+  async #requestInternal<T>(
+    url: RequestURL,
+    options?: RequestOptions,
+    requestContext?: RequestContext,
+  ): Promise<HttpClientResponse<T>> {
     const requestId = globalId('HttpClientRequest');
     let requestUrl: URL;
     if (typeof url === 'string') {
@@ -472,20 +466,20 @@ export class HttpClient extends EventEmitter {
         const formData = new FormData();
         const uploadFiles: [string, string | Readable | Buffer, string?][] = [];
         if (Array.isArray(args.files)) {
-          for (const [ index, file ] of args.files.entries()) {
+          for (const [index, file] of args.files.entries()) {
             const field = index === 0 ? 'file' : `file${index}`;
-            uploadFiles.push([ field, file ]);
+            uploadFiles.push([field, file]);
           }
         } else if (args.files instanceof Readable || isReadable(args.files as any)) {
-          uploadFiles.push([ 'file', args.files as Readable ]);
+          uploadFiles.push(['file', args.files as Readable]);
         } else if (typeof args.files === 'string' || Buffer.isBuffer(args.files)) {
-          uploadFiles.push([ 'file', args.files ]);
+          uploadFiles.push(['file', args.files]);
         } else if (typeof args.files === 'object') {
           const files = args.files as Record<string, string | Readable | Buffer>;
           for (const field in files) {
             // set custom fileName
             const file = files[field];
-            uploadFiles.push([ field, file, field ]);
+            uploadFiles.push([field, file, field]);
           }
         }
         // set normal fields first
@@ -494,7 +488,7 @@ export class HttpClient extends EventEmitter {
             formData.append(field, args.data[field]);
           }
         }
-        for (const [ index, [ field, file, customFileName ]] of uploadFiles.entries()) {
+        for (const [index, [field, file, customFileName]] of uploadFiles.entries()) {
           let fileName = '';
           let value: any;
           if (typeof file === 'string') {
@@ -513,8 +507,7 @@ export class HttpClient extends EventEmitter {
             filename: fileName,
             contentType: mimeType,
           });
-          debug('formData append field: %s, mimeType: %s, fileName: %s',
-            field, mimeType, fileName);
+          debug('formData append field: %s, mimeType: %s, fileName: %s', field, mimeType, fileName);
         }
         Object.assign(headers, formData.getHeaders());
         requestOptions.body = formData;
@@ -530,9 +523,8 @@ export class HttpClient extends EventEmitter {
           isStreamingRequest = isReadable(args.content);
         }
       } else if (args.data) {
-        const isStringOrBufferOrReadable = typeof args.data === 'string'
-          || Buffer.isBuffer(args.data)
-          || isReadable(args.data);
+        const isStringOrBufferOrReadable =
+          typeof args.data === 'string' || Buffer.isBuffer(args.data) || isReadable(args.data);
         if (isGETOrHEAD) {
           if (!isStringOrBufferOrReadable) {
             let query: string;
@@ -550,9 +542,11 @@ export class HttpClient extends EventEmitter {
             requestOptions.body = args.data;
             isStreamingRequest = isReadable(args.data);
           } else {
-            if (args.contentType === 'json'
-              || args.contentType === 'application/json'
-              || headers['content-type']?.startsWith('application/json')) {
+            if (
+              args.contentType === 'json' ||
+              args.contentType === 'application/json' ||
+              headers['content-type']?.startsWith('application/json')
+            ) {
               requestOptions.body = JSON.stringify(args.data);
               if (!headers['content-type']) {
                 headers['content-type'] = 'application/json';
@@ -578,8 +572,19 @@ export class HttpClient extends EventEmitter {
         args.socketErrorRetry = 0;
       }
 
-      debug('Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s, isStreamingRequest: %s, isStreamingResponse: %s, maxRedirections: %s, redirects: %s',
-        requestId, requestOptions.method, requestUrl.href, headers, headersTimeout, bodyTimeout, isStreamingRequest, isStreamingResponse, maxRedirects, requestContext.redirects);
+      debug(
+        'Request#%d %s %s, headers: %j, headersTimeout: %s, bodyTimeout: %s, isStreamingRequest: %s, isStreamingResponse: %s, maxRedirections: %s, redirects: %s',
+        requestId,
+        requestOptions.method,
+        requestUrl.href,
+        headers,
+        headersTimeout,
+        bodyTimeout,
+        isStreamingRequest,
+        isStreamingResponse,
+        maxRedirects,
+        requestContext.redirects,
+      );
       requestOptions.headers = headers;
       channels.request.publish({
         request: reqMeta,
@@ -589,17 +594,25 @@ export class HttpClient extends EventEmitter {
       }
 
       let response = await undiciRequest(requestUrl, requestOptions as UndiciRequestOption);
-      if (response.statusCode === 401 && (response.headers['www-authenticate'] || response.headers['x-www-authenticate']) &&
-        !requestOptions.headers.authorization && args.digestAuth) {
+      if (
+        response.statusCode === 401 &&
+        (response.headers['www-authenticate'] || response.headers['x-www-authenticate']) &&
+        !requestOptions.headers.authorization &&
+        args.digestAuth
+      ) {
         // handle digest auth
         const authenticateHeaders = response.headers['www-authenticate'] ?? response.headers['x-www-authenticate'];
         const authenticate = Array.isArray(authenticateHeaders)
-          ? authenticateHeaders.find(authHeader => authHeader.startsWith('Digest '))
+          ? authenticateHeaders.find((authHeader) => authHeader.startsWith('Digest '))
           : authenticateHeaders;
         if (authenticate && authenticate.startsWith('Digest ')) {
           debug('Request#%d %s: got digest auth header WWW-Authenticate: %s', requestId, requestUrl.href, authenticate);
-          requestOptions.headers.authorization = digestAuthHeader(requestOptions.method!,
-            `${requestUrl.pathname}${requestUrl.search}`, authenticate, args.digestAuth);
+          requestOptions.headers.authorization = digestAuthHeader(
+            requestOptions.method!,
+            `${requestUrl.pathname}${requestUrl.search}`,
+            authenticate,
+            args.digestAuth,
+          );
           debug('Request#%d %s: auth with digest header: %s', requestId, url, requestOptions.headers.authorization);
           if (Array.isArray(response.headers['set-cookie'])) {
             // FIXME: merge exists cookie header
@@ -627,8 +640,14 @@ export class HttpClient extends EventEmitter {
           const nextUrl = new URL(res.headers.location, requestUrl.href);
           // Ensure the response is consumed
           await response.body.arrayBuffer();
-          debug('Request#%d got response, status: %s, headers: %j, timing: %j, redirect to %s',
-            requestId, res.status, res.headers, res.timing, nextUrl.href);
+          debug(
+            'Request#%d got response, status: %s, headers: %j, timing: %j, redirect to %s',
+            requestId,
+            res.status,
+            res.headers,
+            res.timing,
+            nextUrl.href,
+          );
           return await this.#requestInternal(nextUrl.href, options, requestContext);
         }
       }
@@ -690,8 +709,14 @@ export class HttpClient extends EventEmitter {
         res,
       };
 
-      debug('Request#%d got response, status: %s, headers: %j, timing: %j, socket: %j',
-        requestId, res.status, res.headers, res.timing, res.socket);
+      debug(
+        'Request#%d got response, status: %s, headers: %j, timing: %j, socket: %j',
+        requestId,
+        res.status,
+        res.headers,
+        res.timing,
+        res.socket,
+      );
 
       if (args.retry > 0 && requestContext.retries < args.retry) {
         const isRetry = args.isRetry ?? defaultIsRetry;
@@ -723,8 +748,13 @@ export class HttpClient extends EventEmitter {
 
       return clientResponse;
     } catch (rawError: any) {
-      debug('Request#%d throw error: %s, socketErrorRetry: %s, socketErrorRetries: %s',
-        requestId, rawError, args.socketErrorRetry, requestContext.socketErrorRetries);
+      debug(
+        'Request#%d throw error: %s, socketErrorRetry: %s, socketErrorRetries: %s',
+        requestId,
+        rawError,
+        args.socketErrorRetry,
+        requestContext.socketErrorRetries,
+      );
       let err = rawError;
       if (err.name === 'HeadersTimeoutError') {
         err = new HttpClientRequestTimeoutError(headersTimeout, { cause: err });
@@ -738,8 +768,11 @@ export class HttpClient extends EventEmitter {
         // auto retry on socket error, https://github.com/node-modules/urllib/issues/454
         if (args.socketErrorRetry > 0 && requestContext.socketErrorRetries < args.socketErrorRetry) {
           requestContext.socketErrorRetries++;
-          debug('Request#%d retry on socket error, socketErrorRetries: %d',
-            requestId, requestContext.socketErrorRetries);
+          debug(
+            'Request#%d retry on socket error, socketErrorRetries: %d',
+            requestId,
+            requestContext.socketErrorRetries,
+          );
           return await this.#requestInternal(url, options, requestContext);
         }
       }

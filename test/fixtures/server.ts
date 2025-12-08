@@ -1,13 +1,15 @@
-import { Socket } from 'node:net';
+import { createReadStream } from 'node:fs';
 import { createServer, Server, IncomingMessage, ServerResponse } from 'node:http';
 import { createServer as createHttpsServer } from 'node:https';
-import { createBrotliCompress, createGzip, gzipSync, brotliCompressSync } from 'node:zlib';
-import { createReadStream } from 'node:fs';
+import { Socket } from 'node:net';
 import { setTimeout as sleep } from 'node:timers/promises';
+import { createBrotliCompress, createGzip, gzipSync, brotliCompressSync } from 'node:zlib';
+
 import busboy from 'busboy';
 import iconv from 'iconv-lite';
-import selfsigned from 'selfsigned';
 import qs from 'qs';
+import selfsigned from 'selfsigned';
+
 import { nodeMajorVersion, readableToBytes } from '../utils.js';
 
 const requestsPerSocket = Symbol('requestsPerSocket');
@@ -15,7 +17,7 @@ const requestsPerSocket = Symbol('requestsPerSocket');
 export async function startServer(options?: {
   keepAliveTimeout?: number;
   https?: boolean;
-}): Promise<{ server: Server, url: string, urlWithDns: string, closeServer: any }> {
+}): Promise<{ server: Server; url: string; urlWithDns: string; closeServer: any }> {
   let server: Server;
   const requestHandler = async (req: IncomingMessage, res: ServerResponse) => {
     const startTime = Date.now();
@@ -67,58 +69,86 @@ export async function startServer(options?: {
       const authorization = req.headers.authorization?.split(' ')[1] ?? '';
       const data = Buffer.from(authorization, 'base64');
       const auth = data.toString().split(':');
-      return res.end(JSON.stringify({
-        user: auth[0],
-        password: auth[1],
-      }));
+      return res.end(
+        JSON.stringify({
+          user: auth[0],
+          password: auth[1],
+        }),
+      );
     }
 
     if (pathname === '/hello/json') {
-      return res.end(JSON.stringify({
-        hello: 'urllib',
-      }));
+      return res.end(
+        JSON.stringify({
+          hello: 'urllib',
+        }),
+      );
     }
 
     if (pathname === '/digestAuth') {
       const authorization = req.headers.authorization;
       if (!authorization) {
-        res.setHeader('www-authenticate', 'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"');
+        res.setHeader(
+          'www-authenticate',
+          'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"',
+        );
         res.statusCode = 401;
-        return res.end(JSON.stringify({
-          error: 'authorization required',
-        }));
+        return res.end(
+          JSON.stringify({
+            error: 'authorization required',
+          }),
+        );
       }
       if (!authorization.includes('Digest username="user"')) {
-        res.setHeader('www-authenticate', 'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"');
+        res.setHeader(
+          'www-authenticate',
+          'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"',
+        );
         res.statusCode = 401;
-        return res.end(JSON.stringify({
-          error: 'authorization invaild',
-        }));
+        return res.end(
+          JSON.stringify({
+            error: 'authorization invaild',
+          }),
+        );
       }
-      return res.end(JSON.stringify({
-        authorization,
-      }));
+      return res.end(
+        JSON.stringify({
+          authorization,
+        }),
+      );
     }
 
     if (pathname === '/digestAuth2') {
       const authorization = req.headers.authorization;
       if (!authorization) {
-        res.setHeader('x-www-authenticate', 'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"');
+        res.setHeader(
+          'x-www-authenticate',
+          'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"',
+        );
         res.statusCode = 401;
-        return res.end(JSON.stringify({
-          error: 'authorization required',
-        }));
+        return res.end(
+          JSON.stringify({
+            error: 'authorization required',
+          }),
+        );
       }
       if (!authorization.includes('Digest username="user"')) {
-        res.setHeader('x-www-authenticate', 'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"');
+        res.setHeader(
+          'x-www-authenticate',
+          'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"',
+        );
         res.statusCode = 401;
-        return res.end(JSON.stringify({
-          error: 'authorization invaild',
-        }));
+        return res.end(
+          JSON.stringify({
+            error: 'authorization invaild',
+          }),
+        );
       }
-      return res.end(JSON.stringify({
-        authorization,
-      }));
+      return res.end(
+        JSON.stringify({
+          authorization,
+        }),
+      );
     }
 
     if (pathname === '/digestAuth/multi') {
@@ -129,20 +159,29 @@ export async function startServer(options?: {
           'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"',
         ]);
         res.statusCode = 401;
-        return res.end(JSON.stringify({
-          error: 'authorization required',
-        }));
+        return res.end(
+          JSON.stringify({
+            error: 'authorization required',
+          }),
+        );
       }
       if (!authorization.includes('Digest username="user"')) {
-        res.setHeader('www-authenticate', 'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"');
+        res.setHeader(
+          'www-authenticate',
+          'Digest realm="testrealm@urllib.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"',
+        );
         res.statusCode = 401;
-        return res.end(JSON.stringify({
-          error: 'authorization invaild',
-        }));
+        return res.end(
+          JSON.stringify({
+            error: 'authorization invaild',
+          }),
+        );
       }
-      return res.end(JSON.stringify({
-        authorization,
-      }));
+      return res.end(
+        JSON.stringify({
+          authorization,
+        }),
+      );
     }
 
     if (pathname === '/wrongjson') {
@@ -162,7 +201,7 @@ export async function startServer(options?: {
     }
 
     if (pathname === '/set-two-cookie') {
-      res.setHeader('Set-Cookie', [ 'foo=bar; path=/', 'hello=world; path=/' ]);
+      res.setHeader('Set-Cookie', ['foo=bar; path=/', 'hello=world; path=/']);
       res.setHeader('content-type', 'text/html');
       return res.end('<h1>hello set-cookie</h1>');
     }
@@ -289,18 +328,20 @@ export async function startServer(options?: {
         const { filename, encoding, mimeType } = info;
         // console.log(`File [${name}]: info %j`, info);
         let size = 0;
-        file.on('data', data => {
-          // console.log(`File [${name}] got ${data.length} bytes`);
-          size += data.length;
-        }).on('close', () => {
-          // console.log(`File [${name}] done`);
-          result.files[name] = {
-            filename,
-            encoding,
-            mimeType,
-            size,
-          };
-        });
+        file
+          .on('data', (data) => {
+            // console.log(`File [${name}] got ${data.length} bytes`);
+            size += data.length;
+          })
+          .on('close', () => {
+            // console.log(`File [${name}] done`);
+            result.files[name] = {
+              filename,
+              encoding,
+              mimeType,
+              size,
+            };
+          });
       });
       bb.on('field', (name, val) => {
         // console.log(`Field [${name}]: value length: %d, info: %j`, val.length, info);
@@ -338,7 +379,7 @@ export async function startServer(options?: {
         };
       } else {
         const searchParams = new URLSearchParams(raw);
-        for (const [ field, value ] of searchParams.entries()) {
+        for (const [field, value] of searchParams.entries()) {
           requestBody[field] = value;
         }
       }
@@ -373,10 +414,13 @@ export async function startServer(options?: {
     const pem = selfsigned.generate([], {
       keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,
     });
-    server = createHttpsServer({
-      key: pem.private,
-      cert: pem.cert,
-    }, requestHandler);
+    server = createHttpsServer(
+      {
+        key: pem.private,
+        cert: pem.cert,
+      },
+      requestHandler,
+    );
   } else {
     server = createServer(requestHandler);
   }
@@ -389,13 +433,13 @@ export async function startServer(options?: {
   const hasCloseAllConnections = !!(server as any).closeAllConnections;
   const connections: Socket[] = [];
   if (!hasCloseAllConnections) {
-    server.on('connection', connection => {
+    server.on('connection', (connection) => {
       connections.push(connection);
     });
   }
   const protocol = options?.https ? 'https' : 'http';
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     server.listen(0, () => {
       const address: any = server.address();
       resolve({
@@ -411,7 +455,7 @@ export async function startServer(options?: {
               connection.destroy();
             }
           }
-          return new Promise(resolve => {
+          return new Promise((resolve) => {
             server.close(resolve);
           });
         },

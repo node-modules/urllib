@@ -1,12 +1,14 @@
 import { strict as assert } from 'node:assert';
 import { createReadStream } from 'node:fs';
-import path from 'node:path';
 import { writeFile, readFile } from 'node:fs/promises';
-import { createGunzip } from 'node:zlib';
+import path from 'node:path';
 import { Readable } from 'node:stream';
-import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
-import tar from 'tar-stream';
+import { createGunzip } from 'node:zlib';
+
 import FormStream from 'formstream';
+import tar from 'tar-stream';
+import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
+
 import urllib from '../src/index.js';
 import { isReadable } from '../src/utils.js';
 import { startServer } from './fixtures/server.js';
@@ -106,21 +108,24 @@ describe('options.stream.test.ts', () => {
     const stream = createReadStream(tmpfile);
     assert.equal(stream.destroyed, false);
 
-    await assert.rejects(async () => {
-      await urllib.request(`${_url}block`, {
-        method: 'post',
-        timeout: 100,
-        stream,
-      });
-    }, (err: any) => {
-      // console.error(err);
-      assert.equal(err.name, 'HttpClientRequestTimeoutError');
-      assert.equal(err.message, 'Request timeout for 100 ms');
-      err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
-      // stream should be close after request error fire
-      assert.equal(stream.destroyed, true);
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        await urllib.request(`${_url}block`, {
+          method: 'post',
+          timeout: 100,
+          stream,
+        });
+      },
+      (err: any) => {
+        // console.error(err);
+        assert.equal(err.name, 'HttpClientRequestTimeoutError');
+        assert.equal(err.message, 'Request timeout for 100 ms');
+        err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
+        // stream should be close after request error fire
+        assert.equal(stream.destroyed, true);
+        return true;
+      },
+    );
   });
 
   it('should close 10MB size request stream when request timeout', async () => {
@@ -128,21 +133,24 @@ describe('options.stream.test.ts', () => {
     const stream = createReadStream(tmpfile);
     assert.equal(stream.destroyed, false);
 
-    await assert.rejects(async () => {
-      await urllib.request(`${_url}block`, {
-        method: 'post',
-        timeout: 100,
-        stream,
-      });
-    }, (err: any) => {
-      // console.error(err);
-      assert.equal(err.name, 'HttpClientRequestTimeoutError');
-      assert.equal(err.message, 'Request timeout for 100 ms');
-      err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
-      // stream should be close after request error fire
-      assert.equal(stream.destroyed, true);
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        await urllib.request(`${_url}block`, {
+          method: 'post',
+          timeout: 100,
+          stream,
+        });
+      },
+      (err: any) => {
+        // console.error(err);
+        assert.equal(err.name, 'HttpClientRequestTimeoutError');
+        assert.equal(err.message, 'Request timeout for 100 ms');
+        err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
+        // stream should be close after request error fire
+        assert.equal(stream.destroyed, true);
+        return true;
+      },
+    );
   });
 
   it('should throw request error when stream error', async () => {
@@ -151,18 +159,21 @@ describe('options.stream.test.ts', () => {
     stream.on('error', () => {
       streamError = true;
     });
-    await assert.rejects(async () => {
-      await urllib.request(`${_url}block`, {
-        method: 'post',
-        stream,
-      });
-    }, (err: any) => {
-      // console.error(err);
-      assert.equal(err.name, 'Error');
-      assert.match(err.message, /no such file or directory/);
-      assert.equal(stream.destroyed, true);
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        await urllib.request(`${_url}block`, {
+          method: 'post',
+          stream,
+        });
+      },
+      (err: any) => {
+        // console.error(err);
+        assert.equal(err.name, 'Error');
+        assert.match(err.message, /no such file or directory/);
+        assert.equal(stream.destroyed, true);
+        return true;
+      },
+    );
     assert.equal(stream.destroyed, true);
     assert.equal(streamError, true);
   });

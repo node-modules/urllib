@@ -56,30 +56,30 @@ console.log('status: %s, body size: %d, headers: %j', res.status, data.length, r
 #### Arguments
 
 - **url** String | Object - The URL to request, either a String or a Object that return by [url.parse](https://nodejs.org/api/url.html#url_url_parse_urlstr_parsequerystring_slashesdenotehost).
-- ***options*** Object - Optional
-  - ***method*** String - Request method, defaults to `GET`. Could be `GET`, `POST`, `DELETE` or `PUT`. Alias 'type'.
-  - ***data*** Object - Data to be sent. Will be stringify automatically.
-  - ***content*** String | [Buffer](https://nodejs.org/api/buffer.html) - Manually set the content of payload. If set, `data` will be ignored.
-  - ***stream*** [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable) - Stream to be pipe to the remote. If set, `data` and `content` will be ignored.
-  - ***writeStream*** [stream.Writable](https://nodejs.org/api/stream.html#stream_class_stream_writable) - A writable stream to be piped by the response stream. Responding data will be write to this stream and `callback` will be called with `data` set `null` after finished writing.
-  - ***files*** {Array<ReadStream|Buffer|String> | Object | ReadStream | Buffer | String - The files will send with `multipart/form-data` format, base on `formstream`. If `method` not set, will use `POST` method by default.
-  - ***contentType*** String - Type of request data. Could be `json` (**Notes**: not use `application/json` here). If it's `json`, will auto set `Content-Type: application/json` header.
-  - ***dataType*** String - Type of response data. Could be `text` or `json`. If it's `text`, the `callback`ed `data` would be a String. If it's `json`, the `data` of callback would be a parsed JSON Object and will auto set `Accept: application/json` header. Default `callback`ed `data` would be a `Buffer`.
-  - ***fixJSONCtlChars*** Boolean - Fix the control characters (U+0000 through U+001F) before JSON parse response. Default is `false`.
-  - ***headers*** Object - Request headers.
-  - ***timeout*** Number | Array - Request timeout in milliseconds for connecting phase and response receiving phase. Default is `5000`. You can use `timeout: 5000` to tell urllib use same timeout on two phase or set them separately such as `timeout: [3000, 5000]`, which will set connecting timeout to 3s and response 5s.
-  - ***keepAliveTimeout*** `number | null` - Default is `4000`, 4 seconds - The timeout after which a socket without active requests will time out. Monitors time between activity on a connected socket. This value may be overridden by *keep-alive* hints from the server. See [MDN: HTTP - Headers - Keep-Alive directives](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Keep-Alive#directives) for more details.
-  - ***auth*** String - `username:password` used in HTTP Basic Authorization.
-  - ***digestAuth*** String - `username:password` used in HTTP [Digest Authorization](https://en.wikipedia.org/wiki/Digest_access_authentication).
-  - ***followRedirect*** Boolean - follow HTTP 3xx responses as redirects. defaults to true.
-  - ***maxRedirects*** Number - The maximum number of redirects to follow, defaults to 10.
-  - ***formatRedirectUrl*** Function - Format the redirect url by yourself. Default is `url.resolve(from, to)`.
-  - ***beforeRequest*** Function - Before request hook, you can change every thing here.
-  - ***streaming*** Boolean - lets you get the `res` object when request connected, default `false`. alias `customResponse`
-  - ***compressed*** Boolean - Accept `gzip, br` response content and auto decode it, default is `false`.
-  - ***timing*** Boolean - Enable timing or not, default is `true`.
-  - ***socketPath*** String | null - request a unix socket service, default is `null`.
-  - ***highWaterMark*** Number - default is `67108864`, 64 KiB.
+- **_options_** Object - Optional
+  - **_method_** String - Request method, defaults to `GET`. Could be `GET`, `POST`, `DELETE` or `PUT`. Alias 'type'.
+  - **_data_** Object - Data to be sent. Will be stringify automatically.
+  - **_content_** String | [Buffer](https://nodejs.org/api/buffer.html) - Manually set the content of payload. If set, `data` will be ignored.
+  - **_stream_** [stream.Readable](https://nodejs.org/api/stream.html#stream_class_stream_readable) - Stream to be pipe to the remote. If set, `data` and `content` will be ignored.
+  - **_writeStream_** [stream.Writable](https://nodejs.org/api/stream.html#stream_class_stream_writable) - A writable stream to be piped by the response stream. Responding data will be write to this stream and `callback` will be called with `data` set `null` after finished writing.
+  - **_files_** {Array<ReadStream|Buffer|String> | Object | ReadStream | Buffer | String - The files will send with `multipart/form-data` format, base on `formstream`. If `method` not set, will use `POST` method by default.
+  - **_contentType_** String - Type of request data. Could be `json` (**Notes**: not use `application/json` here). If it's `json`, will auto set `Content-Type: application/json` header.
+  - **_dataType_** String - Type of response data. Could be `text` or `json`. If it's `text`, the `callback`ed `data` would be a String. If it's `json`, the `data` of callback would be a parsed JSON Object and will auto set `Accept: application/json` header. Default `callback`ed `data` would be a `Buffer`.
+  - **_fixJSONCtlChars_** Boolean - Fix the control characters (U+0000 through U+001F) before JSON parse response. Default is `false`.
+  - **_headers_** Object - Request headers.
+  - **_timeout_** Number | Array - Request timeout in milliseconds for connecting phase and response receiving phase. Default is `5000`. You can use `timeout: 5000` to tell urllib use same timeout on two phase or set them separately such as `timeout: [3000, 5000]`, which will set connecting timeout to 3s and response 5s.
+  - **_keepAliveTimeout_** `number | null` - Default is `4000`, 4 seconds - The timeout after which a socket without active requests will time out. Monitors time between activity on a connected socket. This value may be overridden by _keep-alive_ hints from the server. See [MDN: HTTP - Headers - Keep-Alive directives](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Keep-Alive#directives) for more details.
+  - **_auth_** String - `username:password` used in HTTP Basic Authorization.
+  - **_digestAuth_** String - `username:password` used in HTTP [Digest Authorization](https://en.wikipedia.org/wiki/Digest_access_authentication).
+  - **_followRedirect_** Boolean - follow HTTP 3xx responses as redirects. defaults to true.
+  - **_maxRedirects_** Number - The maximum number of redirects to follow, defaults to 10.
+  - **_formatRedirectUrl_** Function - Format the redirect url by yourself. Default is `url.resolve(from, to)`.
+  - **_beforeRequest_** Function - Before request hook, you can change every thing here.
+  - **_streaming_** Boolean - lets you get the `res` object when request connected, default `false`. alias `customResponse`
+  - **_compressed_** Boolean - Accept `gzip, br` response content and auto decode it, default is `false`.
+  - **_timing_** Boolean - Enable timing or not, default is `true`.
+  - **_socketPath_** String | null - request a unix socket service, default is `null`.
+  - **_highWaterMark_** Number - default is `67108864`, 64 KiB.
 
 #### Options: `options.data`
 

@@ -1,5 +1,7 @@
 import { strict as assert } from 'node:assert';
+
 import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -20,7 +22,7 @@ describe('HttpClient.events.test.ts', () => {
     const httpclient = new HttpClient();
     let requestCount = 0;
     let responseCount = 0;
-    httpclient.on('request', info => {
+    httpclient.on('request', (info) => {
       requestCount++;
       // console.log(info);
       assert.equal(info.url, _url);
@@ -32,7 +34,7 @@ describe('HttpClient.events.test.ts', () => {
         assert.equal(info.ctx, undefined);
       }
     });
-    httpclient.on('response', info => {
+    httpclient.on('response', (info) => {
       responseCount++;
       // console.log(info);
       assert.equal(info.req.args.opaque.requestId, `mock-request-id-${requestCount}`);
@@ -94,7 +96,7 @@ describe('HttpClient.events.test.ts', () => {
     httpclient.on('request', () => {
       requestCount++;
     });
-    httpclient.on('response', info => {
+    httpclient.on('response', (info) => {
       responseCount++;
       // console.log(info);
       assert.equal(info.req.args.opaque.requestId, `mock-request-id-${requestCount}`);
@@ -109,21 +111,24 @@ describe('HttpClient.events.test.ts', () => {
       assert.equal(info.error.status, -1);
     });
 
-    await assert.rejects(async () => {
-      await httpclient.request(`${_url}error`, {
-        dataType: 'json',
-        opaque: {
-          requestId: 'mock-request-id-1',
-        },
-        ctx: { foo: 'bar' },
-        socketErrorRetry: 0,
-      });
-    }, (err: any) => {
-      assert.equal(err.name, 'SocketError');
-      assert.equal(err.message, 'other side closed');
-      assert.equal(err.status, -1);
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        await httpclient.request(`${_url}error`, {
+          dataType: 'json',
+          opaque: {
+            requestId: 'mock-request-id-1',
+          },
+          ctx: { foo: 'bar' },
+          socketErrorRetry: 0,
+        });
+      },
+      (err: any) => {
+        assert.equal(err.name, 'SocketError');
+        assert.equal(err.message, 'other side closed');
+        assert.equal(err.status, -1);
+        return true;
+      },
+    );
     assert.equal(requestCount, 1);
     assert.equal(responseCount, 1);
   });

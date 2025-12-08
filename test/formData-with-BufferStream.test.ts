@@ -1,10 +1,12 @@
 import { strict as assert } from 'node:assert';
 import { createReadStream } from 'node:fs';
 import { basename } from 'node:path';
+
 import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import { HttpClient, WebFormData } from '../src/index.js';
-import { startServer } from './fixtures/server.js';
 import { BufferStream } from './fixtures/BufferStream.js';
+import { startServer } from './fixtures/server.js';
 
 describe('formData-with-BufferStream.test.ts', () => {
   let close: any;

@@ -19,8 +19,15 @@ async function request(index) {
     // dataType: 'json',
   });
   console.log('---------------------------');
-  console.log('No#%d: %s, content size: %d, requestUrls: %o, socket: %o, rt: %o',
-    index, res.statusCode, res.data.length, res.res.requestUrls, res.res.socket, res.res.rt);
+  console.log(
+    'No#%d: %s, content size: %d, requestUrls: %o, socket: %o, rt: %o',
+    index,
+    res.statusCode,
+    res.data.length,
+    res.res.requestUrls,
+    res.res.socket,
+    res.res.rt,
+  );
   console.log(res.res.timing);
   // console.log(res.res.timing, res.headers);
   // console.log(res.data);

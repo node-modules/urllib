@@ -1,5 +1,7 @@
 import { strict as assert } from 'node:assert';
+
 import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion, readableToBytes } from './utils.js';
@@ -99,29 +101,37 @@ describe('options.dataType.test.ts', () => {
   });
 
   it('should throw with dataType = json when response json format invaild', async () => {
-    await assert.rejects(async () => {
-      await urllib.request(`${_url}wrongjson`, {
-        dataType: 'json',
-      });
-    }, (err: any) => {
-      // console.error(err);
-      assert.equal(err.name, 'JSONResponseFormatError');
-      if (err.message.startsWith('Expected')) {
-        if (nodeMajorVersion() >= 21) {
-          assert.equal(err.message, 'Expected \',\' or \'}\' after property value in JSON at position 9 (line 1 column 10) (data json format: "{\\"foo\\":\\"\\"")');
+    await assert.rejects(
+      async () => {
+        await urllib.request(`${_url}wrongjson`, {
+          dataType: 'json',
+        });
+      },
+      (err: any) => {
+        // console.error(err);
+        assert.equal(err.name, 'JSONResponseFormatError');
+        if (err.message.startsWith('Expected')) {
+          if (nodeMajorVersion() >= 21) {
+            assert.equal(
+              err.message,
+              'Expected \',\' or \'}\' after property value in JSON at position 9 (line 1 column 10) (data json format: "{\\"foo\\":\\"\\"")',
+            );
+          } else {
+            // new message on Node.js >= 19
+            assert.equal(
+              err.message,
+              'Expected \',\' or \'}\' after property value in JSON at position 9 (data json format: "{\\"foo\\":\\"\\"")',
+            );
+          }
         } else {
-          // new message on Node.js >= 19
-          assert.equal(err.message, 'Expected \',\' or \'}\' after property value in JSON at position 9 (data json format: "{\\"foo\\":\\"\\"")');
+          assert.equal(err.message, 'Unexpected end of JSON input (data json format: "{\\"foo\\":\\"\\"")');
         }
-
-      } else {
-        assert.equal(err.message, 'Unexpected end of JSON input (data json format: "{\\"foo\\":\\"\\"")');
-      }
-      assert.equal(err.res.status, 200);
-      assert.equal(err.res.headers['content-type'], 'application/json');
-      assert.equal(err.res.size, 9);
-      return true;
-    });
+        assert.equal(err.res.status, 200);
+        assert.equal(err.res.headers['content-type'], 'application/json');
+        assert.equal(err.res.size, 9);
+        return true;
+      },
+    );
   });
 
   it('should work with dataType = text when response json format invaild', async () => {
@@ -134,18 +144,21 @@ describe('options.dataType.test.ts', () => {
   });
 
   it('should handle GET /wrongjson-gbk with dataType=json and data size > 1024', async () => {
-    await assert.rejects(async () => {
-      await urllib.request(`${_url}wrongjson-gbk`, {
-        dataType: 'json',
-      });
-    }, (err: any) => {
-      // console.error(err);
-      assert.equal(err.name, 'JSONResponseFormatError');
-      assert.match(err.message, /" \.\.\.skip\.\.\. "/);
-      assert.equal(err.res.status, 200);
-      assert.equal(err.res.headers['content-type'], 'application/json');
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        await urllib.request(`${_url}wrongjson-gbk`, {
+          dataType: 'json',
+        });
+      },
+      (err: any) => {
+        // console.error(err);
+        assert.equal(err.name, 'JSONResponseFormatError');
+        assert.match(err.message, /" \.\.\.skip\.\.\. "/);
+        assert.equal(err.res.status, 200);
+        assert.equal(err.res.headers['content-type'], 'application/json');
+        return true;
+      },
+    );
   });
 
   it('should work with dataType = stream', async () => {
