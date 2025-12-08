@@ -49,7 +49,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
-        node: ['16', '18', '20', '22', '24']
+        node: ['18', '20', '22', '24']
 
     name: Test (${{ matrix.os }}, ${{ matrix.node }})
     runs-on: ${{ matrix.os }}
@@ -57,6 +57,9 @@ jobs:
     concurrency:
       group: test-${{ github.workflow }}-#${{ github.event.pull_request.number || github.head_ref || github.ref }}-(${{ matrix.os }}, ${{ matrix.node }})
       cancel-in-progress: true
+
+    permissions:
+      id-token: write
 
     steps:
       - name: Checkout repository
