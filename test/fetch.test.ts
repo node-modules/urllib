@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import diagnosticsChannel from 'node:diagnostics_channel';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { describe, it, beforeAll, afterAll } from 'vitest';
-import { startServer } from './fixtures/server.js';
-import {
-  fetch, FetchDiagnosticsMessage, FetchFactory, FetchResponseDiagnosticsMessage,
-} from '../src/fetch.js';
-import { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../src/HttpClient.js';
+
 import { Request } from 'undici';
+import { describe, it, beforeAll, afterAll } from 'vitest';
+
+import { fetch, FetchDiagnosticsMessage, FetchFactory, FetchResponseDiagnosticsMessage } from '../src/fetch.js';
+import { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../src/HttpClient.js';
+import { startServer } from './fixtures/server.js';
 
 describe('fetch.test.ts', () => {
   let close: any;
@@ -27,16 +27,16 @@ describe('fetch.test.ts', () => {
     let responseDiagnosticsMessage: ResponseDiagnosticsMessage;
     let fetchDiagnosticsMessage: FetchDiagnosticsMessage;
     let fetchResponseDiagnosticsMessage: FetchResponseDiagnosticsMessage;
-    diagnosticsChannel.subscribe('urllib:request', msg => {
+    diagnosticsChannel.subscribe('urllib:request', (msg) => {
       requestDiagnosticsMessage = msg as RequestDiagnosticsMessage;
     });
-    diagnosticsChannel.subscribe('urllib:response', msg => {
+    diagnosticsChannel.subscribe('urllib:response', (msg) => {
       responseDiagnosticsMessage = msg as ResponseDiagnosticsMessage;
     });
-    diagnosticsChannel.subscribe('urllib:fetch:request', msg => {
+    diagnosticsChannel.subscribe('urllib:fetch:request', (msg) => {
       fetchDiagnosticsMessage = msg as FetchDiagnosticsMessage;
     });
-    diagnosticsChannel.subscribe('urllib:fetch:response', msg => {
+    diagnosticsChannel.subscribe('urllib:fetch:response', (msg) => {
       fetchResponseDiagnosticsMessage = msg as FetchResponseDiagnosticsMessage;
     });
     FetchFactory.setClientOptions({});
@@ -48,7 +48,7 @@ describe('fetch.test.ts', () => {
     assert(responseDiagnosticsMessage!.request);
     assert(responseDiagnosticsMessage!.response);
     assert(responseDiagnosticsMessage!.response.socket.localAddress);
-    assert([ '127.0.0.1', '::1' ].includes(responseDiagnosticsMessage!.response.socket.localAddress));
+    assert(['127.0.0.1', '::1'].includes(responseDiagnosticsMessage!.response.socket.localAddress));
 
     assert(fetchDiagnosticsMessage!.fetch);
     assert(fetchResponseDiagnosticsMessage!.fetch);
@@ -71,35 +71,38 @@ describe('fetch.test.ts', () => {
     let responseDiagnosticsMessage: ResponseDiagnosticsMessage;
     let fetchDiagnosticsMessage: FetchDiagnosticsMessage;
     let fetchResponseDiagnosticsMessage: FetchResponseDiagnosticsMessage;
-    diagnosticsChannel.subscribe('urllib:request', msg => {
+    diagnosticsChannel.subscribe('urllib:request', (msg) => {
       requestDiagnosticsMessage = msg as RequestDiagnosticsMessage;
     });
-    diagnosticsChannel.subscribe('urllib:response', msg => {
+    diagnosticsChannel.subscribe('urllib:response', (msg) => {
       responseDiagnosticsMessage = msg as ResponseDiagnosticsMessage;
     });
-    diagnosticsChannel.subscribe('urllib:fetch:request', msg => {
+    diagnosticsChannel.subscribe('urllib:fetch:request', (msg) => {
       fetchDiagnosticsMessage = msg as FetchDiagnosticsMessage;
     });
-    diagnosticsChannel.subscribe('urllib:fetch:response', msg => {
+    diagnosticsChannel.subscribe('urllib:fetch:response', (msg) => {
       fetchResponseDiagnosticsMessage = msg as FetchResponseDiagnosticsMessage;
     });
     FetchFactory.setClientOptions({});
 
-    await assert.rejects(async () => {
-      await fetch(`${_url}html?timeout=9999`, {
-        signal: AbortSignal.timeout(100),
-      });
-    }, (err: any) => {
-      assert.equal(err.name, 'TimeoutError');
-      assert.equal(err.message, 'The operation was aborted due to timeout');
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        await fetch(`${_url}html?timeout=9999`, {
+          signal: AbortSignal.timeout(100),
+        });
+      },
+      (err: any) => {
+        assert.equal(err.name, 'TimeoutError');
+        assert.equal(err.message, 'The operation was aborted due to timeout');
+        return true;
+      },
+    );
 
     assert(requestDiagnosticsMessage!.request);
     assert(responseDiagnosticsMessage!.request);
     assert(responseDiagnosticsMessage!.response);
     assert(responseDiagnosticsMessage!.response.socket.localAddress);
-    assert([ '127.0.0.1', '::1' ].includes(responseDiagnosticsMessage!.response.socket.localAddress));
+    assert(['127.0.0.1', '::1'].includes(responseDiagnosticsMessage!.response.socket.localAddress));
 
     assert(fetchDiagnosticsMessage!.fetch);
     assert(fetchResponseDiagnosticsMessage!.fetch);
@@ -124,16 +127,16 @@ describe('fetch.test.ts', () => {
     let responseDiagnosticsMessage: ResponseDiagnosticsMessage;
     let fetchDiagnosticsMessage: FetchDiagnosticsMessage;
     let fetchResponseDiagnosticsMessage: FetchResponseDiagnosticsMessage;
-    diagnosticsChannel.subscribe('urllib:request', msg => {
+    diagnosticsChannel.subscribe('urllib:request', (msg) => {
       requestDiagnosticsMessage = msg as RequestDiagnosticsMessage;
     });
-    diagnosticsChannel.subscribe('urllib:response', msg => {
+    diagnosticsChannel.subscribe('urllib:response', (msg) => {
       responseDiagnosticsMessage = msg as ResponseDiagnosticsMessage;
     });
-    diagnosticsChannel.subscribe('urllib:fetch:request', msg => {
+    diagnosticsChannel.subscribe('urllib:fetch:request', (msg) => {
       fetchDiagnosticsMessage = msg as FetchDiagnosticsMessage;
     });
-    diagnosticsChannel.subscribe('urllib:fetch:response', msg => {
+    diagnosticsChannel.subscribe('urllib:fetch:response', (msg) => {
       fetchResponseDiagnosticsMessage = msg as FetchResponseDiagnosticsMessage;
     });
     const factory = new FetchFactory();
@@ -145,7 +148,7 @@ describe('fetch.test.ts', () => {
     assert(responseDiagnosticsMessage!.request);
     assert(responseDiagnosticsMessage!.response);
     assert(responseDiagnosticsMessage!.response.socket.localAddress);
-    assert([ '127.0.0.1', '::1' ].includes(responseDiagnosticsMessage!.response.socket.localAddress));
+    assert(['127.0.0.1', '::1'].includes(responseDiagnosticsMessage!.response.socket.localAddress));
 
     assert(fetchDiagnosticsMessage!.fetch);
     assert(fetchResponseDiagnosticsMessage!.fetch);

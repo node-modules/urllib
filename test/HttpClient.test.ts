@@ -2,10 +2,13 @@ import { strict as assert } from 'node:assert';
 import dns from 'node:dns';
 import { once } from 'node:events';
 import { sensitiveHeaders, createSecureServer } from 'node:http2';
+import { AddressInfo } from 'node:net';
 import { PerformanceObserver } from 'node:perf_hooks';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import selfsigned from 'selfsigned';
+import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import { HttpClient, RawResponseWithMeta, getGlobalDispatcher } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion } from './utils.js';
@@ -15,13 +18,13 @@ const pems = selfsigned.generate([], {
 });
 
 if (process.env.ENABLE_PERF) {
-  const obs = new PerformanceObserver(items => {
-    items.getEntries().forEach(item => {
+  const obs = new PerformanceObserver((items) => {
+    items.getEntries().forEach((item) => {
       console.log('%j', item);
     });
   });
   obs.observe({
-    entryTypes: [ 'net', 'dns', 'function', 'gc', 'http', 'http2', 'node' ],
+    entryTypes: ['net', 'dns', 'function', 'gc', 'http', 'http2', 'node'],
     buffered: true,
   });
 }
@@ -155,7 +158,7 @@ describe('HttpClient.test.ts', () => {
         },
       });
 
-      const url = `https://localhost:${server.address()!.port}`;
+      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
       let response = await httpClient.request<string>(url, {
         dataType: 'text',
         headers: {
@@ -218,7 +221,7 @@ describe('HttpClient.test.ts', () => {
         },
       });
 
-      const url = `https://localhost:${server.address()!.port}`;
+      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
       let response = await httpClient.request<string>(url, {
         dataType: 'text',
         headers: {
@@ -252,7 +255,7 @@ describe('HttpClient.test.ts', () => {
   });
 
   describe('clientOptions.lookup', () => {
-    it('should work with custom lookup on HTTP protol', async () => {
+    it('should work with custom lookup on HTTP protocol', async () => {
       let lookupCallCounter = 0;
       const httpclient = new HttpClient({
         // mock lookup delay
@@ -314,23 +317,29 @@ describe('HttpClient.test.ts', () => {
       });
       assert.equal(Object.keys(httpclient.getDispatcherPoolStats()).length, 0);
 
-      await assert.rejects(async () => {
-        await httpclient.request(_url);
-      }, (err: any) => {
-        // console.error(err);
-        assert.equal(err.res.status, -1);
-        assert.equal(err.name, 'IllegalAddressError');
-        assert.equal(err.message, 'illegal address');
-        assert.equal(err.hostname, 'localhost');
-        assert.equal(typeof err.ip, 'string');
-        assert(err.family === 4 || err.family === 6);
-        return true;
-      });
+      await assert.rejects(
+        async () => {
+          await httpclient.request(_url);
+        },
+        (err: any) => {
+          // console.error(err);
+          assert.equal(err.res.status, -1);
+          assert.equal(err.name, 'IllegalAddressError');
+          assert.equal(err.message, 'illegal address');
+          assert.equal(err.hostname, 'localhost');
+          assert.equal(typeof err.ip, 'string');
+          assert(err.family === 4 || err.family === 6);
+          return true;
+        },
+      );
 
       const response = await httpclient.request(_url);
       assert.equal(response.status, 200);
-      assert.equal(Object.keys(httpclient.getDispatcherPoolStats()).length, 1,
-        `dispatcher pool stats: ${JSON.stringify(httpclient.getDispatcherPoolStats())}`);
+      assert.equal(
+        Object.keys(httpclient.getDispatcherPoolStats()).length,
+        1,
+        `dispatcher pool stats: ${JSON.stringify(httpclient.getDispatcherPoolStats())}`,
+      );
     });
 
     it('should check non-ip hostname with custom lookup', async () => {
@@ -350,18 +359,21 @@ describe('HttpClient.test.ts', () => {
         },
       });
 
-      await assert.rejects(async () => {
-        await httpclient.request(_url);
-      }, (err: any) => {
-        // console.error(err);
-        assert.equal(err.res.status, -1);
-        assert.equal(err.name, 'IllegalAddressError');
-        assert.equal(err.message, 'illegal address');
-        assert.equal(err.hostname, 'localhost');
-        assert.equal(typeof err.ip, 'string');
-        assert(err.family === 4 || err.family === 6);
-        return true;
-      });
+      await assert.rejects(
+        async () => {
+          await httpclient.request(_url);
+        },
+        (err: any) => {
+          // console.error(err);
+          assert.equal(err.res.status, -1);
+          assert.equal(err.name, 'IllegalAddressError');
+          assert.equal(err.message, 'illegal address');
+          assert.equal(err.hostname, 'localhost');
+          assert.equal(typeof err.ip, 'string');
+          assert(err.family === 4 || err.family === 6);
+          return true;
+        },
+      );
       assert.equal(lookupCallCounter, 1);
 
       const response = await httpclient.request(_url);
@@ -378,18 +390,21 @@ describe('HttpClient.test.ts', () => {
         },
       });
 
-      await assert.rejects(async () => {
-        await httpclient.request(_url.replace('localhost', '127.0.0.1'));
-      }, (err: any) => {
-        // console.error(err);
-        assert.equal(err.res.status, -1);
-        assert.equal(err.name, 'IllegalAddressError');
-        assert.equal(err.message, 'illegal address');
-        assert.equal(err.hostname, '127.0.0.1');
-        assert.equal(err.ip, '127.0.0.1');
-        assert(err.family === 4);
-        return true;
-      });
+      await assert.rejects(
+        async () => {
+          await httpclient.request(_url.replace('localhost', '127.0.0.1'));
+        },
+        (err: any) => {
+          // console.error(err);
+          assert.equal(err.res.status, -1);
+          assert.equal(err.name, 'IllegalAddressError');
+          assert.equal(err.message, 'illegal address');
+          assert.equal(err.hostname, '127.0.0.1');
+          assert.equal(err.ip, '127.0.0.1');
+          assert(err.family === 4);
+          return true;
+        },
+      );
 
       const response = await httpclient.request(_url.replace('localhost', '127.0.0.1'));
       assert.equal(response.status, 200);
@@ -397,48 +412,57 @@ describe('HttpClient.test.ts', () => {
 
     it('should throw error when request address is ip v6', async () => {
       const httpclient = new HttpClient({
-        checkAddress(address, family) {
+        checkAddress(_address, family) {
           return family !== 6;
         },
       });
 
-      await assert.rejects(async () => {
-        await httpclient.request('http://[::1]/foo/bar');
-      }, (err: any) => {
-        // console.error(err);
-        assert.equal(err.name, 'IllegalAddressError');
-        assert.equal(err.message, 'illegal address');
-        assert.equal(err.hostname, '::1');
-        assert.equal(err.ip, '::1');
-        assert(err.family === 6);
-        return true;
-      });
+      await assert.rejects(
+        async () => {
+          await httpclient.request('http://[::1]/foo/bar');
+        },
+        (err: any) => {
+          // console.error(err);
+          assert.equal(err.name, 'IllegalAddressError');
+          assert.equal(err.message, 'illegal address');
+          assert.equal(err.hostname, '::1');
+          assert.equal(err.ip, '::1');
+          assert(err.family === 6);
+          return true;
+        },
+      );
 
-      await assert.rejects(async () => {
-        await httpclient.request('http://[2001:0DB8:02de::0e13]/foo/bar');
-      }, (err: any) => {
-        // console.error(err);
-        assert.equal(err.res.status, -1);
-        assert.equal(err.name, 'IllegalAddressError');
-        assert.equal(err.message, 'illegal address');
-        assert.equal(err.hostname, '2001:db8:2de::e13');
-        assert.equal(err.ip, '2001:db8:2de::e13');
-        assert(err.family === 6);
-        return true;
-      });
+      await assert.rejects(
+        async () => {
+          await httpclient.request('http://[2001:0DB8:02de::0e13]/foo/bar');
+        },
+        (err: any) => {
+          // console.error(err);
+          assert.equal(err.res.status, -1);
+          assert.equal(err.name, 'IllegalAddressError');
+          assert.equal(err.message, 'illegal address');
+          assert.equal(err.hostname, '2001:db8:2de::e13');
+          assert.equal(err.ip, '2001:db8:2de::e13');
+          assert(err.family === 6);
+          return true;
+        },
+      );
 
-      await assert.rejects(async () => {
-        await httpclient.request('http://[2001:0DB8:02de:0000:0000:0000:0000:0e13]/foo/bar');
-      }, (err: any) => {
-        // console.error(err);
-        assert.equal(err.res.status, -1);
-        assert.equal(err.name, 'IllegalAddressError');
-        assert.equal(err.message, 'illegal address');
-        assert.equal(err.hostname, '2001:db8:2de::e13');
-        assert.equal(err.ip, '2001:db8:2de::e13');
-        assert(err.family === 6);
-        return true;
-      });
+      await assert.rejects(
+        async () => {
+          await httpclient.request('http://[2001:0DB8:02de:0000:0000:0000:0000:0e13]/foo/bar');
+        },
+        (err: any) => {
+          // console.error(err);
+          assert.equal(err.res.status, -1);
+          assert.equal(err.name, 'IllegalAddressError');
+          assert.equal(err.message, 'illegal address');
+          assert.equal(err.hostname, '2001:db8:2de::e13');
+          assert.equal(err.ip, '2001:db8:2de::e13');
+          assert(err.family === 6);
+          return true;
+        },
+      );
     });
 
     it('should throw error when follow redirect and redirect address illegal', async () => {
@@ -449,18 +473,21 @@ describe('HttpClient.test.ts', () => {
         },
       });
 
-      await assert.rejects(async () => {
-        await httpclient.request(`${_url}redirect-to-localhost`);
-      }, (err: any) => {
-        if (err.name !== 'IllegalAddressError') {
-          console.error(err);
-        }
-        assert.equal(err.name, 'IllegalAddressError');
-        assert.equal(err.message, 'illegal address');
-        // assert.equal(err.ip, '127.0.0.1');
-        // assert(err.family === 4);
-        return true;
-      });
+      await assert.rejects(
+        async () => {
+          await httpclient.request(`${_url}redirect-to-localhost`);
+        },
+        (err: any) => {
+          if (err.name !== 'IllegalAddressError') {
+            console.error(err);
+          }
+          assert.equal(err.name, 'IllegalAddressError');
+          assert.equal(err.message, 'illegal address');
+          // assert.equal(err.ip, '127.0.0.1');
+          // assert(err.family === 4);
+          return true;
+        },
+      );
     });
 
     it('should allow hostname check', async () => {
@@ -474,10 +501,12 @@ describe('HttpClient.test.ts', () => {
           if (process.version.startsWith('v18.') || process.version.startsWith('v16.')) {
             return callback(null, '127.0.0.1', 4);
           }
-          return callback(null, [{
-            address: '127.0.0.1',
-            family: 4,
-          }]);
+          return callback(null, [
+            {
+              address: '127.0.0.1',
+              family: 4,
+            },
+          ]);
         },
       });
 

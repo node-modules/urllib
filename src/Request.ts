@@ -1,9 +1,11 @@
-import type { Readable, Writable } from 'node:stream';
 import type { EventEmitter } from 'node:events';
+import type { Readable, Writable } from 'node:stream';
+
 import type { Dispatcher } from 'undici';
+import { Request } from 'undici';
+
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import type { HttpClientResponse } from './Response.js';
-import { Request } from 'undici';
 
 export type HttpMethod = Dispatcher.HttpMethod;
 
@@ -36,10 +38,16 @@ export type RequestOptions = {
    */
   writeStream?: Writable;
   /**
-    * The files will send with multipart/form-data format, base on formstream.
-    * If method not set, will use POST method by default.
-    */
-  files?: Array<Readable | Buffer | string> | Record<string, Readable | Buffer | string> | Readable | Buffer | string | object;
+   * The files will send with multipart/form-data format, base on formstream.
+   * If method not set, will use POST method by default.
+   */
+  files?:
+    | Array<Readable | Buffer | string>
+    | Record<string, Readable | Buffer | string>
+    | Readable
+    | Buffer
+    | string
+    | object;
   /** Type of request data, could be 'json'. If it's 'json', will auto set Content-Type: 'application/json' header. */
   contentType?: string;
   /**
@@ -165,5 +173,5 @@ export type RequestMeta = {
 
 export type FetchMeta = {
   requestId: number;
-  request: Request,
+  request: Request;
 };

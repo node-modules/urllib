@@ -1,4 +1,5 @@
 import path from 'node:path';
+
 import _FormData from 'form-data';
 
 // eslint-disable-next-line
@@ -29,7 +30,7 @@ export class FormData extends _FormData {
       // support non-ascii filename
       contentDisposition = 'filename="' + filename + '"';
       if (NON_ASCII_RE.test(filename)) {
-        contentDisposition += '; filename*=UTF-8\'\'' + encodeURIComponent(filename);
+        contentDisposition += "; filename*=UTF-8''" + encodeURIComponent(filename);
       }
     }
 

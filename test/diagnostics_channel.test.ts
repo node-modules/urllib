@@ -1,15 +1,15 @@
 import { strict as assert } from 'node:assert';
 import diagnosticsChannel from 'node:diagnostics_channel';
-import { setTimeout as sleep } from 'node:timers/promises';
-import { createSecureServer } from 'node:http2';
 import { once } from 'node:events';
-import { describe, it, beforeEach, afterEach } from 'vitest';
+import { createSecureServer } from 'node:http2';
+import { AddressInfo } from 'node:net';
+import { setTimeout as sleep } from 'node:timers/promises';
+
 import selfsigned from 'selfsigned';
+import { describe, it, beforeEach, afterEach } from 'vitest';
+
 import urllib, { HttpClient } from '../src/index.js';
-import type {
-  RequestDiagnosticsMessage,
-  ResponseDiagnosticsMessage,
-} from '../src/index.js';
+import type { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../src/index.js';
 import symbols from '../src/symbols.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion } from './utils.js';
@@ -218,7 +218,7 @@ describe('diagnostics_channel.test.ts', () => {
     });
 
     let traceId = `mock-traceid-${Date.now()}`;
-    _url = `https://localhost:${server.address().port}`;
+    _url = `https://localhost:${(server.address() as AddressInfo).port}`;
     let response = await httpClient.request(`${_url}?head=true`, {
       method: 'HEAD',
       opaque: {
@@ -389,26 +389,29 @@ describe('diagnostics_channel.test.ts', () => {
 
     let traceId = `mock-traceid-${Date.now()}`;
     // handle network error
-    await assert.rejects(async () => {
-      await urllib.request(`${_url}error`, {
-        method: 'GET',
-        dataType: 'json',
-        opaque: {
-          tracer: { traceId },
-        },
-      });
-    }, err => {
-      assert(err);
-      assert(lastError);
-      assert.equal(err, lastError);
-      assert.equal(err.name, 'SocketError');
-      assert.equal(err.message, 'other side closed');
-      assert.equal((err as any).code, 'UND_ERR_SOCKET');
-      assert.equal((err as any).res.socket, socket);
-      assert.equal((err as any).socket, socket);
-      assert((err as any)._rawSocket);
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        await urllib.request(`${_url}error`, {
+          method: 'GET',
+          dataType: 'json',
+          opaque: {
+            tracer: { traceId },
+          },
+        });
+      },
+      (err) => {
+        assert(err);
+        assert(lastError);
+        assert.equal(err, lastError);
+        assert.equal(err.name, 'SocketError');
+        assert.equal(err.message, 'other side closed');
+        assert.equal((err as any).code, 'UND_ERR_SOCKET');
+        assert.equal((err as any).res.socket, socket);
+        assert.equal((err as any).socket, socket);
+        assert((err as any)._rawSocket);
+        return true;
+      },
+    );
     assert(socket);
     assert.equal(socket.handledRequests, 1);
     assert.equal(socket.handledResponses, 0);
@@ -437,25 +440,28 @@ describe('diagnostics_channel.test.ts', () => {
 
     // handle response decode error, not network error
     await sleep(1);
-    await assert.rejects(async () => {
-      await urllib.request(`${_url}error-gzip`, {
-        method: 'GET',
-        dataType: 'json',
-        opaque: {
-          tracer: { traceId },
-        },
-      });
-    }, err => {
-      assert(lastError);
-      assert.equal(err, lastError);
-      assert.equal(err.name, 'UnzipError');
-      assert.equal(err.message, 'incorrect header check');
-      assert.equal((err as any).code, 'Z_DATA_ERROR');
-      assert.equal((err as any).res.socket, socket);
-      assert.equal((err as any).socket, socket);
-      assert.equal((err as any)._rawSocket, undefined);
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        await urllib.request(`${_url}error-gzip`, {
+          method: 'GET',
+          dataType: 'json',
+          opaque: {
+            tracer: { traceId },
+          },
+        });
+      },
+      (err) => {
+        assert(lastError);
+        assert.equal(err, lastError);
+        assert.equal(err.name, 'UnzipError');
+        assert.equal(err.message, 'incorrect header check');
+        assert.equal((err as any).code, 'Z_DATA_ERROR');
+        assert.equal((err as any).res.socket, socket);
+        assert.equal((err as any).socket, socket);
+        assert.equal((err as any)._rawSocket, undefined);
+        return true;
+      },
+    );
     assert.equal(socket.handledRequests, 2);
     assert.equal(socket.handledResponses, 2);
 

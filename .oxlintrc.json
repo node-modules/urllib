@@ -3,9 +3,7 @@
   "env": {
     "node": true
   },
-  "extends": [
-    "./node_modules/@eggjs/oxlint-config/.oxlintrc.json"
-  ],
+  "extends": ["./node_modules/@eggjs/oxlint-config/.oxlintrc.json"],
   "categories": {
     "correctness": "allow",
     "suspicious": "allow",

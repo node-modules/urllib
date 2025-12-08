@@ -1,6 +1,8 @@
 import { strict as assert } from 'node:assert';
 import { setTimeout as sleep } from 'node:timers/promises';
+
 import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import urllib, { RawResponseWithMeta } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 

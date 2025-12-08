@@ -1,5 +1,7 @@
 import { strict as assert } from 'node:assert';
+
 import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -23,33 +25,39 @@ describe('HttpClient.connect.rejectUnauthorized.test.ts', () => {
       },
     });
 
-    await assert.rejects(async () => {
-      const response = await httpclient.request(_url);
-      console.log(response.status, response.headers, response.data);
-    }, (err: any) => {
-      // console.error(err);
-      assert.equal(err.name, 'Error');
-      assert.match(err.message, /signed certificate/);
-      assert.equal(err.code, 'DEPTH_ZERO_SELF_SIGNED_CERT');
-      assert.equal(err.res.status, -1);
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        const response = await httpclient.request(_url);
+        console.log(response.status, response.headers, response.data);
+      },
+      (err: any) => {
+        // console.error(err);
+        assert.equal(err.name, 'Error');
+        assert.match(err.message, /signed certificate/);
+        assert.equal(err.code, 'DEPTH_ZERO_SELF_SIGNED_CERT');
+        assert.equal(err.res.status, -1);
+        return true;
+      },
+    );
   });
 
   it('should throw error on rejectUnauthorized = undefined', async () => {
     const httpclient = new HttpClient();
 
-    await assert.rejects(async () => {
-      const response = await httpclient.request(_url);
-      console.log(response.status, response.headers, response.data);
-    }, (err: any) => {
-      // console.error(err);
-      assert.equal(err.name, 'Error');
-      assert.match(err.message, /signed certificate/);
-      assert.equal(err.code, 'DEPTH_ZERO_SELF_SIGNED_CERT');
-      assert.equal(err.res.status, -1);
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        const response = await httpclient.request(_url);
+        console.log(response.status, response.headers, response.data);
+      },
+      (err: any) => {
+        // console.error(err);
+        assert.equal(err.name, 'Error');
+        assert.match(err.message, /signed certificate/);
+        assert.equal(err.code, 'DEPTH_ZERO_SELF_SIGNED_CERT');
+        assert.equal(err.res.status, -1);
+        return true;
+      },
+    );
   });
 
   it('should 200 on rejectUnauthorized = false', async () => {

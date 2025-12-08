@@ -1,8 +1,10 @@
 import { strict as assert } from 'node:assert';
 import { createReadStream } from 'node:fs';
 import { Readable } from 'node:stream';
+
 import qs from 'qs';
 import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -27,9 +29,11 @@ describe('options.data.test.ts', () => {
         b: undefined,
         c: '2222',
         d: 1111,
-        e() { return ''; },
+        e() {
+          return '';
+        },
         f: true,
-        g: [ 'a', 'b' ],
+        g: ['a', 'b'],
       },
       dataType: 'json',
     });
@@ -38,7 +42,10 @@ describe('options.data.test.ts', () => {
     assert.equal(response.data.method, 'GET');
     assert(response.url.startsWith(_url));
     assert(!response.redirected);
-    assert.equal(response.data.url, '/?sql=SELECT%20*%20from%20table&data=%E5%93%88%E5%93%88&b=&c=2222&d=1111&e=&f=true&g=a&g=b');
+    assert.equal(
+      response.data.url,
+      '/?sql=SELECT%20*%20from%20table&data=%E5%93%88%E5%93%88&b=&c=2222&d=1111&e=&f=true&g=a&g=b',
+    );
     const url = new URL(response.data.href);
     assert.equal(url.searchParams.get('sql'), 'SELECT * from table');
     assert.equal(url.searchParams.get('data'), '哈哈');
@@ -61,7 +68,7 @@ describe('options.data.test.ts', () => {
         data: '哈哈',
         foo: {
           bar: 'bar value',
-          array: [ 1, 2, 3 ],
+          array: [1, 2, 3],
         },
       },
       nestedQuerystring: true,
@@ -76,7 +83,10 @@ describe('options.data.test.ts', () => {
     assert(response.url.startsWith(_url));
     // console.log(response);
     assert(!response.redirected);
-    assert.equal(response.data.url, '/?sql=SELECT%20%2A%20from%20table&data=%E5%93%88%E5%93%88&foo%5Bbar%5D=bar%20value&foo%5Barray%5D%5B0%5D=1&foo%5Barray%5D%5B1%5D=2&foo%5Barray%5D%5B2%5D=3');
+    assert.equal(
+      response.data.url,
+      '/?sql=SELECT%20%2A%20from%20table&data=%E5%93%88%E5%93%88&foo%5Bbar%5D=bar%20value&foo%5Barray%5D%5B0%5D=1&foo%5Barray%5D%5B1%5D=2&foo%5Barray%5D%5B2%5D=3',
+    );
     const query = qs.parse(response.data.url.substring(2));
     const url = new URL(response.data.href);
     assert.equal(url.searchParams.get('sql'), 'SELECT * from table');
@@ -87,7 +97,7 @@ describe('options.data.test.ts', () => {
     assert.equal(url.searchParams.get('foo[array][2]'), '3');
     assert.equal(query.sql, 'SELECT * from table');
     assert.equal(query.data, '哈哈');
-    assert.deepEqual(query.foo, { bar: 'bar value', array: [ '1', '2', '3' ] });
+    assert.deepEqual(query.foo, { bar: 'bar value', array: ['1', '2', '3'] });
   });
 
   it('should GET /ok?hello=1 with data work on nestedQuerystring=true', async () => {
@@ -98,7 +108,7 @@ describe('options.data.test.ts', () => {
         data: '哈哈',
         foo: {
           bar: 'bar value',
-          array: [ 1, 2, 3 ],
+          array: [1, 2, 3],
         },
       },
       nestedQuerystring: true,
@@ -113,7 +123,10 @@ describe('options.data.test.ts', () => {
     assert(response.url.startsWith(_url));
     // console.log(response);
     assert(!response.redirected);
-    assert.equal(response.data.url, '/ok?hello=1&sql=SELECT%20%2A%20from%20table&data=%E5%93%88%E5%93%88&foo%5Bbar%5D=bar%20value&foo%5Barray%5D%5B0%5D=1&foo%5Barray%5D%5B1%5D=2&foo%5Barray%5D%5B2%5D=3');
+    assert.equal(
+      response.data.url,
+      '/ok?hello=1&sql=SELECT%20%2A%20from%20table&data=%E5%93%88%E5%93%88&foo%5Bbar%5D=bar%20value&foo%5Barray%5D%5B0%5D=1&foo%5Barray%5D%5B1%5D=2&foo%5Barray%5D%5B2%5D=3',
+    );
     const query = qs.parse(response.data.url.substring(4));
     const url = new URL(response.data.href);
     assert.equal(url.searchParams.get('hello'), '1');
@@ -126,7 +139,7 @@ describe('options.data.test.ts', () => {
     assert.equal(query.hello, '1');
     assert.equal(query.sql, 'SELECT * from table');
     assert.equal(query.data, '哈哈');
-    assert.deepEqual(query.foo, { bar: 'bar value', array: [ '1', '2', '3' ] });
+    assert.deepEqual(query.foo, { bar: 'bar value', array: ['1', '2', '3'] });
   });
 
   it('should HEAD with data and auto convert to query string', async () => {
@@ -177,10 +190,12 @@ describe('options.data.test.ts', () => {
     requestUrl.searchParams.set('that', 'in_path');
     const response = await urllib.request(requestUrl, {
       method: 'GET',
-      data: Buffer.from(JSON.stringify({
-        sql: 'SELECT * from table',
-        data: '哈哈',
-      })),
+      data: Buffer.from(
+        JSON.stringify({
+          sql: 'SELECT * from table',
+          data: '哈哈',
+        }),
+      ),
       dataType: 'json',
     });
     assert.equal(response.status, 200);
@@ -314,7 +329,10 @@ describe('options.data.test.ts', () => {
     assert.equal(response.data.requestBody.sql, 'SELECT * from table');
     assert.equal(response.data.requestBody.data, '哈哈 POST');
     assert.equal(response.data.requestBody.foo, '[object Object]');
-    assert.equal(response.data.requestBody.__raw__, 'sql=SELECT+*+from+table&data=%E5%93%88%E5%93%88+POST&foo=%5Bobject+Object%5D');
+    assert.equal(
+      response.data.requestBody.__raw__,
+      'sql=SELECT+*+from+table&data=%E5%93%88%E5%93%88+POST&foo=%5Bobject+Object%5D',
+    );
   });
 
   it('should POST with application/x-www-form-urlencoded work on nestedQuerystring=true', async () => {
@@ -325,7 +343,7 @@ describe('options.data.test.ts', () => {
         data: '哈哈',
         foo: {
           bar: 'bar value',
-          array: [ 1, 2, 3 ],
+          array: [1, 2, 3],
         },
       },
       nestedQuerystring: true,
@@ -346,8 +364,11 @@ describe('options.data.test.ts', () => {
     assert.equal(response.data.requestBody.data, '哈哈');
     assert(response.data.requestBody.foo, 'missing requestBody.foo');
     assert.equal(response.data.requestBody.foo.bar, 'bar value');
-    assert.deepEqual(response.data.requestBody.foo.array, [ '1', '2', '3' ]);
-    assert.equal(response.data.requestBody.__raw__, 'sql=SELECT%20%2A%20from%20table&data=%E5%93%88%E5%93%88&foo%5Bbar%5D=bar%20value&foo%5Barray%5D%5B0%5D=1&foo%5Barray%5D%5B1%5D=2&foo%5Barray%5D%5B2%5D=3');
+    assert.deepEqual(response.data.requestBody.foo.array, ['1', '2', '3']);
+    assert.equal(
+      response.data.requestBody.__raw__,
+      'sql=SELECT%20%2A%20from%20table&data=%E5%93%88%E5%93%88&foo%5Bbar%5D=bar%20value&foo%5Barray%5D%5B0%5D=1&foo%5Barray%5D%5B1%5D=2&foo%5Barray%5D%5B2%5D=3',
+    );
   });
 
   it('should PUT with data and contentType = json', async () => {
@@ -462,11 +483,13 @@ describe('options.data.test.ts', () => {
     const now = new Date();
     const response = await urllib.request(_url, {
       method: 'put',
-      data: Buffer.from(JSON.stringify({
-        foo: 'bar',
-        n1: 1,
-        now,
-      })),
+      data: Buffer.from(
+        JSON.stringify({
+          foo: 'bar',
+          n1: 1,
+          now,
+        }),
+      ),
       headers: { 'Content-Type': 'application/json; charset=gbk' },
       dataType: 'json',
     });
@@ -480,12 +503,14 @@ describe('options.data.test.ts', () => {
 
   it('should keep data to readable when content-type exists', async () => {
     const now = new Date();
-    const buf = Buffer.from(JSON.stringify({
-      foo: 'bar',
-      n1: 1,
-      now,
-    }));
-    const readable = Readable.from([ buf ]);
+    const buf = Buffer.from(
+      JSON.stringify({
+        foo: 'bar',
+        n1: 1,
+        now,
+      }),
+    );
+    const readable = Readable.from([buf]);
     const response = await urllib.request(_url, {
       method: 'put',
       data: readable,
@@ -504,12 +529,14 @@ describe('options.data.test.ts', () => {
 
   it('should keep data to readable and not set content-type', async () => {
     const now = new Date();
-    const buf = Buffer.from(JSON.stringify({
-      foo: 'bar',
-      n1: 1,
-      now,
-    }));
-    const readable = Readable.from([ buf ]);
+    const buf = Buffer.from(
+      JSON.stringify({
+        foo: 'bar',
+        n1: 1,
+        now,
+      }),
+    );
+    const readable = Readable.from([buf]);
     const response = await urllib.request(_url, {
       method: 'put',
       data: readable,

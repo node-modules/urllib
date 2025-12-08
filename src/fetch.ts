@@ -1,5 +1,6 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { debuglog } from 'node:util';
+
 import {
   fetch as UndiciFetch,
   RequestInfo,
@@ -17,6 +18,11 @@ import undiciSymbols from 'undici/lib/core/symbols.js';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { getResponseState } from 'undici/lib/web/fetch/response.js';
+
+import { BaseAgent, BaseAgentOptions } from './BaseAgent.js';
+import { initDiagnosticsChannel } from './diagnosticsChannel.js';
+import { FetchOpaque } from './FetchOpaqueInterceptor.js';
+import { HttpAgent, HttpAgentOptions } from './HttpAgent.js';
 import {
   channels,
   ClientOptions,
@@ -25,22 +31,11 @@ import {
   ResponseDiagnosticsMessage,
   UndiciTimingInfo,
 } from './HttpClient.js';
-import {
-  HttpAgent,
-  HttpAgentOptions,
-} from './HttpAgent.js';
-import { initDiagnosticsChannel } from './diagnosticsChannel.js';
-import { convertHeader, globalId, performanceTime, updateSocketInfo } from './utils.js';
-import symbols from './symbols.js';
-import {
-  FetchMeta,
-  HttpMethod,
-  RequestMeta,
-} from './Request.js';
-import { FetchOpaque } from './FetchOpaqueInterceptor.js';
-import { RawResponseWithMeta, SocketInfo } from './Response.js';
 import { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
-import { BaseAgent, BaseAgentOptions } from './BaseAgent.js';
+import { FetchMeta, HttpMethod, RequestMeta } from './Request.js';
+import { RawResponseWithMeta, SocketInfo } from './Response.js';
+import symbols from './symbols.js';
+import { convertHeader, globalId, performanceTime, updateSocketInfo } from './utils.js';
 
 const debug = debuglog('urllib/fetch');
 
@@ -117,8 +112,8 @@ export class FetchFactory {
     if (!clients) {
       return poolStatsMap;
     }
-    for (const [ key, ref ] of clients) {
-      const pool = (typeof ref.deref === 'function' ? ref.deref() : ref) as unknown as (Pool & { dispatcher: Pool });
+    for (const [key, ref] of clients) {
+      const pool = (typeof ref.deref === 'function' ? ref.deref() : ref) as unknown as Pool & { dispatcher: Pool };
       // NOTE: pool become to { dispatcher: Pool } in undici@v7
       const stats = pool?.stats ?? pool?.dispatcher?.stats;
       if (!stats) continue;
@@ -225,9 +220,7 @@ export class FetchFactory {
       aborted: false,
       rt: 0,
       keepAliveSocket: true,
-      requestUrls: [
-        request.url,
-      ],
+      requestUrls: [request.url],
       timing,
       socket: socketInfo,
       retries: 0,
@@ -267,8 +260,14 @@ export class FetchFactory {
       urllibResponse.size = parseInt(urllibResponse.headers['content-length']);
     }
     urllibResponse.rt = performanceTime(requestStartTime);
-    debug('Request#%d got response, status: %s, headers: %j, timing: %j, socket: %j',
-      requestId, urllibResponse.status, urllibResponse.headers, timing, urllibResponse.socket);
+    debug(
+      'Request#%d got response, status: %s, headers: %j, timing: %j, socket: %j',
+      requestId,
+      urllibResponse.status,
+      urllibResponse.headers,
+      timing,
+      urllibResponse.socket,
+    );
     channels.fetchResponse.publish({
       fetch: fetchMeta,
       timingInfo: state.timingInfo,

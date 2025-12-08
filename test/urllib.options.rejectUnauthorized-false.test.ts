@@ -1,8 +1,11 @@
 import { strict as assert } from 'node:assert';
 import { once } from 'node:events';
 import { createSecureServer } from 'node:http2';
-import { describe, it, beforeAll, afterAll } from 'vitest';
+import { AddressInfo } from 'node:net';
+
 import selfsigned from 'selfsigned';
+import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import urllib, { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion } from './utils.js';
@@ -58,7 +61,7 @@ describe('urllib.options.rejectUnauthorized-false.test.ts', () => {
       },
     });
 
-    const url = `https://localhost:${server.address()!.port}`;
+    const url = `https://localhost:${(server.address() as AddressInfo).port}`;
     const response1 = await httpClient.request(url, {});
     assert.equal(response1.status, 200);
     assert.equal(response1.data.toString(), 'hello h2!');

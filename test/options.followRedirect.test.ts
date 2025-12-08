@@ -1,6 +1,8 @@
 import { strict as assert } from 'node:assert';
 import { createWriteStream } from 'node:fs';
+
 import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import urllib from '../src/index.js';
 import { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
@@ -77,7 +79,7 @@ describe('options.followRedirect.test.ts', () => {
     assert.equal(response.url, `${_url}redirect-deadlock`);
     assert.equal(response.requestUrls.length, 2);
     assert.equal(response.data, 'Redirect to /redirect-deadlock');
-    assert.deepEqual(response.requestUrls, [ `${_url}redirect-deadlock`, `${_url}redirect-deadlock` ]);
+    assert.deepEqual(response.requestUrls, [`${_url}redirect-deadlock`, `${_url}redirect-deadlock`]);
   });
 
   it('should maxRedirects=0 work', async () => {
@@ -89,7 +91,7 @@ describe('options.followRedirect.test.ts', () => {
     assert.equal(response.res.statusCode, 302);
     assert.equal(response.url, `${_url}redirect-deadlock`);
     assert.equal(response.data, 'Redirect to /redirect-deadlock');
-    assert.deepEqual(response.requestUrls, [ `${_url}redirect-deadlock` ]);
+    assert.deepEqual(response.requestUrls, [`${_url}redirect-deadlock`]);
   });
 
   it('should redirect `location: /redirect-full-to-url`', async () => {

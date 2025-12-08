@@ -1,5 +1,7 @@
 import { strict as assert } from 'node:assert';
+
 import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -29,19 +31,22 @@ describe('options.fixJSONCtlChars.test.ts', () => {
   });
 
   it('should throw error when json control characters exists', async () => {
-    await assert.rejects(async () => {
-      await urllib.request(`${_url}json_with_controls_unicode`, {
-        dataType: 'json',
-      });
-    }, (err: any) => {
-      assert.equal(err.name, 'JSONResponseFormatError');
-      // console.error(err);
-      // JSON parse new message format on Node.js >= 19
-      assert.match(err.message, /Unexpected token|Bad control character in string literal in JSON at position 8/);
-      assert.equal(err.status, 200);
-      assert.equal(err.headers['x-method'], 'GET');
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        await urllib.request(`${_url}json_with_controls_unicode`, {
+          dataType: 'json',
+        });
+      },
+      (err: any) => {
+        assert.equal(err.name, 'JSONResponseFormatError');
+        // console.error(err);
+        // JSON parse new message format on Node.js >= 19
+        assert.match(err.message, /Unexpected token|Bad control character in string literal in JSON at position 8/);
+        assert.equal(err.status, 200);
+        assert.equal(err.headers['x-method'], 'GET');
+        return true;
+      },
+    );
   });
 
   it('should fix json string with custom function', async () => {

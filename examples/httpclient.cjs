@@ -9,19 +9,20 @@ function tryHttpclient(HttpClient, name) {
     timing: true,
   };
   const urllib = new HttpClient();
-  urllib.on('response', function(info) {
+  urllib.on('response', function (info) {
     // console.log(name, httpAgent, httpAgent.getCurrentStatus());
     // console.log(name, httpsAgent, httpsAgent.getCurrentStatus());
     console.log('response', name, info.res);
   });
-  urllib.request('https://nodejs.org', options)
-    .then(function() {
+  urllib
+    .request('https://nodejs.org', options)
+    .then(function () {
       return urllib.request('https://nodejs.org', options);
     })
-    .then(function() {
+    .then(function () {
       return urllib.request('https://nodejs.org/en/', options);
     })
-    .catch(function(err) {
+    .catch(function (err) {
       console.error('catch', err);
     });
 }

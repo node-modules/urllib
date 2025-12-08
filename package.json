@@ -24,6 +24,9 @@
   },
   "scripts": {
     "lint": "oxlint src test",
+    "fmt": "oxfmt",
+    "typecheck": "tsc --noEmit",
+    "fmtcheck": "oxfmt --check .",
     "prebuild": "npm run clean",
     "build": "tsc --version && tshy && tshy-after && npm run build:version",
     "postbuild": "rm -rf *.tsbuildinfo",
@@ -40,7 +43,7 @@
     "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vitest run --test-timeout 180000 keep-alive-header.test.ts",
     "test-node16": "node examples/httpclient.cjs && node examples/search_github.cjs && node examples/timing.cjs",
     "cov": "cross-env NODE_OPTIONS=\"--require ./test/patch-for-node16-18.cjs\" vitest run --coverage",
-    "ci": "npm run lint && npm run cov && npm run prepublishOnly && npm pack && attw --pack",
+    "ci": "npm run cov && npm run prepublishOnly && npm pack && attw --pack",
     "clean": "rm -rf dist && tsc -b --clean",
     "prepublishOnly": "npm run build"
   },
@@ -71,6 +74,7 @@
     "busboy": "^1.6.0",
     "cross-env": "^10.0.0",
     "iconv-lite": "^0.6.3",
+    "oxfmt": "^0.17.0",
     "oxlint": "^1.11.0",
     "proxy": "^1.0.2",
     "selfsigned": "^3.0.0",
@@ -111,5 +115,6 @@
   ],
   "types": "./dist/commonjs/index.d.ts",
   "main": "./dist/commonjs/index.js",
-  "module": "./dist/esm/index.js"
+  "module": "./dist/esm/index.js",
+  "packageManager": "pnpm@10.24.0"
 }

@@ -1,9 +1,11 @@
 import { strict as assert } from 'node:assert';
-import path from 'node:path';
-import fs from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import { Readable } from 'node:stream';
+
 import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -38,24 +40,27 @@ describe('options.files.test.ts', () => {
 
   it('should upload not exists file throw error', async () => {
     const file = path.join(__dirname, 'cjs', 'index.js-not-exists');
-    await assert.rejects(async () => {
-      await urllib.request(`${_url}multipart`, {
-        files: [ file ],
-        dataType: 'json',
-      });
-    }, (err: any) => {
-      assert.equal(err.code, 'ENOENT');
-      assert.equal(err.res.status, -1);
-      assert.equal(err.status, -1);
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        await urllib.request(`${_url}multipart`, {
+          files: [file],
+          dataType: 'json',
+        });
+      },
+      (err: any) => {
+        assert.equal(err.code, 'ENOENT');
+        assert.equal(err.res.status, -1);
+        assert.equal(err.status, -1);
+        return true;
+      },
+    );
   });
 
   it('should upload files = [filepath] success with default POST method', async () => {
     const file = path.join(__dirname, 'cjs', 'index.js');
     const stat = await fs.stat(file);
     const response = await urllib.request(`${_url}multipart`, {
-      files: [ file ],
+      files: [file],
       dataType: 'json',
     });
     assert.equal(response.status, 200);
@@ -73,7 +78,7 @@ describe('options.files.test.ts', () => {
     const stat = await fs.stat(file);
     const jsonStat = await fs.stat(json);
     const response = await urllib.request(`${_url}multipart`, {
-      files: [ file, json ],
+      files: [file, json],
       dataType: 'json',
     });
     assert.equal(response.status, 200);
@@ -177,7 +182,7 @@ describe('options.files.test.ts', () => {
     const buffer = await fs.readFile(__filename);
     const response = await urllib.request(`${_url}multipart`, {
       method: 'PUT',
-      files: [ buffer, buffer ],
+      files: [buffer, buffer],
       dataType: 'json',
     });
     assert.equal(response.status, 200);
@@ -205,7 +210,7 @@ describe('options.files.test.ts', () => {
 
     const response = await urllib.request(`${_url}multipart`, {
       method: 'GET',
-      files: [ __filename, createReadStream(__filename), buffer, stream ],
+      files: [__filename, createReadStream(__filename), buffer, stream],
       dataType: 'json',
     });
     assert.equal(response.status, 200);
@@ -235,7 +240,7 @@ describe('options.files.test.ts', () => {
     const txtValue = await fs.readFile(txt, 'utf-8');
     const response = await urllib.request(`${_url}multipart`, {
       method: 'HEAD',
-      files: [ __filename, txtEmoji ],
+      files: [__filename, txtEmoji],
       data: {
         hello: 'hello world，😄😓',
         // \r\n => \n, should encodeURIComponent first
@@ -255,9 +260,7 @@ describe('options.files.test.ts', () => {
     assert.equal(response.data.files.file1.mimeType, 'text/plain');
     assert.equal(response.data.files.file1.size, txtEmojiStat.size);
     assert.equal(response.data.form.hello, 'hello world，😄😓');
-    assert.equal(
-      JSON.stringify(decodeURIComponent(response.data.form.txtValue)),
-      JSON.stringify(txtValue));
+    assert.equal(JSON.stringify(decodeURIComponent(response.data.form.txtValue)), JSON.stringify(txtValue));
     assert.equal(decodeURIComponent(response.data.form.txtValue), txtValue);
     assert.equal(decodeURIComponent(response.data.form.large), largeFormValue);
   });
@@ -295,7 +298,7 @@ describe('options.files.test.ts', () => {
       files: {
         'buffer.js': Buffer.from(rawData),
         // Readable.from data must be Buffer or Bytes
-        'readable.js': Readable.from([ Buffer.from(rawData) ]),
+        'readable.js': Readable.from([Buffer.from(rawData)]),
       },
       data: {
         hello: 'hello world，😄😓',

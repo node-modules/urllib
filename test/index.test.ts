@@ -1,10 +1,15 @@
 import { strict as assert } from 'node:assert';
-import { parse as urlparse } from 'node:url';
 import { readFileSync } from 'node:fs';
+import { parse as urlparse } from 'node:url';
+
 import { describe, it, beforeAll, afterAll, afterEach, beforeEach } from 'vitest';
+
 import urllib, {
-  HttpClient, getDefaultHttpClient,
-  MockAgent, setGlobalDispatcher, getGlobalDispatcher,
+  HttpClient,
+  getDefaultHttpClient,
+  MockAgent,
+  setGlobalDispatcher,
+  getGlobalDispatcher,
 } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { readableToBytes } from './utils.js';
@@ -63,10 +68,7 @@ describe('index.test.ts', () => {
       assert.equal(response.status, 200);
       assert(Array.isArray(response.headers['set-cookie']));
       assert.equal(typeof response.headers['set-cookie'], 'object');
-      assert.deepEqual(response.headers['set-cookie'], [
-        'foo=bar; path=/',
-        'hello=world; path=/',
-      ]);
+      assert.deepEqual(response.headers['set-cookie'], ['foo=bar; path=/', 'hello=world; path=/']);
       assert.equal(response.headers['Set-Cookie'], undefined);
     });
 
@@ -124,36 +126,42 @@ describe('index.test.ts', () => {
 
     // unstable
     it.skip('should request not exists network error', async () => {
-      await assert.rejects(async () => {
-        await urllib.request('http://www.npmjs-not-exists.foo', {
-          timeout: 500,
-        });
-      }, (err: any) => {
-        console.error(err);
-        assert.equal(err.res.status, -1);
-        // assert.equal(err.name, 'Error');
-        // assert.equal(err.message, 'getaddrinfo ENOTFOUND www.npmjs-not-exists.foo');
-        // err.status and err.headers
-        assert.equal(err.status, -1);
-        assert(err.headers);
-        return true;
-      });
+      await assert.rejects(
+        async () => {
+          await urllib.request('http://www.npmjs-not-exists.foo', {
+            timeout: 500,
+          });
+        },
+        (err: any) => {
+          console.error(err);
+          assert.equal(err.res.status, -1);
+          // assert.equal(err.name, 'Error');
+          // assert.equal(err.message, 'getaddrinfo ENOTFOUND www.npmjs-not-exists.foo');
+          // err.status and err.headers
+          assert.equal(err.status, -1);
+          assert(err.headers);
+          return true;
+        },
+      );
     });
 
     it('should handle server socket end("balabal") will error', async () => {
-      await assert.rejects(async () => {
-        await urllib.request(`${_url}socket.end.error`);
-      }, (err: any) => {
-        // console.error(err);
-        assert.equal(err.res.status, 200);
-        assert.equal(err.name, 'HTTPParserError');
-        assert.equal(err.message, 'Response does not match the HTTP/1.1 protocol (Invalid character in chunk size)');
-        if (err.code) {
-          assert.equal(err.code, 'HPE_INVALID_CHUNK_SIZE');
-        }
-        assert.equal(err.data, 'labala');
-        return true;
-      });
+      await assert.rejects(
+        async () => {
+          await urllib.request(`${_url}socket.end.error`);
+        },
+        (err: any) => {
+          // console.error(err);
+          assert.equal(err.res.status, 200);
+          assert.equal(err.name, 'HTTPParserError');
+          assert.equal(err.message, 'Response does not match the HTTP/1.1 protocol (Invalid character in chunk size)');
+          if (err.code) {
+            assert.equal(err.code, 'HPE_INVALID_CHUNK_SIZE');
+          }
+          assert.equal(err.data, 'labala');
+          return true;
+        },
+      );
     });
 
     it('should request(host-only) work', async () => {
@@ -196,39 +204,47 @@ describe('index.test.ts', () => {
       assert.equal(typeof getGlobalDispatcher, 'function');
       assert(getGlobalDispatcher());
       const mockPool = mockAgent.get(_url.substring(0, _url.length - 1));
-      mockPool.intercept({
-        path: '/foo',
-        method: 'POST',
-      }).reply(400, {
-        message: 'mock 400 bad request',
-      });
+      mockPool
+        .intercept({
+          path: '/foo',
+          method: 'POST',
+        })
+        .reply(400, {
+          message: 'mock 400 bad request',
+        });
 
-      mockPool.intercept({
-        path: '/bar',
-        method: 'GET',
-        query: {
-          q: '1',
-        },
-      }).reply(200, {
-        message: 'mock bar with q=1',
-      });
+      mockPool
+        .intercept({
+          path: '/bar',
+          method: 'GET',
+          query: {
+            q: '1',
+          },
+        })
+        .reply(200, {
+          message: 'mock bar with q=1',
+        });
 
-      mockPool.intercept({
-        path: '/bar',
-        method: 'GET',
-        query: {
-          q: '2',
-        },
-      }).reply(200, {
-        message: 'mock bar with q=2',
-      });
+      mockPool
+        .intercept({
+          path: '/bar',
+          method: 'GET',
+          query: {
+            q: '2',
+          },
+        })
+        .reply(200, {
+          message: 'mock bar with q=2',
+        });
 
-      mockPool.intercept({
-        path: /\.tgz$/,
-        method: 'GET',
-      }).reply(400, {
-        message: 'mock 400 bad request on tgz',
-      });
+      mockPool
+        .intercept({
+          path: /\.tgz$/,
+          method: 'GET',
+        })
+        .reply(400, {
+          message: 'mock 400 bad request on tgz',
+        });
 
       let response = await urllib.request(`${_url}foo`, {
         method: 'POST',
@@ -271,10 +287,13 @@ describe('index.test.ts', () => {
     it('should mocking intercept work with readable', async () => {
       const mockPool = mockAgent.get(_url.substring(0, _url.length - 1));
       // mock response stream
-      mockPool.intercept({
-        path: '/foo.js',
-        method: 'GET',
-      }).reply(200, readFileSync(__filename)).times(2);
+      mockPool
+        .intercept({
+          path: '/foo.js',
+          method: 'GET',
+        })
+        .reply(200, readFileSync(__filename))
+        .times(2);
       let response = await urllib.request(`${_url}foo.js`, {
         method: 'GET',
         dataType: 'stream',
@@ -306,39 +325,47 @@ describe('index.test.ts', () => {
       assert(oldAgent);
       httpClient.setDispatcher(mockAgent);
       const mockPool = mockAgent.get(_url.substring(0, _url.length - 1));
-      mockPool.intercept({
-        path: '/foo',
-        method: 'POST',
-      }).reply(400, {
-        message: 'mock 400 bad request',
-      });
+      mockPool
+        .intercept({
+          path: '/foo',
+          method: 'POST',
+        })
+        .reply(400, {
+          message: 'mock 400 bad request',
+        });
 
-      mockPool.intercept({
-        path: '/bar',
-        method: 'GET',
-        query: {
-          q: '1',
-        },
-      }).reply(200, {
-        message: 'mock bar with q=1',
-      });
+      mockPool
+        .intercept({
+          path: '/bar',
+          method: 'GET',
+          query: {
+            q: '1',
+          },
+        })
+        .reply(200, {
+          message: 'mock bar with q=1',
+        });
 
-      mockPool.intercept({
-        path: '/bar',
-        method: 'GET',
-        query: {
-          q: '2',
-        },
-      }).reply(200, {
-        message: 'mock bar with q=2',
-      });
+      mockPool
+        .intercept({
+          path: '/bar',
+          method: 'GET',
+          query: {
+            q: '2',
+          },
+        })
+        .reply(200, {
+          message: 'mock bar with q=2',
+        });
 
-      mockPool.intercept({
-        path: /\.tgz$/,
-        method: 'GET',
-      }).reply(400, {
-        message: 'mock 400 bad request on tgz',
-      });
+      mockPool
+        .intercept({
+          path: /\.tgz$/,
+          method: 'GET',
+        })
+        .reply(400, {
+          message: 'mock 400 bad request on tgz',
+        });
 
       let response = await httpClient.request(`${_url}foo`, {
         method: 'POST',
@@ -381,12 +408,14 @@ describe('index.test.ts', () => {
 
       // should not work
       httpClient.setDispatcher(oldAgent);
-      mockPool.intercept({
-        path: '/foo',
-        method: 'POST',
-      }).reply(400, {
-        message: 'mock 400 bad request',
-      });
+      mockPool
+        .intercept({
+          path: '/foo',
+          method: 'POST',
+        })
+        .reply(400, {
+          message: 'mock 400 bad request',
+        });
       response = await httpClient.request(`${_url}foo`, {
         method: 'POST',
         dataType: 'json',

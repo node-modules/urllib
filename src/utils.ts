@@ -1,13 +1,14 @@
-import { randomBytes, createHash } from 'node:crypto';
-import { Readable } from 'node:stream';
-import { performance } from 'node:perf_hooks';
-import { ReadableStream, TransformStream } from 'node:stream/web';
 import { Blob, File } from 'node:buffer';
+import { randomBytes, createHash } from 'node:crypto';
+import { performance } from 'node:perf_hooks';
+import { Readable } from 'node:stream';
+import { ReadableStream, TransformStream } from 'node:stream/web';
 import { toUSVString } from 'node:util';
+
+import { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import type { FixJSONCtlChars } from './Request.js';
 import { SocketInfo } from './Response.js';
 import symbols from './symbols.js';
-import { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 
 const JSONCtlCharsMap: Record<string, string> = {
   '"': '\\"', // \u0022
@@ -45,8 +46,12 @@ export function parseJSON(data: string, fixJSONCtlChars?: FixJSONCtlChars) {
     }
     if (data.length > 1024) {
       // show 0~512 ... -512~end data
-      err.message += ' (data json format: ' +
-        JSON.stringify(data.slice(0, 512)) + ' ...skip... ' + JSON.stringify(data.slice(data.length - 512)) + ')';
+      err.message +=
+        ' (data json format: ' +
+        JSON.stringify(data.slice(0, 512)) +
+        ' ...skip... ' +
+        JSON.stringify(data.slice(data.length - 512)) +
+        ')';
     } else {
       err.message += ' (data json format: ' + JSON.stringify(data) + ')';
     }
@@ -150,12 +155,14 @@ export function isReadable(stream: any) {
   // patch from node
   // https://github.com/nodejs/node/blob/1287530385137dda1d44975063217ccf90759475/lib/internal/streams/utils.js#L119
   // simple way https://github.com/sindresorhus/is-stream/blob/main/index.js
-  return stream !== null
-    && typeof stream === 'object'
-    && typeof stream.pipe === 'function'
-    && stream.readable !== false
-    && typeof stream._read === 'function'
-    && typeof stream._readableState === 'object';
+  return (
+    stream !== null &&
+    typeof stream === 'object' &&
+    typeof stream.pipe === 'function' &&
+    stream.readable !== false &&
+    typeof stream._read === 'function' &&
+    typeof stream._readableState === 'object'
+  );
 }
 
 export function updateSocketInfo(socketInfo: SocketInfo, internalOpaque: any, err?: any) {
@@ -197,10 +204,10 @@ export function updateSocketInfo(socketInfo: SocketInfo, internalOpaque: any, er
 
 export function convertHeader(headers: Headers): IncomingHttpHeaders {
   const res: IncomingHttpHeaders = {};
-  for (const [ key, value ] of headers.entries()) {
+  for (const [key, value] of headers.entries()) {
     if (res[key]) {
       if (!Array.isArray(res[key])) {
-        res[key] = [ res[key] ];
+        res[key] = [res[key]];
       }
       res[key].push(value);
     } else {
@@ -245,13 +252,13 @@ export function patchForNode16() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     Object.defineProperty(String.prototype, 'toWellFormed', {
-      value: function() {
+      value: function () {
         return toUSVString(this);
       },
       enumerable: false,
       configurable: true,
       writable: true,
-    })
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -260,7 +267,7 @@ export function patchForNode16() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     Object.defineProperty(String.prototype, 'isWellFormed', {
-      value: function() {
+      value: function () {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         return toUSVString(this) === this;
@@ -270,7 +277,6 @@ export function patchForNode16() {
       writable: true,
     });
   }
-
 }
 
 // https://github.com/jimmywarting/node-domexception/blob/main/index.js

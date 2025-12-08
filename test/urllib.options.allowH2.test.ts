@@ -1,5 +1,7 @@
 import { strict as assert } from 'node:assert';
+
 import { describe, it } from 'vitest';
+
 import urllib from '../src/index.js';
 
 describe('urllib.options.allowH2.test.ts', () => {

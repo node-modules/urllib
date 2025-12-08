@@ -2,14 +2,16 @@
 
 var urllib = require('../');
 
-urllib.request('https://api.github.com/legacy/user/search/location:china', {
-  dataType: 'json',
-  timing: true,
-  timeout: 10000,
-}).then(response => {
-  console.log(response);
-  console.log(response.data);
-});
+urllib
+  .request('https://api.github.com/legacy/user/search/location:china', {
+    dataType: 'json',
+    timing: true,
+    timeout: 10000,
+  })
+  .then((response) => {
+    console.log(response);
+    console.log(response.data);
+  });
 
 // var https = require('https');
 

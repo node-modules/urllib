@@ -1,6 +1,8 @@
 import { strict as assert } from 'node:assert';
 import { setTimeout as sleep } from 'node:timers/promises';
+
 import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { isWindows } from './utils.js';
@@ -88,7 +90,10 @@ describe('keep-alive-header.test.ts', () => {
         // console.log(response.headers);
         assert.equal(response.headers.connection, 'keep-alive');
         assert.equal(response.headers['keep-alive'], 'timeout=2');
-        assert(parseInt(response.headers['x-requests-persocket'] as string) >= 1, response.headers['x-requests-persocket'] as string);
+        assert(
+          parseInt(response.headers['x-requests-persocket'] as string) >= 1,
+          response.headers['x-requests-persocket'] as string,
+        );
         await sleep(keepAliveTimeout / 2);
         response = await httpClient.request(_url);
         // console.log(response.res.socket);
@@ -132,7 +137,10 @@ describe('keep-alive-header.test.ts', () => {
         // console.log(response.headers);
         assert.equal(response.headers.connection, 'keep-alive');
         assert.equal(response.headers['keep-alive'], 'timeout=2');
-        assert(parseInt(response.headers['x-requests-persocket'] as string) >= 1, response.headers['x-requests-persocket'] as string);
+        assert(
+          parseInt(response.headers['x-requests-persocket'] as string) >= 1,
+          response.headers['x-requests-persocket'] as string,
+        );
         // console.log('before sleep stats: %o', httpClient.getDispatcherPoolStats());
         // { connected: 2, free: 1, pending: 0, queued: 0, running: 0, size: 0 }
         // assert.equal(httpClient.getDispatcherPoolStats()[origin].connected, 2);
@@ -165,8 +173,7 @@ describe('keep-alive-header.test.ts', () => {
       }
     }
     if (otherSideClosed || readECONNRESET) {
-      console.log('otherSideClosed: %d, readECONNRESET: %d',
-        otherSideClosed, readECONNRESET);
+      console.log('otherSideClosed: %d, readECONNRESET: %d', otherSideClosed, readECONNRESET);
     }
     assert.equal(otherSideClosed, 0);
     assert.equal(readECONNRESET, 0);

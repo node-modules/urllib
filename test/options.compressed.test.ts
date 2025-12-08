@@ -1,6 +1,8 @@
 import { strict as assert } from 'node:assert';
 import { createWriteStream, createReadStream } from 'node:fs';
+
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
+
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { readableToString, createTempfile } from './utils.js';
@@ -36,8 +38,10 @@ describe('options.compressed.test.ts', () => {
     assert.equal(response.headers['content-encoding'], 'br');
     // console.log(response.headers);
     const requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
-    assert(!requestHeaders['accept-encoding'],
-      `should not contains accept-encoding header: ${requestHeaders['accept-encoding']}`);
+    assert(
+      !requestHeaders['accept-encoding'],
+      `should not contains accept-encoding header: ${requestHeaders['accept-encoding']}`,
+    );
     assert.match(response.data, /export async function startServer/);
   });
 
@@ -167,40 +171,46 @@ describe('options.compressed.test.ts', () => {
   });
 
   it('should throw error when gzip content invalid', async () => {
-    await assert.rejects(async () => {
-      await urllib.request(`${_url}error-gzip`, {
-        dataType: 'text',
-        compressed: true,
-      });
-    }, (err: any) => {
-      // console.error(err);
-      assert.equal(err.name, 'UnzipError');
-      assert.equal(err.message, 'incorrect header check');
-      assert.equal(err.code, 'Z_DATA_ERROR');
-      assert.equal(err.status, 200);
-      assert.equal(err.headers['content-encoding'], 'gzip');
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        await urllib.request(`${_url}error-gzip`, {
+          dataType: 'text',
+          compressed: true,
+        });
+      },
+      (err: any) => {
+        // console.error(err);
+        assert.equal(err.name, 'UnzipError');
+        assert.equal(err.message, 'incorrect header check');
+        assert.equal(err.code, 'Z_DATA_ERROR');
+        assert.equal(err.status, 200);
+        assert.equal(err.headers['content-encoding'], 'gzip');
+        return true;
+      },
+    );
   });
 
   it('should throw error when brotli content invaild', async () => {
-    await assert.rejects(async () => {
-      await urllib.request(`${_url}error-brotli`, {
-        dataType: 'text',
-        compressed: true,
-      });
-    }, (err: any) => {
-      // console.error(err);
-      assert.equal(err.name, 'UnzipError');
-      assert.equal(err.message, 'Decompression failed');
-      if (process.version !== 'v18.19.0' && !process.version.startsWith('v16.')) {
-        assert.equal(err.code, 'ERR__ERROR_FORMAT_PADDING_1');
-      } else {
-        assert.equal(err.code, 'ERR_PADDING_1');
-      }
-      assert.equal(err.status, 200);
-      assert.equal(err.headers['content-encoding'], 'br');
-      return true;
-    });
+    await assert.rejects(
+      async () => {
+        await urllib.request(`${_url}error-brotli`, {
+          dataType: 'text',
+          compressed: true,
+        });
+      },
+      (err: any) => {
+        // console.error(err);
+        assert.equal(err.name, 'UnzipError');
+        assert.equal(err.message, 'Decompression failed');
+        if (process.version !== 'v18.19.0' && !process.version.startsWith('v16.')) {
+          assert.equal(err.code, 'ERR__ERROR_FORMAT_PADDING_1');
+        } else {
+          assert.equal(err.code, 'ERR_PADDING_1');
+        }
+        assert.equal(err.status, 200);
+        assert.equal(err.headers['content-encoding'], 'br');
+        return true;
+      },
+    );
   });
 });

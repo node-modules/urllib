@@ -1,4 +1,5 @@
 import type { Readable } from 'node:stream';
+
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 
 export type SocketInfo = {

@@ -1,5 +1,7 @@
 import { strict as assert } from 'node:assert';
+
 import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/socket_server.js';
 import { isWindows } from './utils.js';
@@ -70,4 +72,3 @@ describe.skipIf(isWindows())('options.socketPath.test.ts', () => {
     assert.equal(result2.data.name, 'urllib');
   });
 });
-

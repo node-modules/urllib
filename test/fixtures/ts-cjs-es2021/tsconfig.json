@@ -6,7 +6,7 @@
     "moduleResolution": "Node",
     "baseUrl": "./",
     "paths": {
-      "urllib": ["../../.."]
-    }
-  }
+      "urllib": ["../../.."],
+    },
+  },
 }

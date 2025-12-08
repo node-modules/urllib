@@ -1,5 +1,5 @@
-import type { RawResponseWithMeta, SocketInfo } from './Response.js';
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
+import type { RawResponseWithMeta, SocketInfo } from './Response.js';
 
 // need to support ES2021
 interface ErrorOptions {

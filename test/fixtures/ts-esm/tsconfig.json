@@ -6,7 +6,7 @@
     "moduleResolution": "NodeNext",
     "baseUrl": "./",
     "paths": {
-      "urllib": ["../../.."]
-    }
-  }
+      "urllib": ["../../.."],
+    },
+  },
 }

@@ -1,6 +1,8 @@
 import { strict as assert } from 'node:assert';
 import { scheduler } from 'node:timers/promises';
+
 import { describe, it, beforeAll, afterAll } from 'vitest';
+
 import { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
