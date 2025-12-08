@@ -9,12 +9,14 @@ describe('urllib.options.allowH2.test.ts', () => {
     let response = await urllib.request('https://registry.npmmirror.com', {
       allowH2: true,
       dataType: 'json',
+      retry: 3,
     });
     assert.equal(response.status, 200);
 
     response = await urllib.curl('https://registry.npmmirror.com', {
       allowH2: true,
       dataType: 'json',
+      retry: 3,
     });
     assert.equal(response.status, 200);
   });
