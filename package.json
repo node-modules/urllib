@@ -59,7 +59,7 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.0",
     "@eggjs/oxlint-config": "^1.0.0",
-    "@eggjs/tsconfig": "^2.0.0",
+    "@eggjs/tsconfig": "^3.0.0",
     "@tsconfig/node18": "^18.2.1",
     "@tsconfig/strictest": "^2.0.2",
     "@types/busboy": "^1.5.0",
