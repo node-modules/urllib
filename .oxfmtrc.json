@@ -2,9 +2,7 @@
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "printWidth": 120,
   "singleQuote": true,
-  "ignorePatterns": [
-    "CHANGELOG.md"
-  ],
+  "ignorePatterns": ["CHANGELOG.md", "pnpm-lock.yaml"],
   "experimentalSortImports": {
     "groups": [
       ["type-import"],
