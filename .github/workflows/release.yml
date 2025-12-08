@@ -4,6 +4,13 @@ on:
   push:
     branches: [master]
 
+permissions:
+  contents: write
+  deployments: write
+  issues: write
+  pull-requests: write
+  id-token: write
+
 jobs:
   release:
     name: NPM
