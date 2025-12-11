@@ -5,9 +5,9 @@ import { Readable } from 'node:stream';
 import { ReadableStream, TransformStream } from 'node:stream/web';
 import { toUSVString } from 'node:util';
 
-import { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
+import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import type { FixJSONCtlChars } from './Request.js';
-import { SocketInfo } from './Response.js';
+import type { SocketInfo } from './Response.js';
 import symbols from './symbols.js';
 
 const JSONCtlCharsMap: Record<string, string> = {
@@ -30,7 +30,7 @@ function replaceJSONCtlChars(value: string) {
   return value.replace(JSONCtlCharsRE, replaceOneChar);
 }
 
-export function parseJSON(data: string, fixJSONCtlChars?: FixJSONCtlChars) {
+export function parseJSON(data: string, fixJSONCtlChars?: FixJSONCtlChars): unknown {
   if (typeof fixJSONCtlChars === 'function') {
     data = fixJSONCtlChars(data);
   } else if (fixJSONCtlChars) {
@@ -60,7 +60,7 @@ export function parseJSON(data: string, fixJSONCtlChars?: FixJSONCtlChars) {
   return data;
 }
 
-function md5(s: string) {
+function md5(s: string): string {
   const sum = createHash('md5');
   sum.update(s, 'utf8');
   return sum.digest('hex');
@@ -70,7 +70,7 @@ const AUTH_KEY_VALUE_RE = /(\w{1,100})=["']?([^'"]+)["']?/;
 let NC = 0;
 const NC_PAD = '00000000';
 
-export function digestAuthHeader(method: string, uri: string, wwwAuthenticate: string, userpass: string) {
+export function digestAuthHeader(method: string, uri: string, wwwAuthenticate: string, userpass: string): string {
   // WWW-Authenticate: Digest realm="testrealm@host.com",
   //                       qop="auth,auth-int",
   //                       nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093",
@@ -139,18 +139,18 @@ export function digestAuthHeader(method: string, uri: string, wwwAuthenticate: s
 const MAX_ID_VALUE = Math.pow(2, 31) - 10;
 const globalIds: Record<string, number> = {};
 
-export function globalId(category: string) {
+export function globalId(category: string): number {
   if (!globalIds[category] || globalIds[category] >= MAX_ID_VALUE) {
     globalIds[category] = 0;
   }
   return ++globalIds[category];
 }
 
-export function performanceTime(startTime: number, now?: number) {
+export function performanceTime(startTime: number, now?: number): number {
   return Math.floor(((now ?? performance.now()) - startTime) * 1000) / 1000;
 }
 
-export function isReadable(stream: any) {
+export function isReadable(stream: any): boolean {
   if (typeof Readable.isReadable === 'function') return Readable.isReadable(stream);
   // patch from node
   // https://github.com/nodejs/node/blob/1287530385137dda1d44975063217ccf90759475/lib/internal/streams/utils.js#L119
@@ -165,7 +165,7 @@ export function isReadable(stream: any) {
   );
 }
 
-export function updateSocketInfo(socketInfo: SocketInfo, internalOpaque: any, err?: any) {
+export function updateSocketInfo(socketInfo: SocketInfo, internalOpaque: any, err?: any): void {
   const socket = internalOpaque[symbols.kRequestSocket] ?? err?.[symbols.kErrorSocket];
 
   if (socket) {
@@ -218,7 +218,7 @@ export function convertHeader(headers: Headers): IncomingHttpHeaders {
 }
 
 // support require from Node.js 16
-export function patchForNode16() {
+export function patchForNode16(): void {
   if (typeof global.ReadableStream === 'undefined') {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

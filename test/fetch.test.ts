@@ -5,8 +5,9 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import { Request } from 'undici';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 
-import { fetch, FetchDiagnosticsMessage, FetchFactory, FetchResponseDiagnosticsMessage } from '../src/fetch.js';
-import { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../src/HttpClient.js';
+import { fetch, FetchFactory } from '../src/fetch.js';
+import type { FetchDiagnosticsMessage, FetchResponseDiagnosticsMessage } from '../src/fetch.js';
+import type { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../src/HttpClient.js';
 import { startServer } from './fixtures/server.js';
 
 describe('fetch.test.ts', () => {

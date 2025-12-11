@@ -1,4 +1,25 @@
-export default {
+const symbols: {
+  kSocketId: symbol;
+  kSocketStartTime: symbol;
+  kSocketConnectedTime: symbol;
+  kSocketConnectErrorTime: symbol;
+  kSocketRequestEndTime: symbol;
+  kSocketLocalAddress: symbol;
+  kSocketLocalPort: symbol;
+  kSocketConnectHost: symbol;
+  kSocketConnectPort: symbol;
+  kSocketConnectProtocol: symbol;
+  kHandledRequests: symbol;
+  kHandledResponses: symbol;
+  kRequestSocket: symbol;
+  kRequestId: symbol;
+  kRequestStartTime: symbol;
+  kEnableRequestTiming: symbol;
+  kRequestTiming: symbol;
+  kRequestOriginalOpaque: symbol;
+  kRequestInternalOpaque: symbol;
+  kErrorSocket: symbol;
+} = {
   kSocketId: Symbol('socket id'),
   kSocketStartTime: Symbol('socket start time'),
   kSocketConnectedTime: Symbol('socket connected time'),
@@ -20,3 +41,5 @@ export default {
   kRequestInternalOpaque: Symbol('request internal opaque'),
   kErrorSocket: Symbol('socket of error'),
 };
+
+export default symbols;

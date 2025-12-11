@@ -6,7 +6,7 @@ import _FormData from 'form-data';
 const NON_ASCII_RE = /[^\x00-\x7F]/i;
 
 export class FormData extends _FormData {
-  _getContentDisposition(value: any, options: any) {
+  _getContentDisposition(value: any, options: any): string | undefined {
     // support non-ascii filename
     // https://github.com/form-data/form-data/pull/571
     let filename;

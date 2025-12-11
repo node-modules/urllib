@@ -3,7 +3,7 @@ import { Socket } from 'node:net';
 import { performance } from 'node:perf_hooks';
 import { debuglog } from 'node:util';
 
-import { DiagnosticsChannel } from 'undici';
+import type { DiagnosticsChannel } from 'undici';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -82,7 +82,7 @@ function getRequestOpaque(request: DiagnosticsChannel.Request, kHandler?: symbol
   return handler?.opts?.opaque ?? handler?.opaque;
 }
 
-export function initDiagnosticsChannel() {
+export function initDiagnosticsChannel(): void {
   // make sure init global DiagnosticsChannel once
   if (initedDiagnosticsChannel) return;
   initedDiagnosticsChannel = true;

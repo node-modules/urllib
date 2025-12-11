@@ -3,7 +3,8 @@ import { setTimeout as sleep } from 'node:timers/promises';
 
 import { describe, it, beforeAll, afterAll } from 'vitest';
 
-import urllib, { RawResponseWithMeta } from '../src/index.js';
+import urllib from '../src/index.js';
+import type { RawResponseWithMeta } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
 describe('options.timing.test.ts', () => {

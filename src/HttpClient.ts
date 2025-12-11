@@ -1,8 +1,9 @@
 import diagnosticsChannel from 'node:diagnostics_channel';
+import type { Channel } from 'node:diagnostics_channel';
 import { EventEmitter } from 'node:events';
 import { createReadStream } from 'node:fs';
 import { STATUS_CODES } from 'node:http';
-import { LookupFunction } from 'node:net';
+import type { LookupFunction } from 'node:net';
 import { basename } from 'node:path';
 import { performance } from 'node:perf_hooks';
 import querystring from 'node:querystring';
@@ -23,13 +24,14 @@ import { request as undiciRequest, Dispatcher, Agent, getGlobalDispatcher, Pool 
 import undiciSymbols from 'undici/lib/core/symbols.js';
 
 import { initDiagnosticsChannel } from './diagnosticsChannel.js';
-import { FetchOpaque } from './FetchOpaqueInterceptor.js';
+import type { FetchOpaque } from './FetchOpaqueInterceptor.js';
 import { FormData } from './FormData.js';
-import { HttpAgent, CheckAddressFunction } from './HttpAgent.js';
+import { HttpAgent } from './HttpAgent.js';
+import type { CheckAddressFunction } from './HttpAgent.js';
 import { HttpClientConnectTimeoutError, HttpClientRequestTimeoutError } from './HttpClientError.js';
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
-import { RequestURL, RequestOptions, HttpMethod, RequestMeta } from './Request.js';
-import { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response.js';
+import type { RequestURL, RequestOptions, HttpMethod, RequestMeta } from './Request.js';
+import type { RawResponseWithMeta, HttpClientResponse, SocketInfo } from './Response.js';
 import symbols from './symbols.js';
 import { parseJSON, digestAuthHeader, globalId, performanceTime, isReadable, updateSocketInfo } from './utils.js';
 
@@ -38,7 +40,7 @@ type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;
 type PropertyShouldBe<T, K extends keyof T, V> = Omit<T, K> & { [P in K]: V };
 type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', IncomingHttpHeaders>;
 
-export const PROTO_RE = /^https?:\/\//i;
+export const PROTO_RE: RegExp = /^https?:\/\//i;
 
 export interface UndiciTimingInfo {
   startTime: number;
@@ -64,7 +66,7 @@ export interface UndiciTimingInfo {
 // keep typo compatibility
 export interface UnidiciTimingInfo extends UndiciTimingInfo {}
 
-function noop() {
+function noop(): void {
   // noop
 }
 
@@ -108,11 +110,11 @@ export type ClientOptions = {
   };
 };
 
-export const VERSION = 'VERSION';
+export const VERSION: string = 'VERSION';
 // 'node-urllib/4.0.0 Node.js/18.19.0 (darwin; x64)'
-export const HEADER_USER_AGENT = `node-urllib/${VERSION} Node.js/${process.version.substring(1)} (${process.platform}; ${process.arch})`;
+export const HEADER_USER_AGENT: string = `node-urllib/${VERSION} Node.js/${process.version.substring(1)} (${process.platform}; ${process.arch})`;
 
-function getFileName(stream: Readable) {
+function getFileName(stream: Readable): string {
   const filePath: string = (stream as any).path;
   if (filePath) {
     return basename(filePath);
@@ -120,7 +122,7 @@ function getFileName(stream: Readable) {
   return '';
 }
 
-function defaultIsRetry(response: HttpClientResponse) {
+function defaultIsRetry(response: HttpClientResponse): boolean {
   return response.status >= 500;
 }
 
@@ -132,7 +134,12 @@ export type RequestContext = {
   history: string[];
 };
 
-export const channels = {
+export const channels: {
+  request: Channel;
+  response: Channel;
+  fetchRequest: Channel;
+  fetchResponse: Channel;
+} = {
   request: diagnosticsChannel.channel('urllib:request'),
   response: diagnosticsChannel.channel('urllib:response'),
   fetchRequest: diagnosticsChannel.channel('urllib:fetch:request'),
@@ -205,15 +212,15 @@ export class HttpClient extends EventEmitter {
     initDiagnosticsChannel();
   }
 
-  getDispatcher() {
+  getDispatcher(): Dispatcher {
     return this.#dispatcher ?? getGlobalDispatcher();
   }
 
-  setDispatcher(dispatcher: Dispatcher) {
+  setDispatcher(dispatcher: Dispatcher): void {
     this.#dispatcher = dispatcher;
   }
 
-  getDispatcherPoolStats() {
+  getDispatcherPoolStats(): Record<string, PoolStat> {
     const agent = this.getDispatcher();
     // origin => Pool Instance
     const clients: Map<string, WeakRef<Pool>> | undefined = Reflect.get(agent, undiciSymbols.kClients);
@@ -239,12 +246,12 @@ export class HttpClient extends EventEmitter {
     return poolStatsMap;
   }
 
-  async request<T = any>(url: RequestURL, options?: RequestOptions) {
+  async request<T = any>(url: RequestURL, options?: RequestOptions): Promise<HttpClientResponse<T>> {
     return await this.#requestInternal<T>(url, options);
   }
 
   // alias to request, keep compatible with urllib@2 HttpClient.curl
-  async curl<T = any>(url: RequestURL, options?: RequestOptions) {
+  async curl<T = any>(url: RequestURL, options?: RequestOptions): Promise<HttpClientResponse<T>> {
     return await this.request<T>(url, options);
   }
 

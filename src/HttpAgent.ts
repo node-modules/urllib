@@ -1,9 +1,11 @@
 import dns from 'node:dns';
-import { LookupFunction, isIP } from 'node:net';
+import { isIP } from 'node:net';
+import type { LookupFunction } from 'node:net';
 
 import { Agent, Dispatcher, buildConnector } from 'undici';
 
-import { BaseAgent, BaseAgentOptions } from './BaseAgent.js';
+import { BaseAgent } from './BaseAgent.js';
+import type { BaseAgentOptions } from './BaseAgent.js';
 
 export type CheckAddressFunction = (ip: string, family: number | string, hostname: string) => boolean;
 
