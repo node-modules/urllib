@@ -1,19 +1,8 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { debuglog } from 'node:util';
 
-import {
-  fetch as UndiciFetch,
-  Request,
-  Response,
-  Agent,
-  getGlobalDispatcher,
-  Pool,
-  Dispatcher,
-} from 'undici';
-import type {
-  RequestInfo,
-  RequestInit,
-} from 'undici';
+import { fetch as UndiciFetch, Request, Response, Agent, getGlobalDispatcher, Pool, Dispatcher } from 'undici';
+import type { RequestInfo, RequestInit } from 'undici';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import undiciSymbols from 'undici/lib/core/symbols.js';

@@ -19,7 +19,9 @@ export async function readableToString(stream: Readable | ReadableStream): Promi
   return bytes.toString();
 }
 
-export async function createTempfile(content?: Buffer | string): Promise<{ tmpfile: string; cleanup: () => Promise<void> }> {
+export async function createTempfile(
+  content?: Buffer | string,
+): Promise<{ tmpfile: string; cleanup: () => Promise<void> }> {
   const tmpfile = join(tmpdir(), randomUUID());
   if (typeof content === 'string') {
     content = Buffer.from(content);

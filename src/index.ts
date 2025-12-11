@@ -64,7 +64,10 @@ interface UrllibRequestOptions extends RequestOptions {
   allowH2?: boolean;
 }
 
-export async function request<T = any>(url: RequestURL, options?: UrllibRequestOptions): Promise<HttpClientResponse<T>> {
+export async function request<T = any>(
+  url: RequestURL,
+  options?: UrllibRequestOptions,
+): Promise<HttpClientResponse<T>> {
   if (options?.socketPath) {
     let domainSocketHttpclient = domainSocketHttpClients.get<HttpClient>(options.socketPath);
     if (!domainSocketHttpclient) {
@@ -100,23 +103,10 @@ export {
   Headers,
   FormData,
 } from 'undici';
-export type {
-  RequestInfo,
-  RequestInit,
-  BodyInit,
-  ResponseInit,
-} from 'undici';
+export type { RequestInfo, RequestInit, BodyInit, ResponseInit } from 'undici';
 // HttpClient2 is keep compatible with urllib@2 HttpClient2
-export {
-  HttpClient,
-  HttpClient as HttpClient2,
-  HEADER_USER_AGENT as USER_AGENT,
-} from './HttpClient.js';
-export type {
-  RequestDiagnosticsMessage,
-  ResponseDiagnosticsMessage,
-  ClientOptions,
-} from './HttpClient.js';
+export { HttpClient, HttpClient as HttpClient2, HEADER_USER_AGENT as USER_AGENT } from './HttpClient.js';
+export type { RequestDiagnosticsMessage, ResponseDiagnosticsMessage, ClientOptions } from './HttpClient.js';
 // RequestOptions2 is keep compatible with urllib@2 RequestOptions2
 export type {
   RequestOptions,
