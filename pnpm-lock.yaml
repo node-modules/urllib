@@ -82,8 +82,8 @@ importers:
         specifier: ^10.0.0
         version: 10.1.0
       iconv-lite:
-        specifier: ^0.6.3
-        version: 0.6.3
+        specifier: ^0.7.0
+        version: 0.7.1
       oxfmt:
         specifier: ^0.17.0
         version: 0.17.0
@@ -1082,8 +1082,8 @@ packages:
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
 
-  iconv-lite@0.6.3:
-    resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
+  iconv-lite@0.7.1:
+    resolution: {integrity: sha512-2Tth85cXwGFHfvRgZWszZSvdo+0Xsqmw8k8ZwxScfcBneNUraK+dxRxRm24nszx80Y0TVio8kKLt5sLE7ZCLlw==}
     engines: {node: '>=0.10.0'}
 
   ieee754@1.2.1:
@@ -2781,7 +2781,7 @@ snapshots:
 
   html-escaper@2.0.2: {}
 
-  iconv-lite@0.6.3:
+  iconv-lite@0.7.1:
     dependencies:
       safer-buffer: 2.1.2
 
