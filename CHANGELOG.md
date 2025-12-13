@@ -1,5 +1,27 @@
 # Changelog
 
+## 4.9.0 (2025-12-13)
+
+* feat: enable isolatedDeclarations (#615) ([374402e](https://github.com/node-modules/urllib/commit/374402e)), closes [#615](https://github.com/node-modules/urllib/issues/615) [hi#level](https://github.com/hi/issues/level)
+* chore: enable oxfmt (#602) ([948f05d](https://github.com/node-modules/urllib/commit/948f05d)), closes [#602](https://github.com/node-modules/urllib/issues/602) [hi#level](https://github.com/hi/issues/level)
+* chore: enable tsgo on typecheck (#605) ([41f6277](https://github.com/node-modules/urllib/commit/41f6277)), closes [#605](https://github.com/node-modules/urllib/issues/605) [hi#level](https://github.com/hi/issues/level)
+* chore: fix auto release ([8f13384](https://github.com/node-modules/urllib/commit/8f13384))
+* chore(deps): update actions/checkout action to v6 (#600) ([75685a1](https://github.com/node-modules/urllib/commit/75685a1)), closes [#600](https://github.com/node-modules/urllib/issues/600)
+* chore(deps): update actions/setup-node action to v6 (#596) ([d4fd7cf](https://github.com/node-modules/urllib/commit/d4fd7cf)), closes [#596](https://github.com/node-modules/urllib/issues/596)
+* chore(deps): update codecov/codecov-action digest to 671740a (#608) ([2734504](https://github.com/node-modules/urllib/commit/2734504)), closes [#608](https://github.com/node-modules/urllib/issues/608)
+* chore(deps): update dependency @tsconfig/node18 to v18.2.6 (#603) ([23ffca2](https://github.com/node-modules/urllib/commit/23ffca2)), closes [#603](https://github.com/node-modules/urllib/issues/603)
+* chore(deps): update dependency @tsconfig/strictest to v2.0.8 (#604) ([0fc042a](https://github.com/node-modules/urllib/commit/0fc042a)), closes [#604](https://github.com/node-modules/urllib/issues/604)
+* chore(deps): update dependency @types/node to v22.19.2 (#610) ([a9ace96](https://github.com/node-modules/urllib/commit/a9ace96)), closes [#610](https://github.com/node-modules/urllib/issues/610)
+* chore(deps): update dependency @typescript/native-preview to v7.0.0-dev.20251210.1 (#609) ([dc1ed3e](https://github.com/node-modules/urllib/commit/dc1ed3e)), closes [#609](https://github.com/node-modules/urllib/issues/609)
+* chore(deps): update dependency @typescript/native-preview to v7.0.0-dev.20251211.1 (#613) ([8f6fdaa](https://github.com/node-modules/urllib/commit/8f6fdaa)), closes [#613](https://github.com/node-modules/urllib/issues/613)
+* chore(deps): update dependency @typescript/native-preview to v7.0.0-dev.20251213.1 (#619) ([11b3bec](https://github.com/node-modules/urllib/commit/11b3bec)), closes [#619](https://github.com/node-modules/urllib/issues/619)
+* chore(deps): update dependency cross-env to v10.1.0 (#612) ([0f68029](https://github.com/node-modules/urllib/commit/0f68029)), closes [#612](https://github.com/node-modules/urllib/issues/612)
+* chore(deps): update dependency form-data to v4.0.5 (#606) ([ab3d22f](https://github.com/node-modules/urllib/commit/ab3d22f)), closes [#606](https://github.com/node-modules/urllib/issues/606)
+* chore(deps): update dependency oxlint to v1.32.0 (#614) ([8118abb](https://github.com/node-modules/urllib/commit/8118abb)), closes [#614](https://github.com/node-modules/urllib/issues/614)
+* chore(deps): update dependency typescript to v5.9.3 (#607) ([cda0e13](https://github.com/node-modules/urllib/commit/cda0e13)), closes [#607](https://github.com/node-modules/urllib/issues/607)
+* chore(deps): update dependency undici to v7.16.0 (#617) ([ca378bc](https://github.com/node-modules/urllib/commit/ca378bc)), closes [#617](https://github.com/node-modules/urllib/issues/617)
+* chore(deps): update pnpm to v10.25.0 (#618) ([708b985](https://github.com/node-modules/urllib/commit/708b985)), closes [#618](https://github.com/node-modules/urllib/issues/618)
+
 ## <small>4.8.2 (2025-08-12)</small>
 
 * fix: enumerable WellFormed ([0b1e89d](https://github.com/node-modules/urllib/commit/0b1e89d))
