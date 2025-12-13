@@ -1,17 +1,8 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { debuglog } from 'node:util';
 
-import {
-  fetch as UndiciFetch,
-  RequestInfo,
-  RequestInit,
-  Request,
-  Response,
-  Agent,
-  getGlobalDispatcher,
-  Pool,
-  Dispatcher,
-} from 'undici';
+import { fetch as UndiciFetch, Request, Response, Agent, getGlobalDispatcher, Pool, Dispatcher } from 'undici';
+import type { RequestInfo, RequestInit } from 'undici';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import undiciSymbols from 'undici/lib/core/symbols.js';
@@ -19,21 +10,23 @@ import undiciSymbols from 'undici/lib/core/symbols.js';
 // @ts-ignore
 import { getResponseState } from 'undici/lib/web/fetch/response.js';
 
-import { BaseAgent, BaseAgentOptions } from './BaseAgent.js';
+import { BaseAgent } from './BaseAgent.js';
+import type { BaseAgentOptions } from './BaseAgent.js';
 import { initDiagnosticsChannel } from './diagnosticsChannel.js';
-import { FetchOpaque } from './FetchOpaqueInterceptor.js';
-import { HttpAgent, HttpAgentOptions } from './HttpAgent.js';
-import {
-  channels,
+import type { FetchOpaque } from './FetchOpaqueInterceptor.js';
+import { HttpAgent } from './HttpAgent.js';
+import type { HttpAgentOptions } from './HttpAgent.js';
+import { channels } from './HttpClient.js';
+import type {
   ClientOptions,
   PoolStat,
   RequestDiagnosticsMessage,
   ResponseDiagnosticsMessage,
   UndiciTimingInfo,
 } from './HttpClient.js';
-import { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
-import { FetchMeta, HttpMethod, RequestMeta } from './Request.js';
-import { RawResponseWithMeta, SocketInfo } from './Response.js';
+import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
+import type { FetchMeta, HttpMethod, RequestMeta } from './Request.js';
+import type { RawResponseWithMeta, SocketInfo } from './Response.js';
 import symbols from './symbols.js';
 import { convertHeader, globalId, performanceTime, updateSocketInfo } from './utils.js';
 
@@ -63,7 +56,7 @@ export class FetchFactory {
 
   static #instance = new FetchFactory();
 
-  setClientOptions(clientOptions: ClientOptions) {
+  setClientOptions(clientOptions: ClientOptions): void {
     let dispatcherOption: BaseAgentOptions = {
       opaqueLocalStorage: this.#opaqueLocalStorage,
     };
@@ -96,15 +89,15 @@ export class FetchFactory {
     initDiagnosticsChannel();
   }
 
-  getDispatcher() {
+  getDispatcher(): Dispatcher {
     return this.#dispatcher ?? getGlobalDispatcher();
   }
 
-  setDispatcher(dispatcher: Agent) {
+  setDispatcher(dispatcher: Agent): void {
     this.#dispatcher = dispatcher;
   }
 
-  getDispatcherPoolStats() {
+  getDispatcherPoolStats(): Record<string, PoolStat> {
     const agent = this.getDispatcher();
     // origin => Pool Instance
     const clients: Map<string, WeakRef<Pool>> | undefined = Reflect.get(agent, undiciSymbols.kClients);
@@ -130,11 +123,11 @@ export class FetchFactory {
     return poolStatsMap;
   }
 
-  static setClientOptions(clientOptions: ClientOptions) {
+  static setClientOptions(clientOptions: ClientOptions): void {
     FetchFactory.#instance.setClientOptions(clientOptions);
   }
 
-  static getDispatcherPoolStats() {
+  static getDispatcherPoolStats(): Record<string, PoolStat> {
     return FetchFactory.#instance.getDispatcherPoolStats();
   }
 
@@ -283,11 +276,11 @@ export class FetchFactory {
     return res!;
   }
 
-  static getDispatcher() {
+  static getDispatcher(): Dispatcher {
     return FetchFactory.#instance.getDispatcher();
   }
 
-  static setDispatcher(dispatcher: Agent) {
+  static setDispatcher(dispatcher: Agent): void {
     FetchFactory.#instance.setDispatcher(dispatcher);
   }
 
@@ -296,4 +289,4 @@ export class FetchFactory {
   }
 }
 
-export const fetch = FetchFactory.fetch;
+export const fetch: (input: RequestInfo, init?: UrllibRequestInit) => Promise<Response> = FetchFactory.fetch;

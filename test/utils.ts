@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { Readable } from 'node:stream';
 import { ReadableStream } from 'node:stream/web';
 
-export async function readableToBytes(stream: Readable | ReadableStream) {
+export async function readableToBytes(stream: Readable | ReadableStream): Promise<Buffer> {
   const chunks: Buffer[] = [];
   let chunk: Buffer;
   for await (chunk of stream) {
@@ -14,12 +14,14 @@ export async function readableToBytes(stream: Readable | ReadableStream) {
   return Buffer.concat(chunks);
 }
 
-export async function readableToString(stream: Readable | ReadableStream) {
+export async function readableToString(stream: Readable | ReadableStream): Promise<string> {
   const bytes = await readableToBytes(stream);
   return bytes.toString();
 }
 
-export async function createTempfile(content?: Buffer | string) {
+export async function createTempfile(
+  content?: Buffer | string,
+): Promise<{ tmpfile: string; cleanup: () => Promise<void> }> {
   const tmpfile = join(tmpdir(), randomUUID());
   if (typeof content === 'string') {
     content = Buffer.from(content);
@@ -35,10 +37,10 @@ export async function createTempfile(content?: Buffer | string) {
   };
 }
 
-export function nodeMajorVersion() {
+export function nodeMajorVersion(): number {
   return parseInt(process.versions.node.split('.')[0]);
 }
 
-export function isWindows() {
+export function isWindows(): boolean {
   return platform() === 'win32';
 }

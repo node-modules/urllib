@@ -2,7 +2,7 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 
 import { Agent, Dispatcher } from 'undici';
 
-import { FetchOpaque } from './FetchOpaqueInterceptor.js';
+import type { FetchOpaque } from './FetchOpaqueInterceptor.js';
 
 export interface BaseAgentOptions extends Agent.Options {
   opaqueLocalStorage?: AsyncLocalStorage<FetchOpaque>;

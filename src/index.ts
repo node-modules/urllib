@@ -5,7 +5,8 @@ import { patchForNode16 } from './utils.js';
 patchForNode16();
 
 import { HttpClient, HEADER_USER_AGENT } from './HttpClient.js';
-import { RequestOptions, RequestURL } from './Request.js';
+import type { RequestOptions, RequestURL } from './Request.js';
+import type { HttpClientResponse } from './Response.js';
 
 let httpClient: HttpClient;
 let allowH2HttpClient: HttpClient;
@@ -63,7 +64,10 @@ interface UrllibRequestOptions extends RequestOptions {
   allowH2?: boolean;
 }
 
-export async function request<T = any>(url: RequestURL, options?: UrllibRequestOptions) {
+export async function request<T = any>(
+  url: RequestURL,
+  options?: UrllibRequestOptions,
+): Promise<HttpClientResponse<T>> {
   if (options?.socketPath) {
     let domainSocketHttpclient = domainSocketHttpClients.get<HttpClient>(options.socketPath);
     if (!domainSocketHttpclient) {
@@ -83,7 +87,7 @@ export async function request<T = any>(url: RequestURL, options?: UrllibRequestO
 // import * as urllib from 'urllib';
 // urllib.curl(url);
 // ```
-export async function curl<T = any>(url: RequestURL, options?: UrllibRequestOptions) {
+export async function curl<T = any>(url: RequestURL, options?: UrllibRequestOptions): Promise<HttpClientResponse<T>> {
   return await request<T>(url, options);
 }
 
@@ -95,25 +99,16 @@ export {
   setGlobalDispatcher,
   getGlobalDispatcher,
   Request,
-  RequestInfo,
-  RequestInit,
   Response,
-  BodyInit,
-  ResponseInit,
   Headers,
   FormData,
 } from 'undici';
+export type { RequestInfo, RequestInit, BodyInit, ResponseInit } from 'undici';
 // HttpClient2 is keep compatible with urllib@2 HttpClient2
-export {
-  HttpClient,
-  HttpClient as HttpClient2,
-  HEADER_USER_AGENT as USER_AGENT,
-  RequestDiagnosticsMessage,
-  ResponseDiagnosticsMessage,
-  ClientOptions,
-} from './HttpClient.js';
+export { HttpClient, HttpClient as HttpClient2, HEADER_USER_AGENT as USER_AGENT } from './HttpClient.js';
+export type { RequestDiagnosticsMessage, ResponseDiagnosticsMessage, ClientOptions } from './HttpClient.js';
 // RequestOptions2 is keep compatible with urllib@2 RequestOptions2
-export {
+export type {
   RequestOptions,
   RequestOptions as RequestOptions2,
   RequestURL,
@@ -122,16 +117,22 @@ export {
   FixJSONCtlChars,
 } from './Request.js';
 
-export { CheckAddressFunction } from './HttpAgent.js';
+export type { CheckAddressFunction } from './HttpAgent.js';
 
-export { SocketInfo, Timing, RawResponseWithMeta, HttpClientResponse } from './Response.js';
-export { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
+export type { SocketInfo, Timing, RawResponseWithMeta, HttpClientResponse } from './Response.js';
+export type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 export * from './HttpClientError.js';
 export { FetchFactory, fetch } from './fetch.js';
 export { FormData as WebFormData } from './FormData.js';
 
-export default {
+const urllib: {
+  request: typeof request;
+  curl: typeof curl;
+  USER_AGENT: string;
+} = {
   request,
   curl,
   USER_AGENT: HEADER_USER_AGENT,
 };
+
+export default urllib;

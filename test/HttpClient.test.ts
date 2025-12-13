@@ -2,14 +2,15 @@ import { strict as assert } from 'node:assert';
 import dns from 'node:dns';
 import { once } from 'node:events';
 import { sensitiveHeaders, createSecureServer } from 'node:http2';
-import { AddressInfo } from 'node:net';
+import type { AddressInfo } from 'node:net';
 import { PerformanceObserver } from 'node:perf_hooks';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 import selfsigned from 'selfsigned';
 import { describe, it, beforeAll, afterAll } from 'vitest';
 
-import { HttpClient, RawResponseWithMeta, getGlobalDispatcher } from '../src/index.js';
+import { HttpClient, getGlobalDispatcher } from '../src/index.js';
+import type { RawResponseWithMeta } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion } from './utils.js';
 

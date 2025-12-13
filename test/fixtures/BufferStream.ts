@@ -11,12 +11,12 @@ export class BufferStream extends Transform {
     this.realloc();
   }
 
-  realloc() {
+  realloc(): void {
     this.buf = Buffer.alloc(BUF_SIZE);
     this.offset = 0;
   }
 
-  _transform(chunk: Buffer, _: any, callback: any) {
+  _transform(chunk: Buffer, _: any, callback: any): void {
     const currentLength = this.offset;
     const chunkSize = chunk.length;
     const newSize = currentLength + chunkSize;
@@ -60,7 +60,7 @@ export class BufferStream extends Transform {
     return callback(null);
   }
 
-  _flush(callback: any) {
+  _flush(callback: any): void {
     if (this.offset) {
       const chunk = Buffer.alloc(this.offset);
       this.buf.copy(chunk);

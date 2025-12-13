@@ -2,7 +2,7 @@ import { strict as assert } from 'node:assert';
 import diagnosticsChannel from 'node:diagnostics_channel';
 import { once } from 'node:events';
 import { createSecureServer } from 'node:http2';
-import { AddressInfo } from 'node:net';
+import type { AddressInfo } from 'node:net';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 import selfsigned from 'selfsigned';

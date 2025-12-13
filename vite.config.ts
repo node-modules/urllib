@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config';
+import type { UserConfig } from 'vitest/config';
 
-export default defineConfig({
+const config: UserConfig = defineConfig({
   test: {
     include: ['test/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     testTimeout: 60000,
@@ -11,3 +12,5 @@ export default defineConfig({
     setupFiles: ['test/setup.ts'],
   },
 });
+
+export default config;
