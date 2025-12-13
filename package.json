@@ -117,5 +117,5 @@
   "types": "./dist/commonjs/index.d.ts",
   "main": "./dist/commonjs/index.js",
   "module": "./dist/esm/index.js",
-  "packageManager": "pnpm@10.24.0"
+  "packageManager": "pnpm@10.25.0"
 }
