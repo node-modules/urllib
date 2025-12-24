@@ -43,9 +43,9 @@
     "bench": "vitest bench",
     "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vitest run --test-timeout 180000 keep-alive-header.test.ts",
     "test-node16": "node examples/httpclient.cjs && node examples/search_github.cjs && node examples/timing.cjs",
-    "cov": "cross-env NODE_OPTIONS=\"--require ./test/patch-for-node16-18.cjs\" vitest run --coverage",
+    "cov": "vitest run --coverage",
     "ci": "npm run cov && npm run prepublishOnly && npm pack && attw --pack",
-    "ci:node16": "vitest run && npm run prepublishOnly && npm pack && attw --pack",
+    "ci:node16": "cross-env NODE_OPTIONS=\"--require ./test/patch-for-node16-18.cjs\" vitest run && npm run prepublishOnly && npm pack && attw --pack",
     "clean": "rm -rf dist && tsc -b --clean",
     "prepublishOnly": "npm run build",
     "prepare": "husky"
