@@ -42,12 +42,6 @@ importers:
       '@eggjs/tsconfig':
         specifier: ^2.0.0
         version: 2.0.0
-      '@tsconfig/node18':
-        specifier: ^18.2.6
-        version: 18.2.6
-      '@tsconfig/strictest':
-        specifier: ^2.0.8
-        version: 2.0.8
       '@types/busboy':
         specifier: ^1.5.4
         version: 1.5.4
@@ -627,12 +621,6 @@ packages:
   '@sindresorhus/is@4.6.0':
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
     engines: {node: '>=10'}
-
-  '@tsconfig/node18@18.2.6':
-    resolution: {integrity: sha512-eAWQzAjPj18tKnDzmWstz4OyWewLUNBm9tdoN9LayzoboRktYx3Enk1ZXPmThj55L7c4VWYq/Bzq0A51znZfhw==}
-
-  '@tsconfig/strictest@2.0.8':
-    resolution: {integrity: sha512-XnQ7vNz5HRN0r88GYf1J9JJjqtZPiHt2woGJOo2dYqyHGGcd6OLGqSlBB6p1j9mpzja6Oe5BoPqWmeDx6X9rLw==}
 
   '@types/busboy@1.5.4':
     resolution: {integrity: sha512-kG7WrUuAKK0NoyxfQHsVE6j1m01s6kMma64E+OZenQABMQyTJop1DumUWcLwAQ2JzpefU7PDYoRDKl8uZosFjw==}
@@ -2377,10 +2365,6 @@ snapshots:
     optional: true
 
   '@sindresorhus/is@4.6.0': {}
-
-  '@tsconfig/node18@18.2.6': {}
-
-  '@tsconfig/strictest@2.0.8': {}
 
   '@types/busboy@1.5.4':
     dependencies:

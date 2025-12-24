@@ -86,8 +86,6 @@
     "@codspeed/vitest-plugin": "^5.0.1",
     "@eggjs/oxlint-config": "^1.0.0",
     "@eggjs/tsconfig": "^2.0.0",
-    "@tsconfig/node18": "^18.2.6",
-    "@tsconfig/strictest": "^2.0.8",
     "@types/busboy": "^1.5.4",
     "@types/mime-types": "^2.1.4",
     "@types/node": "^22.19.3",
