@@ -124,7 +124,7 @@
   "types": "./dist/commonjs/index.d.ts",
   "main": "./dist/commonjs/index.js",
   "module": "./dist/esm/index.js",
-  "packageManager": "pnpm@10.25.0",
+  "packageManager": "pnpm@10.26.2",
   "lint-staged": {
     "*": [
       "npm run lint -- --fix",
