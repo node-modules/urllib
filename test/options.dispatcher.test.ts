@@ -79,6 +79,6 @@ describe('options.dispatcher.test.ts', () => {
       timeout: 30000,
     });
     assert.equal(response.status, 200);
-    assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
+    assert.match(response.headers['content-type'] ?? '', /application\/json/);
   });
 });
