@@ -40,6 +40,7 @@
     "test-tsc:cjs:es2021": "cd test/fixtures/ts-cjs-es2021 && rm -rf node_modules && npm link ../../.. && npm run build",
     "test-tsc:esm": "cd test/fixtures/ts-esm && rm -rf node_modules && npm link ../../.. && npm run build",
     "test": "npm run lint -- --fix && vitest run",
+    "bench": "vitest bench",
     "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vitest run --test-timeout 180000 keep-alive-header.test.ts",
     "test-node16": "node examples/httpclient.cjs && node examples/search_github.cjs && node examples/timing.cjs",
     "cov": "cross-env NODE_OPTIONS=\"--require ./test/patch-for-node16-18.cjs\" vitest run --coverage",
@@ -58,6 +59,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.0",
+    "@codspeed/vitest-plugin": "^5.0.1",
     "@eggjs/oxlint-config": "^1.0.0",
     "@eggjs/tsconfig": "^2.0.0",
     "@tsconfig/node18": "^18.2.1",
