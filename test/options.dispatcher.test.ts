@@ -71,7 +71,8 @@ describe('options.dispatcher.test.ts', () => {
       allowH2: true,
     });
     assert(agent);
-    const response = await request('https://registry.npmmirror.com', {
+    const url = process.env.CI ? 'https://registry.npmjs.org' : 'https://registry.npmmirror.com';
+    const response = await request(url, {
       dataType: 'json',
       timing: true,
       dispatcher: agent,

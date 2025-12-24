@@ -6,7 +6,8 @@ import urllib from '../src/index.js';
 
 describe('urllib.options.allowH2.test.ts', () => {
   it('should 200 on options.allowH2 = true', async () => {
-    let response = await urllib.request('https://registry.npmmirror.com', {
+    const url = process.env.CI ? 'https://registry.npmjs.org' : 'https://registry.npmmirror.com';
+    let response = await urllib.request(url, {
       allowH2: true,
       dataType: 'json',
       retry: 3,
@@ -14,7 +15,7 @@ describe('urllib.options.allowH2.test.ts', () => {
     });
     assert.equal(response.status, 200);
 
-    response = await urllib.curl('https://registry.npmmirror.com', {
+    response = await urllib.curl(url, {
       allowH2: true,
       dataType: 'json',
       retry: 3,
