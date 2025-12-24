@@ -33,4 +33,5 @@ jobs:
       - name: Run benchmarks
         uses: CodSpeedHQ/action@v4
         with:
+          mode: walltime
           run: pnpm vitest bench --run
