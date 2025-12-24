@@ -1,6 +1,6 @@
+import codspeedPlugin from '@codspeed/vitest-plugin';
 import { defineConfig } from 'vitest/config';
 import type { UserConfig } from 'vitest/config';
-import codspeedPlugin from '@codspeed/vitest-plugin';
 
 const config: UserConfig = defineConfig({
   plugins: [codspeedPlugin()],

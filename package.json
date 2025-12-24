@@ -46,7 +46,8 @@
     "cov": "cross-env NODE_OPTIONS=\"--require ./test/patch-for-node16-18.cjs\" vitest run --coverage",
     "ci": "npm run cov && npm run prepublishOnly && npm pack && attw --pack",
     "clean": "rm -rf dist && tsc -b --clean",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prepare": "husky"
   },
   "dependencies": {
     "form-data": "^4.0.1",
@@ -76,7 +77,9 @@
     "@vitest/coverage-v8": "^3.0.2",
     "busboy": "^1.6.0",
     "cross-env": "^10.0.0",
+    "husky": "^9.1.7",
     "iconv-lite": "^0.6.3",
+    "lint-staged": "^16.2.7",
     "oxfmt": "^0.17.0",
     "oxlint": "^1.11.0",
     "proxy": "^1.0.2",
@@ -119,5 +122,10 @@
   "types": "./dist/commonjs/index.d.ts",
   "main": "./dist/commonjs/index.js",
   "module": "./dist/esm/index.js",
-  "packageManager": "pnpm@10.25.0"
+  "packageManager": "pnpm@10.25.0",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,mts,cjs,cts}": [
+      "oxfmt"
+    ]
+  }
 }
