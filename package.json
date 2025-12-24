@@ -23,7 +23,7 @@
     "url": "git://github.com/node-modules/urllib.git"
   },
   "scripts": {
-    "lint": "oxlint src test",
+    "lint": "oxlint src test --type-aware --type-check",
     "fmt": "oxfmt",
     "typecheck": "tsc --noEmit && tsgo --noEmit",
     "fmtcheck": "oxfmt --check .",
@@ -82,6 +82,7 @@
     "lint-staged": "^16.2.7",
     "oxfmt": "^0.17.0",
     "oxlint": "^1.11.0",
+    "oxlint-tsgolint": "^0.10.0",
     "proxy": "^1.0.2",
     "selfsigned": "^3.0.0",
     "string.prototype.towellformed": "^1.0.2",
@@ -124,7 +125,8 @@
   "module": "./dist/esm/index.js",
   "packageManager": "pnpm@10.25.0",
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,mjs,mts,cjs,cts}": [
+    "*": [
+      "pnpm run lint --fix",
       "oxfmt"
     ]
   }
