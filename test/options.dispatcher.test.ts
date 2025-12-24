@@ -71,12 +71,14 @@ describe('options.dispatcher.test.ts', () => {
       allowH2: true,
     });
     assert(agent);
-    const response = await request('https://registry.npmmirror.com', {
+    const url = process.env.CI ? 'https://registry.npmjs.org' : 'https://registry.npmmirror.com';
+    const response = await request(url, {
       dataType: 'json',
       timing: true,
       dispatcher: agent,
+      timeout: 30000,
     });
     assert.equal(response.status, 200);
-    assert.equal(response.headers['content-type'], 'application/json; charset=utf-8');
+    assert.match(response.headers['content-type'] ?? '', /application\/json/);
   });
 });

@@ -123,5 +123,6 @@
     "id-length": "allow",
     "arrow-body-style": "allow",
     "prefer-destructuring": "allow"
-  }
+  },
+  "ignorePatterns": ["test/fixtures/ts*"]
 }
