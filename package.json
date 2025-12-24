@@ -1,26 +1,48 @@
 {
   "name": "urllib",
   "version": "4.9.0",
-  "publishConfig": {
-    "tag": "latest"
-  },
   "description": "Help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, timeout and more. Base undici API.",
   "keywords": [
-    "urllib",
-    "http",
-    "urlopen",
     "curl",
-    "wget",
-    "request",
+    "fetch",
+    "http",
     "https",
+    "request",
     "undici",
-    "fetch"
+    "urllib",
+    "urlopen",
+    "wget"
   ],
-  "author": "fengmk2 <fengmk2@gmail.com> (https://github.com/fengmk2)",
   "homepage": "https://github.com/node-modules/urllib",
+  "license": "MIT",
+  "author": "fengmk2 <fengmk2@gmail.com> (https://github.com/fengmk2)",
   "repository": {
     "type": "git",
     "url": "git://github.com/node-modules/urllib.git"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "type": "module",
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/commonjs/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "tag": "latest"
   },
   "scripts": {
     "lint": "oxlint src test --type-aware --type-check",
@@ -64,8 +86,6 @@
     "@codspeed/vitest-plugin": "^5.0.1",
     "@eggjs/oxlint-config": "^1.0.0",
     "@eggjs/tsconfig": "^2.0.0",
-    "@tsconfig/node18": "^18.2.6",
-    "@tsconfig/strictest": "^2.0.8",
     "@types/busboy": "^1.5.4",
     "@types/mime-types": "^2.1.4",
     "@types/node": "^22.19.3",
@@ -81,7 +101,7 @@
     "husky": "^9.1.7",
     "iconv-lite": "^0.6.3",
     "lint-staged": "^16.2.7",
-    "oxfmt": "^0.17.0",
+    "oxfmt": "^0.20.0",
     "oxlint": "^1.35.0",
     "oxlint-tsgolint": "^0.10.0",
     "proxy": "^1.0.2",
@@ -93,42 +113,20 @@
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   },
-  "engines": {
-    "node": ">= 18.19.0"
+  "lint-staged": {
+    "*": [
+      "npm run lint -- --fix",
+      "oxfmt"
+    ]
   },
-  "license": "MIT",
-  "type": "module",
   "tshy": {
     "exports": {
       ".": "./src/index.ts",
       "./package.json": "./package.json"
     }
   },
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
-      },
-      "require": {
-        "types": "./dist/commonjs/index.d.ts",
-        "default": "./dist/commonjs/index.js"
-      }
-    },
-    "./package.json": "./package.json"
+  "engines": {
+    "node": ">= 18.19.0"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
-  "types": "./dist/commonjs/index.d.ts",
-  "main": "./dist/commonjs/index.js",
-  "module": "./dist/esm/index.js",
-  "packageManager": "pnpm@10.26.2",
-  "lint-staged": {
-    "*": [
-      "npm run lint -- --fix",
-      "oxfmt"
-    ]
-  }
+  "packageManager": "pnpm@10.26.2"
 }

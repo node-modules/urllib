@@ -1,9 +1,10 @@
 {
-  "extends": ["@tsconfig/strictest/tsconfig", "@tsconfig/node18/tsconfig"],
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "outDir": "dist",
     "skipLibCheck": false,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*"]
 }

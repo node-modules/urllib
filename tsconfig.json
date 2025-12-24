@@ -7,9 +7,9 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#isolated-declarations
-    "isolatedDeclarations": true,
+    "isolatedDeclarations": true
     // verbatimModuleSyntax is incompatible with multi-dialect builds
     // "verbatimModuleSyntax": true
   },
-  "exclude": ["test/fixtures/ts*"],
+  "exclude": ["test/fixtures/ts*"]
 }
