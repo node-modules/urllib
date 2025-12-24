@@ -3,7 +3,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "outDir": "dist",
-    "skipLibCheck": false,
+    "skipLibCheck": false
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*"]
 }
