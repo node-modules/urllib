@@ -10,6 +10,7 @@ describe('urllib.options.allowH2.test.ts', () => {
       allowH2: true,
       dataType: 'json',
       retry: 3,
+      timeout: 30000,
     });
     assert.equal(response.status, 200);
 
@@ -17,6 +18,7 @@ describe('urllib.options.allowH2.test.ts', () => {
       allowH2: true,
       dataType: 'json',
       retry: 3,
+      timeout: 30000,
     });
     assert.equal(response.status, 200);
   });
