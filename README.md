@@ -89,8 +89,8 @@ When making a request:
 await request('https://example.com', {
   method: 'GET',
   data: {
-    'a': 'hello',
-    'b': 'world',
+    a: 'hello',
+    b: 'world',
   },
 });
 ```
@@ -142,12 +142,12 @@ This example can use `options.data` with `application/json` content type:
 await request('https://example.com', {
   method: 'POST',
   headers: {
-    'content-type': 'application/json'
+    'content-type': 'application/json',
   },
   data: {
     a: 'hello',
     b: 'world',
-  }
+  },
 });
 ```
 
@@ -170,11 +170,7 @@ Upload multi files with a `hello` field.
 ```js
 await request('https://example.com/upload', {
   method: 'POST',
-  files: [
-    __filename,
-    fs.createReadStream(__filename),
-    Buffer.from('mock file content'),
-  ],
+  files: [__filename, fs.createReadStream(__filename), Buffer.from('mock file content')],
   data: {
     hello: 'hello urllib with multi files',
   },
@@ -241,12 +237,14 @@ setGlobalDispatcher(mockAgent);
 
 const mockPool = mockAgent.get('http://localhost:7001');
 
-mockPool.intercept({
-  path: '/foo',
-  method: 'POST',
-}).reply(400, {
-  message: 'mock 400 bad request',
-});
+mockPool
+  .intercept({
+    path: '/foo',
+    method: 'POST',
+  })
+  .reply(400, {
+    message: 'mock 400 bad request',
+  });
 
 const response = await request('http://localhost:7001/foo', {
   method: 'POST',
