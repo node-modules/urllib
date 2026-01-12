@@ -101,7 +101,7 @@
     "husky": "^9.1.7",
     "iconv-lite": "^0.6.3",
     "lint-staged": "^16.2.7",
-    "oxfmt": "^0.23.0",
+    "oxfmt": "^0.24.0",
     "oxlint": "^1.35.0",
     "oxlint-tsgolint": "^0.10.0",
     "proxy": "^1.0.2",
