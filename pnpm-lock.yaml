@@ -64,8 +64,8 @@ importers:
         specifier: ^2.2.3
         version: 2.2.3
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20251231.1
-        version: 7.0.0-dev.20251231.1
+        specifier: 7.0.0-dev.20260114.1
+        version: 7.0.0-dev.20260114.1
       '@ungap/structured-clone':
         specifier: ^1.3.0
         version: 1.3.0
@@ -634,43 +634,43 @@ packages:
   '@types/tar-stream@2.2.3':
     resolution: {integrity: sha512-if3mugZfjVkXOMZdFjIHySxY13r6GXPpyOlsDmLffvyI7tLz9wXE8BFjNivXsvUeyJ1KNlOpfLnag+ISmxgxPw==}
 
-  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20251231.1':
-    resolution: {integrity: sha512-C8QSK0l78XE5idx7qj7OMfXMgj9pQ50T+pgMxQ2/qSZsMC+p0I03Oe/iCHywk6nc+HPjniq6K1rXUCJjnV3q2g==}
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260114.1':
+    resolution: {integrity: sha512-M4t1jMeKB0MKVDHHDHbhKi6RP2VbhE9iA2ih362SLx3dfas9nU3QLVnQClRMX8hfZtFucppSY3M2FCa3amKNgQ==}
     cpu: [arm64]
     os: [darwin]
 
-  '@typescript/native-preview-darwin-x64@7.0.0-dev.20251231.1':
-    resolution: {integrity: sha512-lR/5bK6dodRnnFShlE6+tc8VpD82OdxoTATDq4tUdfw3zor6b5H15APjgsVUbjrX6X3SrkoQmPO23L9cWJpJmg==}
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260114.1':
+    resolution: {integrity: sha512-JnJV6AHhO37+o+RuK8opQ5sll0swoTLepDhlDvLU/pkuo5BbZl4AyAHDGZR1hxhCmrgPTGsmr4LSQ2TxpgknSw==}
     cpu: [x64]
     os: [darwin]
 
-  '@typescript/native-preview-linux-arm64@7.0.0-dev.20251231.1':
-    resolution: {integrity: sha512-Z5cuiyuX2+rCetkPowtgfcxE6PwMuk3zSjuy7ZntiTOT/mePeUINz8kHxQyLyz3nkrOqfyc9HaLyW4vHkZRLbw==}
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260114.1':
+    resolution: {integrity: sha512-eZwbwGWDclPDJAMXzpexuZBc2ZSq86T2UPDyLehKDCfrdrZcBunfYkBLX7vHnIjzbCopanMXGWVUn4eE0uK7tw==}
     cpu: [arm64]
     os: [linux]
 
-  '@typescript/native-preview-linux-arm@7.0.0-dev.20251231.1':
-    resolution: {integrity: sha512-2xMvEi07RkgNHcFCec0/LsQU861O3lk5ZD5h48ESyaanvZs690M6bKJhy59Y62d99j0SmWUKvypuATJ8e+DsBQ==}
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20260114.1':
+    resolution: {integrity: sha512-bdY1aBmiawgH7vOXXrjEINhTDtss5DrlmuKmcm40lSLGOnhkZGlHSHktZej2K+b/lWKUc/a62iD/5627yXo/5g==}
     cpu: [arm]
     os: [linux]
 
-  '@typescript/native-preview-linux-x64@7.0.0-dev.20251231.1':
-    resolution: {integrity: sha512-fz10X9WmTdXr3HvrEvJ3PqwrmTIqI2zKA16IbHDOnYr57xTNuK2aUsprPbHnn48cI+NyIAxzccfPoAEx4FPlpw==}
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20260114.1':
+    resolution: {integrity: sha512-4uFSvsNSko9augp/bw9PEXtdV1gg8aesrnUfIm6xYab+CmE3+PMbNncp53lZEow8Tp+lcGYNOPPFF0SQHwkcRg==}
     cpu: [x64]
     os: [linux]
 
-  '@typescript/native-preview-win32-arm64@7.0.0-dev.20251231.1':
-    resolution: {integrity: sha512-mWp/Yd8E1NWFRooVLjQ7iT7qGpxCBfDW3/Z13AKv6rIREE63dK3jFewneYiT+5NIy9bZy0JnirNvLnI0H4OeCQ==}
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260114.1':
+    resolution: {integrity: sha512-oEQFvvgzfWoMpzkFIjgNuUrZuzbPxLKt2IAnc2M91nrFhOPRa2Cf74M8+mFUXVA5wLyg8M5YW1Q2JKL0olxqcg==}
     cpu: [arm64]
     os: [win32]
 
-  '@typescript/native-preview-win32-x64@7.0.0-dev.20251231.1':
-    resolution: {integrity: sha512-jsFJzt1pe4ukohNBaDcDjJDZOodYtoHTAIrVRpcxqfLtzJ3BRyxbRw5bOMmsAEVhNwoRGFlat84a8yLehXUkUw==}
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20260114.1':
+    resolution: {integrity: sha512-kYymlGjzvujMrq8/mjg0akfq4rMMXWeqDp/hKNXKPK463CFzvla1KmF9jEEGDEasMb38rA6c7tHdzwX9yHS+ew==}
     cpu: [x64]
     os: [win32]
 
-  '@typescript/native-preview@7.0.0-dev.20251231.1':
-    resolution: {integrity: sha512-DzDYFHK42+GRhmTD9fvy9Hg2ynXN/JoK8Z50OTKSufI9dN4YAcVUj0bflmlhphT8Pd7fPF2bDr/MTFl/0mF2JQ==}
+  '@typescript/native-preview@7.0.0-dev.20260114.1':
+    resolution: {integrity: sha512-s7G8VkqtBB8I/VX/EUfknefv+R4zIjjKpDZbyjkAozydwYvPXQlkvEz7Gs819Z28p+agcs5+tTNECJFqjK8DPg==}
     hasBin: true
 
   '@ungap/structured-clone@1.3.0':
@@ -2380,36 +2380,36 @@ snapshots:
     dependencies:
       '@types/node': 22.19.6
 
-  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20251231.1':
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260114.1':
     optional: true
 
-  '@typescript/native-preview-darwin-x64@7.0.0-dev.20251231.1':
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260114.1':
     optional: true
 
-  '@typescript/native-preview-linux-arm64@7.0.0-dev.20251231.1':
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260114.1':
     optional: true
 
-  '@typescript/native-preview-linux-arm@7.0.0-dev.20251231.1':
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20260114.1':
     optional: true
 
-  '@typescript/native-preview-linux-x64@7.0.0-dev.20251231.1':
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20260114.1':
     optional: true
 
-  '@typescript/native-preview-win32-arm64@7.0.0-dev.20251231.1':
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260114.1':
     optional: true
 
-  '@typescript/native-preview-win32-x64@7.0.0-dev.20251231.1':
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20260114.1':
     optional: true
 
-  '@typescript/native-preview@7.0.0-dev.20251231.1':
+  '@typescript/native-preview@7.0.0-dev.20260114.1':
     optionalDependencies:
-      '@typescript/native-preview-darwin-arm64': 7.0.0-dev.20251231.1
-      '@typescript/native-preview-darwin-x64': 7.0.0-dev.20251231.1
-      '@typescript/native-preview-linux-arm': 7.0.0-dev.20251231.1
-      '@typescript/native-preview-linux-arm64': 7.0.0-dev.20251231.1
-      '@typescript/native-preview-linux-x64': 7.0.0-dev.20251231.1
-      '@typescript/native-preview-win32-arm64': 7.0.0-dev.20251231.1
-      '@typescript/native-preview-win32-x64': 7.0.0-dev.20251231.1
+      '@typescript/native-preview-darwin-arm64': 7.0.0-dev.20260114.1
+      '@typescript/native-preview-darwin-x64': 7.0.0-dev.20260114.1
+      '@typescript/native-preview-linux-arm': 7.0.0-dev.20260114.1
+      '@typescript/native-preview-linux-arm64': 7.0.0-dev.20260114.1
+      '@typescript/native-preview-linux-x64': 7.0.0-dev.20260114.1
+      '@typescript/native-preview-win32-arm64': 7.0.0-dev.20260114.1
+      '@typescript/native-preview-win32-x64': 7.0.0-dev.20260114.1
 
   '@ungap/structured-clone@1.3.0': {}
 
