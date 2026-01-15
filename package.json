@@ -49,7 +49,7 @@
     "fmt": "vite fmt",
     "typecheck": "tsc --noEmit && tsgo --noEmit",
     "fmtcheck": "vite fmt --check .",
-    "prebuild": "npm run clean",
+    "prebuild": "vite run clean",
     "build": "tsc --version && tshy && tshy-after && npm run build:version",
     "postbuild": "rm -rf *.tsbuildinfo",
     "build:version": "node ./scripts/replace_urllib_version.js",
@@ -66,10 +66,10 @@
     "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vite test run --reporter=dot --test-timeout 180000 keep-alive-header.test.ts",
     "test-node16": "node examples/httpclient.cjs && node examples/search_github.cjs && node examples/timing.cjs",
     "cov": "vite test run --reporter=dot --coverage",
-    "ci": "npm run cov && npm run prepublishOnly && npm pack && attw --pack",
+    "ci": "vite run cov && vite run prepublishOnly && npm pack && attw --pack",
     "ci:node16": "cross-env NODE_OPTIONS=\"--require ./test/patch-for-node16-18.cjs\" vite test run --reporter=dot && npm run prepublishOnly && npm pack && attw --pack",
     "clean": "rm -rf dist && tsc -b --clean",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "vite run build",
     "prepare": "husky"
   },
   "dependencies": {
@@ -108,13 +108,12 @@
     "tshy": "^3.1.0",
     "tshy-after": "^1.4.1",
     "typescript": "^5.9.3",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@latest",
     "vite-plus": "latest"
   },
   "lint-staged": {
     "*": [
-      "npm run lint -- --fix",
-      "vite fmt"
+      "vite run lint --fix",
+      "vite run fmt ."
     ]
   },
   "tshy": {
@@ -126,11 +125,5 @@
   "engines": {
     "node": ">= 18.19.0"
   },
-  "packageManager": "pnpm@10.28.0",
-  "pnpm": {
-    "overrides": {
-      "vite": "npm:@voidzero-dev/vite-plus-core@latest",
-      "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
-    }
-  }
+  "packageManager": "pnpm@10.28.0"
 }
