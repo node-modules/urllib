@@ -1,8 +1,7 @@
 import codspeedPlugin from '@codspeed/vitest-plugin';
 import { defineConfig } from 'vitest/config';
-import type { UserConfig } from 'vitest/config';
 
-const config: UserConfig = defineConfig({
+export default defineConfig({
   plugins: [codspeedPlugin()],
   test: {
     include: ['test/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
@@ -14,5 +13,3 @@ const config: UserConfig = defineConfig({
     setupFiles: ['test/setup.ts'],
   },
 });
-
-export default config;
