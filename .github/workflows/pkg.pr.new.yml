@@ -3,6 +3,9 @@ on: [push, pull_request]
 
 jobs:
   build:
+    concurrency:
+      group: pkg-pr-new-${{ github.workflow }}-#${{ github.event.pull_request.number || github.head_ref || github.ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
 
     steps:
