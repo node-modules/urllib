@@ -1,4 +1,4 @@
-import { bench, describe } from 'vitest';
+import { bench, describe } from 'vite-plus/test';
 
 import { HttpClient } from '../src/index.js';
 import { parseJSON, digestAuthHeader, globalId, performanceTime } from '../src/utils.js';

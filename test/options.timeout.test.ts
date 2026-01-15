@@ -4,7 +4,7 @@ import { createSecureServer } from 'node:http2';
 import type { AddressInfo } from 'node:net';
 
 import selfsigned from 'selfsigned';
-import { describe, it, beforeAll, afterAll } from 'vitest';
+import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib, { HttpClientRequestTimeoutError, HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';

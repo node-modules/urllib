@@ -2,7 +2,7 @@ import { strict as assert } from 'node:assert';
 import { readFileSync } from 'node:fs';
 import { parse as urlparse } from 'node:url';
 
-import { describe, it, beforeAll, afterAll, afterEach, beforeEach } from 'vitest';
+import { describe, it, beforeAll, afterAll, afterEach, beforeEach } from 'vite-plus/test';
 
 import urllib, {
   HttpClient,

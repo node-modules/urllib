@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { setTimeout as sleep } from 'node:timers/promises';
 
-import { describe, it, beforeAll, afterAll } from 'vitest';
+import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib from '../src/index.js';
 import type { RawResponseWithMeta } from '../src/index.js';

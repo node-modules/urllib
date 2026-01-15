@@ -6,7 +6,7 @@ import type { AddressInfo } from 'node:net';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 import selfsigned from 'selfsigned';
-import { describe, it, beforeEach, afterEach } from 'vitest';
+import { describe, it, beforeEach, afterEach } from 'vite-plus/test';
 
 import urllib, { HttpClient } from '../src/index.js';
 import type { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../src/index.js';

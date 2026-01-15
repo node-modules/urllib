@@ -45,10 +45,10 @@
     "tag": "latest"
   },
   "scripts": {
-    "lint": "oxlint src test --type-aware --type-check",
-    "fmt": "oxfmt",
+    "lint": "vite lint src test --type-aware --type-check",
+    "fmt": "vite fmt",
     "typecheck": "tsc --noEmit && tsgo --noEmit",
-    "fmtcheck": "oxfmt --check .",
+    "fmtcheck": "vite fmt --check .",
     "prebuild": "npm run clean",
     "build": "tsc --version && tshy && tshy-after && npm run build:version",
     "postbuild": "rm -rf *.tsbuildinfo",
@@ -61,13 +61,13 @@
     "test-tsc:cjs": "cd test/fixtures/ts && rm -rf node_modules && npm link ../../.. && npm run build",
     "test-tsc:cjs:es2021": "cd test/fixtures/ts-cjs-es2021 && rm -rf node_modules && npm link ../../.. && npm run build",
     "test-tsc:esm": "cd test/fixtures/ts-esm && rm -rf node_modules && npm link ../../.. && npm run build",
-    "test": "npm run lint -- --fix && vitest run --reporter=dot",
-    "bench": "vitest bench",
-    "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vitest run --reporter=dot --test-timeout 180000 keep-alive-header.test.ts",
+    "test": "vite run lint -- --fix && vite test run --reporter=dot",
+    "bench": "vite test bench",
+    "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vite test run --reporter=dot --test-timeout 180000 keep-alive-header.test.ts",
     "test-node16": "node examples/httpclient.cjs && node examples/search_github.cjs && node examples/timing.cjs",
-    "cov": "vitest run --reporter=dot --coverage",
+    "cov": "vite test run --reporter=dot --coverage",
     "ci": "npm run cov && npm run prepublishOnly && npm pack && attw --pack",
-    "ci:node16": "cross-env NODE_OPTIONS=\"--require ./test/patch-for-node16-18.cjs\" vitest run --reporter=dot && npm run prepublishOnly && npm pack && attw --pack",
+    "ci:node16": "cross-env NODE_OPTIONS=\"--require ./test/patch-for-node16-18.cjs\" vite test run --reporter=dot && npm run prepublishOnly && npm pack && attw --pack",
     "clean": "rm -rf dist && tsc -b --clean",
     "prepublishOnly": "npm run build",
     "prepare": "husky"
@@ -101,9 +101,6 @@
     "husky": "^9.1.7",
     "iconv-lite": "^0.6.3",
     "lint-staged": "^16.2.7",
-    "oxfmt": "^0.24.0",
-    "oxlint": "^1.35.0",
-    "oxlint-tsgolint": "^0.11.0",
     "proxy": "^1.0.2",
     "selfsigned": "^3.0.1",
     "string.prototype.towellformed": "^1.0.2",
@@ -111,12 +108,13 @@
     "tshy": "^3.1.0",
     "tshy-after": "^1.4.1",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.17"
+    "vitest": "npm:@voidzero-dev/vite-plus-test@latest",
+    "vite-plus": "latest"
   },
   "lint-staged": {
     "*": [
       "npm run lint -- --fix",
-      "oxfmt"
+      "vite fmt"
     ]
   },
   "tshy": {
@@ -128,5 +126,11 @@
   "engines": {
     "node": ">= 18.19.0"
   },
-  "packageManager": "pnpm@10.28.0"
+  "packageManager": "pnpm@10.28.0",
+  "pnpm": {
+    "overrides": {
+      "vite": "npm:@voidzero-dev/vite-plus-core@latest",
+      "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+    }
+  }
 }

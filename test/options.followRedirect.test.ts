@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { createWriteStream } from 'node:fs';
 
-import { describe, it, beforeAll, afterAll } from 'vitest';
+import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib from '../src/index.js';
 import { HttpClient } from '../src/index.js';

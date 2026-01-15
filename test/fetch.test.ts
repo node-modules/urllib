@@ -3,7 +3,7 @@ import diagnosticsChannel from 'node:diagnostics_channel';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 import { Request } from 'undici';
-import { describe, it, beforeAll, afterAll } from 'vitest';
+import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import { fetch, FetchFactory } from '../src/fetch.js';
 import type { FetchDiagnosticsMessage, FetchResponseDiagnosticsMessage } from '../src/fetch.js';

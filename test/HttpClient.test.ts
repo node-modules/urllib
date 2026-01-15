@@ -7,7 +7,7 @@ import { PerformanceObserver } from 'node:perf_hooks';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 import selfsigned from 'selfsigned';
-import { describe, it, beforeAll, afterAll } from 'vitest';
+import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import { HttpClient, getGlobalDispatcher } from '../src/index.js';
 import type { RawResponseWithMeta } from '../src/index.js';
