@@ -77,6 +77,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Downgrade vitest for Node 18
+        if: matrix.node == '18'
+        run: pnpm add vitest@3 @vitest/coverage-v8@3 --save-dev --ignore-scripts
+
       - name: Run tests
         run: pnpm run ci
 

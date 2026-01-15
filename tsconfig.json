@@ -11,5 +11,5 @@
     // verbatimModuleSyntax is incompatible with multi-dialect builds
     // "verbatimModuleSyntax": true
   },
-  "exclude": ["test/fixtures/ts*"]
+  "exclude": ["test/fixtures/ts*", "vite.config.ts"]
 }
