@@ -82,7 +82,6 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
-    "@codspeed/vitest-plugin": "^5.0.1",
     "@eggjs/oxlint-config": "^1.0.0",
     "@eggjs/tsconfig": "^2.0.0",
     "@types/busboy": "^1.5.4",
