@@ -23,7 +23,7 @@ jobs:
       - name: Patch vitest imports and run tests
         run: |
           for f in test/*.test.ts; do [ -e "$f" ] || exit 0; sed --version >/dev/null 2>&1 && sed -i "s@'vite-plus/test'@'vitest'@g" "$f" || sed -i '' "s@'vite-plus/test'@'vitest'@g" "$f"; done
-          NODE_OPTIONS="--require ./test/patch-for-node16-18.cjs" npx -f vitest@3 run --reporter=dot && npm run build && npm pack && npx attw --pack
+          NODE_OPTIONS="--require ./test/patch-for-node16-18.cjs" npx -f vitest@3 && npm run build && npm pack && npx attw --pack
       - run: npm run build
       - run: node -v
       - run: npm run test-node16
