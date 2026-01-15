@@ -20,10 +20,9 @@ jobs:
         with:
           node-version: 16
       - run: npm install
-      - name: Patch vitest imports and run tests
-        run: |
-          for f in test/*.test.ts; do [ -e "$f" ] || exit 0; sed --version >/dev/null 2>&1 && sed -i "s@'vite-plus/test'@'vitest'@g" "$f" || sed -i '' "s@'vite-plus/test'@'vitest'@g" "$f"; done
-          NODE_OPTIONS="--require ./test/patch-for-node16-18.cjs" npx vitest@3 && npm run build && npm pack && npx attw --pack
+      - name: Patch vitest imports
+        run: for f in test/*.test.ts; do [ -e "$f" ] || exit 0; sed --version >/dev/null 2>&1 && sed -i "s@'vite-plus/test'@'vitest'@g" "$f" || sed -i '' "s@'vite-plus/test'@'vitest'@g" "$f"; done
+      - run: NODE_OPTIONS="--require ./test/patch-for-node16-18.cjs" npx vitest@3 && npm run build && npm pack && npx attw --pack
       - run: npm run build
       - run: node -v
       - run: npm run test-node16
