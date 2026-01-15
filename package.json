@@ -49,7 +49,7 @@
     "fmt": "vite fmt",
     "typecheck": "tsc --noEmit && tsgo --noEmit",
     "fmtcheck": "vite fmt --check .",
-    "prebuild": "vite run clean",
+    "prebuild": "npm run clean",
     "build": "tsc --version && tshy && tshy-after && vite run build:version && rm -rf *.tsbuildinfo",
     "build:version": "node ./scripts/replace_urllib_version.js",
     "build:cjs:test": "cd test/cjs && rm -rf node_modules && npm link ../.. && node index.js",

@@ -22,7 +22,10 @@ jobs:
       - run: npm install
       - name: Downgrade vitest for Node 16
         run: npm install vitest@3 @vitest/coverage-v8@3 --save-dev --ignore-scripts
-      - run: npm run ci:node16
-      - run: npm run prepublishOnly
+      - name: Patch vitest imports and run tests
+        run: |
+          for f in test/*.test.ts; do [ -e "$f" ] || exit 0; sed --version >/dev/null 2>&1 && sed -i "s@'vite-plus/test'@'vitest'@g" "$f" || sed -i '' "s@'vite-plus/test'@'vitest'@g" "$f"; done
+          NODE_OPTIONS="--require ./test/patch-for-node16-18.cjs" npx vitest --reporter=dot && npm run build && npm pack && npx attw --pack
+      - run: npm run build
       - run: node -v
       - run: npm run test-node16
