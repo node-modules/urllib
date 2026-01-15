@@ -1,4 +1,4 @@
-import codspeedPlugin from '@codspeed/vitest-plugin';
+// import codspeedPlugin from '@codspeed/vitest-plugin';
 import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
@@ -148,7 +148,7 @@ export default defineConfig({
     },
     ignorePatterns: ['test/fixtures/ts*'],
   },
-  plugins: [codspeedPlugin()],
+  // plugins: [codspeedPlugin()],
   test: {
     include: ['test/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     testTimeout: 60000,
