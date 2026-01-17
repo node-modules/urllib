@@ -155,7 +155,8 @@ export default defineConfig({
     coverage: {
       include: ['src'],
     },
-    pool: 'threads',
+    // https://vitest.dev/guide/common-errors.html#failed-to-terminate-worker
+    pool: 'forks',
     setupFiles: ['test/setup.ts'],
   },
 });

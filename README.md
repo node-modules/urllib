@@ -8,6 +8,7 @@
 [![Node.js Version](https://img.shields.io/node/v/urllib.svg?style=flat)](https://nodejs.org/en/download/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
 ![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/node-modules/urllib)
+[![pkg.pr.new](https://pkg.pr.new/badge/node-modules/urllib)](https://pkg.pr.new/~/node-modules/urllib)
 
 [npm-image]: https://img.shields.io/npm/v/urllib.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/urllib
