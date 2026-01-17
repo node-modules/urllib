@@ -10,7 +10,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     concurrency:
-      group: typecheck-${{ github.workflow }}-#${{ github.event.pull_request.number || github.head_ref || github.ref }}
+      group: nodejs-old-versions-test-${{ github.workflow }}-#${{ github.event.pull_request.number || github.head_ref || github.ref }}-(${{ matrix.node }})
       cancel-in-progress: true
     strategy:
       fail-fast: false
