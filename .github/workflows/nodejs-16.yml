@@ -23,10 +23,10 @@ jobs:
       - name: Patch vitest imports
         run: |
           for f in test/*.test.ts; do [ -e "$f" ] || exit 0; sed --version >/dev/null 2>&1 && sed -i "s@'vite-plus/test'@'vitest'@g" "$f" || sed -i '' "s@'vite-plus/test'@'vitest'@g" "$f"; done
+          sed --version >/dev/null 2>&1 && sed -i "s@'vite-plus'@'vitest'@g" vite.config.ts || sed -i '' "s@'vite-plus'@'vitest'@g" vite.config.ts
           jq 'del(.overrides)' package.json > package.json.tmp && mv package.json.tmp package.json
           npm install -D vitest@3 vite@7
-          rm -rf vite.config.ts
-      - run: NODE_OPTIONS="--require ./test/patch-for-node16-18.cjs" npx vitest --config ./vitest-for-node16.config.cjs && npm run build && npm pack && npx attw --pack
+      - run: NODE_OPTIONS="--require ./test/patch-for-node16-18.cjs" npx vitest && npm run build && npm pack && npx attw --pack
       - run: npm run build
       - run: node -v
       - run: npm run test-node16
