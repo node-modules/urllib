@@ -46,10 +46,10 @@
   },
   "scripts": {
     "lint": "vite lint src test --type-aware --type-check",
-    "fmt": "vite fmt",
     "typecheck": "tsc --noEmit && tsgo --noEmit",
-    "fmtcheck": "vite fmt --check .",
-    "prebuild": "npm run clean",
+    "fmt": "vite fmt",
+    "fmtcheck": "vite fmt --check",
+    "prebuild": "vite run clean",
     "build": "vite run build:ts && vite run build:version",
     "build:ts": "tsc --version && tshy && tshy-after",
     "build:version": "node ./scripts/replace_urllib_version.js",
