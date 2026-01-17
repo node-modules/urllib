@@ -2,7 +2,7 @@ import { strict as assert } from 'node:assert';
 import { createReadStream } from 'node:fs';
 import { basename } from 'node:path';
 
-import { describe, it, beforeAll, afterAll } from 'vitest';
+import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import { HttpClient, WebFormData } from '../src/index.js';
 import { BufferStream } from './fixtures/BufferStream.js';

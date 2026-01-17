@@ -3,7 +3,7 @@ import { createReadStream } from 'node:fs';
 import { Readable } from 'node:stream';
 
 import qs from 'qs';
-import { describe, it, beforeAll, afterAll } from 'vitest';
+import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';

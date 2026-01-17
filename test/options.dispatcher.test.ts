@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert';
 
 import setup from 'proxy';
-import { describe, it, beforeAll, afterAll } from 'vitest';
+import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import { request, ProxyAgent, getGlobalDispatcher, setGlobalDispatcher, Agent } from '../src/index.js';
 import { startServer } from './fixtures/server.js';

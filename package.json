@@ -45,31 +45,30 @@
     "tag": "latest"
   },
   "scripts": {
-    "lint": "oxlint src test --type-aware --type-check",
-    "fmt": "oxfmt",
+    "lint": "vite lint src test --type-aware --type-check",
     "typecheck": "tsc --noEmit && tsgo --noEmit",
-    "fmtcheck": "oxfmt --check .",
-    "prebuild": "npm run clean",
-    "build": "tsc --version && tshy && tshy-after && npm run build:version",
-    "postbuild": "rm -rf *.tsbuildinfo",
+    "fmt": "vite fmt",
+    "fmtcheck": "vite fmt --check",
+    "prebuild": "vite run clean",
+    "build": "vite run build:ts && vite run build:version",
+    "build:ts": "tsc --version && tshy && tshy-after",
     "build:version": "node ./scripts/replace_urllib_version.js",
     "build:cjs:test": "cd test/cjs && rm -rf node_modules && npm link ../.. && node index.js",
     "build:esm:test": "cd test/esm && rm -rf node_modules && npm link ../.. && node index.js",
     "build:mts:test": "cd test/mts && rm -rf node_modules && npm link ../.. && tsc",
-    "build:test": "npm run build && npm run build:cjs:test && npm run build:esm:test && npm run build:mts:test && npm run test-tsc",
-    "test-tsc": "npm run test-tsc:cjs:es2021 && npm run test-tsc:cjs && npm run test-tsc:esm",
-    "test-tsc:cjs": "cd test/fixtures/ts && rm -rf node_modules && npm link ../../.. && npm run build",
-    "test-tsc:cjs:es2021": "cd test/fixtures/ts-cjs-es2021 && rm -rf node_modules && npm link ../../.. && npm run build",
-    "test-tsc:esm": "cd test/fixtures/ts-esm && rm -rf node_modules && npm link ../../.. && npm run build",
-    "test": "npm run lint -- --fix && vitest run --reporter=dot",
-    "bench": "vitest bench",
-    "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vitest run --reporter=dot --test-timeout 180000 keep-alive-header.test.ts",
+    "build:test": "vite run build && vite run build:cjs:test && vite run build:esm:test && vite run build:mts:test && vite run test-tsc",
+    "test-tsc": "vite run test-tsc:cjs:es2021 && vite run test-tsc:cjs && vite run test-tsc:esm",
+    "test-tsc:cjs": "cd test/fixtures/ts && rm -rf node_modules && npm link ../../.. && vite run build",
+    "test-tsc:cjs:es2021": "cd test/fixtures/ts-cjs-es2021 && rm -rf node_modules && npm link ../../.. && vite run build",
+    "test-tsc:esm": "cd test/fixtures/ts-esm && rm -rf node_modules && npm link ../../.. && vite run build",
+    "test": "vite run lint -- --fix && vite test run --reporter=dot",
+    "bench": "vite test bench",
+    "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vite test run --reporter=dot --test-timeout 180000 keep-alive-header.test.ts",
     "test-node16": "node examples/httpclient.cjs && node examples/search_github.cjs && node examples/timing.cjs",
-    "cov": "vitest run --reporter=dot --coverage",
-    "ci": "npm run cov && npm run prepublishOnly && npm pack && attw --pack",
-    "ci:node16": "cross-env NODE_OPTIONS=\"--require ./test/patch-for-node16-18.cjs\" vitest run --reporter=dot && npm run prepublishOnly && npm pack && attw --pack",
+    "cov": "vite test run --reporter=dot --coverage",
+    "ci": "vite run cov && vite run prepublishOnly && npm pack && attw --pack",
     "clean": "rm -rf dist && tsc -b --clean",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "vite run build",
     "prepare": "husky"
   },
   "dependencies": {
@@ -83,7 +82,6 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
-    "@codspeed/vitest-plugin": "^5.0.1",
     "@eggjs/oxlint-config": "^1.0.0",
     "@eggjs/tsconfig": "^2.0.0",
     "@types/busboy": "^1.5.4",
@@ -101,9 +99,6 @@
     "husky": "^9.1.7",
     "iconv-lite": "^0.6.3",
     "lint-staged": "^16.2.7",
-    "oxfmt": "^0.24.0",
-    "oxlint": "^1.35.0",
-    "oxlint-tsgolint": "^0.11.0",
     "proxy": "^1.0.2",
     "selfsigned": "^3.0.1",
     "string.prototype.towellformed": "^1.0.2",
@@ -111,12 +106,12 @@
     "tshy": "^3.1.0",
     "tshy-after": "^1.4.1",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.17"
+    "vite-plus": "latest"
   },
   "lint-staged": {
     "*": [
-      "npm run lint -- --fix",
-      "oxfmt"
+      "vite run lint --fix",
+      "vite run fmt ."
     ]
   },
   "tshy": {
@@ -128,5 +123,13 @@
   "engines": {
     "node": ">= 18.19.0"
   },
-  "packageManager": "pnpm@10.28.0"
+  "packageManager": "pnpm@10.28.0",
+  "pnpm": {
+    "overrides": {
+      "vite": "npm:@voidzero-dev/vite-plus-core@latest"
+    }
+  },
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@latest"
+  }
 }
