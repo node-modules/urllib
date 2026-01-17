@@ -1,4 +1,4 @@
-name: Node.js 16 CI
+name: Node.js old versions CI
 
 on:
   push:
