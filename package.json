@@ -67,7 +67,6 @@
     "test-node16": "node examples/httpclient.cjs && node examples/search_github.cjs && node examples/timing.cjs",
     "cov": "vite test run --reporter=dot --coverage",
     "ci": "vite run cov && vite run prepublishOnly && npm pack && attw --pack",
-    "ci:node16": "cross-env NODE_OPTIONS=\"--require ./test/patch-for-node16-18.cjs\" vite test run --reporter=dot && vite run prepublishOnly && npm pack && attw --pack",
     "clean": "rm -rf dist && tsc -b --clean",
     "prepublishOnly": "vite run build",
     "prepare": "husky"

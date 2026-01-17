@@ -12,13 +12,17 @@ jobs:
     concurrency:
       group: typecheck-${{ github.workflow }}-#${{ github.event.pull_request.number || github.head_ref || github.ref }}
       cancel-in-progress: true
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['16', '18']
 
     steps:
       - uses: actions/checkout@v6
       - name: Use Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 16
+          node-version: ${{ matrix.node }}
       - run: npm install
       - name: Patch vitest imports
         run: |
