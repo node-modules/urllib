@@ -75,6 +75,9 @@ jobs:
           cache: true
           run-install: true
 
+      - name: Run lint
+        run: vite run lint
+
       - name: Run tests
         run: vite run ci
 
