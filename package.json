@@ -116,7 +116,7 @@
   "lint-staged": {
     "*": [
       "vite run lint --fix",
-      "vite run fmt ."
+      "vite fmt --no-error-on-unmatched-pattern"
     ]
   },
   "tshy": {
