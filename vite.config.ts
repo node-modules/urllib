@@ -3,7 +3,6 @@ import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
   fmt: {
-    $schema: './node_modules/oxfmt/configuration_schema.json',
     printWidth: 120,
     singleQuote: true,
     ignorePatterns: ['CHANGELOG.md', 'pnpm-lock.yaml'],
@@ -26,7 +25,7 @@ export default defineConfig({
       node: true,
     },
     // FIXME: wait for vite-plus to fix lint extends path resolution
-    extends: ['../../@eggjs/oxlint-config/.oxlintrc.json'],
+    extends: ['./node_modules/@eggjs/oxlint-config/.oxlintrc.json'],
     categories: {
       correctness: 'allow',
       suspicious: 'allow',

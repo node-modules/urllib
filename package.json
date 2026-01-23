@@ -75,9 +75,9 @@
     "form-data": "^4.0.5",
     "formstream": "^1.5.2",
     "mime-types": "^2.1.35",
-    "qs": "^6.14.0",
+    "qs": "^6.14.1",
     "type-fest": "^4.41.0",
-    "undici": "^7.16.0",
+    "undici": "^7.19.0",
     "ylru": "^2.0.0"
   },
   "devDependencies": {
@@ -86,14 +86,14 @@
     "@eggjs/tsconfig": "^2.0.0",
     "@types/busboy": "^1.5.4",
     "@types/mime-types": "^2.1.4",
-    "@types/node": "^22.19.3",
+    "@types/node": "^22.19.7",
     "@types/proxy": "^1.0.4",
     "@types/qs": "^6.14.0",
     "@types/selfsigned": "^2.1.0",
     "@types/tar-stream": "^2.2.3",
     "@typescript/native-preview": "7.0.0-dev.20260120.1",
     "@ungap/structured-clone": "^1.3.0",
-    "@vitest/coverage-v8": "^4.0.17",
+    "@vitest/coverage-v8": "^4.0.18",
     "busboy": "^1.6.0",
     "cross-env": "^10.1.0",
     "husky": "^9.1.7",
@@ -106,12 +106,17 @@
     "tshy": "^3.1.0",
     "tshy-after": "^1.4.1",
     "typescript": "^5.9.3",
-    "vite-plus": "latest"
+    "vite-plus": "latest",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+  },
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@latest",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
   },
   "lint-staged": {
     "*": [
       "vite run lint --fix",
-      "vite run fmt ."
+      "vite fmt --no-error-on-unmatched-pattern"
     ]
   },
   "tshy": {
@@ -126,10 +131,14 @@
   "packageManager": "pnpm@10.28.1",
   "pnpm": {
     "overrides": {
-      "vite": "npm:@voidzero-dev/vite-plus-core@latest"
+      "vite": "npm:@voidzero-dev/vite-plus-core@latest",
+      "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+    },
+    "peerDependencyRules": {
+      "allowAny": [
+        "vite",
+        "vitest"
+      ]
     }
-  },
-  "overrides": {
-    "vite": "npm:@voidzero-dev/vite-plus-core@latest"
   }
 }
