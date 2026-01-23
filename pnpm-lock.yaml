@@ -5,8 +5,8 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  vite: npm:@voidzero-dev/vite-plus-core@latest
-  vitest: npm:@voidzero-dev/vite-plus-test@latest
+  vite: npm:@voidzero-dev/vite-plus-core@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38
+  vitest: npm:@voidzero-dev/vite-plus-test@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38
 
 importers:
 
@@ -72,7 +72,7 @@ importers:
         version: 1.3.0
       '@vitest/coverage-v8':
         specifier: ^4.0.18
-        version: 4.0.18(@voidzero-dev/vite-plus-test@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2))
+        version: 4.0.18(@voidzero-dev/vite-plus-test@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2))
       busboy:
         specifier: ^1.6.0
         version: 1.6.0
@@ -110,11 +110,11 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vite-plus:
-        specifier: latest
-        version: 0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)
+        specifier: 0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38
+        version: 0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)
       vitest:
-        specifier: npm:@voidzero-dev/vite-plus-test@latest
-        version: '@voidzero-dev/vite-plus-test@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)'
+        specifier: npm:@voidzero-dev/vite-plus-test@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38
+        version: '@voidzero-dev/vite-plus-test@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)'
 
 packages:
 
@@ -409,8 +409,8 @@ packages:
   '@vitest/utils@4.0.18':
     resolution: {integrity: sha512-msMRKLMVLWygpK3u2Hybgi4MNjcYJvwTb0Ru09+fOyCXIgT5raYP041DRRdiJiI3k/2U6SEbAETB3YtBrUkCFA==}
 
-  '@voidzero-dev/vite-plus-core@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79':
-    resolution: {integrity: sha512-1ndfptDk8DyzkXDOemKm0zcmz5rTD6XKKNCocp+K6BnWQ3S5ARLX4uP1ToHsDZnrxtPxzmvV863Fy2lITJr3ew==}
+  '@voidzero-dev/vite-plus-core@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38':
+    resolution: {integrity: sha512-zt1rG/HA48mkEmUruo0T6zUE4PpMlrnFDm+hij47XLJ846vlIq/SPGblMz+DTRzNvyACRi8dKVOhK+VS3yarYg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       '@arethetypeswrong/core': ^0.18.1
@@ -466,28 +466,28 @@ packages:
       yaml:
         optional: true
 
-  '@voidzero-dev/vite-plus-darwin-arm64@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79':
-    resolution: {integrity: sha512-v/rBt9BtAHTWUnfpCOu3mI7BXPkSUJc6DeoMChAe2DIRJzLg/GHRJpMpifsIADtN8Ut+YS1TL9BiDOfPBKhDeA==}
+  '@voidzero-dev/vite-plus-darwin-arm64@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38':
+    resolution: {integrity: sha512-vRp+eIuSAn9HZBSNQDJJSBZN1qiQkUcuux5gIRF8rMMrWt/xE/57PusYtWRNSdhjJlERQXy4vj/QBOW0G4vh5g==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [darwin]
 
-  '@voidzero-dev/vite-plus-linux-arm64-gnu@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79':
-    resolution: {integrity: sha512-zyUb+vzR0KwG00SYxcf6ckBl2AK8mQ7SpQvDQ80k+XocB+jh4eQw2Sk+3gjgIb1VGp4VJuAZupsgdrA9enxvug==}
+  '@voidzero-dev/vite-plus-linux-arm64-gnu@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38':
+    resolution: {integrity: sha512-m5pHehY6a5g1c6J/uGu98UVwdeK+V7Nl0iVKMqnjUc6LeD9izO3KSAf9YhZ6PVclXrVGWVkVsz0BMkB3uEdmEQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@voidzero-dev/vite-plus-linux-x64-gnu@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79':
-    resolution: {integrity: sha512-8z2S017IYLYx+chS7NutFY/rsnnscpq7JN0bH1CKAPQhutF9jZCNdW8NJGVwBX07l+CGQ7N9U4uLMt2HsPD7tw==}
+  '@voidzero-dev/vite-plus-linux-x64-gnu@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38':
+    resolution: {integrity: sha512-JHuTjaJ8T0AfBFTqEtpllwOGkFNd2wEykTabkBo54bgJCiw2jWHp1yVRRSf1zWp7Vp6iqLzc9YUd8bVZ6R+rJg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@voidzero-dev/vite-plus-test@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79':
-    resolution: {integrity: sha512-fa0R1kS5P1Bnle3MWvY3fY1PEKjdMgB+5gzBh3iVqyewFzBYBaZ4hb+CgTMdyR2YQIGShisqgx1l0x5LgMU6Kw==}
+  '@voidzero-dev/vite-plus-test@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38':
+    resolution: {integrity: sha512-MDfO/5hcySQJ7lAe43L8yZO173z7At+LtBEsyHJqv3tPeFUCYDEIOvkgJPxOgJavGNZHFOsacizZK7DGEzbBjQ==}
     engines: {node: ^20.0.0 || ^22.0.0 || >=24.0.0}
     peerDependencies:
       '@edge-runtime/vm': '*'
@@ -510,8 +510,8 @@ packages:
       jsdom:
         optional: true
 
-  '@voidzero-dev/vite-plus-win32-x64-msvc@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79':
-    resolution: {integrity: sha512-uYDg3tIIvNhj2V29rp8Kd7tEKXGulhc2yzMQ2mOlONJSHaCZx9jy4acpC2jVd8FM7KIFB5vFjSp9w5MxYlp6PQ==}
+  '@voidzero-dev/vite-plus-win32-x64-msvc@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38':
+    resolution: {integrity: sha512-rX+DG0ajRBoRTypongKGg1S6LmfR2FODA3Bi4QDp2YxOup7GAZTMcYlF5VOBgZvEvW8jVPX9lJrn38F025Jr6Q==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [win32]
@@ -1647,8 +1647,8 @@ packages:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  vite-plus@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79:
-    resolution: {integrity: sha512-ut/UFBsmfSNIfNYEy8QTiHtwdyR5T2zvhz7YMB35765ZrhcbdkVAusbjwvq6cW1MxoAfxPDKUEaT9WYM4yzHDQ==}
+  vite-plus@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38:
+    resolution: {integrity: sha512-vvmzpW7skdhhOiL24yfioBzZFLhD9U0PaQYRZ5a9hmfFwGbXdsnTST8U3P9gp35aampXQpo0S5BCYouP55Jb3g==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -1931,7 +1931,7 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@vitest/coverage-v8@4.0.18(@voidzero-dev/vite-plus-test@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2))':
+  '@vitest/coverage-v8@4.0.18(@voidzero-dev/vite-plus-test@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2))':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
       '@vitest/utils': 4.0.18
@@ -1943,7 +1943,7 @@ snapshots:
       obug: 2.1.1
       std-env: 3.10.0
       tinyrainbow: 3.0.3
-      vitest: '@voidzero-dev/vite-plus-test@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)'
+      vitest: '@voidzero-dev/vite-plus-test@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)'
 
   '@vitest/pretty-format@4.0.18':
     dependencies:
@@ -1954,7 +1954,7 @@ snapshots:
       '@vitest/pretty-format': 4.0.18
       tinyrainbow: 3.0.3
 
-  '@voidzero-dev/vite-plus-core@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)':
+  '@voidzero-dev/vite-plus-core@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)':
     dependencies:
       '@oxc-project/runtime': 0.108.0
       '@oxc-project/types': 0.108.0
@@ -1967,19 +1967,19 @@ snapshots:
       typescript: 5.9.3
       yaml: 2.8.2
 
-  '@voidzero-dev/vite-plus-darwin-arm64@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79':
+  '@voidzero-dev/vite-plus-darwin-arm64@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38':
     optional: true
 
-  '@voidzero-dev/vite-plus-linux-arm64-gnu@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79':
+  '@voidzero-dev/vite-plus-linux-arm64-gnu@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38':
     optional: true
 
-  '@voidzero-dev/vite-plus-linux-x64-gnu@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79':
+  '@voidzero-dev/vite-plus-linux-x64-gnu@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38':
     optional: true
 
-  '@voidzero-dev/vite-plus-test@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)':
+  '@voidzero-dev/vite-plus-test@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)':
     dependencies:
       '@types/chai': 5.2.3
-      '@voidzero-dev/vite-plus-core': 0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)
+      '@voidzero-dev/vite-plus-core': 0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)
       es-module-lexer: 1.7.0
       obug: 2.1.1
       pixelmatch: 7.1.0
@@ -2012,7 +2012,7 @@ snapshots:
       - utf-8-validate
       - yaml
 
-  '@voidzero-dev/vite-plus-win32-x64-msvc@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79':
+  '@voidzero-dev/vite-plus-win32-x64-msvc@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38':
     optional: true
 
   ansi-escapes@7.2.0:
@@ -3239,20 +3239,20 @@ snapshots:
 
   validate-npm-package-name@5.0.1: {}
 
-  vite-plus@0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2):
+  vite-plus@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2):
     dependencies:
       '@oxc-project/types': 0.108.0
-      '@voidzero-dev/vite-plus-core': 0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)
-      '@voidzero-dev/vite-plus-test': 0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)
+      '@voidzero-dev/vite-plus-core': 0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)
+      '@voidzero-dev/vite-plus-test': 0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38(@arethetypeswrong/core@0.18.2)(@types/node@22.19.7)(typescript@5.9.3)(yaml@2.8.2)
       cac: 6.7.14
       oxfmt: 0.26.0
       oxlint: 1.41.0(oxlint-tsgolint@0.11.1)
       oxlint-tsgolint: 0.11.1
     optionalDependencies:
-      '@voidzero-dev/vite-plus-darwin-arm64': 0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79
-      '@voidzero-dev/vite-plus-linux-arm64-gnu': 0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79
-      '@voidzero-dev/vite-plus-linux-x64-gnu': 0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79
-      '@voidzero-dev/vite-plus-win32-x64-msvc': 0.0.0-88c8bdd71344c6d38f5f11fb41e9070034598d79
+      '@voidzero-dev/vite-plus-darwin-arm64': 0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38
+      '@voidzero-dev/vite-plus-linux-arm64-gnu': 0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38
+      '@voidzero-dev/vite-plus-linux-x64-gnu': 0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38
+      '@voidzero-dev/vite-plus-win32-x64-msvc': 0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38
     transitivePeerDependencies:
       - '@arethetypeswrong/core'
       - '@edge-runtime/vm'
