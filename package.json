@@ -106,12 +106,12 @@
     "tshy": "^3.1.0",
     "tshy-after": "^1.4.1",
     "typescript": "^5.9.3",
-    "vite-plus": "0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38"
+    "vite-plus": "0.0.0-9f9a209dd123932614c8b5a568375a002e34562b",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@0.0.0-9f9a209dd123932614c8b5a568375a002e34562b"
   },
   "overrides": {
-    "vite": "npm:@voidzero-dev/vite-plus-core@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38"
+    "vite": "npm:@voidzero-dev/vite-plus-core@0.0.0-9f9a209dd123932614c8b5a568375a002e34562b",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@0.0.0-9f9a209dd123932614c8b5a568375a002e34562b"
   },
   "lint-staged": {
     "*": [
@@ -131,8 +131,8 @@
   "packageManager": "pnpm@10.28.1",
   "pnpm": {
     "overrides": {
-      "vite": "npm:@voidzero-dev/vite-plus-core@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38",
-      "vitest": "npm:@voidzero-dev/vite-plus-test@0.0.0-569bd560c8521f4cacc62e99477f14c99ca44a38"
+      "vite": "npm:@voidzero-dev/vite-plus-core@0.0.0-9f9a209dd123932614c8b5a568375a002e34562b",
+      "vitest": "npm:@voidzero-dev/vite-plus-test@0.0.0-9f9a209dd123932614c8b5a568375a002e34562b"
     },
     "peerDependencyRules": {
       "allowAny": [
