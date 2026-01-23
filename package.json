@@ -106,7 +106,12 @@
     "tshy": "^3.1.0",
     "tshy-after": "^1.4.1",
     "typescript": "^5.9.3",
-    "vite-plus": "latest"
+    "vite-plus": "latest",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+  },
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@latest",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
   },
   "lint-staged": {
     "*": [
@@ -126,10 +131,8 @@
   "packageManager": "pnpm@10.28.1",
   "pnpm": {
     "overrides": {
-      "vite": "npm:@voidzero-dev/vite-plus-core@latest"
+      "vite": "npm:@voidzero-dev/vite-plus-core@latest",
+      "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
     }
-  },
-  "overrides": {
-    "vite": "npm:@voidzero-dev/vite-plus-core@latest"
   }
 }
