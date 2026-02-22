@@ -12,18 +12,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - run: corepack enable
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-
       - name: Setup Vite+
         uses: voidzero-dev/setup-vite-plus-action@v1
         with:
+          node-version: 22
           cache: true
           run-install: true
 
       - name: Build
-        run: vite run build
+        run: vp run build
 
-      - run: vite dlx pkg-pr-new publish
+      - run: vp dlx pkg-pr-new publish
