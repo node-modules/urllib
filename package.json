@@ -45,30 +45,30 @@
     "tag": "latest"
   },
   "scripts": {
-    "lint": "vite lint src test --type-aware --type-check",
+    "lint": "vp lint src test --type-aware --type-check",
     "typecheck": "tsc --noEmit && tsgo --noEmit",
-    "fmt": "vite fmt",
-    "fmtcheck": "vite fmt --check",
-    "prebuild": "vite run clean",
-    "build": "vite run build:ts && vite run build:version",
+    "fmt": "vp fmt",
+    "fmtcheck": "vp fmt --check",
+    "prebuild": "vp run clean",
+    "build": "vp run build:ts && vp run build:version",
     "build:ts": "tsc --version && tshy && tshy-after",
     "build:version": "node ./scripts/replace_urllib_version.js",
     "build:cjs:test": "cd test/cjs && rm -rf node_modules && npm link ../.. && node index.js",
     "build:esm:test": "cd test/esm && rm -rf node_modules && npm link ../.. && node index.js",
     "build:mts:test": "cd test/mts && rm -rf node_modules && npm link ../.. && tsc",
-    "build:test": "vite run build && vite run build:cjs:test && vite run build:esm:test && vite run build:mts:test && vite run test-tsc",
-    "test-tsc": "vite run test-tsc:cjs:es2021 && vite run test-tsc:cjs && vite run test-tsc:esm",
-    "test-tsc:cjs": "cd test/fixtures/ts && rm -rf node_modules && npm link ../../.. && vite run build",
-    "test-tsc:cjs:es2021": "cd test/fixtures/ts-cjs-es2021 && rm -rf node_modules && npm link ../../.. && vite run build",
-    "test-tsc:esm": "cd test/fixtures/ts-esm && rm -rf node_modules && npm link ../../.. && vite run build",
-    "test": "vite run lint -- --fix && vite test run --reporter=dot",
-    "bench": "vite test bench",
-    "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vite test run --reporter=dot --test-timeout 180000 keep-alive-header.test.ts",
+    "build:test": "vp run build && vp run build:cjs:test && vp run build:esm:test && vp run build:mts:test && vp run test-tsc",
+    "test-tsc": "vp run test-tsc:cjs:es2021 && vp run test-tsc:cjs && vp run test-tsc:esm",
+    "test-tsc:cjs": "cd test/fixtures/ts && rm -rf node_modules && npm link ../../.. && vp run build",
+    "test-tsc:cjs:es2021": "cd test/fixtures/ts-cjs-es2021 && rm -rf node_modules && npm link ../../.. && vp run build",
+    "test-tsc:esm": "cd test/fixtures/ts-esm && rm -rf node_modules && npm link ../../.. && vp run build",
+    "test": "vp run lint -- --fix && vp test run --reporter=dot",
+    "bench": "vp test bench",
+    "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vp test run --reporter=dot --test-timeout 180000 keep-alive-header.test.ts",
     "test-node16": "node examples/httpclient.cjs && node examples/search_github.cjs && node examples/timing.cjs",
-    "cov": "vite test run --reporter=dot --coverage",
-    "ci": "vite run cov && vite run prepublishOnly && npm pack && attw --pack",
+    "cov": "vp test run --reporter=dot --coverage",
+    "ci": "vp run cov && vp run prepublishOnly && npm pack && attw --pack",
     "clean": "rm -rf dist && tsc -b --clean",
-    "prepublishOnly": "vite run build",
+    "prepublishOnly": "vp run build",
     "prepare": "husky"
   },
   "dependencies": {
@@ -107,7 +107,7 @@
     "tshy-after": "^1.4.1",
     "typescript": "^5.9.3",
     "vite-plus": "latest",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@0.0.0-b1666489.20260220-0254"
+    "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
   },
   "overrides": {
     "vite": "npm:@voidzero-dev/vite-plus-core@latest",
@@ -115,8 +115,8 @@
   },
   "lint-staged": {
     "*": [
-      "vite run lint --fix",
-      "vite fmt --no-error-on-unmatched-pattern"
+      "vp run lint --fix",
+      "vp fmt --no-error-on-unmatched-pattern"
     ]
   },
   "tshy": {
