@@ -11,13 +11,13 @@
 [![pkg.pr.new](https://pkg.pr.new/badge/node-modules/urllib)](https://pkg.pr.new/~/node-modules/urllib)
 
 [npm-image]: https://img.shields.io/npm/v/urllib.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/urllib
+[npm-url]: https://npmx.dev/package/urllib
 [codecov-image]: https://codecov.io/gh/node-modules/urllib/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/node-modules/urllib
 [snyk-image]: https://snyk.io/test/npm/urllib/badge.svg?style=flat-square
 [snyk-url]: https://snyk.io/test/npm/urllib
 [download-image]: https://img.shields.io/npm/dm/urllib.svg?style=flat-square
-[download-url]: https://npmjs.org/package/urllib
+[download-url]: https://npmx.dev/package/urllib
 
 Request HTTP URLs in a complex world — basic
 and digest authentication, redirections, timeout and more.
@@ -263,7 +263,7 @@ export from [undici](https://undici.nodejs.org/#/docs/best-practices/proxy)
 import { ProxyAgent, request } from 'urllib';
 
 const proxyAgent = new ProxyAgent('http://my.proxy.com:8080');
-const response = await request('https://www.npmjs.com/package/urllib', {
+const response = await request('https://npmx.dev/package/urllib', {
   dispatcher: proxyAgent,
 });
 console.log(response.status, response.headers);
