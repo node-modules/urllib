@@ -24,17 +24,14 @@ jobs:
           cache: true
           run-install: true
 
-      - name: Run lint
-        run: vp run lint
+      - name: Check
+        run: vp run check
 
       - name: Check dedupe
         run: vp dedupe --check
 
       - name: Run typecheck
         run: vp run typecheck
-
-      - name: Run format check
-        run: vp run fmtcheck
 
       - name: Run build check
         run: vp run build
@@ -66,9 +63,6 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: true
           run-install: true
-
-      - name: Run lint
-        run: vp run lint
 
       - name: Run tests
         run: vp run ci
