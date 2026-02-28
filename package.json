@@ -58,7 +58,7 @@
     "test-tsc:cjs": "cd test/fixtures/ts && rm -rf node_modules && npm link ../../.. && vp run build",
     "test-tsc:cjs:es2021": "cd test/fixtures/ts-cjs-es2021 && rm -rf node_modules && npm link ../../.. && vp run build",
     "test-tsc:esm": "cd test/fixtures/ts-esm && rm -rf node_modules && npm link ../../.. && vp run build",
-    "test": "vp run check:fix && vp test run --reporter=dot",
+    "test": "vp run check && vp test run --reporter=dot",
     "bench": "vp test bench",
     "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vp test run --reporter=dot --test-timeout 180000 keep-alive-header.test.ts",
     "test-node16": "node examples/httpclient.cjs && node examples/search_github.cjs && node examples/timing.cjs",
