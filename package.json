@@ -45,10 +45,7 @@
     "tag": "latest"
   },
   "scripts": {
-    "lint": "vp lint src test --type-aware --type-check",
     "typecheck": "tsc --noEmit && tsgo --noEmit",
-    "fmt": "vp fmt",
-    "fmtcheck": "vp fmt --check",
     "prebuild": "vp run clean",
     "build": "vp run build:ts && vp run build:version",
     "build:ts": "tsc --version && tshy && tshy-after",
@@ -61,7 +58,7 @@
     "test-tsc:cjs": "cd test/fixtures/ts && rm -rf node_modules && npm link ../../.. && vp run build",
     "test-tsc:cjs:es2021": "cd test/fixtures/ts-cjs-es2021 && rm -rf node_modules && npm link ../../.. && vp run build",
     "test-tsc:esm": "cd test/fixtures/ts-esm && rm -rf node_modules && npm link ../../.. && vp run build",
-    "test": "vp run lint -- --fix && vp test run --reporter=dot",
+    "test": "vp run check && vp test run --reporter=dot",
     "bench": "vp test bench",
     "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vp test run --reporter=dot --test-timeout 180000 keep-alive-header.test.ts",
     "test-node16": "node examples/httpclient.cjs && node examples/search_github.cjs && node examples/timing.cjs",
@@ -69,7 +66,9 @@
     "ci": "vp run cov && vp run prepublishOnly && npm pack && attw --pack",
     "clean": "rm -rf dist && tsc -b --clean",
     "prepublishOnly": "vp run build",
-    "prepare": "husky"
+    "prepare": "husky",
+    "check": "vp check",
+    "check:fix": "vp check --fix"
   },
   "dependencies": {
     "form-data": "^4.0.5",
@@ -114,10 +113,7 @@
     "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
   },
   "lint-staged": {
-    "*": [
-      "vp run lint --fix",
-      "vp fmt --no-error-on-unmatched-pattern"
-    ]
+    "*": "vp check --fix"
   },
   "tshy": {
     "exports": {
