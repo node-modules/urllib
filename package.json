@@ -81,7 +81,6 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
-    "@eggjs/oxlint-config": "^1.0.0",
     "@eggjs/tsconfig": "^2.0.0",
     "@types/busboy": "^1.5.4",
     "@types/mime-types": "^2.1.4",
@@ -105,12 +104,12 @@
     "tshy": "^3.3.2",
     "tshy-after": "^1.4.1",
     "typescript": "^5.9.3",
-    "vite-plus": "latest",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+    "vite-plus": "^0.1.1",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.1"
   },
   "overrides": {
-    "vite": "npm:@voidzero-dev/vite-plus-core@latest",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+    "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.1",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.1"
   },
   "lint-staged": {
     "*": "vp check --fix"
@@ -127,8 +126,8 @@
   "packageManager": "pnpm@10.30.3",
   "pnpm": {
     "overrides": {
-      "vite": "npm:@voidzero-dev/vite-plus-core@latest",
-      "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+      "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.1",
+      "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.1"
     },
     "peerDependencyRules": {
       "allowAny": [
