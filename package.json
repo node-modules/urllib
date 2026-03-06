@@ -107,6 +107,10 @@
     "vite-plus": "^0.1.1",
     "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.1"
   },
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.1",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.1"
+  },
   "lint-staged": {
     "*": "vp check --fix"
   },
