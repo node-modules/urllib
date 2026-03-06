@@ -37,9 +37,6 @@ importers:
       '@arethetypeswrong/cli':
         specifier: ^0.18.2
         version: 0.18.2
-      '@eggjs/oxlint-config':
-        specifier: ^1.0.0
-        version: 1.0.0
       '@eggjs/tsconfig':
         specifier: ^2.0.0
         version: 2.0.0
@@ -157,9 +154,6 @@ packages:
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
-
-  '@eggjs/oxlint-config@1.0.0':
-    resolution: {integrity: sha512-3GfSoDftw7MS43naRk2SI7zXV6LJPrtD/S04DKOziu07jtltg5i1yn4cFuJPqS+EGBTF5bQ0kOGLd+SD4vRrmw==}
 
   '@eggjs/tsconfig@2.0.0':
     resolution: {integrity: sha512-Isxjjkjyoo2EM2iO2oT60fXEyhSQFkGlFZ05FuNjR+6LVHmhs3fbul8y3zW7ymiZWyzGClN11R0nGEFgB1pSgg==}
@@ -1937,8 +1931,6 @@ snapshots:
 
   '@colors/colors@1.5.0':
     optional: true
-
-  '@eggjs/oxlint-config@1.0.0': {}
 
   '@eggjs/tsconfig@2.0.0': {}
 
