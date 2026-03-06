@@ -23,8 +23,6 @@ export default defineConfig({
     env: {
       node: true,
     },
-    // FIXME: wait for vite-plus to fix lint extends path resolution
-    extends: ['./node_modules/@eggjs/oxlint-config/.oxlintrc.json'],
     categories: {
       correctness: 'allow',
       suspicious: 'allow',
