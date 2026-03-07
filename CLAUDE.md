@@ -137,7 +137,7 @@ Vite+ automatically detects and wraps the underlying package manager such as pnp
 - [ ] Run `vite lint`, `vite fmt`, and `vite test` to validate changes.
 <!--VITE PLUS END-->
 
-<!--injected-by-vite-plus-v0.0.0-->
+<!--injected-by-vite-plus-v0.1.1-->
 <!--VITE PLUS START-->
 
 # Using Vite+, the Unified Toolchain for the Web
