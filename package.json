@@ -66,7 +66,7 @@
     "ci": "vp run cov && vp run prepublishOnly && npm pack && attw --pack",
     "clean": "rm -rf dist && tsc -b --clean",
     "prepublishOnly": "vp run build",
-    "prepare": "husky",
+    "prepare": "vp config",
     "check": "vp check",
     "check:fix": "vp check --fix"
   },
@@ -84,9 +84,9 @@
     "@eggjs/tsconfig": "^2.0.0",
     "@types/busboy": "^1.5.4",
     "@types/mime-types": "^2.1.4",
-    "@types/node": "^22.19.11",
+    "@types/node": "^22.19.15",
     "@types/proxy": "^1.0.4",
-    "@types/qs": "^6.14.0",
+    "@types/qs": "^6.15.0",
     "@types/selfsigned": "^2.1.0",
     "@types/tar-stream": "^2.2.3",
     "@typescript/native-preview": "7.0.0-dev.20260308.1",
@@ -94,9 +94,7 @@
     "@vitest/coverage-v8": "^4.0.18",
     "busboy": "^1.6.0",
     "cross-env": "^10.1.0",
-    "husky": "^9.1.7",
     "iconv-lite": "^0.6.3",
-    "lint-staged": "^16.2.7",
     "proxy": "^1.0.2",
     "selfsigned": "^3.0.1",
     "string.prototype.towellformed": "^1.0.2",
@@ -104,15 +102,12 @@
     "tshy": "^3.3.2",
     "tshy-after": "^1.4.1",
     "typescript": "^5.9.3",
-    "vite-plus": "^0.1.1",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.1"
+    "vite-plus": "^0.1.4",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.4"
   },
   "overrides": {
     "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.1",
     "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.1"
-  },
-  "lint-staged": {
-    "*": "vp check --fix"
   },
   "tshy": {
     "exports": {
