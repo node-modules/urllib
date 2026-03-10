@@ -2,6 +2,9 @@
 import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
+  staged: {
+    '*': 'vp check --fix',
+  },
   fmt: {
     printWidth: 120,
     singleQuote: true,
@@ -19,7 +22,10 @@ export default defineConfig({
     },
   },
   lint: {
-    $schema: './node_modules/oxlint/configuration_schema.json',
+    options: {
+      typeAware: true,
+      typeCheck: true,
+    },
     env: {
       node: true,
     },
