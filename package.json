@@ -66,7 +66,7 @@
     "ci": "vp run cov && vp run prepublishOnly && npm pack && attw --pack",
     "clean": "rm -rf dist && tsc -b --clean",
     "prepublishOnly": "vp run build",
-    "prepare": "vp config",
+    "prepare": "node -e \"const v = parseInt(process.versions.node, 10); if (v >= 20) require('child_process').execSync('vp config', {stdio: 'inherit'});\"",
     "check": "vp check",
     "check:fix": "vp check --fix"
   },
