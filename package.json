@@ -102,12 +102,12 @@
     "tshy": "^3.3.2",
     "tshy-after": "^1.4.1",
     "typescript": "^5.9.3",
-    "vite-plus": "^0.1.10",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.10"
+    "vite-plus": "^0.1.11",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.11"
   },
   "overrides": {
-    "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.10",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.10"
+    "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.11",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.11"
   },
   "tshy": {
     "exports": {
@@ -121,8 +121,8 @@
   "packageManager": "pnpm@10.32.1",
   "pnpm": {
     "overrides": {
-      "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.10",
-      "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.10"
+      "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.11",
+      "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.11"
     },
     "peerDependencyRules": {
       "allowAny": [
