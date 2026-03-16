@@ -40,11 +40,13 @@ export class HttpAgent extends BaseAgent {
     const { lookup = dns.lookup, ...baseOpts } = options;
 
     const lookupFunction: LookupFunction = (hostname, dnsOptions, callback) => {
-      lookup(hostname, dnsOptions, (err, ...args: any[]) => {
+      lookup(hostname, dnsOptions, (err, ...args: Array<any>) => {
         // address will be array on Node.js >= 20
         const address = args[0];
         const family = args[1];
-        if (err) return (callback as any)(err, address, family);
+        if (err) {
+          return (callback as any)(err, address, family);
+        }
         if (options.checkAddress) {
           // dnsOptions.all set to default on Node.js >= 20, dns.lookup will return address array object
           if (typeof address === 'string') {
@@ -52,7 +54,7 @@ export class HttpAgent extends BaseAgent {
               err = new IllegalAddressError(hostname, address, family);
             }
           } else if (Array.isArray(address)) {
-            const addresses = address as { address: string; family: number }[];
+            const addresses = address as Array<{ address: string; family: number }>;
             for (const addr of addresses) {
               if (!options.checkAddress(addr.address, addr.family, hostname)) {
                 err = new IllegalAddressError(hostname, addr.address, addr.family);
@@ -77,7 +79,7 @@ export class HttpAgent extends BaseAgent {
       let hostname = originUrl.hostname;
       // [2001:db8:2de::e13] => 2001:db8:2de::e13
       if (hostname.startsWith('[') && hostname.endsWith(']')) {
-        hostname = hostname.substring(1, hostname.length - 1);
+        hostname = hostname.slice(1, hostname.length - 1);
       }
       const family = isIP(hostname);
       if (family === 4 || family === 6) {

@@ -64,6 +64,7 @@ export interface UndiciTimingInfo {
 }
 
 // keep typo compatibility
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- intentional alias for backward compat
 export interface UnidiciTimingInfo extends UndiciTimingInfo {}
 
 function noop(): void {
@@ -112,7 +113,7 @@ export type ClientOptions = {
 
 export const VERSION: string = 'VERSION';
 // 'node-urllib/4.0.0 Node.js/18.19.0 (darwin; x64)'
-export const HEADER_USER_AGENT: string = `node-urllib/${VERSION} Node.js/${process.version.substring(1)} (${process.platform}; ${process.arch})`;
+export const HEADER_USER_AGENT: string = `node-urllib/${VERSION} Node.js/${process.version.slice(1)} (${process.platform}; ${process.arch})`;
 
 function getFileName(stream: Readable): string {
   const filePath: string = (stream as any).path;
@@ -131,7 +132,7 @@ export type RequestContext = {
   socketErrorRetries: number;
   requestStartTime?: number;
   redirects: number;
-  history: string[];
+  history: Array<string>;
 };
 
 export const channels: {
@@ -232,7 +233,9 @@ export class HttpClient extends EventEmitter {
       const pool = (typeof ref.deref === 'function' ? ref.deref() : ref) as unknown as Pool & { dispatcher: Pool };
       // NOTE: pool become to { dispatcher: Pool } in undici@v7
       const stats = pool?.stats ?? pool?.dispatcher?.stats;
-      if (!stats) continue;
+      if (!stats) {
+        continue;
+      }
 
       poolStatsMap[key] = {
         connected: stats.connected,
@@ -376,7 +379,7 @@ export class HttpClient extends EventEmitter {
         bodyTimeout = args.timeout[1] ?? bodyTimeout;
       } else {
         // compatible with urllib@2 timeout string format
-        headersTimeout = bodyTimeout = typeof args.timeout === 'string' ? parseInt(args.timeout) : args.timeout;
+        headersTimeout = bodyTimeout = typeof args.timeout === 'string' ? Number.parseInt(args.timeout) : args.timeout;
       }
     }
     if (originalHeaders) {
@@ -471,7 +474,7 @@ export class HttpClient extends EventEmitter {
           requestOptions.method = 'POST';
         }
         const formData = new FormData();
-        const uploadFiles: [string, string | Readable | Buffer, string?][] = [];
+        const uploadFiles: Array<[string, string | Readable | Buffer, string?]> = [];
         if (Array.isArray(args.files)) {
           for (const [index, file] of args.files.entries()) {
             const field = index === 0 ? 'file' : `file${index}`;
@@ -637,7 +640,7 @@ export class HttpClient extends EventEmitter {
       res.status = res.statusCode = response.statusCode;
       res.statusMessage = res.statusText = STATUS_CODES[res.status] || '';
       if (res.headers['content-length']) {
-        res.size = parseInt(res.headers['content-length']);
+        res.size = Number.parseInt(res.headers['content-length']);
       }
 
       // https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
@@ -682,11 +685,11 @@ export class HttpClient extends EventEmitter {
         if (isCompressedContent && data.length > 0) {
           try {
             data = contentEncoding === 'gzip' ? gunzipSync(data) : brotliDecompressSync(data);
-          } catch (err: any) {
-            if (err.name === 'Error') {
-              err.name = 'UnzipError';
+          } catch (error: any) {
+            if (error.name === 'Error') {
+              error.name = 'UnzipError';
             }
-            throw err;
+            throw error;
           }
         }
         if (args.dataType === 'text' || args.dataType === 'html') {

@@ -76,7 +76,7 @@ describe('options.dispatcher.test.ts', () => {
       dataType: 'json',
       timing: true,
       dispatcher: agent,
-      timeout: 30000,
+      timeout: 30_000,
     });
     assert.equal(response.status, 200);
     assert.match(response.headers['content-type'] ?? '', /application\/json/);

@@ -16,7 +16,7 @@ export type SocketInfo = {
   connectedTime?: Date;
   connectErrorTime?: Date;
   lastRequestEndTime?: Date;
-  attemptedRemoteAddresses?: string[];
+  attemptedRemoteAddresses?: Array<string>;
   connectProtocol?: string;
   connectHost?: string;
   connectPort?: string;
@@ -59,7 +59,7 @@ export type RawResponseWithMeta = Readable & {
   aborted: boolean;
   rt: number;
   keepAliveSocket: boolean;
-  requestUrls: string[];
+  requestUrls: Array<string>;
   retries: number;
   socketErrorRetries: number;
 };
@@ -74,6 +74,6 @@ export type HttpClientResponse<T = any> = {
   headers: IncomingHttpHeaders;
   url: string;
   redirected: boolean;
-  requestUrls: string[];
+  requestUrls: Array<string>;
   res: RawResponseWithMeta;
 };

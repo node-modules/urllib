@@ -89,7 +89,7 @@ describe('options.digestAuth.test.ts', () => {
     const response = await urllib.request(url, {
       digestAuth: 'user:passwd',
       dataType: 'json',
-      timeout: 10000,
+      timeout: 10_000,
     });
     console.log(response.headers);
     assert.equal(response.status, 200);
@@ -104,7 +104,7 @@ describe('options.digestAuth.test.ts', () => {
     const response = await urllib.request(url, {
       digestAuth: 'user:passwdfail',
       dataType: 'json',
-      timeout: 10000,
+      timeout: 10_000,
     });
     // console.log(response.headers);
     assert(response.headers['www-authenticate']);

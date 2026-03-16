@@ -33,7 +33,9 @@ type SocketExtend = Socket & {
 
 let kSocketReset: symbol;
 function formatSocket(socket: SocketExtend) {
-  if (!socket) return socket;
+  if (!socket) {
+    return socket;
+  }
   if (!kSocketReset) {
     const symbols = Object.getOwnPropertySymbols(socket);
     for (const symbol of symbols) {
@@ -68,7 +70,9 @@ Socket.prototype.destroy = function (err?: any) {
 };
 
 function getRequestOpaque(request: DiagnosticsChannel.Request, kHandler?: symbol) {
-  if (!kHandler) return;
+  if (!kHandler) {
+    return;
+  }
   const handler = Reflect.get(request, kHandler);
   // maxRedirects = 0 will get [Symbol(handler)]: RequestHandler {
   // responseHeaders: null,
@@ -84,7 +88,9 @@ function getRequestOpaque(request: DiagnosticsChannel.Request, kHandler?: symbol
 
 export function initDiagnosticsChannel(): void {
   // make sure init global DiagnosticsChannel once
-  if (initedDiagnosticsChannel) return;
+  if (initedDiagnosticsChannel) {
+    return;
+  }
   initedDiagnosticsChannel = true;
 
   let kHandler: symbol;
@@ -103,7 +109,9 @@ export function initDiagnosticsChannel(): void {
     }
     const opaque = getRequestOpaque(request, kHandler);
     // ignore non HttpClient Request
-    if (!opaque || !opaque[symbols.kRequestId]) return;
+    if (!opaque || !opaque[symbols.kRequestId]) {
+      return;
+    }
 
     Reflect.set(request, symbols.kRequestInternalOpaque, opaque);
     debug(
@@ -115,7 +123,9 @@ export function initDiagnosticsChannel(): void {
       request.path,
       request.headers,
     );
-    if (!opaque[symbols.kEnableRequestTiming]) return;
+    if (!opaque[symbols.kEnableRequestTiming]) {
+      return;
+    }
     opaque[symbols.kRequestTiming].queuing = performanceTime(opaque[symbols.kRequestStartTime]);
   });
 
@@ -192,7 +202,9 @@ export function initDiagnosticsChannel(): void {
       formatSocket(socket),
     );
 
-    if (!opaque[symbols.kEnableRequestTiming]) return;
+    if (!opaque[symbols.kEnableRequestTiming]) {
+      return;
+    }
     opaque[symbols.kRequestTiming].requestHeadersSent = performanceTime(opaque[symbols.kRequestStartTime]);
     // first socket need to calculate the connected time
     if (socket[symbols.kHandledRequests] === 1) {
@@ -213,7 +225,9 @@ export function initDiagnosticsChannel(): void {
     }
 
     debug('[%s] Request#%d send body', name, opaque[symbols.kRequestId]);
-    if (!opaque[symbols.kEnableRequestTiming]) return;
+    if (!opaque[symbols.kEnableRequestTiming]) {
+      return;
+    }
     opaque[symbols.kRequestTiming].requestSent = performanceTime(opaque[symbols.kRequestStartTime]);
   });
 
@@ -248,7 +262,9 @@ export function initDiagnosticsChannel(): void {
       );
     }
 
-    if (!opaque[symbols.kEnableRequestTiming]) return;
+    if (!opaque[symbols.kEnableRequestTiming]) {
+      return;
+    }
     opaque[symbols.kRequestTiming].waiting = performanceTime(opaque[symbols.kRequestStartTime]);
   });
 
@@ -263,7 +279,9 @@ export function initDiagnosticsChannel(): void {
 
     debug('[%s] Request#%d get response body and trailers', name, opaque[symbols.kRequestId]);
 
-    if (!opaque[symbols.kEnableRequestTiming]) return;
+    if (!opaque[symbols.kEnableRequestTiming]) {
+      return;
+    }
     opaque[symbols.kRequestTiming].contentDownload = performanceTime(opaque[symbols.kRequestStartTime]);
   });
 

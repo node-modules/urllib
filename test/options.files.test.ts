@@ -233,11 +233,11 @@ describe('options.files.test.ts', () => {
 
   it('should upload a file with args.data success', async () => {
     const stat = await fs.stat(__filename);
-    const largeFormValue = await fs.readFile(__filename, 'utf-8');
+    const largeFormValue = await fs.readFile(__filename, 'utf8');
     const txtEmoji = path.join(__dirname, 'fixtures', '😄foo😭.txt');
     const txtEmojiStat = await fs.stat(txtEmoji);
     const txt = path.join(__dirname, 'fixtures', 'foo.txt');
-    const txtValue = await fs.readFile(txt, 'utf-8');
+    const txtValue = await fs.readFile(txt, 'utf8');
     const response = await urllib.request(`${_url}multipart`, {
       method: 'HEAD',
       files: [__filename, txtEmoji],

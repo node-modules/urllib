@@ -11,7 +11,7 @@ describe('HttpClient Benchmarks', () => {
   bench('create HttpClient with defaultArgs', () => {
     new HttpClient({
       defaultArgs: {
-        timeout: 30000,
+        timeout: 30_000,
         headers: {
           'x-custom-header': 'benchmark',
         },
@@ -22,7 +22,7 @@ describe('HttpClient Benchmarks', () => {
   bench('create HttpClient with connect options', () => {
     new HttpClient({
       connect: {
-        timeout: 10000,
+        timeout: 10_000,
         rejectUnauthorized: true,
       },
     });

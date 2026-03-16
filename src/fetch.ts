@@ -109,7 +109,9 @@ export class FetchFactory {
       const pool = (typeof ref.deref === 'function' ? ref.deref() : ref) as unknown as Pool & { dispatcher: Pool };
       // NOTE: pool become to { dispatcher: Pool } in undici@v7
       const stats = pool?.stats ?? pool?.dispatcher?.stats;
-      if (!stats) continue;
+      if (!stats) {
+        continue;
+      }
 
       poolStatsMap[key] = {
         connected: stats.connected,
@@ -223,23 +225,23 @@ export class FetchFactory {
       await this.#opaqueLocalStorage.run(internalOpaque, async () => {
         res = await UndiciFetch(request);
       });
-    } catch (e: any) {
-      updateSocketInfo(socketInfo, internalOpaque, e);
+    } catch (error: any) {
+      updateSocketInfo(socketInfo, internalOpaque, error);
       urllibResponse.rt = performanceTime(requestStartTime);
-      debug('Request#%d throw error: %s', requestId, e);
+      debug('Request#%d throw error: %s', requestId, error);
       channels.fetchResponse.publish({
         fetch: fetchMeta,
-        error: e,
+        error: error,
         fetchOpaque: internalOpaque,
       } as FetchResponseDiagnosticsMessage);
       channels.response.publish({
         request: reqMeta,
         response: urllibResponse,
-        error: e,
+        error: error,
         isSentByFetch: true,
         fetchOpaque: internalOpaque,
       } as ResponseDiagnosticsMessage);
-      throw e;
+      throw error;
     }
 
     // get undici internal response
@@ -250,7 +252,7 @@ export class FetchFactory {
     urllibResponse.status = urllibResponse.statusCode = res!.status;
     urllibResponse!.statusMessage = res!.statusText;
     if (urllibResponse.headers['content-length']) {
-      urllibResponse.size = parseInt(urllibResponse.headers['content-length']);
+      urllibResponse.size = Number.parseInt(urllibResponse.headers['content-length']);
     }
     urllibResponse.rt = performanceTime(requestStartTime);
     debug(

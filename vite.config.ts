@@ -154,7 +154,7 @@ export default defineConfig({
   // plugins: [codspeedPlugin()],
   test: {
     include: ['test/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    testTimeout: 60000,
+    testTimeout: 60_000,
     coverage: {
       include: ['src'],
     },

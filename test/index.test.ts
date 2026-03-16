@@ -203,7 +203,7 @@ describe('index.test.ts', () => {
     it('should mocking intercept work', async () => {
       assert.equal(typeof getGlobalDispatcher, 'function');
       assert(getGlobalDispatcher());
-      const mockPool = mockAgent.get(_url.substring(0, _url.length - 1));
+      const mockPool = mockAgent.get(_url.slice(0, _url.length - 1));
       mockPool
         .intercept({
           path: '/foo',
@@ -285,7 +285,7 @@ describe('index.test.ts', () => {
     });
 
     it('should mocking intercept work with readable', async () => {
-      const mockPool = mockAgent.get(_url.substring(0, _url.length - 1));
+      const mockPool = mockAgent.get(_url.slice(0, _url.length - 1));
       // mock response stream
       mockPool
         .intercept({
@@ -324,7 +324,7 @@ describe('index.test.ts', () => {
       const oldAgent = httpClient.getDispatcher();
       assert(oldAgent);
       httpClient.setDispatcher(mockAgent);
-      const mockPool = mockAgent.get(_url.substring(0, _url.length - 1));
+      const mockPool = mockAgent.get(_url.slice(0, _url.length - 1));
       mockPool
         .intercept({
           path: '/foo',

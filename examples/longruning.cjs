@@ -5,7 +5,7 @@ const httpClient = new HttpClient({
 });
 
 async function main() {
-  for (let i = 0; i < 1000000; i++) {
+  for (let i = 0; i < 1_000_000; i++) {
     // await httpClient.request('https://registry.npmmirror.com/');
     // console.log(r.status, r.headers, r.res.timing);
     try {
@@ -15,8 +15,8 @@ async function main() {
         // console.log(r.status, r.headers, r.data.length, r.res.timing);
         console.log(i, r.status, process.memoryUsage());
       }
-    } catch (err) {
-      console.error('%s error: %s', i, err.message);
+    } catch (error) {
+      console.error('%s error: %s', i, error.message);
     }
   }
 }
@@ -25,9 +25,9 @@ main()
   .then(() => {
     console.log('main end');
   })
-  .catch((err) => {
-    console.error('main error throw: %s', err);
-    console.error(err);
+  .catch((error) => {
+    console.error('main error throw: %s', error);
+    console.error(error);
     process.exit(1);
   });
 

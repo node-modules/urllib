@@ -146,7 +146,7 @@ describe('options.streaming.test.ts', () => {
     // console.log(response.headers);
     assert(isReadable(response.res as any));
     const bytes = await readableToBytes(response.res);
-    assert.equal(bytes.length, 1024102400);
+    assert.equal(bytes.length, 1_024_102_400);
   });
 
   it('should save big streaming response with highWaterMark', async () => {

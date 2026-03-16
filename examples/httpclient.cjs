@@ -5,7 +5,7 @@ tryHttpclient(HttpClient, 'urllib');
 function tryHttpclient(HttpClient, name) {
   const options = {
     method: 'GET',
-    timeout: 10000,
+    timeout: 10_000,
     timing: true,
   };
   const urllib = new HttpClient();
@@ -22,7 +22,7 @@ function tryHttpclient(HttpClient, name) {
     .then(function () {
       return urllib.request('https://nodejs.org/en/', options);
     })
-    .catch(function (err) {
-      console.error('catch', err);
+    .catch(function (error) {
+      console.error('catch', error);
     });
 }

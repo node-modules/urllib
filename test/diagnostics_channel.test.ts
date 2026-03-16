@@ -48,7 +48,9 @@ describe('diagnostics_channel.test.ts', () => {
         }
       }
       const handler = request[kHandler];
-      if (!handler) return;
+      if (!handler) {
+        return;
+      }
       let opaque = handler.opaque || handler.opts?.opaque;
       assert(opaque);
       opaque = opaque[symbols.kRequestOriginalOpaque];

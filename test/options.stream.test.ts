@@ -53,7 +53,7 @@ describe('options.stream.test.ts', () => {
       assert.equal(response.data.headers['transfer-encoding'], 'chunked');
     }
     assert.match(response.data.requestBody, /\('should post with stream', async \(\) => {/);
-    const raw = await readFile(__filename, 'utf-8');
+    const raw = await readFile(__filename, 'utf8');
     assert.equal(response.data.requestBody, raw);
   });
 
@@ -76,7 +76,7 @@ describe('options.stream.test.ts', () => {
     assert.equal(response2.status, 200);
     assert(!response2.headers['content-type']);
     assert.match(response2.data.requestBody, /\('should post with stream', async \(\) => {/);
-    const raw = await readFile(__filename, 'utf-8');
+    const raw = await readFile(__filename, 'utf8');
     assert.equal(response2.data.requestBody, raw);
   });
 
@@ -120,7 +120,9 @@ describe('options.stream.test.ts', () => {
         // console.error(err);
         assert.equal(err.name, 'HttpClientRequestTimeoutError');
         assert.equal(err.message, 'Request timeout for 100 ms');
-        err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
+        if (err.cause) {
+          assert.equal(err.cause.name, 'HeadersTimeoutError');
+        }
         // stream should be close after request error fire
         assert.equal(stream.destroyed, true);
         return true;
@@ -145,7 +147,9 @@ describe('options.stream.test.ts', () => {
         // console.error(err);
         assert.equal(err.name, 'HttpClientRequestTimeoutError');
         assert.equal(err.message, 'Request timeout for 100 ms');
-        err.cause && assert.equal(err.cause.name, 'HeadersTimeoutError');
+        if (err.cause) {
+          assert.equal(err.cause.name, 'HeadersTimeoutError');
+        }
         // stream should be close after request error fire
         assert.equal(stream.destroyed, true);
         return true;

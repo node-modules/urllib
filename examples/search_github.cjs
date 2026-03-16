@@ -1,12 +1,12 @@
 // curl https://api.github.com/legacy/user/search/location:china
 
-var urllib = require('../');
+const urllib = require('../');
 
 urllib
   .request('https://api.github.com/legacy/user/search/location:china', {
     dataType: 'json',
     timing: true,
-    timeout: 10000,
+    timeout: 10_000,
   })
   .then((response) => {
     console.log(response);
