@@ -20,6 +20,7 @@ jobs:
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@3fbe80048f0989d3c6c48eabe962eaf9a42bf3d7
         with:
+          version: alpha
           node-version: '24'
           cache: true
           run-install: true
@@ -60,6 +61,7 @@ jobs:
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@3fbe80048f0989d3c6c48eabe962eaf9a42bf3d7
         with:
+          version: alpha
           node-version: ${{ matrix.node }}
           cache: true
           run-install: true
