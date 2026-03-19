@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@79982940a0074b3ab4efde92bf0ceba71230424b
+        uses: voidzero-dev/setup-vp@v1
         with:
           version: alpha
           node-version: '24'
@@ -59,7 +59,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@79982940a0074b3ab4efde92bf0ceba71230424b
+        uses: voidzero-dev/setup-vp@v1
         with:
           version: alpha
           node-version: ${{ matrix.node }}
