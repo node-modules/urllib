@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "rootDir": "src",
     "outDir": "dist",
     "skipLibCheck": false,
     "module": "NodeNext",
