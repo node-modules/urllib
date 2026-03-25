@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
-      - run: npm install
+      - run: npm install --legacy-peer-deps
       - name: Patch vitest imports
         run: |
           for f in test/*.test.ts; do [ -e "$f" ] || exit 0; sed --version >/dev/null 2>&1 && sed -i "s@'vite-plus/test'@'vitest'@g" "$f" || sed -i '' "s@'vite-plus/test'@'vitest'@g" "$f"; done
