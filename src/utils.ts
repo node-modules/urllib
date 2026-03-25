@@ -251,6 +251,7 @@ export function patchForNode16(): void {
   if (String.prototype.toWellFormed === undefined) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
+    // eslint-disable-next-line no-extend-native
     Object.defineProperty(String.prototype, 'toWellFormed', {
       value: function () {
         return toUSVString(this);
@@ -266,6 +267,7 @@ export function patchForNode16(): void {
   if (String.prototype.isWellFormed === undefined) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
+    // eslint-disable-next-line no-extend-native
     Object.defineProperty(String.prototype, 'isWellFormed', {
       value: function () {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
