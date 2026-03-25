@@ -101,7 +101,7 @@
     "tar-stream": "^2.2.0",
     "tshy": "^3.3.2",
     "tshy-after": "^1.4.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vite-plus": "^0.1.14",
     "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.14"
   },
