@@ -139,7 +139,7 @@ describe('options.followRedirect.test.ts', () => {
   it('should disable auto redirect', async () => {
     const requestURL = `${_url}redirect-full-301`;
     const { data, res, redirected, url } = await urllib.request(requestURL, {
-      timeout: 30000,
+      timeout: 30_000,
       followRedirect: false,
       dataType: 'text',
     });

@@ -53,7 +53,7 @@ describe('options.fixJSONCtlChars.test.ts', () => {
     const response = await urllib.request(`${_url}json_with_t`, {
       dataType: 'json',
       fixJSONCtlChars(str) {
-        return str.replace(/\t/g, '\\t');
+        return str.replaceAll('\t', String.raw`\t`);
       },
     });
     assert.equal(response.status, 200);

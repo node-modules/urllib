@@ -114,17 +114,17 @@ describe('options.dataType.test.ts', () => {
           if (nodeMajorVersion() >= 21) {
             assert.equal(
               err.message,
-              'Expected \',\' or \'}\' after property value in JSON at position 9 (line 1 column 10) (data json format: "{\\"foo\\":\\"\\"")',
+              String.raw`Expected ',' or '}' after property value in JSON at position 9 (line 1 column 10) (data json format: "{\"foo\":\"\"")`,
             );
           } else {
             // new message on Node.js >= 19
             assert.equal(
               err.message,
-              'Expected \',\' or \'}\' after property value in JSON at position 9 (data json format: "{\\"foo\\":\\"\\"")',
+              String.raw`Expected ',' or '}' after property value in JSON at position 9 (data json format: "{\"foo\":\"\"")`,
             );
           }
         } else {
-          assert.equal(err.message, 'Unexpected end of JSON input (data json format: "{\\"foo\\":\\"\\"")');
+          assert.equal(err.message, String.raw`Unexpected end of JSON input (data json format: "{\"foo\":\"\"")`);
         }
         assert.equal(err.res.status, 200);
         assert.equal(err.res.headers['content-type'], 'application/json');

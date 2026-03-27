@@ -123,7 +123,7 @@ describe('HttpClient.test.ts', () => {
       ]);
       // console.log(httpClient.getDispatcherPoolStats());
       assert.equal(httpClient.getDispatcherPoolStats()['https://registry.npmmirror.com'].connected, 4);
-      assert(httpClient.getDispatcherPoolStats()[_url.substring(0, _url.length - 1)].connected > 1);
+      assert(httpClient.getDispatcherPoolStats()[_url.slice(0, _url.length - 1)].connected > 1);
     });
 
     it.skipIf(process.version.startsWith('v16.'))('should not exit after other side closed error', async () => {
@@ -312,7 +312,9 @@ describe('HttpClient.test.ts', () => {
       const httpclient = new HttpClient({
         checkAddress() {
           count++;
-          if (count === 1) return false;
+          if (count === 1) {
+            return false;
+          }
           return true;
         },
       });
@@ -355,7 +357,9 @@ describe('HttpClient.test.ts', () => {
         },
         checkAddress() {
           count++;
-          if (count === 1) return false;
+          if (count === 1) {
+            return false;
+          }
           return true;
         },
       });
@@ -386,7 +390,9 @@ describe('HttpClient.test.ts', () => {
       const httpclient = new HttpClient({
         checkAddress() {
           count++;
-          if (count === 1) return false;
+          if (count === 1) {
+            return false;
+          }
           return true;
         },
       });

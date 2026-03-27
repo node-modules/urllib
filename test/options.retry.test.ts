@@ -78,7 +78,7 @@ describe('options.retry.test.ts', () => {
     assert.equal(response.data, 'Mock status 500');
     let requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
     assert.equal(requestHeaders['x-urllib-retry'], '2/2');
-    assert(parseInt(response.headers['x-requests-persocket'] as string) >= 2);
+    assert(Number.parseInt(response.headers['x-requests-persocket'] as string) >= 2);
     // console.log(response.headers);
 
     response = await urllib.request(`${_url}mock-status?status=500`, {
@@ -90,7 +90,7 @@ describe('options.retry.test.ts', () => {
     // console.log(response.headers);
     requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
     assert.equal(requestHeaders['x-urllib-retry'], '1/1');
-    assert(parseInt(response.headers['x-requests-persocket'] as string) >= 2);
+    assert(Number.parseInt(response.headers['x-requests-persocket'] as string) >= 2);
 
     response = await urllib.request(`${_url}mock-status?status=500`, {
       dataType: 'text',
@@ -101,7 +101,7 @@ describe('options.retry.test.ts', () => {
     // console.log(response.headers);
     requestHeaders = JSON.parse(response.headers['x-request-headers'] as string);
     assert.equal(requestHeaders['x-urllib-retry'], '5/5');
-    assert(parseInt(response.headers['x-requests-persocket'] as string) >= 2);
+    assert(Number.parseInt(response.headers['x-requests-persocket'] as string) >= 2);
   });
 
   it('should custom isRetry', async () => {

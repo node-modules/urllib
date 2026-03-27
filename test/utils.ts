@@ -6,7 +6,7 @@ import { Readable } from 'node:stream';
 import { ReadableStream } from 'node:stream/web';
 
 export async function readableToBytes(stream: Readable | ReadableStream): Promise<Buffer> {
-  const chunks: Buffer[] = [];
+  const chunks: Array<Buffer> = [];
   let chunk: Buffer;
   for await (chunk of stream) {
     chunks.push(chunk);
@@ -38,7 +38,7 @@ export async function createTempfile(
 }
 
 export function nodeMajorVersion(): number {
-  return parseInt(process.versions.node.split('.')[0]);
+  return Number.parseInt(process.versions.node.split('.')[0]);
 }
 
 export function isWindows(): boolean {

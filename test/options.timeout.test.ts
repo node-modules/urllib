@@ -152,7 +152,9 @@ describe('options.timeout.test.ts', () => {
         assert.equal(err.name, 'HttpClientRequestTimeoutError');
         assert.equal(err.message, 'Request timeout for 500 ms');
         assert.equal(err.res.status, 200);
-        err.cause && assert.equal(err.cause.name, 'BodyTimeoutError');
+        if (err.cause) {
+          assert.equal(err.cause.name, 'BodyTimeoutError');
+        }
         return true;
       },
     );
@@ -172,7 +174,9 @@ describe('options.timeout.test.ts', () => {
         assert.equal(err.res!.status, -1);
         assert(err.headers);
         assert.equal(err.status, -1);
-        err.cause && assert.equal((err.cause as any).name, 'HeadersTimeoutError');
+        if (err.cause) {
+          assert.equal((err.cause as any).name, 'HeadersTimeoutError');
+        }
         return true;
       },
     );

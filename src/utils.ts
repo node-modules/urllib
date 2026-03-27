@@ -11,19 +11,19 @@ import type { SocketInfo } from './Response.js';
 import symbols from './symbols.js';
 
 const JSONCtlCharsMap: Record<string, string> = {
-  '"': '\\"', // \u0022
-  '\\': '\\\\', // \u005c
-  '\b': '\\b', // \u0008
-  '\f': '\\f', // \u000c
-  '\n': '\\n', // \u000a
-  '\r': '\\r', // \u000d
-  '\t': '\\t', // \u0009
+  '"': String.raw`\"`, // \u0022
+  '\\': String.raw`\\`, // \u005c
+  '\b': String.raw`\b`, // \u0008
+  '\f': String.raw`\f`, // \u000c
+  '\n': String.raw`\n`, // \u000a
+  '\r': String.raw`\r`, // \u000d
+  '\t': String.raw`\t`, // \u0009
 };
-/* eslint no-control-regex: "off"*/
+// eslint-disable-next-line no-control-regex -- intentional control character matching for JSON sanitization
 const JSONCtlCharsRE = /[\u0000-\u001F\u005C]/g;
 
 function replaceOneChar(c: string) {
-  return JSONCtlCharsMap[c] || '\\u' + (c.charCodeAt(0) + 0x10000).toString(16).substring(1);
+  return JSONCtlCharsMap[c] || String.raw`\u` + (c.charCodeAt(0) + 0x1_00_00).toString(16).slice(1);
 }
 
 function replaceJSONCtlChars(value: string) {
@@ -40,22 +40,22 @@ export function parseJSON(data: string, fixJSONCtlChars?: FixJSONCtlChars): unkn
   }
   try {
     data = JSON.parse(data);
-  } catch (err: any) {
-    if (err.name === 'SyntaxError') {
-      err.name = 'JSONResponseFormatError';
+  } catch (error: any) {
+    if (error.name === 'SyntaxError') {
+      error.name = 'JSONResponseFormatError';
     }
     if (data.length > 1024) {
       // show 0~512 ... -512~end data
-      err.message +=
+      error.message +=
         ' (data json format: ' +
         JSON.stringify(data.slice(0, 512)) +
         ' ...skip... ' +
         JSON.stringify(data.slice(data.length - 512)) +
         ')';
     } else {
-      err.message += ' (data json format: ' + JSON.stringify(data) + ')';
+      error.message += ' (data json format: ' + JSON.stringify(data) + ')';
     }
-    throw err;
+    throw error;
   }
   return data;
 }
@@ -100,7 +100,7 @@ export function digestAuthHeader(method: string, uri: string, wwwAuthenticate: s
   for (const part of parts) {
     const m = part.match(AUTH_KEY_VALUE_RE);
     if (m) {
-      opts[m[1]] = m[2].replace(/["']/g, '');
+      opts[m[1]] = m[2].replaceAll(/["']/g, '');
     }
   }
 
@@ -110,11 +110,11 @@ export function digestAuthHeader(method: string, uri: string, wwwAuthenticate: s
 
   let qop = opts.qop || '';
   const index = userpass.indexOf(':');
-  const user = userpass.substring(0, index);
-  const pass = userpass.substring(index + 1);
+  const user = userpass.slice(0, index);
+  const pass = userpass.slice(index + 1);
 
   let nc = String(++NC);
-  nc = `${NC_PAD.substring(nc.length)}${nc}`;
+  nc = `${NC_PAD.slice(nc.length)}${nc}`;
   const cnonce = randomBytes(8).toString('hex');
 
   const ha1 = md5(`${user}:${opts.realm}:${pass}`);
@@ -151,7 +151,9 @@ export function performanceTime(startTime: number, now?: number): number {
 }
 
 export function isReadable(stream: any): boolean {
-  if (typeof Readable.isReadable === 'function') return Readable.isReadable(stream);
+  if (typeof Readable.isReadable === 'function') {
+    return Readable.isReadable(stream);
+  }
   // patch from node
   // https://github.com/nodejs/node/blob/1287530385137dda1d44975063217ccf90759475/lib/internal/streams/utils.js#L119
   // simple way https://github.com/sindresorhus/is-stream/blob/main/index.js
@@ -219,28 +221,28 @@ export function convertHeader(headers: Headers): IncomingHttpHeaders {
 
 // support require from Node.js 16
 export function patchForNode16(): void {
-  if (typeof global.ReadableStream === 'undefined') {
+  if (global.ReadableStream === undefined) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     global.ReadableStream = ReadableStream;
   }
-  if (typeof global.TransformStream === 'undefined') {
+  if (global.TransformStream === undefined) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     global.TransformStream = TransformStream;
   }
-  if (typeof global.Blob === 'undefined') {
+  if (global.Blob === undefined) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     global.Blob = Blob;
   }
-  if (typeof global.DOMException === 'undefined') {
+  if (global.DOMException === undefined) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     global.DOMException = getDOMExceptionClass();
   }
   // multi undici version in node version less than 20 https://github.com/nodejs/undici/issues/4374
-  if (typeof global.File === 'undefined') {
+  if (global.File === undefined) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     global.File = File;
@@ -287,7 +289,7 @@ function getDOMExceptionClass() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     atob(0);
-  } catch (err: any) {
-    return err.constructor;
+  } catch (error: any) {
+    return error.constructor;
   }
 }

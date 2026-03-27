@@ -87,7 +87,7 @@ describe('options.data.test.ts', () => {
       response.data.url,
       '/?sql=SELECT%20%2A%20from%20table&data=%E5%93%88%E5%93%88&foo%5Bbar%5D=bar%20value&foo%5Barray%5D%5B0%5D=1&foo%5Barray%5D%5B1%5D=2&foo%5Barray%5D%5B2%5D=3',
     );
-    const query = qs.parse(response.data.url.substring(2));
+    const query = qs.parse(response.data.url.slice(2));
     const url = new URL(response.data.href);
     assert.equal(url.searchParams.get('sql'), 'SELECT * from table');
     assert.equal(url.searchParams.get('data'), '哈哈');
@@ -127,7 +127,7 @@ describe('options.data.test.ts', () => {
       response.data.url,
       '/ok?hello=1&sql=SELECT%20%2A%20from%20table&data=%E5%93%88%E5%93%88&foo%5Bbar%5D=bar%20value&foo%5Barray%5D%5B0%5D=1&foo%5Barray%5D%5B1%5D=2&foo%5Barray%5D%5B2%5D=3',
     );
-    const query = qs.parse(response.data.url.substring(4));
+    const query = qs.parse(response.data.url.slice(4));
     const url = new URL(response.data.href);
     assert.equal(url.searchParams.get('hello'), '1');
     assert.equal(url.searchParams.get('sql'), 'SELECT * from table');

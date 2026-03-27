@@ -89,7 +89,7 @@ export type RequestOptions = {
    * Defaults is `5000`, both are 5 seconds. You can use timeout: 5000 to tell urllib use same timeout on two phase or set them separately such as
    * timeout: [3000, 5000], which will set connecting timeout to 3s and response 5s.
    */
-  timeout?: number | number[];
+  timeout?: number | Array<number>;
   /**
    * Default is `4000`,  4 seconds - The timeout after which a socket without active requests will time out.
    * Monitors time between activity on a connected socket.
@@ -112,7 +112,7 @@ export type RequestOptions = {
   /** Format the redirect url by your self. Default is url.resolve(from, to). */
   formatRedirectUrl?: (a: any, b: any) => void;
   /** Before request hook, you can change every thing here. */
-  beforeRequest?: (...args: any[]) => void;
+  beforeRequest?: (...args: Array<any>) => void;
   /** Accept `gzip, br` response content and auto decode it, default is `false`. */
   compressed?: boolean;
   /**

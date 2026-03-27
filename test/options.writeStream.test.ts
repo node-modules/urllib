@@ -45,7 +45,7 @@ describe('options.writeStream.test.ts', () => {
     // console.log(response.headers);
     assert.equal(response.headers['content-length'], '1024123');
     const stats = await stat(tmpfile);
-    assert.equal(stats.size, 1024123);
+    assert.equal(stats.size, 1_024_123);
   });
 
   it('should work with compressed=true/false', async () => {
@@ -59,7 +59,7 @@ describe('options.writeStream.test.ts', () => {
     assert.equal(response.data, null);
     // console.log(response.headers);
     // writeStream is decompressed
-    let data = await readFile(tmpfile, 'utf-8');
+    let data = await readFile(tmpfile, 'utf8');
     assert.match(data, /export async function startServer/);
 
     writeStream = createWriteStream(tmpfile);

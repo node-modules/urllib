@@ -11,13 +11,13 @@ async function main() {
     try {
       const r = await request('https://edgeupdates.microsoft.com/api/products');
       console.log(r.statusCode, r.headers, (await r.body.blob()).size);
-    } catch (err) {
+    } catch (error) {
       // console.error(err);
       // throw err;
-      if (err.code === 'UND_ERR_SOCKET') {
+      if (error.code === 'UND_ERR_SOCKET') {
         continue;
       } else {
-        throw err;
+        throw error;
       }
     }
   }
@@ -27,8 +27,8 @@ main()
   .then(() => {
     console.log('main end');
   })
-  .catch((err) => {
-    console.error('main error throw: %s', err);
+  .catch((error) => {
+    console.error('main error throw: %s', error);
     // console.error(err);
     process.exit(1);
   });

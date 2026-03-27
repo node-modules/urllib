@@ -26,10 +26,10 @@ describe('keep-alive-header.test.ts', () => {
 
   it('should handle Keep-Alive header and not throw reset error on 1s keepalive agent', async () => {
     let count = 0;
-    const max = process.env.TEST_KEEPALIVE_COUNT ? parseInt(process.env.TEST_KEEPALIVE_COUNT) : 3;
+    const max = process.env.TEST_KEEPALIVE_COUNT ? Number.parseInt(process.env.TEST_KEEPALIVE_COUNT) : 3;
     let otherSideClosed = 0;
     let readECONNRESET = 0;
-    const origin = _url.substring(0, _url.length - 1);
+    const origin = _url.slice(0, _url.length - 1);
     while (count < max) {
       count++;
       try {
@@ -91,7 +91,7 @@ describe('keep-alive-header.test.ts', () => {
         assert.equal(response.headers.connection, 'keep-alive');
         assert.equal(response.headers['keep-alive'], 'timeout=2');
         assert(
-          parseInt(response.headers['x-requests-persocket'] as string) >= 1,
+          Number.parseInt(response.headers['x-requests-persocket'] as string) >= 1,
           response.headers['x-requests-persocket'] as string,
         );
         await sleep(keepAliveTimeout / 2);
@@ -138,7 +138,7 @@ describe('keep-alive-header.test.ts', () => {
         assert.equal(response.headers.connection, 'keep-alive');
         assert.equal(response.headers['keep-alive'], 'timeout=2');
         assert(
-          parseInt(response.headers['x-requests-persocket'] as string) >= 1,
+          Number.parseInt(response.headers['x-requests-persocket'] as string) >= 1,
           response.headers['x-requests-persocket'] as string,
         );
         // console.log('before sleep stats: %o', httpClient.getDispatcherPoolStats());
@@ -160,15 +160,15 @@ describe('keep-alive-header.test.ts', () => {
           assert(httpClient.getDispatcherPoolStats()[origin].free <= 2);
           assert.equal(httpClient.getDispatcherPoolStats()[origin].size, 0);
         }
-      } catch (err: any) {
-        if (err.message === 'other side closed') {
-          console.log(err);
+      } catch (error: any) {
+        if (error.message === 'other side closed') {
+          console.log(error);
           otherSideClosed++;
-        } else if (err.message === 'read ECONNRESET') {
-          console.log(err);
+        } else if (error.message === 'read ECONNRESET') {
+          console.log(error);
           readECONNRESET++;
         } else {
-          throw err;
+          throw error;
         }
       }
     }
