@@ -4,10 +4,10 @@ import { setTimeout as sleep } from 'node:timers/promises';
 
 import { Request } from 'undici';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
-import { isBun } from '../src/HttpClient.js';
 
 import { fetch, FetchFactory } from '../src/fetch.js';
 import type { FetchDiagnosticsMessage, FetchResponseDiagnosticsMessage } from '../src/fetch.js';
+import { isBun } from '../src/HttpClient.js';
 import type { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../src/HttpClient.js';
 import { startServer } from './fixtures/server.js';
 

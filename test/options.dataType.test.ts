@@ -2,8 +2,8 @@ import { strict as assert } from 'node:assert';
 
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
-import urllib from '../src/index.js';
 import { isBun } from '../src/HttpClient.js';
+import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion, readableToBytes } from './utils.js';
 

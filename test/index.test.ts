@@ -4,6 +4,7 @@ import { parse as urlparse } from 'node:url';
 
 import { describe, it, beforeAll, afterAll, afterEach, beforeEach } from 'vite-plus/test';
 
+import { isBun } from '../src/HttpClient.js';
 import urllib, {
   HttpClient,
   getDefaultHttpClient,
@@ -11,7 +12,6 @@ import urllib, {
   setGlobalDispatcher,
   getGlobalDispatcher,
 } from '../src/index.js';
-import { isBun } from '../src/HttpClient.js';
 import { startServer } from './fixtures/server.js';
 import { readableToBytes } from './utils.js';
 

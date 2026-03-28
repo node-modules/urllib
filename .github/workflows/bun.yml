@@ -51,4 +51,4 @@ jobs:
           pnpm install -D vitest@latest vite@latest
 
       - name: Run tests with Bun
-        run: bun --bun ./node_modules/.bin/vitest run --reporter=dot
+        run: bun --bun node_modules/vitest/vitest.mjs run --reporter=dot

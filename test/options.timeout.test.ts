@@ -6,8 +6,8 @@ import type { AddressInfo } from 'node:net';
 import selfsigned from 'selfsigned';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
-import urllib, { HttpClientRequestTimeoutError, HttpClient } from '../src/index.js';
 import { isBun } from '../src/HttpClient.js';
+import urllib, { HttpClientRequestTimeoutError, HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion } from './utils.js';
 

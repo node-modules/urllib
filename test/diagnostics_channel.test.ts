@@ -8,8 +8,8 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import selfsigned from 'selfsigned';
 import { describe, it, beforeEach, afterEach } from 'vite-plus/test';
 
-import urllib, { HttpClient } from '../src/index.js';
 import { isBun } from '../src/HttpClient.js';
+import urllib, { HttpClient } from '../src/index.js';
 import type { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../src/index.js';
 import symbols from '../src/symbols.js';
 import { startServer } from './fixtures/server.js';

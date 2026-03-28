@@ -443,9 +443,7 @@ export class HttpClient extends EventEmitter {
       let requestSignal = args.signal;
       if (isBun) {
         const bunTimeoutSignal = AbortSignal.timeout(headersTimeout + bodyTimeout);
-        requestSignal = args.signal
-          ? AbortSignal.any([bunTimeoutSignal, args.signal])
-          : bunTimeoutSignal;
+        requestSignal = args.signal ? (AbortSignal as any).any([bunTimeoutSignal, args.signal]) : bunTimeoutSignal;
       }
       const requestOptions: IUndiciRequestOption = {
         method,
@@ -821,8 +819,11 @@ export class HttpClient extends EventEmitter {
         err = new HttpClientRequestTimeoutError(headersTimeout || bodyTimeout, { cause: err });
       } else if (err.code === 'UND_ERR_CONNECT_TIMEOUT') {
         err = new HttpClientConnectTimeoutError(err.message, err.code, { cause: err });
-      } else if (err.code === 'UND_ERR_SOCKET' || err.code === 'ECONNRESET'
-        || (isBun && (err.code === 'ConnectionClosed' || err.message?.includes('socket')))) {
+      } else if (
+        err.code === 'UND_ERR_SOCKET' ||
+        err.code === 'ECONNRESET' ||
+        (isBun && (err.code === 'ConnectionClosed' || err.message?.includes('socket')))
+      ) {
         // auto retry on socket error, https://github.com/node-modules/urllib/issues/454
         if (args.socketErrorRetry > 0 && requestContext.socketErrorRetries < args.socketErrorRetry) {
           requestContext.socketErrorRetries++;

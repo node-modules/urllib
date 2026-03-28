@@ -9,8 +9,8 @@ import FormStream from 'formstream';
 import tar from 'tar-stream';
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vite-plus/test';
 
-import urllib from '../src/index.js';
 import { isBun } from '../src/HttpClient.js';
+import urllib from '../src/index.js';
 import { isReadable } from '../src/utils.js';
 import { startServer } from './fixtures/server.js';
 import { createTempfile } from './utils.js';

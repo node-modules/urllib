@@ -3,8 +3,8 @@ import { setTimeout as sleep } from 'node:timers/promises';
 
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
-import { HttpClient } from '../src/index.js';
 import { isBun } from '../src/HttpClient.js';
+import { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { isWindows } from './utils.js';
 

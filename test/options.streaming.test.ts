@@ -4,8 +4,8 @@ import { createBrotliDecompress } from 'node:zlib';
 
 import { describe, it, beforeEach, afterEach } from 'vite-plus/test';
 
-import urllib from '../src/index.js';
 import { isBun } from '../src/HttpClient.js';
+import urllib from '../src/index.js';
 import { isReadable } from '../src/utils.js';
 import { startServer } from './fixtures/server.js';
 import { readableToBytes } from './utils.js';

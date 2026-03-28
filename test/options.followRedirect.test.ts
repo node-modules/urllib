@@ -3,8 +3,8 @@ import { createWriteStream } from 'node:fs';
 
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
-import urllib from '../src/index.js';
 import { isBun } from '../src/HttpClient.js';
+import urllib from '../src/index.js';
 import { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { createTempfile } from './utils.js';
