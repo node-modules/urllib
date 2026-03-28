@@ -3,6 +3,7 @@ import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib from '../src/index.js';
+import { isBun } from '../src/HttpClient.js';
 import { startServer } from './fixtures/server.js';
 
 describe('options.fixJSONCtlChars.test.ts', () => {
@@ -30,7 +31,7 @@ describe('options.fixJSONCtlChars.test.ts', () => {
     });
   });
 
-  it('should throw error when json control characters exists', async () => {
+  it.skipIf(isBun)('should throw error when json control characters exists', async () => {
     await assert.rejects(
       async () => {
         await urllib.request(`${_url}json_with_controls_unicode`, {

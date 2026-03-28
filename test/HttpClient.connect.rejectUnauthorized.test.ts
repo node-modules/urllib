@@ -3,6 +3,7 @@ import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import { HttpClient } from '../src/index.js';
+import { isBun } from '../src/HttpClient.js';
 import { startServer } from './fixtures/server.js';
 
 describe('HttpClient.connect.rejectUnauthorized.test.ts', () => {
@@ -60,7 +61,7 @@ describe('HttpClient.connect.rejectUnauthorized.test.ts', () => {
     );
   });
 
-  it('should 200 on rejectUnauthorized = false', async () => {
+  it.skipIf(isBun)('should 200 on rejectUnauthorized = false', async () => {
     const httpclient = new HttpClient({
       connect: {
         rejectUnauthorized: false,

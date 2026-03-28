@@ -7,6 +7,7 @@ import selfsigned from 'selfsigned';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib, { HttpClient } from '../src/index.js';
+import { isBun } from '../src/HttpClient.js';
 import { startServer } from './fixtures/server.js';
 import { nodeMajorVersion } from './utils.js';
 
@@ -23,7 +24,8 @@ describe('urllib.options.rejectUnauthorized-false.test.ts', () => {
     await close();
   });
 
-  it('should 200 on options.rejectUnauthorized = false', async () => {
+  // Bun's undici Agent doesn't support rejectUnauthorized connect option
+  it.skipIf(isBun)('should 200 on options.rejectUnauthorized = false', async () => {
     const response = await urllib.request(_url, {
       rejectUnauthorized: false,
       dataType: 'json',
@@ -32,7 +34,8 @@ describe('urllib.options.rejectUnauthorized-false.test.ts', () => {
     assert.equal(response.data.method, 'GET');
   });
 
-  it('should 200 with H2 on options.rejectUnauthorized = false', async () => {
+  // Bun's undici doesn't support HTTP/2
+  it.skipIf(isBun)('should 200 with H2 on options.rejectUnauthorized = false', async () => {
     const pem = selfsigned.generate([], {
       keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,
     });

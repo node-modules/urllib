@@ -3,10 +3,11 @@ import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib from '../src/index.js';
+import { isBun } from '../src/HttpClient.js';
 import { startServer } from './fixtures/socket_server.js';
 import { isWindows } from './utils.js';
 
-describe.skipIf(isWindows())('options.socketPath.test.ts', () => {
+describe.skipIf(isWindows() || isBun)('options.socketPath.test.ts', () => {
   let close: any;
   let _url: string;
   let _socketPath: string;

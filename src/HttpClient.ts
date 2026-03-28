@@ -2,6 +2,7 @@ import diagnosticsChannel from 'node:diagnostics_channel';
 import type { Channel } from 'node:diagnostics_channel';
 import { EventEmitter } from 'node:events';
 import { createReadStream } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { STATUS_CODES } from 'node:http';
 import type { LookupFunction } from 'node:net';
 import { basename } from 'node:path';
@@ -111,8 +112,18 @@ export type ClientOptions = {
 };
 
 export const VERSION: string = 'VERSION';
+export const isBun: boolean = !!process.versions.bun;
+
+function getRuntimeInfo(): string {
+  if (isBun) {
+    return `Bun/${process.versions.bun}`;
+  }
+  return `Node.js/${process.version.substring(1)}`;
+}
+
 // 'node-urllib/4.0.0 Node.js/18.19.0 (darwin; x64)'
-export const HEADER_USER_AGENT: string = `node-urllib/${VERSION} Node.js/${process.version.substring(1)} (${process.platform}; ${process.arch})`;
+// 'node-urllib/4.0.0 Bun/1.2.5 (darwin; x64)'
+export const HEADER_USER_AGENT: string = `node-urllib/${VERSION} ${getRuntimeInfo()} (${process.platform}; ${process.arch})`;
 
 function getFileName(stream: Readable): string {
   const filePath: string = (stream as any).path;
@@ -427,16 +438,23 @@ export class HttpClient extends EventEmitter {
     let maxRedirects = args.maxRedirects ?? 10;
 
     try {
+      // Bun's undici doesn't honor headersTimeout/bodyTimeout,
+      // use AbortSignal.timeout() as fallback
+      let requestSignal = args.signal;
+      if (isBun) {
+        const bunTimeoutSignal = AbortSignal.timeout(headersTimeout + bodyTimeout);
+        requestSignal = args.signal
+          ? AbortSignal.any([bunTimeoutSignal, args.signal])
+          : bunTimeoutSignal;
+      }
       const requestOptions: IUndiciRequestOption = {
         method,
-        // disable undici auto redirect handler
-        // maxRedirections: 0,
         headersTimeout,
         headers,
         bodyTimeout,
         opaque: internalOpaque,
         dispatcher: args.dispatcher ?? this.#dispatcher,
-        signal: args.signal,
+        signal: requestSignal,
         reset: false,
       };
       if (typeof args.highWaterMark === 'number') {
@@ -500,14 +518,24 @@ export class HttpClient extends EventEmitter {
           let value: any;
           if (typeof file === 'string') {
             fileName = basename(file);
-            value = createReadStream(file);
+            // Bun's CombinedStream can't pipe file streams
+            value = isBun ? await readFile(file) : createReadStream(file);
           } else if (Buffer.isBuffer(file)) {
             fileName = customFileName || `bufferfile${index}`;
             value = file;
           } else if (file instanceof Readable || isReadable(file as any)) {
             fileName = getFileName(file) || customFileName || `streamfile${index}`;
-            isStreamingRequest = true;
-            value = file;
+            if (isBun) {
+              // Bun's CombinedStream can't pipe Node.js streams
+              const streamChunks: Buffer[] = [];
+              for await (const chunk of file) {
+                streamChunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+              }
+              value = Buffer.concat(streamChunks);
+            } else {
+              isStreamingRequest = true;
+              value = file;
+            }
           }
           const mimeType = mime.lookup(fileName) || '';
           formData.append(field, value, {
@@ -517,17 +545,26 @@ export class HttpClient extends EventEmitter {
           debug('formData append field: %s, mimeType: %s, fileName: %s', field, mimeType, fileName);
         }
         Object.assign(headers, formData.getHeaders());
-        requestOptions.body = formData;
+        if (isBun) {
+          // Bun's undici can't consume Node.js streams as request body
+          requestOptions.body = await formData.toBuffer();
+        } else {
+          requestOptions.body = formData;
+        }
       } else if (args.content) {
         if (!isGETOrHEAD) {
           // handle content
-          requestOptions.body = args.content;
+          if (isBun && args.content instanceof FormData) {
+            requestOptions.body = await (args.content as FormData).toBuffer();
+          } else {
+            requestOptions.body = args.content;
+          }
           if (args.contentType) {
             headers['content-type'] = args.contentType;
           } else if (typeof args.content === 'string' && !headers['content-type']) {
             headers['content-type'] = 'text/plain;charset=UTF-8';
           }
-          isStreamingRequest = isReadable(args.content);
+          isStreamingRequest = !isBun && isReadable(args.content);
         }
       } else if (args.data) {
         const isStringOrBufferOrReadable =
@@ -577,6 +614,11 @@ export class HttpClient extends EventEmitter {
       if (isStreamingResponse) {
         args.retry = 0;
         args.socketErrorRetry = 0;
+      }
+
+      // Bun's undici can't consume Node.js Readable as request body
+      if (isBun && requestOptions.body instanceof Readable) {
+        requestOptions.body = Readable.toWeb(requestOptions.body) as any;
       }
 
       debug(
@@ -659,10 +701,12 @@ export class HttpClient extends EventEmitter {
         }
       }
 
+      // Bun's undici auto-decompresses response body, so skip decompression on Bun
+      const needDecompress = isCompressedContent && !isBun;
       let data: any = null;
       if (args.dataType === 'stream') {
         // only auto decompress on request args.compressed = true
-        if (args.compressed === true && isCompressedContent) {
+        if (args.compressed === true && needDecompress) {
           // gzip or br
           const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
           res = Object.assign(pipeline(response.body, decoder, noop), res);
@@ -670,7 +714,7 @@ export class HttpClient extends EventEmitter {
           res = Object.assign(response.body, res);
         }
       } else if (args.writeStream) {
-        if (args.compressed === true && isCompressedContent) {
+        if (args.compressed === true && needDecompress) {
           const decoder = contentEncoding === 'gzip' ? createGunzip() : createBrotliDecompress();
           await pipelinePromise(response.body, decoder, args.writeStream);
         } else {
@@ -679,7 +723,7 @@ export class HttpClient extends EventEmitter {
       } else {
         // buffer
         data = Buffer.from(await response.body.arrayBuffer());
-        if (isCompressedContent && data.length > 0) {
+        if (needDecompress && data.length > 0) {
           try {
             data = contentEncoding === 'gzip' ? gunzipSync(data) : brotliDecompressSync(data);
           } catch (err: any) {
@@ -769,9 +813,16 @@ export class HttpClient extends EventEmitter {
         err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: err });
       } else if (err.name === 'InformationalError' && err.message.includes('stream timeout')) {
         err = new HttpClientRequestTimeoutError(bodyTimeout, { cause: err });
+      } else if (isBun && err.name === 'TimeoutError') {
+        // Bun's undici throws TimeoutError instead of HeadersTimeoutError/BodyTimeoutError
+        err = new HttpClientRequestTimeoutError(headersTimeout || bodyTimeout, { cause: err });
+      } else if (isBun && err.name === 'TypeError' && /timed?\s*out|timeout/i.test(err.message)) {
+        // Bun may wrap timeout as TypeError
+        err = new HttpClientRequestTimeoutError(headersTimeout || bodyTimeout, { cause: err });
       } else if (err.code === 'UND_ERR_CONNECT_TIMEOUT') {
         err = new HttpClientConnectTimeoutError(err.message, err.code, { cause: err });
-      } else if (err.code === 'UND_ERR_SOCKET' || err.code === 'ECONNRESET') {
+      } else if (err.code === 'UND_ERR_SOCKET' || err.code === 'ECONNRESET'
+        || (isBun && (err.code === 'ConnectionClosed' || err.message?.includes('socket')))) {
         // auto retry on socket error, https://github.com/node-modules/urllib/issues/454
         if (args.socketErrorRetry > 0 && requestContext.socketErrorRetries < args.socketErrorRetry) {
           requestContext.socketErrorRetries++;
@@ -783,12 +834,19 @@ export class HttpClient extends EventEmitter {
           return await this.#requestInternal(url, options, requestContext);
         }
       }
+      // Some errors (e.g. DOMException in Bun) may not be extensible
+      if (!Object.isExtensible(err)) {
+        const wrappedErr: any = new Error(err.message, { cause: err });
+        wrappedErr.name = err.name;
+        wrappedErr.code = err.code;
+        wrappedErr.stack = err.stack;
+        err = wrappedErr;
+      }
       err.opaque = originalOpaque;
       err.status = res.status;
       err.headers = res.headers;
       err.res = res;
       if (err.socket) {
-        // store rawSocket
         err._rawSocket = err.socket;
       }
       err.socket = socketInfo;

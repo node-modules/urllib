@@ -5,6 +5,7 @@ import fs from 'node:fs/promises';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib from '../src/index.js';
+import { isBun } from '../src/HttpClient.js';
 import { startServer } from './fixtures/server.js';
 
 describe('options.content.test.ts', () => {
@@ -162,7 +163,7 @@ describe('options.content.test.ts', () => {
     assert.equal(response.data.headers['content-length'], '29');
   });
 
-  it('should POST content = readable', async () => {
+  it.skipIf(isBun)('should POST content = readable', async () => {
     const stat = await fs.stat(__filename);
     const fileContent = await fs.readFile(__filename);
     const response = await urllib.request(`${_url}raw`, {

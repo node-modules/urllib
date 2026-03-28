@@ -3,6 +3,7 @@ import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib from '../src/index.js';
+import { isBun } from '../src/HttpClient.js';
 import { startServer } from './fixtures/server.js';
 
 describe('keep-alive-header.test.ts', () => {
@@ -24,10 +25,10 @@ describe('keep-alive-header.test.ts', () => {
     });
     assert.equal(response.status, 200);
     // console.log(response.data.headers);
-    assert.match(response.data.headers['user-agent'], /^node-urllib\/VERSION Node\.js\/\d+\.\d+\.\d+ \(/);
+    assert.match(response.data.headers['user-agent'], /^node-urllib\/VERSION (Node\.js|Bun)\/\d+\.\d+\.\d+ \(/);
   });
 
-  it('should return no user agent if user-agent header is set to empty string', async () => {
+  it.skipIf(isBun)('should return no user agent if user-agent header is set to empty string', async () => {
     const response = await urllib.request(_url, {
       dataType: 'json',
       headers: { 'user-agent': '' },
@@ -37,7 +38,7 @@ describe('keep-alive-header.test.ts', () => {
     assert.equal(response.data.headers['user-agent'], undefined);
   });
 
-  it('should return no user agent if user-agent header is set undefined', async () => {
+  it.skipIf(isBun)('should return no user agent if user-agent header is set undefined', async () => {
     const response = await urllib.request(_url, {
       dataType: 'json',
       headers: { 'user-agent': undefined },

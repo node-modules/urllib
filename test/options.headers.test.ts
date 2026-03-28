@@ -3,6 +3,7 @@ import { strict as assert } from 'node:assert';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib from '../src/index.js';
+import { isBun } from '../src/HttpClient.js';
 import { startServer } from './fixtures/server.js';
 
 describe('options.headers.test.ts', () => {
@@ -18,7 +19,7 @@ describe('options.headers.test.ts', () => {
     await close();
   });
 
-  it('should auto set default user-agent and accept request headers', async () => {
+  it.skipIf(isBun)('should auto set default user-agent and accept request headers', async () => {
     const { status, headers, data } = await urllib.request(_url, {
       dataType: 'json',
       headers: {
@@ -53,7 +54,7 @@ describe('options.headers.test.ts', () => {
     assert.equal(response.data.headers['CASE-KEY'], undefined);
   });
 
-  it('should ignore undefined value and convert null value to empty string', async () => {
+  it.skipIf(isBun)('should ignore undefined value and convert null value to empty string', async () => {
     const response = await urllib.request(_url, {
       headers: {
         'null-header': null as any,

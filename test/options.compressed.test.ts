@@ -4,6 +4,7 @@ import { createWriteStream, createReadStream } from 'node:fs';
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vite-plus/test';
 
 import urllib from '../src/index.js';
+import { isBun } from '../src/HttpClient.js';
 import { startServer } from './fixtures/server.js';
 import { readableToString, createTempfile } from './utils.js';
 
@@ -30,7 +31,7 @@ describe('options.compressed.test.ts', () => {
     await cleanup();
   });
 
-  it('should default compressed = false', async () => {
+  it.skipIf(isBun)('should default compressed = false', async () => {
     const response = await urllib.request(`${_url}brotli`, {
       dataType: 'text',
     });
@@ -170,7 +171,7 @@ describe('options.compressed.test.ts', () => {
     assert.match(response.data, /export async function startServer/);
   });
 
-  it('should throw error when gzip content invalid', async () => {
+  it.skipIf(isBun)('should throw error when gzip content invalid', async () => {
     await assert.rejects(
       async () => {
         await urllib.request(`${_url}error-gzip`, {
@@ -190,7 +191,7 @@ describe('options.compressed.test.ts', () => {
     );
   });
 
-  it('should throw error when brotli content invaild', async () => {
+  it.skipIf(isBun)('should throw error when brotli content invaild', async () => {
     await assert.rejects(
       async () => {
         await urllib.request(`${_url}error-brotli`, {

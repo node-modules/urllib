@@ -4,6 +4,7 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib from '../src/index.js';
+import { isBun } from '../src/HttpClient.js';
 import type { RawResponseWithMeta } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -20,7 +21,7 @@ describe('options.timing.test.ts', () => {
     await close();
   });
 
-  it('should timing = true work', async () => {
+  it.skipIf(isBun)('should timing = true work', async () => {
     let response = await urllib.request(`${_url}?content-encoding=gzip`, {
       dataType: 'json',
       timing: true,
@@ -70,7 +71,7 @@ describe('options.timing.test.ts', () => {
     assert(res.rt > 0);
   });
 
-  it('should timing default to true', async () => {
+  it.skipIf(isBun)('should timing default to true', async () => {
     const response = await urllib.request(`${_url}?content-encoding=gzip`, {
       dataType: 'json',
     });

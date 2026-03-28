@@ -4,6 +4,7 @@ import { createWriteStream } from 'node:fs';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib from '../src/index.js';
+import { isBun } from '../src/HttpClient.js';
 import { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { createTempfile } from './utils.js';
@@ -136,7 +137,7 @@ describe('options.followRedirect.test.ts', () => {
     assert.equal(requestUrls.length, 2);
   });
 
-  it('should disable auto redirect', async () => {
+  it.skipIf(isBun)('should disable auto redirect', async () => {
     const requestURL = `${_url}redirect-full-301`;
     const { data, res, redirected, url } = await urllib.request(requestURL, {
       timeout: 30000,

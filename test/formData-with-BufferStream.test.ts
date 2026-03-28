@@ -5,6 +5,7 @@ import { basename } from 'node:path';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import { HttpClient, WebFormData } from '../src/index.js';
+import { isBun } from '../src/HttpClient.js';
 import { BufferStream } from './fixtures/BufferStream.js';
 import { startServer } from './fixtures/server.js';
 
