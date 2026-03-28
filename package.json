@@ -99,7 +99,7 @@
     "selfsigned": "^3.0.1",
     "string.prototype.towellformed": "^1.0.2",
     "tar-stream": "^2.2.0",
-    "tshy": "^3.3.2",
+    "tshy": "^4.0.0",
     "tshy-after": "^1.4.1",
     "typescript": "^6.0.0",
     "vite-plus": "^0.1.14",
