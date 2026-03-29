@@ -40,7 +40,7 @@ jobs:
         id: dist-tag
         run: |
           TAG_VERSION="${GITHUB_REF_NAME#v}"
-          if echo "$TAG_VERSION" | grep -qE '-(alpha|beta|rc|next|dev)'; then
+          if echo "$TAG_VERSION" | grep -qE '-([a-zA-Z]+)'; then
             # Extract pre-release identifier (e.g., "beta" from "5.0.0-beta.0")
             PRE_TAG=$(echo "$TAG_VERSION" | sed -E 's/.*-([a-zA-Z]+).*/\1/')
             echo "tag=$PRE_TAG" >> "$GITHUB_OUTPUT"
