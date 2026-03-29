@@ -8,7 +8,6 @@ import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib, { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
-import { nodeMajorVersion } from './utils.js';
 
 describe('urllib.options.rejectUnauthorized-false.test.ts', () => {
   let close: any;
@@ -34,7 +33,7 @@ describe('urllib.options.rejectUnauthorized-false.test.ts', () => {
 
   it('should 200 with H2 on options.rejectUnauthorized = false', async () => {
     const pem = selfsigned.generate([], {
-      keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,
+      keySize: 2048,
     });
     const server = createSecureServer({
       key: pem.private,

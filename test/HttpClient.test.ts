@@ -12,10 +12,9 @@ import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 import { HttpClient, getGlobalDispatcher } from '../src/index.js';
 import type { RawResponseWithMeta } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
-import { nodeMajorVersion } from './utils.js';
 
 const pems = selfsigned.generate([], {
-  keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,
+  keySize: 2048,
 });
 
 if (process.env.ENABLE_PERF) {
@@ -126,7 +125,7 @@ describe('HttpClient.test.ts', () => {
       assert(httpClient.getDispatcherPoolStats()[_url.substring(0, _url.length - 1)].connected > 1);
     });
 
-    it.skipIf(process.version.startsWith('v16.'))('should not exit after other side closed error', async () => {
+    it('should not exit after other side closed error', async () => {
       const server = createSecureServer({
         key: pems.private,
         cert: pems.cert,
@@ -499,9 +498,6 @@ describe('HttpClient.test.ts', () => {
           return true;
         },
         lookup(_hostname, _options, callback) {
-          if (process.version.startsWith('v18.') || process.version.startsWith('v16.')) {
-            return callback(null, '127.0.0.1', 4);
-          }
           return callback(null, [
             {
               address: '127.0.0.1',

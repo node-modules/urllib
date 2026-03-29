@@ -61,12 +61,11 @@
     "test": "vp run check && vp test run --reporter=dot",
     "bench": "vp test bench",
     "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vp test run --reporter=dot --test-timeout 180000 keep-alive-header.test.ts",
-    "test-node16": "node examples/httpclient.cjs && node examples/search_github.cjs && node examples/timing.cjs",
     "cov": "vp test run --reporter=dot --coverage",
     "ci": "vp run cov && vp run prepublishOnly && npm pack && attw --pack",
     "clean": "rm -rf dist && tsc -b --clean",
     "prepublishOnly": "vp run build",
-    "prepare": "node -e \"const v = parseInt(process.versions.node, 10); if (v >= 20) require('child_process').execSync('vp config', {stdio: 'inherit'});\"",
+    "prepare": "vp config",
     "check": "vp check",
     "check:fix": "vp check --fix"
   },
@@ -90,14 +89,12 @@
     "@types/selfsigned": "^2.1.0",
     "@types/tar-stream": "^2.2.3",
     "@typescript/native-preview": "7.0.0-dev.20260329.1",
-    "@ungap/structured-clone": "^1.3.0",
     "@vitest/coverage-v8": "^4.1.0",
     "busboy": "^1.6.0",
     "cross-env": "^10.1.0",
     "iconv-lite": "^0.6.3",
     "proxy": "^1.0.2",
     "selfsigned": "^3.0.1",
-    "string.prototype.towellformed": "^1.0.2",
     "tar-stream": "^2.2.0",
     "tshy": "^4.0.0",
     "tshy-after": "^1.4.1",
@@ -116,7 +113,7 @@
     }
   },
   "engines": {
-    "node": ">= 18.19.0"
+    "node": ">= 22.0.0"
   },
   "packageManager": "pnpm@10.33.0",
   "pnpm": {

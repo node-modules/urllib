@@ -1,7 +1,6 @@
 import { createReadStream } from 'node:fs';
 import { createServer, Server, IncomingMessage, ServerResponse } from 'node:http';
 import { createServer as createHttpsServer } from 'node:https';
-import { Socket } from 'node:net';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { createBrotliCompress, createGzip, gzipSync, brotliCompressSync } from 'node:zlib';
 
@@ -10,7 +9,7 @@ import iconv from 'iconv-lite';
 import qs from 'qs';
 import selfsigned from 'selfsigned';
 
-import { nodeMajorVersion, readableToBytes } from '../utils.js';
+import { readableToBytes } from '../utils.js';
 
 const requestsPerSocket = Symbol('requestsPerSocket');
 
@@ -413,7 +412,7 @@ export async function startServer(options?: {
 
   if (options?.https) {
     const pem = selfsigned.generate([], {
-      keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,
+      keySize: 2048,
     });
     server = createHttpsServer(
       {
@@ -430,14 +429,6 @@ export async function startServer(options?: {
     server.keepAliveTimeout = options.keepAliveTimeout;
   }
 
-  // handle active connection on Node.js 16
-  const hasCloseAllConnections = !!(server as any).closeAllConnections;
-  const connections: Socket[] = [];
-  if (!hasCloseAllConnections) {
-    server.on('connection', (connection) => {
-      connections.push(connection);
-    });
-  }
   const protocol = options?.https ? 'https' : 'http';
 
   return new Promise((resolve) => {
@@ -448,14 +439,7 @@ export async function startServer(options?: {
         urlWithDns: `${protocol}://127.0.0.1:${address.port}/`,
         server,
         closeServer() {
-          if (hasCloseAllConnections) {
-            (server as any).closeAllConnections();
-          } else {
-            // console.log('Closing %d http connections', connections.length);
-            for (const connection of connections) {
-              connection.destroy();
-            }
-          }
+          server.closeAllConnections();
           return new Promise((resolve) => {
             server.close(resolve);
           });
