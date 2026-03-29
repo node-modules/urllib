@@ -2,18 +2,54 @@ name: Release
 
 on:
   push:
-    branches: [master]
+    tags:
+      - 'v*'
 
 permissions:
   contents: write
-  deployments: write
-  issues: write
-  pull-requests: write
   id-token: write
 
 jobs:
   release:
-    name: NPM
-    uses: node-modules/github-actions/.github/workflows/npm-release.yml@master
-    secrets:
-      GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+    name: Publish to NPM
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version: '22'
+          cache: true
+          run-install: true
+
+      - name: Verify version matches tag
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "::error::Tag version ($TAG_VERSION) does not match package.json version ($PKG_VERSION)"
+            exit 1
+          fi
+
+      - name: Determine npm dist-tag
+        id: dist-tag
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if echo "$TAG_VERSION" | grep -qE '-([a-zA-Z]+)'; then
+            # Extract pre-release identifier (e.g., "beta" from "5.0.0-beta.0")
+            PRE_TAG=$(echo "$TAG_VERSION" | sed -E 's/.*-([a-zA-Z]+).*/\1/')
+            echo "tag=$PRE_TAG" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=latest" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish to npm
+        run: npm publish --access public --tag ${{ steps.dist-tag.outputs.tag }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          prerelease: ${{ steps.dist-tag.outputs.tag != 'latest' }}
