@@ -343,6 +343,22 @@ Node.js v22.3.0
 └─────────┴───────────────────────┴─────────┴────────────────────┴────────────┴─────────────────────────┘
 ```
 
+## Release
+
+Use `npm version` to bump the version, create a git tag, and push to trigger the release workflow.
+
+```bash
+# Stable release
+npm version patch  # or minor, major
+git push origin master --tags
+
+# Pre-release (beta, alpha, rc, etc.)
+npm version 5.0.0-beta.0
+git push origin master --tags
+```
+
+The [release workflow](.github/workflows/release.yml) will automatically publish to npm and create a GitHub Release when a `v*` tag is pushed. Pre-release tags (e.g., `v5.0.0-beta.0`) are published with the corresponding dist-tag (`beta`, `alpha`, `rc`, etc.).
+
 ## License
 
 [MIT](LICENSE)
