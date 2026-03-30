@@ -42,7 +42,7 @@ jobs:
             PRE_TAG=$(echo "$TAG_VERSION" | sed -E 's/.*-([a-zA-Z]+).*/\1/')
             echo "tag=$PRE_TAG" >> "$GITHUB_OUTPUT"
           else
-            echo "tag=latest" >> "$GITHUB_OUTPUT"
+            echo "tag=latest-4" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Publish to npm
