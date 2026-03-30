@@ -8,10 +8,9 @@ import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib, { HttpClientRequestTimeoutError, HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
-import { nodeMajorVersion } from './utils.js';
 
 const pems = selfsigned.generate([], {
-  keySize: nodeMajorVersion() >= 22 ? 2048 : 1024,
+  keySize: 2048,
 });
 
 describe('options.timeout.test.ts', () => {

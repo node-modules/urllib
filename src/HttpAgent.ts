@@ -41,12 +41,12 @@ export class HttpAgent extends BaseAgent {
 
     const lookupFunction: LookupFunction = (hostname, dnsOptions, callback) => {
       lookup(hostname, dnsOptions, (err, ...args: any[]) => {
-        // address will be array on Node.js >= 20
+        // address will be array when dnsOptions.all is set to default
         const address = args[0];
         const family = args[1];
         if (err) return (callback as any)(err, address, family);
         if (options.checkAddress) {
-          // dnsOptions.all set to default on Node.js >= 20, dns.lookup will return address array object
+          // dnsOptions.all set to default, dns.lookup will return address array object
           if (typeof address === 'string') {
             if (!options.checkAddress(address, family, hostname)) {
               err = new IllegalAddressError(hostname, address, family);

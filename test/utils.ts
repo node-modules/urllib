@@ -37,10 +37,6 @@ export async function createTempfile(
   };
 }
 
-export function nodeMajorVersion(): number {
-  return parseInt(process.versions.node.split('.')[0]);
-}
-
 export function isWindows(): boolean {
   return platform() === 'win32';
 }

@@ -1,9 +1,6 @@
-import { Blob, File } from 'node:buffer';
 import { randomBytes, createHash } from 'node:crypto';
 import { performance } from 'node:perf_hooks';
 import { Readable } from 'node:stream';
-import { ReadableStream, TransformStream } from 'node:stream/web';
-import { toUSVString } from 'node:util';
 
 import type { IncomingHttpHeaders } from './IncomingHttpHeaders.js';
 import type { FixJSONCtlChars } from './Request.js';
@@ -215,79 +212,4 @@ export function convertHeader(headers: Headers): IncomingHttpHeaders {
     }
   }
   return res;
-}
-
-// support require from Node.js 16
-export function patchForNode16(): void {
-  if (typeof global.ReadableStream === 'undefined') {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    global.ReadableStream = ReadableStream;
-  }
-  if (typeof global.TransformStream === 'undefined') {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    global.TransformStream = TransformStream;
-  }
-  if (typeof global.Blob === 'undefined') {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    global.Blob = Blob;
-  }
-  if (typeof global.DOMException === 'undefined') {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    global.DOMException = getDOMExceptionClass();
-  }
-  // multi undici version in node version less than 20 https://github.com/nodejs/undici/issues/4374
-  if (typeof global.File === 'undefined') {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    global.File = File;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  if (String.prototype.toWellFormed === undefined) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    // eslint-disable-next-line no-extend-native
-    Object.defineProperty(String.prototype, 'toWellFormed', {
-      value: function () {
-        return toUSVString(this);
-      },
-      enumerable: false,
-      configurable: true,
-      writable: true,
-    });
-  }
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  if (String.prototype.isWellFormed === undefined) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    // eslint-disable-next-line no-extend-native
-    Object.defineProperty(String.prototype, 'isWellFormed', {
-      value: function () {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        return toUSVString(this) === this;
-      },
-      enumerable: false,
-      configurable: true,
-      writable: true,
-    });
-  }
-}
-
-// https://github.com/jimmywarting/node-domexception/blob/main/index.js
-function getDOMExceptionClass() {
-  try {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    atob(0);
-  } catch (err: any) {
-    return err.constructor;
-  }
 }

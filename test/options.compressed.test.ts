@@ -202,11 +202,7 @@ describe('options.compressed.test.ts', () => {
         // console.error(err);
         assert.equal(err.name, 'UnzipError');
         assert.equal(err.message, 'Decompression failed');
-        if (process.version !== 'v18.19.0' && !process.version.startsWith('v16.')) {
-          assert.equal(err.code, 'ERR__ERROR_FORMAT_PADDING_1');
-        } else {
-          assert.equal(err.code, 'ERR_PADDING_1');
-        }
+        assert.equal(err.code, 'ERR__ERROR_FORMAT_PADDING_1');
         assert.equal(err.status, 200);
         assert.equal(err.headers['content-encoding'], 'br');
         return true;

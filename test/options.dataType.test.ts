@@ -4,7 +4,7 @@ import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
-import { nodeMajorVersion, readableToBytes } from './utils.js';
+import { readableToBytes } from './utils.js';
 
 describe('options.dataType.test.ts', () => {
   let close: any;
@@ -111,18 +111,10 @@ describe('options.dataType.test.ts', () => {
         // console.error(err);
         assert.equal(err.name, 'JSONResponseFormatError');
         if (err.message.startsWith('Expected')) {
-          if (nodeMajorVersion() >= 21) {
-            assert.equal(
-              err.message,
-              'Expected \',\' or \'}\' after property value in JSON at position 9 (line 1 column 10) (data json format: "{\\"foo\\":\\"\\"")',
-            );
-          } else {
-            // new message on Node.js >= 19
-            assert.equal(
-              err.message,
-              'Expected \',\' or \'}\' after property value in JSON at position 9 (data json format: "{\\"foo\\":\\"\\"")',
-            );
-          }
+          assert.equal(
+            err.message,
+            'Expected \',\' or \'}\' after property value in JSON at position 9 (line 1 column 10) (data json format: "{\\"foo\\":\\"\\"")',
+          );
         } else {
           assert.equal(err.message, 'Unexpected end of JSON input (data json format: "{\\"foo\\":\\"\\"")');
         }
