@@ -92,7 +92,7 @@
     "@vitest/coverage-v8": "^4.1.0",
     "busboy": "^1.6.0",
     "cross-env": "^10.1.0",
-    "iconv-lite": "^0.6.3",
+    "iconv-lite": "^0.7.0",
     "proxy": "^1.0.2",
     "selfsigned": "^3.0.1",
     "tar-stream": "^2.2.0",
