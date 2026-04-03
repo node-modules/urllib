@@ -27,6 +27,7 @@ describe('options.dispatcher.test.ts', () => {
 
   afterAll(async () => {
     await close();
+    proxyServer.closeAllConnections();
     await new Promise((resolve) => {
       proxyServer.close(resolve);
     });
