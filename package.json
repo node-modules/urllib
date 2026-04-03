@@ -75,7 +75,7 @@
     "mime-types": "^2.1.35",
     "qs": "^6.15.0",
     "type-fest": "^4.41.0",
-    "undici": "^7.24.0",
+    "undici": "^8.0.0",
     "ylru": "^2.0.0"
   },
   "devDependencies": {
