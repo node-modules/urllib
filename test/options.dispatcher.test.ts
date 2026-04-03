@@ -51,6 +51,7 @@ describe('options.dispatcher.test.ts', () => {
     // console.log(response2.status, response2.headers);
     assert.equal(response2.status, 200);
     assert.equal(response2.data.name, 'urllib');
+    await proxyAgent.close();
   });
 
   it('should work with getGlobalDispatcher() dispatcher', async () => {
@@ -64,6 +65,7 @@ describe('options.dispatcher.test.ts', () => {
     assert.equal(response.status, 200);
     assert.equal(response.data, '<h1>hello</h1>');
     setGlobalDispatcher(agent);
+    await proxyAgent.close();
   });
 
   it('should work with http/2 dispatcher', async () => {
@@ -81,5 +83,6 @@ describe('options.dispatcher.test.ts', () => {
     });
     assert.equal(response.status, 200);
     assert.match(response.headers['content-type'] ?? '', /application\/json/);
+    await agent.close();
   });
 });
