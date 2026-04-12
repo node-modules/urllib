@@ -49,7 +49,7 @@ jobs:
         run: npm publish --access public --tag ${{ steps.dist-tag.outputs.tag }}
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           generate_release_notes: true
           prerelease: ${{ steps.dist-tag.outputs.tag != 'latest' }}
