@@ -161,6 +161,12 @@ export type RequestOptions = {
   /** Default: `64 KiB` */
   highWaterMark?: number;
   signal?: AbortSignal | EventEmitter;
+  /**
+   * If `true`, the server certificate is verified against the list of supplied CAs.
+   * An 'error' event is emitted if verification fails.
+   * Default: `true`
+   */
+  rejectUnauthorized?: boolean;
 };
 
 export type RequestMeta = {
