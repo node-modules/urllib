@@ -67,6 +67,15 @@ Socket.prototype.destroy = function (err?: any) {
   return destroySocket.call(this, err);
 };
 
+// capture DNS lookup time on socket via 'lookup' event
+const originalSocketEmit = Socket.prototype.emit;
+Socket.prototype.emit = function (this: SocketExtend, event: string, ...args: any[]) {
+  if (event === 'lookup') {
+    this[symbols.kSocketDnsLookupTime] = performance.now();
+  }
+  return originalSocketEmit.apply(this, [event, ...args] as any);
+} as typeof originalSocketEmit;
+
 function getRequestOpaque(request: DiagnosticsChannel.Request, kHandler?: symbol) {
   if (!kHandler) return;
   const handler = Reflect.get(request, kHandler);
@@ -201,6 +210,13 @@ export function initDiagnosticsChannel(): void {
         opaque[symbols.kRequestStartTime],
         socket[symbols.kSocketStartTime] as number,
       );
+      // kSocketDnsLookupTime - kRequestStartTime = dns lookup time
+      if (socket[symbols.kSocketDnsLookupTime]) {
+        opaque[symbols.kRequestTiming].dnslookup = performanceTime(
+          opaque[symbols.kRequestStartTime],
+          socket[symbols.kSocketDnsLookupTime] as number,
+        );
+      }
     }
   });
 

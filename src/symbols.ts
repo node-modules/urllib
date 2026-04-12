@@ -9,6 +9,7 @@ const symbols: {
   kSocketConnectHost: symbol;
   kSocketConnectPort: symbol;
   kSocketConnectProtocol: symbol;
+  kSocketDnsLookupTime: symbol;
   kHandledRequests: symbol;
   kHandledResponses: symbol;
   kRequestSocket: symbol;
@@ -30,6 +31,7 @@ const symbols: {
   kSocketConnectHost: Symbol('socket connect params: host'),
   kSocketConnectPort: Symbol('socket connect params: port'),
   kSocketConnectProtocol: Symbol('socket connect params: protocol'),
+  kSocketDnsLookupTime: Symbol('socket dns lookup time'),
   kHandledRequests: Symbol('handled requests per socket'),
   kHandledResponses: Symbol('handled responses per socket'),
   kRequestSocket: Symbol('request on the socket'),
