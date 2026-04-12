@@ -98,8 +98,13 @@ export {
   Response,
   Headers,
   FormData,
+  getCookies,
+  setCookie,
+  getSetCookies,
+  deleteCookie,
+  parseCookie,
 } from 'undici';
-export type { RequestInfo, RequestInit, BodyInit, ResponseInit } from 'undici';
+export type { RequestInfo, RequestInit, BodyInit, ResponseInit, Cookie } from 'undici';
 // HttpClient2 is keep compatible with urllib@2 HttpClient2
 export { HttpClient, HttpClient as HttpClient2, HEADER_USER_AGENT as USER_AGENT } from './HttpClient.js';
 export type { RequestDiagnosticsMessage, ResponseDiagnosticsMessage, ClientOptions } from './HttpClient.js';
