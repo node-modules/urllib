@@ -77,8 +77,8 @@ importers:
         specifier: ^0.7.0
         version: 0.7.2
       proxy:
-        specifier: ^1.0.2
-        version: 1.0.2
+        specifier: ^4.0.0
+        version: 4.0.0
       selfsigned:
         specifier: ^3.0.1
         version: 3.0.1
@@ -822,8 +822,8 @@ packages:
   any-promise@1.3.0:
     resolution: {integrity: sha512-7UvmKalWRt1wgjL1RrGxoSJW/0QZFIegpeGvZG9kjp8vrRu55XTHbwnqq2GpXm9uLbcuhxm3IqX9OB4MZR1b2A==}
 
-  args@5.0.1:
-    resolution: {integrity: sha512-1kqmFCFsPffavQFGt8OxJdIcETti99kySRUPMpOhaGjL6mRJn8HFU1OxKY5bMqfZKUwTQc1mZkAjmGYaVOHFtQ==}
+  args@5.0.3:
+    resolution: {integrity: sha512-h6k/zfFgusnv3i5TU08KQkVKuCPBtL/PWQbWkHUxvJrZ2nAyeaUupneemcrgn1xmqxPQsPIzwkUhOpoqPDRZuA==}
     engines: {node: '>= 6.0.0'}
 
   assertion-error@2.0.1:
@@ -843,8 +843,8 @@ packages:
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
-  basic-auth-parser@0.0.2:
-    resolution: {integrity: sha512-Y7OBvWn+JnW45JWHLY6ybYub2k9cXCMrtCyO1Hds2s6eqClqWhPnOQpgXUPjAiMHj+A8TEPIQQ1dYENnJoBOHQ==}
+  basic-auth-parser@0.0.2-1:
+    resolution: {integrity: sha512-GFj8iVxo9onSU6BnnQvVwqvxh60UcSHJEDnIk3z4B6iOjsKSmqe+ibW0Rsz7YO7IE1HG3D3tqCNIidP46SZVdQ==}
 
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -1370,8 +1370,9 @@ packages:
     resolution: {integrity: sha512-OW/rX8O/jXnm82Ey1k44pObPtdblfiuWnrd8X7GJ7emImCOstunGbXUpp7HdBrFQX6rJzn3sPT397Wp5aCwCHg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  proxy@1.0.2:
-    resolution: {integrity: sha512-KNac2ueWRpjbUh77OAFPZuNdfEqNynm9DD4xHT14CccGpW8wKZwEkN0yjlb7X9G9Z9F55N0Q+1z+WfgAhwYdzQ==}
+  proxy@4.0.0:
+    resolution: {integrity: sha512-qYi7N3kisRTQW0Y13JL0upO8e9mVLpu4yuxrXvWzCsaJVA9yqVF+iQkC/rCdnx2lGPQhC+qjefWSY7M6SHclhQ==}
+    engines: {node: '>= 20'}
     hasBin: true
 
   qs@6.15.0:
@@ -2145,7 +2146,7 @@ snapshots:
 
   any-promise@1.3.0: {}
 
-  args@5.0.1:
+  args@5.0.3:
     dependencies:
       camelcase: 5.0.0
       chalk: 2.4.2
@@ -2166,7 +2167,7 @@ snapshots:
 
   base64-js@1.5.1: {}
 
-  basic-auth-parser@0.0.2: {}
+  basic-auth-parser@0.0.2-1: {}
 
   bl@4.1.0:
     dependencies:
@@ -2660,10 +2661,10 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  proxy@1.0.2:
+  proxy@4.0.0:
     dependencies:
-      args: 5.0.1
-      basic-auth-parser: 0.0.2
+      args: 5.0.3
+      basic-auth-parser: 0.0.2-1
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
