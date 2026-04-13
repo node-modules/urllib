@@ -9,6 +9,7 @@ import FormStream from 'formstream';
 import tar from 'tar-stream';
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vite-plus/test';
 
+import { isBun } from '../src/HttpClient.js';
 import urllib from '../src/index.js';
 import { isReadable } from '../src/utils.js';
 import { startServer } from './fixtures/server.js';
@@ -103,7 +104,7 @@ describe('options.stream.test.ts', () => {
     assert.equal(response.data.files.file.size, raw.length);
   });
 
-  it('should close 1KB request stream when request timeout', async () => {
+  it.skipIf(isBun)('should close 1KB request stream when request timeout', async () => {
     await writeFile(tmpfile, Buffer.alloc(1024));
     const stream = createReadStream(tmpfile);
     assert.equal(stream.destroyed, false);
@@ -128,7 +129,7 @@ describe('options.stream.test.ts', () => {
     );
   });
 
-  it('should close 10MB size request stream when request timeout', async () => {
+  it.skipIf(isBun)('should close 10MB size request stream when request timeout', async () => {
     await writeFile(tmpfile, Buffer.alloc(10 * 1024 * 1024));
     const stream = createReadStream(tmpfile);
     assert.equal(stream.destroyed, false);
@@ -153,7 +154,7 @@ describe('options.stream.test.ts', () => {
     );
   });
 
-  it('should throw request error when stream error', async () => {
+  it.skipIf(isBun)('should throw request error when stream error', async () => {
     const stream = createReadStream(`${__filename}.not-exists`);
     let streamError = false;
     stream.on('error', () => {

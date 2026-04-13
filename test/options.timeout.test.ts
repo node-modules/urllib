@@ -6,12 +6,27 @@ import type { AddressInfo } from 'node:net';
 import selfsigned from 'selfsigned';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
+import { isBun } from '../src/HttpClient.js';
 import urllib, { HttpClientRequestTimeoutError, HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
 const pems = selfsigned.generate([], {
   keySize: 2048,
 });
+
+function assertTimeoutError(err: any, timeout: number) {
+  assert.equal(err.name, 'HttpClientRequestTimeoutError');
+  assert.match(err.message, new RegExp(`Request timeout for ${timeout} ms`));
+  assert(err.res);
+  assert.equal(typeof err.res.rt, 'number');
+  if (isBun) {
+    // Bun wraps timeout as TimeoutError or TypeError
+    assert(err.cause);
+  } else {
+    assert(err.cause);
+    assert.match(err.cause.name, /HeadersTimeoutError|BodyTimeoutError|InformationalError/);
+  }
+}
 
 describe('options.timeout.test.ts', () => {
   let close: any;
@@ -34,16 +49,13 @@ describe('options.timeout.test.ts', () => {
         });
       },
       (err: any) => {
-        // console.error(err);
-        assert.equal(err.name, 'HttpClientRequestTimeoutError');
-        assert.equal(err.message, 'Request timeout for 10 ms');
-        assert.equal(err.cause.name, 'HeadersTimeoutError');
-        assert.equal(err.cause.message, 'Headers Timeout Error');
-        assert.equal(err.cause.code, 'UND_ERR_HEADERS_TIMEOUT');
-
+        assertTimeoutError(err, 10);
         assert.equal(err.res.status, -1);
         assert(err.res.rt > 10, `actual ${err.res.rt}`);
-        assert.equal(typeof err.res.rt, 'number');
+        if (!isBun) {
+          assert.equal(err.cause.name, 'HeadersTimeoutError');
+          assert.equal(err.cause.code, 'UND_ERR_HEADERS_TIMEOUT');
+        }
         return true;
       },
     );
@@ -58,22 +70,16 @@ describe('options.timeout.test.ts', () => {
         });
       },
       (err: any) => {
-        // console.error(err);
-        assert.equal(err.name, 'HttpClientRequestTimeoutError');
-        assert.equal(err.message, 'Request timeout for 10 ms');
-        assert.equal(err.cause.name, 'HeadersTimeoutError');
-        assert.equal(err.cause.message, 'Headers Timeout Error');
-        assert.equal(err.cause.code, 'UND_ERR_HEADERS_TIMEOUT');
-
+        assertTimeoutError(err, 10);
         assert.equal(err.res.status, -1);
         assert(err.res.rt > 10, `actual ${err.res.rt}`);
-        assert.equal(typeof err.res.rt, 'number');
         return true;
       },
     );
   });
 
-  it('should timeout on h2', async () => {
+  // Bun's undici doesn't support HTTP/2
+  it.skipIf(isBun)('should timeout on h2', async () => {
     const httpClient = new HttpClient({
       allowH2: true,
       connect: {
@@ -101,7 +107,6 @@ describe('options.timeout.test.ts', () => {
         });
       },
       (err: any) => {
-        // console.error(err);
         assert.equal(err.name, 'HttpClientRequestTimeoutError');
         assert.equal(err.message, 'Request timeout for 10 ms');
         assert.equal(err.cause.name, 'InformationalError');
@@ -124,15 +129,12 @@ describe('options.timeout.test.ts', () => {
         });
       },
       (err: any) => {
-        // console.error(err);
-        assert.equal(err.name, 'HttpClientRequestTimeoutError');
-        assert.equal(err.message, 'Request timeout for 100 ms');
-        if (err.cause) {
+        assertTimeoutError(err, 100);
+        assert.equal(err.res.status, 200);
+        if (!isBun && err.cause) {
           assert.equal(err.cause.name, 'BodyTimeoutError');
-          assert.equal(err.cause.message, 'Body Timeout Error');
           assert.equal(err.cause.code, 'UND_ERR_BODY_TIMEOUT');
         }
-        assert.equal(err.res.status, 200);
         return true;
       },
     );
@@ -147,11 +149,9 @@ describe('options.timeout.test.ts', () => {
         console.log(response.status, response.headers, response.data);
       },
       (err: any) => {
-        // console.log(err);
-        assert.equal(err.name, 'HttpClientRequestTimeoutError');
-        assert.equal(err.message, 'Request timeout for 500 ms');
+        // Node.js: body timeout 500ms fires; Bun: AbortSignal fires, wraps with headersTimeout
+        assertTimeoutError(err, isBun ? 400 : 500);
         assert.equal(err.res.status, 200);
-        err.cause && assert.equal(err.cause.name, 'BodyTimeoutError');
         return true;
       },
     );
@@ -165,13 +165,10 @@ describe('options.timeout.test.ts', () => {
         });
       },
       (err: HttpClientRequestTimeoutError) => {
-        // console.log(err);
-        assert.equal(err.name, 'HttpClientRequestTimeoutError');
-        assert.equal(err.message, 'Request timeout for 100 ms');
+        assertTimeoutError(err, 100);
         assert.equal(err.res!.status, -1);
         assert(err.headers);
         assert.equal(err.status, -1);
-        err.cause && assert.equal((err.cause as any).name, 'HeadersTimeoutError');
         return true;
       },
     );

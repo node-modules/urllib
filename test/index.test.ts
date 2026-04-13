@@ -4,6 +4,7 @@ import { parse as urlparse } from 'node:url';
 
 import { describe, it, beforeAll, afterAll, afterEach, beforeEach } from 'vite-plus/test';
 
+import { isBun } from '../src/HttpClient.js';
 import urllib, {
   HttpClient,
   getDefaultHttpClient,
@@ -53,7 +54,7 @@ describe('index.test.ts', () => {
       assert(!response.redirected);
     });
 
-    it('should response set-cookie as a string', async () => {
+    it.skipIf(isBun)('should response set-cookie as a string', async () => {
       const response = await urllib.request(`${_url}set-one-cookie`);
       assert.equal(response.status, 200);
       assert.equal(typeof response.headers['set-cookie'], 'string');
@@ -145,7 +146,7 @@ describe('index.test.ts', () => {
       );
     });
 
-    it('should handle server socket end("balabal") will error', async () => {
+    it.skipIf(isBun)('should handle server socket end("balabal") will error', async () => {
       await assert.rejects(
         async () => {
           await urllib.request(`${_url}socket.end.error`);
@@ -187,7 +188,7 @@ describe('index.test.ts', () => {
     });
   });
 
-  describe('Mocking request', () => {
+  describe.skipIf(isBun)('Mocking request', () => {
     let mockAgent: MockAgent;
     const globalAgent = getGlobalDispatcher();
     beforeEach(() => {

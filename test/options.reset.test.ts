@@ -2,6 +2,7 @@ import { strict as assert } from 'node:assert';
 
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
+import { isBun } from '../src/HttpClient.js';
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -24,6 +25,9 @@ describe('options.reset.test.ts', () => {
       reset: true,
     });
     assert.equal(response.status, 200);
-    assert(response.data.headers.connection === 'close');
+    // Bun's undici doesn't support reset option, connection stays keep-alive
+    if (!isBun) {
+      assert(response.data.headers.connection === 'close');
+    }
   });
 });

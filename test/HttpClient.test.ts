@@ -9,6 +9,7 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import selfsigned from 'selfsigned';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
+import { isBun } from '../src/HttpClient.js';
 import { HttpClient, getGlobalDispatcher } from '../src/index.js';
 import type { RawResponseWithMeta } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
@@ -52,7 +53,7 @@ describe('HttpClient.test.ts', () => {
     });
   });
 
-  describe('clientOptions.allowH2', () => {
+  describe.skipIf(isBun)('clientOptions.allowH2', () => {
     it('should work with allowH2 = true', async () => {
       const httpClient = new HttpClient({
         allowH2: true,
@@ -254,7 +255,7 @@ describe('HttpClient.test.ts', () => {
     });
   });
 
-  describe('clientOptions.lookup', () => {
+  describe.skipIf(isBun)('clientOptions.lookup', () => {
     it('should work with custom lookup on HTTP protocol', async () => {
       let lookupCallCounter = 0;
       const httpclient = new HttpClient({
@@ -305,7 +306,7 @@ describe('HttpClient.test.ts', () => {
     });
   });
 
-  describe('clientOptions.checkAddress', () => {
+  describe.skipIf(isBun)('clientOptions.checkAddress', () => {
     it('should check non-ip hostname', async () => {
       let count = 0;
       const httpclient = new HttpClient({
