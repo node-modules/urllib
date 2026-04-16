@@ -10,7 +10,14 @@ import urllib, {
   MockAgent,
   setGlobalDispatcher,
   getGlobalDispatcher,
+  getCookies,
+  setCookie,
+  getSetCookies,
+  deleteCookie,
+  parseCookie,
+  Headers,
 } from '../src/index.js';
+import type { Cookie } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { readableToBytes } from './utils.js';
 
@@ -421,6 +428,57 @@ describe('index.test.ts', () => {
         dataType: 'json',
       });
       assert.equal(response.status, 200);
+    });
+  });
+
+  describe('Cookie utilities', () => {
+    it('should export getCookies from undici', () => {
+      assert.equal(typeof getCookies, 'function');
+      const headers = new Headers();
+      headers.set('cookie', 'foo=bar; hello=world');
+      const cookies = getCookies(headers);
+      assert.equal(cookies.foo, 'bar');
+      assert.equal(cookies.hello, 'world');
+    });
+
+    it('should export setCookie from undici', () => {
+      assert.equal(typeof setCookie, 'function');
+      const headers = new Headers();
+      const cookie: Cookie = { name: 'foo', value: 'bar' };
+      setCookie(headers, cookie);
+      const setCookieHeader = headers.get('set-cookie');
+      assert(setCookieHeader);
+      assert.match(setCookieHeader, /foo=bar/);
+    });
+
+    it('should export getSetCookies from undici', () => {
+      assert.equal(typeof getSetCookies, 'function');
+      const headers = new Headers();
+      headers.append('set-cookie', 'foo=bar');
+      headers.append('set-cookie', 'hello=world');
+      const cookies = getSetCookies(headers);
+      assert.equal(cookies.length, 2);
+      assert.equal(cookies[0].name, 'foo');
+      assert.equal(cookies[0].value, 'bar');
+      assert.equal(cookies[1].name, 'hello');
+      assert.equal(cookies[1].value, 'world');
+    });
+
+    it('should export deleteCookie from undici', () => {
+      assert.equal(typeof deleteCookie, 'function');
+      const headers = new Headers();
+      deleteCookie(headers, 'foo');
+      const setCookieHeader = headers.get('set-cookie');
+      assert(setCookieHeader);
+      assert.match(setCookieHeader, /foo=/);
+    });
+
+    it('should export parseCookie from undici', () => {
+      assert.equal(typeof parseCookie, 'function');
+      const cookie = parseCookie('foo=bar');
+      assert(cookie);
+      assert.equal(cookie.name, 'foo');
+      assert.equal(cookie.value, 'bar');
     });
   });
 });
