@@ -216,15 +216,15 @@ All timing values are milliseconds elapsed from the start of the request. Enable
  0       queuing   dnslookup  connected  requestHeadersSent  requestSent waiting     contentDownload
 ```
 
-| Field | Description |
-| --- | --- |
-| `queuing` | Socket pool queuing time. The socket has been assigned to the request. |
-| `dnslookup` | DNS lookup completed (only on first request of a new socket, `0` on reused sockets). |
-| `connected` | TCP (or TLS) connection is established. |
-| `requestHeadersSent` | Request headers have been written to the socket. |
-| `requestSent` | Full request (headers + body) has been sent. |
-| `waiting` | Time to First Byte (TTFB). Response headers have been received. |
-| `contentDownload` | Response body and trailers have been fully received. |
+| Field                | Description                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------ |
+| `queuing`            | Socket pool queuing time. The socket has been assigned to the request.               |
+| `dnslookup`          | DNS lookup completed (only on first request of a new socket, `0` on reused sockets). |
+| `connected`          | TCP (or TLS) connection is established.                                              |
+| `requestHeadersSent` | Request headers have been written to the socket.                                     |
+| `requestSent`        | Full request (headers + body) has been sent.                                         |
+| `waiting`            | Time to First Byte (TTFB). Response headers have been received.                      |
+| `contentDownload`    | Response body and trailers have been fully received.                                 |
 
 Example:
 

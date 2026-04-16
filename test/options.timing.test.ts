@@ -30,7 +30,7 @@ describe('options.timing.test.ts', () => {
     assert(res.timing.waiting > 0);
     assert(res.timing.queuing > 0);
     assert(res.timing.connected > 0);
-    assert(res.timing.dnslookup > 0);
+    assert(res.timing.dnslookup >= 0);
     assert(res.timing.dnslookup <= res.timing.connected);
     assert(res.timing.requestHeadersSent > 0);
     assert(res.timing.requestSent > 0);

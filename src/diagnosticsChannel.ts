@@ -67,18 +67,6 @@ Socket.prototype.destroy = function (err?: any) {
   return destroySocket.call(this, err);
 };
 
-// capture DNS lookup time on socket via net.client.socket diagnostics channel
-// this channel fires when a new TCP/IPC connection is initiated, giving us
-// access to the socket before the 'lookup' event fires
-diagnosticsChannel.subscribe('net.client.socket', (message: unknown) => {
-  const socket = (message as { socket: SocketExtend }).socket;
-  if (socket) {
-    socket.once('lookup', () => {
-      socket[symbols.kSocketDnsLookupTime] = performance.now();
-    });
-  }
-});
-
 function getRequestOpaque(request: DiagnosticsChannel.Request, kHandler?: symbol) {
   if (!kHandler) return;
   const handler = Reflect.get(request, kHandler);
@@ -98,6 +86,18 @@ export function initDiagnosticsChannel(): void {
   // make sure init global DiagnosticsChannel once
   if (initedDiagnosticsChannel) return;
   initedDiagnosticsChannel = true;
+
+  // capture DNS lookup time on socket via net.client.socket diagnostics channel
+  // this channel fires when a new TCP/IPC connection is initiated, giving us
+  // access to the socket before the 'lookup' event fires
+  subscribe('net.client.socket', (message: unknown) => {
+    const socket = (message as { socket: SocketExtend }).socket;
+    if (socket) {
+      socket.once('lookup', () => {
+        socket[symbols.kSocketDnsLookupTime] = performance.now();
+      });
+    }
+  });
 
   let kHandler: symbol;
   // This message is published when a new outgoing request is created.
@@ -214,7 +214,7 @@ export function initDiagnosticsChannel(): void {
         socket[symbols.kSocketStartTime] as number,
       );
       // kSocketDnsLookupTime - kRequestStartTime = dns lookup time
-      if (socket[symbols.kSocketDnsLookupTime]) {
+      if (socket[symbols.kSocketDnsLookupTime] !== undefined) {
         opaque[symbols.kRequestTiming].dnslookup = performanceTime(
           opaque[symbols.kRequestStartTime],
           socket[symbols.kSocketDnsLookupTime] as number,
