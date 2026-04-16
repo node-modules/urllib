@@ -163,7 +163,12 @@ export type RequestOptions = {
   signal?: AbortSignal | EventEmitter;
   /**
    * If `true`, the server certificate is verified against the list of supplied CAs.
-   * An 'error' event is emitted if verification fails.
+   * If verification fails, the request promise is rejected.
+   *
+   * This option is only effective when using the top-level request/curl wrapper with
+   * its default dispatcher. It may be ignored when using `HttpClient.request()`
+   * directly or when `dispatcher` is explicitly provided.
+   *
    * Default: `true`
    */
   rejectUnauthorized?: boolean;
