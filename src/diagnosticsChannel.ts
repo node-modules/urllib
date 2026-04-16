@@ -67,14 +67,17 @@ Socket.prototype.destroy = function (err?: any) {
   return destroySocket.call(this, err);
 };
 
-// capture DNS lookup time on socket via 'lookup' event
-const originalSocketEmit = Socket.prototype.emit;
-Socket.prototype.emit = function (this: SocketExtend, event: string, ...args: any[]) {
-  if (event === 'lookup') {
-    this[symbols.kSocketDnsLookupTime] = performance.now();
+// capture DNS lookup time on socket via net.client.socket diagnostics channel
+// this channel fires when a new TCP/IPC connection is initiated, giving us
+// access to the socket before the 'lookup' event fires
+diagnosticsChannel.subscribe('net.client.socket', (message: unknown) => {
+  const socket = (message as { socket: SocketExtend }).socket;
+  if (socket) {
+    socket.once('lookup', () => {
+      socket[symbols.kSocketDnsLookupTime] = performance.now();
+    });
   }
-  return originalSocketEmit.apply(this, [event, ...args] as any);
-} as typeof originalSocketEmit;
+});
 
 function getRequestOpaque(request: DiagnosticsChannel.Request, kHandler?: symbol) {
   if (!kHandler) return;
