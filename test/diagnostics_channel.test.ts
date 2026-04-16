@@ -3,6 +3,7 @@ import diagnosticsChannel from 'node:diagnostics_channel';
 import { once } from 'node:events';
 import { createSecureServer } from 'node:http2';
 import type { AddressInfo } from 'node:net';
+import { Duplex } from 'node:stream';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 import selfsigned from 'selfsigned';
@@ -279,6 +280,67 @@ describe('diagnostics_channel.test.ts', () => {
     diagnosticsChannel.unsubscribe('undici:client:connected', onMessage);
     diagnosticsChannel.unsubscribe('undici:client:sendHeaders', onMessage);
     diagnosticsChannel.unsubscribe('undici:request:trailers', onMessage);
+    server.close();
+  });
+
+  it('should support http2.server.stream.finish diagnostics channel', async () => {
+    const pem = selfsigned.generate([], {
+      keySize: 2048,
+    });
+    const server = createSecureServer({
+      key: pem.private,
+      cert: pem.cert,
+    });
+    server.on('stream', (stream, headers) => {
+      stream.respond({
+        'content-type': 'text/plain; charset=utf-8',
+        'x-custom-h2': 'hello',
+        ':status': 200,
+      });
+      if (headers[':method'] !== 'HEAD') {
+        stream.end('hello h2!');
+      }
+    });
+
+    server.listen(0);
+    await once(server, 'listening');
+
+    const finishMessages: { stream: any; headers: any; flags: any }[] = [];
+    function onFinishMessage(message: any) {
+      finishMessages.push(message);
+    }
+    diagnosticsChannel.subscribe('http2.server.stream.finish', onFinishMessage);
+
+    const httpClient = new HttpClient({
+      allowH2: true,
+      connect: {
+        rejectUnauthorized: false,
+      },
+    });
+
+    // HEAD request
+    let response = await httpClient.request(`https://localhost:${(server.address() as AddressInfo).port}?head=true`, {
+      method: 'HEAD',
+    });
+    assert.equal(response.status, 200);
+
+    await sleep(1);
+
+    // GET request
+    response = await httpClient.request(`https://localhost:${(server.address() as AddressInfo).port}`, {
+      method: 'GET',
+    });
+    assert.equal(response.status, 200);
+
+    assert.equal(finishMessages.length, 2);
+    for (const msg of finishMessages) {
+      assert.ok(msg.stream instanceof Duplex);
+      assert.equal(msg.stream.constructor.name, 'ServerHttp2Stream');
+      assert.ok(msg.headers && typeof msg.headers === 'object' && !Array.isArray(msg.headers));
+      assert.equal(typeof msg.flags, 'number');
+    }
+
+    diagnosticsChannel.unsubscribe('http2.server.stream.finish', onFinishMessage);
     server.close();
   });
 
