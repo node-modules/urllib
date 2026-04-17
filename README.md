@@ -203,6 +203,45 @@ Response is normal object, it contains:
 - `timing`: timing object if timing enable.
 - `socket`: socket info
 
+### Timing
+
+All timing values are milliseconds elapsed from the start of the request. Enable via `options.timing = true` (default).
+
+```
+ ┌──────────┬──────────┬──────────┬─────────────────┬─────────────┬─────────┬─────────────────┐
+ │ Queuing  │   DNS    │   TCP    │     Request     │   Request   │ Waiting │     Content     │
+ │          │  Lookup  │ Connect  │  Headers Sent   │  Body Sent  │ (TTFB)  │    Download     │
+ └──────────┴──────────┴──────────┴─────────────────┴─────────────┴─────────┴─────────────────┘
+ |          |          |          |                 |             |         |                 |
+ 0       queuing   dnslookup  connected  requestHeadersSent  requestSent waiting     contentDownload
+```
+
+| Field                | Description                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------ |
+| `queuing`            | Socket pool queuing time. The socket has been assigned to the request.               |
+| `dnslookup`          | DNS lookup completed (only on first request of a new socket, `0` on reused sockets). |
+| `connected`          | TCP (or TLS) connection is established.                                              |
+| `requestHeadersSent` | Request headers have been written to the socket.                                     |
+| `requestSent`        | Full request (headers + body) has been sent.                                         |
+| `waiting`            | Time to First Byte (TTFB). Response headers have been received.                      |
+| `contentDownload`    | Response body and trailers have been fully received.                                 |
+
+Example:
+
+```json
+{
+  "queuing": 2.8,
+  "dnslookup": 9.0,
+  "connected": 12.7,
+  "requestHeadersSent": 13.4,
+  "requestSent": 13.6,
+  "waiting": 24.0,
+  "contentDownload": 25.1
+}
+```
+
+> **Note**: `dnslookup` is `0` when the socket is reused from the pool (keep-alive), since no DNS resolution occurs.
+
 ## Run test with debug log
 
 ```bash

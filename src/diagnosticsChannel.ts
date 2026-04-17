@@ -87,6 +87,18 @@ export function initDiagnosticsChannel(): void {
   if (initedDiagnosticsChannel) return;
   initedDiagnosticsChannel = true;
 
+  // capture DNS lookup time on socket via net.client.socket diagnostics channel
+  // this channel fires when a new TCP/IPC connection is initiated, giving us
+  // access to the socket before the 'lookup' event fires
+  subscribe('net.client.socket', (message: unknown) => {
+    const socket = (message as { socket: SocketExtend }).socket;
+    if (socket) {
+      socket.once('lookup', () => {
+        socket[symbols.kSocketDnsLookupTime] = performance.now();
+      });
+    }
+  });
+
   let kHandler: symbol;
   // This message is published when a new outgoing request is created.
   // Note: a request is only loosely completed to a given socket.
@@ -201,6 +213,13 @@ export function initDiagnosticsChannel(): void {
         opaque[symbols.kRequestStartTime],
         socket[symbols.kSocketStartTime] as number,
       );
+      // kSocketDnsLookupTime - kRequestStartTime = dns lookup time
+      if (socket[symbols.kSocketDnsLookupTime] !== undefined) {
+        opaque[symbols.kRequestTiming].dnslookup = performanceTime(
+          opaque[symbols.kRequestStartTime],
+          socket[symbols.kSocketDnsLookupTime] as number,
+        );
+      }
     }
   });
 
