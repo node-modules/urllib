@@ -99,8 +99,8 @@
     "tshy": "^4.0.0",
     "tshy-after": "^1.4.1",
     "typescript": "^6.0.0",
-    "vite-plus": "^0.1.18",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.18"
+    "vite-plus": "^0.1.19",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.19"
   },
   "tshy": {
     "exports": {
@@ -114,8 +114,8 @@
   "packageManager": "pnpm@10.33.0",
   "pnpm": {
     "overrides": {
-      "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.18",
-      "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.18"
+      "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.19",
+      "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.19"
     },
     "peerDependencyRules": {
       "allowAny": [
