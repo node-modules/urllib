@@ -88,7 +88,7 @@
     "@types/qs": "^6.15.0",
     "@types/selfsigned": "^2.1.0",
     "@types/tar-stream": "^2.2.3",
-    "@typescript/native-preview": "7.0.0-dev.20260428.1",
+    "@typescript/native-preview": "beta",
     "@vitest/coverage-v8": "^4.1.0",
     "busboy": "^1.6.0",
     "cross-env": "^10.1.0",
