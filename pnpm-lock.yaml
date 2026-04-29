@@ -87,7 +87,7 @@ importers:
         version: 2.2.0
       tshy:
         specifier: ^4.0.0
-        version: 4.0.0
+        version: 4.1.1
       tshy-after:
         specifier: ^1.4.1
         version: 1.4.1
@@ -855,8 +855,8 @@ packages:
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
 
-  brace-expansion@5.0.4:
-    resolution: {integrity: sha512-h+DEnpVvxmfVefa4jFbCf5HdH5YMDXRsmKflpf1pILZWRFlTbJpxeU55nJl4Smt5HQaGzg1o6RHFPJaOqnmBDg==}
+  brace-expansion@5.0.5:
+    resolution: {integrity: sha512-VZznLgtwhn+Mact9tfiwx64fA9erHH/MCXEUfB/0bX/6Fz6ny5EGTXYltMocqg4xFAQZtnO3DHWWXi8RiuN7cQ==}
     engines: {node: 18 || 20 || >=22}
 
   buffer@5.7.1:
@@ -1207,8 +1207,8 @@ packages:
     resolution: {integrity: sha512-NXYBzinNrblfraPGyrbPoD19C1h9lfI/1mzgWYvXUTe414Gz/X1FD2XBZSZM7rRTrMA8JL3OtAaGifrIKhQ5yQ==}
     engines: {node: '>= 12.0.0'}
 
-  lru-cache@11.2.6:
-    resolution: {integrity: sha512-ESL2CrkS/2wTPfuend7Zhkzo2u0daGJ/A2VucJOgQ/C48S/zB8MMeMHSGKYpXhIjbPxfuezITkaBH1wqv00DDQ==}
+  lru-cache@11.3.5:
+    resolution: {integrity: sha512-NxVFwLAnrd9i7KUBxC4DrUhmgjzOs+1Qm50D3oF1/oL+r1NpZ4gA7xvG0/zJ8evR7zIKn4vLf7qTNduWFtCrRw==}
     engines: {node: 20 || >=22}
 
   magicast@0.5.2:
@@ -1246,8 +1246,8 @@ packages:
     engines: {node: '>=4.0.0'}
     hasBin: true
 
-  minimatch@10.2.4:
-    resolution: {integrity: sha512-oRjTw/97aTBN0RHbYCdtF1MQfvusSIBQM0IZEgzl6426+8jSC0nF1a/GmnVLpfB9yyr6g6FTqWqiZVbxrtaCIg==}
+  minimatch@10.2.5:
+    resolution: {integrity: sha512-MULkVLfKGYDFYejP07QOurDLLQpcjk7Fw+7jXS2R2czRQzR56yHRveU5NDJEOviH+hETZKSkIk5c+T23GjFUMg==}
     engines: {node: 18 || 20 || >=22}
 
   minipass@7.1.3:
@@ -1537,8 +1537,8 @@ packages:
     resolution: {integrity: sha512-EVUiYSR59AGOy8I8eElVYKlR5bK/7ufAOv3H190HNu3sc9f3CP6Dn5QQfPIYzvg3kCt88NkTwx7n+xR8AQCCmw==}
     hasBin: true
 
-  tshy@4.0.0:
-    resolution: {integrity: sha512-ZPUI08yF3laXT4FQH4uLx3qyGUHZ5LR1kGiqYohAXDbDsqtLz4USWn5BOc5xCptrtRFAHMosJUHRoYjRHquFzg==}
+  tshy@4.1.1:
+    resolution: {integrity: sha512-V+PDgduJRwWmPe8/nVk0bkFsvpRwKfVwk+NhieUwsC27YV2CuT5CnLiO3rO2z/VUQPXYa//sO5Id3yLI9xc6xg==}
     engines: {node: 20 || >=22}
     hasBin: true
 
@@ -1694,7 +1694,7 @@ snapshots:
       '@loaderkit/resolve': 1.0.4
       cjs-module-lexer: 1.4.3
       fflate: 0.8.2
-      lru-cache: 11.2.6
+      lru-cache: 11.3.5
       semver: 7.7.4
       typescript: 5.6.1-rc
       validate-npm-package-name: 5.0.1
@@ -2174,7 +2174,7 @@ snapshots:
       inherits: 2.0.4
       readable-stream: 3.6.2
 
-  brace-expansion@5.0.4:
+  brace-expansion@5.0.5:
     dependencies:
       balanced-match: 4.0.4
 
@@ -2377,7 +2377,7 @@ snapshots:
 
   glob@13.0.6:
     dependencies:
-      minimatch: 10.2.4
+      minimatch: 10.2.5
       minipass: 7.1.3
       path-scurry: 2.0.2
 
@@ -2483,7 +2483,7 @@ snapshots:
       lightningcss-win32-arm64-msvc: 1.32.0
       lightningcss-win32-x64-msvc: 1.32.0
 
-  lru-cache@11.2.6: {}
+  lru-cache@11.3.5: {}
 
   magicast@0.5.2:
     dependencies:
@@ -2518,9 +2518,9 @@ snapshots:
 
   mime@2.6.0: {}
 
-  minimatch@10.2.4:
+  minimatch@10.2.5:
     dependencies:
-      brace-expansion: 5.0.4
+      brace-expansion: 5.0.5
 
   minipass@7.1.3: {}
 
@@ -2631,7 +2631,7 @@ snapshots:
 
   path-scurry@2.0.2:
     dependencies:
-      lru-cache: 11.2.6
+      lru-cache: 11.3.5
       minipass: 7.1.3
 
   pause-stream@0.0.11:
@@ -2845,14 +2845,14 @@ snapshots:
 
   tshy-after@1.4.1: {}
 
-  tshy@4.0.0:
+  tshy@4.1.1:
     dependencies:
       '@typescript/native-preview': 7.0.0-dev.20260421.2
       chalk: 5.6.2
       chokidar: 4.0.3
       foreground-child: 4.0.3
       jsonc-simple-parser: 3.0.0
-      minimatch: 10.2.4
+      minimatch: 10.2.5
       mkdirp: 3.0.1
       polite-json: 5.0.0
       resolve-import: 2.4.0
