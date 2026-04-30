@@ -22,9 +22,7 @@ export type SocketInfo = {
   connectPort?: string;
 };
 
-/**
- * https://eggjs.org/en/core/httpclient.html#timing-boolean
- */
+/** https://eggjs.org/en/core/httpclient.html#timing-boolean */
 export type Timing = {
   // socket assigned
   queuing: number;
@@ -47,9 +45,9 @@ export type RawResponseWithMeta = Readable & {
   statusCode: number;
   statusText: string;
   /**
-   * @alias statusText
    * @deprecated use `statusText` instead
-   **/
+   * @alias statusText
+   */
   statusMessage: string;
   headers: IncomingHttpHeaders;
   timing: Timing;
