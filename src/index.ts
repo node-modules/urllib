@@ -51,9 +51,8 @@ export function getDefaultHttpClient(rejectUnauthorized?: boolean, allowH2?: boo
 
 interface UrllibRequestOptions extends RequestOptions {
   /**
-   * If `true`, the server certificate is verified against the list of supplied CAs.
-   * An 'error' event is emitted if verification fails.
-   * Default: `true`
+   * If `true`, the server certificate is verified against the list of supplied CAs. An 'error' event is emitted if
+   * verification fails. Default: `true`
    */
   rejectUnauthorized?: boolean;
   /** Allow to use HTTP2 first. Default is `false` */

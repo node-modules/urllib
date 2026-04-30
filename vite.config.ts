@@ -20,6 +20,9 @@ export default defineConfig({
       newlinesBetween: true,
       order: 'asc',
     },
+    jsdoc: {
+      preferCodeFences: true,
+    },
   },
   lint: {
     options: {
