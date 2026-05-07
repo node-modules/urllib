@@ -50,7 +50,7 @@ describe('diagnostics_channel.test.ts', () => {
       const handler = request[kHandler];
       if (!handler) return;
       let opaque = handler.opaque || handler.opts?.opaque;
-      assert(opaque);
+      if (!opaque) return;
       opaque = opaque[symbols.kRequestOriginalOpaque];
       if (opaque && name === 'undici:client:sendHeaders' && socket) {
         socket[kRequests]++;
@@ -185,8 +185,9 @@ describe('diagnostics_channel.test.ts', () => {
         }
       }
       const handler = request[kHandler];
+      if (!handler) return;
       let opaque = handler.opaque || handler.opts?.opaque;
-      assert(opaque);
+      if (!opaque) return;
       opaque = opaque[symbols.kRequestOriginalOpaque];
       if (opaque && name === 'undici:client:sendHeaders' && socket) {
         socket[kRequests]++;

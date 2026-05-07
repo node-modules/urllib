@@ -187,6 +187,7 @@ export class HttpClient extends EventEmitter {
   constructor(clientOptions?: ClientOptions) {
     super();
     this.#defaultArgs = clientOptions?.defaultArgs;
+    this.#dispatcher = new Agent();
     if (clientOptions?.lookup || clientOptions?.checkAddress) {
       this.#dispatcher = new HttpAgent({
         lookup: clientOptions.lookup,
