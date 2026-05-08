@@ -187,22 +187,22 @@ export class HttpClient extends EventEmitter {
   constructor(clientOptions?: ClientOptions) {
     super();
     this.#defaultArgs = clientOptions?.defaultArgs;
+    const allowH2 = clientOptions?.allowH2 ?? false;
     if (clientOptions?.lookup || clientOptions?.checkAddress) {
       this.#dispatcher = new HttpAgent({
         lookup: clientOptions.lookup,
         checkAddress: clientOptions.checkAddress,
         connect: clientOptions.connect,
-        allowH2: clientOptions.allowH2,
+        allowH2,
       });
     } else if (clientOptions?.connect) {
       this.#dispatcher = new Agent({
         connect: clientOptions.connect,
-        allowH2: clientOptions.allowH2,
+        allowH2,
       });
-    } else if (clientOptions?.allowH2) {
-      // Support HTTP2
+    } else {
       this.#dispatcher = new Agent({
-        allowH2: clientOptions.allowH2,
+        allowH2,
       });
     }
     initDiagnosticsChannel();

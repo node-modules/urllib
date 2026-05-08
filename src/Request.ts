@@ -14,7 +14,7 @@ export type RequestURL = string | URL;
 export type FixJSONCtlCharsHandler = (data: string) => string;
 export type FixJSONCtlChars = boolean | FixJSONCtlCharsHandler;
 
-type AbortSignal = unknown;
+type AbortSignal = globalThis.AbortSignal;
 
 export type RequestOptions = {
   /** Request method, defaults to GET. Could be GET, POST, DELETE or PUT. Alias 'type'. */

@@ -12,7 +12,10 @@ export class BaseAgent extends Agent {
   #opaqueLocalStorage?: AsyncLocalStorage<FetchOpaque>;
 
   constructor(options: BaseAgentOptions) {
-    super(options);
+    super({
+      ...options,
+      allowH2: options.allowH2 ?? false,
+    });
     this.#opaqueLocalStorage = options.opaqueLocalStorage;
   }
 

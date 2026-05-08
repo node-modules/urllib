@@ -58,6 +58,7 @@ export class FetchFactory {
 
   setClientOptions(clientOptions: ClientOptions): void {
     let dispatcherOption: BaseAgentOptions = {
+      allowH2: clientOptions.allowH2 ?? false,
       opaqueLocalStorage: this.#opaqueLocalStorage,
     };
     let dispatcherClazz: new (options: BaseAgentOptions) => BaseAgent = BaseAgent;

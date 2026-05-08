@@ -66,7 +66,7 @@ export class HttpAgent extends BaseAgent {
     };
     super({
       ...baseOpts,
-      connect: { ...options.connect, lookup: lookupFunction, allowH2: options.allowH2 },
+      connect: { ...options.connect, lookup: lookupFunction, allowH2: options.allowH2 ?? false },
     });
     this.#checkAddress = options.checkAddress;
   }
