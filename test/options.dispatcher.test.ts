@@ -35,7 +35,7 @@ describe('options.dispatcher.test.ts', () => {
   });
 
   it('should work with proxyAgent dispatcher', async () => {
-    const { closeServer, url } = await startServer({ https: true });
+    const { closeServer: closeHttpsServer, url: httpsUrl } = await startServer({ https: true });
     try {
       const proxyAgent = new ProxyAgent({
         uri: proxyServerUrl,
@@ -52,16 +52,16 @@ describe('options.dispatcher.test.ts', () => {
       assert.equal(response.status, 200);
       assert.equal(response.data, '<h1>hello</h1>');
 
-      const response2 = await request(url, {
+      const response2 = await request(httpsUrl, {
         dispatcher: proxyAgent,
         dataType: 'json',
         timing: true,
       });
       assert.equal(response2.status, 200);
       assert.equal(response2.data.method, 'GET');
-      assert.equal(response2.data.headers.host, new URL(url).host);
+      assert.equal(response2.data.headers.host, new URL(httpsUrl).host);
     } finally {
-      await closeServer();
+      await closeHttpsServer();
     }
   });
 
