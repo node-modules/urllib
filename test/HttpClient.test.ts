@@ -151,19 +151,21 @@ describe('HttpClient.test.ts', () => {
       });
 
       const url = `https://localhost:${(server.address() as AddressInfo).port}`;
-      const response = await httpClient.request<string>(url, {
-        dataType: 'text',
-      });
-      assert.equal(response.status, 200);
-      assert.equal(response.data, 'hello http/1.1!');
-      assert.equal(lastHttpVersion, '1.1');
-
-      await new Promise<void>((resolve, reject) => {
-        server.close((err) => {
-          if (err) reject(err);
-          else resolve();
+      try {
+        const response = await httpClient.request<string>(url, {
+          dataType: 'text',
         });
-      });
+        assert.equal(response.status, 200);
+        assert.equal(response.data, 'hello http/1.1!');
+        assert.equal(lastHttpVersion, '1.1');
+      } finally {
+        await new Promise<void>((resolve, reject) => {
+          server.close((err) => {
+            if (err) reject(err);
+            else resolve();
+          });
+        });
+      }
     });
 
     it('should not exit after other side closed error', async () => {
