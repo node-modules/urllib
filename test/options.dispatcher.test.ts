@@ -28,7 +28,7 @@ describe('options.dispatcher.test.ts', () => {
 
   afterAll(async () => {
     await close();
-    await Promise.all(proxyAgents.map(async (proxyAgent) => await proxyAgent.close()));
+    await Promise.all(proxyAgents.map((proxyAgent) => proxyAgent.close()));
     await new Promise((resolve) => {
       proxyServer.close(resolve);
     });
@@ -36,22 +36,22 @@ describe('options.dispatcher.test.ts', () => {
 
   it('should work with proxyAgent dispatcher', async () => {
     const { closeServer, url } = await startServer({ https: true });
-    const proxyAgent = new ProxyAgent({
-      uri: proxyServerUrl,
-      requestTls: {
-        rejectUnauthorized: false,
-      },
-    });
-    proxyAgents.push(proxyAgent);
-    const response = await request(`${_url}html`, {
-      dispatcher: proxyAgent,
-      dataType: 'text',
-      timing: true,
-    });
-    assert.equal(response.status, 200);
-    assert.equal(response.data, '<h1>hello</h1>');
-
     try {
+      const proxyAgent = new ProxyAgent({
+        uri: proxyServerUrl,
+        requestTls: {
+          rejectUnauthorized: false,
+        },
+      });
+      proxyAgents.push(proxyAgent);
+      const response = await request(`${_url}html`, {
+        dispatcher: proxyAgent,
+        dataType: 'text',
+        timing: true,
+      });
+      assert.equal(response.status, 200);
+      assert.equal(response.data, '<h1>hello</h1>');
+
       const response2 = await request(url, {
         dispatcher: proxyAgent,
         dataType: 'json',
