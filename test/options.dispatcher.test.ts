@@ -11,6 +11,7 @@ describe('options.dispatcher.test.ts', () => {
   let _url: string;
   let proxyServer: any;
   let proxyServerUrl: string;
+  const proxyAgents: ProxyAgent[] = [];
   beforeAll(async () => {
     const { closeServer, url } = await startServer();
     close = closeServer;
@@ -27,13 +28,21 @@ describe('options.dispatcher.test.ts', () => {
 
   afterAll(async () => {
     await close();
+    await Promise.all(proxyAgents.map(async (proxyAgent) => await proxyAgent.close()));
     await new Promise((resolve) => {
       proxyServer.close(resolve);
     });
   });
 
   it('should work with proxyAgent dispatcher', async () => {
-    const proxyAgent = new ProxyAgent(proxyServerUrl);
+    const { closeServer, url } = await startServer({ https: true });
+    const proxyAgent = new ProxyAgent({
+      uri: proxyServerUrl,
+      requestTls: {
+        rejectUnauthorized: false,
+      },
+    });
+    proxyAgents.push(proxyAgent);
     const response = await request(`${_url}html`, {
       dispatcher: proxyAgent,
       dataType: 'text',
@@ -42,19 +51,24 @@ describe('options.dispatcher.test.ts', () => {
     assert.equal(response.status, 200);
     assert.equal(response.data, '<h1>hello</h1>');
 
-    const response2 = await request('https://registry.npmmirror.com/urllib/latest', {
-      dispatcher: proxyAgent,
-      dataType: 'json',
-      timing: true,
-    });
-    // console.log(response2.status, response2.headers);
-    assert.equal(response2.status, 200);
-    assert.equal(response2.data.name, 'urllib');
+    try {
+      const response2 = await request(url, {
+        dispatcher: proxyAgent,
+        dataType: 'json',
+        timing: true,
+      });
+      assert.equal(response2.status, 200);
+      assert.equal(response2.data.method, 'GET');
+      assert.equal(response2.data.headers.host, new URL(url).host);
+    } finally {
+      await closeServer();
+    }
   });
 
   it('should work with getGlobalDispatcher() dispatcher', async () => {
     const agent = getGlobalDispatcher();
     const proxyAgent = new ProxyAgent(proxyServerUrl);
+    proxyAgents.push(proxyAgent);
     setGlobalDispatcher(proxyAgent);
     const response = await request(`${_url}html`, {
       dataType: 'text',
