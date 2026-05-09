@@ -42,8 +42,12 @@ type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', Inc
 
 export const PROTO_RE: RegExp = /^https?:\/\//i;
 let initialGlobalDispatcher: Dispatcher | undefined;
-let defaultDispatcher: Dispatcher;
+let defaultH1Dispatcher: Dispatcher;
 
+/**
+ * Use an explicitly overridden global undici dispatcher when present; otherwise fall back to urllib's shared
+ * HTTP/1.1-safe default agent.
+ */
 function getDefaultDispatcher(): Dispatcher {
   const globalDispatcher = getGlobalDispatcher();
   if (!initialGlobalDispatcher) {
@@ -54,12 +58,12 @@ function getDefaultDispatcher(): Dispatcher {
     return globalDispatcher;
   }
 
-  if (!defaultDispatcher) {
-    defaultDispatcher = new Agent({
+  if (!defaultH1Dispatcher) {
+    defaultH1Dispatcher = new Agent({
       allowH2: false,
     });
   }
-  return defaultDispatcher;
+  return defaultH1Dispatcher;
 }
 
 export interface UndiciTimingInfo {
@@ -221,8 +225,8 @@ export class HttpClient extends EventEmitter {
         allowH2,
       });
     } else if (clientOptions?.allowH2 !== undefined) {
-      // Explicit protocol preference should use a dedicated dispatcher instead of
-      // following later global dispatcher overrides.
+      // Any explicit allowH2 value should pin protocol preference for this client
+      // instead of following later global dispatcher overrides.
       this.#dispatcher = new Agent({
         allowH2,
       });
