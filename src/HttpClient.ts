@@ -41,12 +41,16 @@ type PropertyShouldBe<T, K extends keyof T, V> = Omit<T, K> & { [P in K]: V };
 type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', IncomingHttpHeaders>;
 
 export const PROTO_RE: RegExp = /^https?:\/\//i;
-const undiciGlobalDispatcher = getGlobalDispatcher();
+let initialGlobalDispatcher: Dispatcher | undefined;
 let defaultDispatcher: Dispatcher;
 
 function getDefaultDispatcher(): Dispatcher {
   const globalDispatcher = getGlobalDispatcher();
-  if (globalDispatcher !== undiciGlobalDispatcher) {
+  if (!initialGlobalDispatcher) {
+    initialGlobalDispatcher = globalDispatcher;
+  }
+
+  if (globalDispatcher !== initialGlobalDispatcher) {
     return globalDispatcher;
   }
 
@@ -217,6 +221,8 @@ export class HttpClient extends EventEmitter {
         allowH2,
       });
     } else if (clientOptions?.allowH2 !== undefined) {
+      // Explicit protocol preference should use a dedicated dispatcher instead of
+      // following later global dispatcher overrides.
       this.#dispatcher = new Agent({
         allowH2,
       });
