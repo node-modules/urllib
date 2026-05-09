@@ -42,7 +42,7 @@ type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', Inc
 
 export const PROTO_RE: RegExp = /^https?:\/\//i;
 let initialGlobalDispatcher: Dispatcher | undefined;
-let defaultH1Dispatcher: Dispatcher;
+let defaultHttp1Dispatcher: Dispatcher;
 
 /**
  * Use an explicitly overridden global undici dispatcher when present; otherwise fall back to urllib's shared
@@ -58,12 +58,12 @@ function getDefaultDispatcher(): Dispatcher {
     return globalDispatcher;
   }
 
-  if (!defaultH1Dispatcher) {
-    defaultH1Dispatcher = new Agent({
+  if (!defaultHttp1Dispatcher) {
+    defaultHttp1Dispatcher = new Agent({
       allowH2: false,
     });
   }
-  return defaultH1Dispatcher;
+  return defaultHttp1Dispatcher;
 }
 
 export interface UndiciTimingInfo {
