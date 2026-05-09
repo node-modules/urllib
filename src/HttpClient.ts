@@ -41,6 +41,22 @@ type PropertyShouldBe<T, K extends keyof T, V> = Omit<T, K> & { [P in K]: V };
 type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', IncomingHttpHeaders>;
 
 export const PROTO_RE: RegExp = /^https?:\/\//i;
+const undiciGlobalDispatcher = getGlobalDispatcher();
+let defaultDispatcher: Dispatcher;
+
+function getDefaultDispatcher(): Dispatcher {
+  const globalDispatcher = getGlobalDispatcher();
+  if (globalDispatcher !== undiciGlobalDispatcher) {
+    return globalDispatcher;
+  }
+
+  if (!defaultDispatcher) {
+    defaultDispatcher = new Agent({
+      allowH2: false,
+    });
+  }
+  return defaultDispatcher;
+}
 
 export interface UndiciTimingInfo {
   startTime: number;
@@ -200,7 +216,7 @@ export class HttpClient extends EventEmitter {
         connect: clientOptions.connect,
         allowH2,
       });
-    } else {
+    } else if (clientOptions?.allowH2 !== undefined) {
       this.#dispatcher = new Agent({
         allowH2,
       });
@@ -209,7 +225,7 @@ export class HttpClient extends EventEmitter {
   }
 
   getDispatcher(): Dispatcher {
-    return this.#dispatcher ?? getGlobalDispatcher();
+    return this.#dispatcher ?? getDefaultDispatcher();
   }
 
   setDispatcher(dispatcher: Dispatcher): void {
