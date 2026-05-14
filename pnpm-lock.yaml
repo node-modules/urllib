@@ -44,7 +44,7 @@ importers:
         version: 2.1.4
       '@types/node':
         specifier: ^22.19.15
-        version: 22.19.17
+        version: 22.19.19
       '@types/proxy':
         specifier: ^1.0.4
         version: 1.0.4
@@ -92,10 +92,10 @@ importers:
         version: 6.0.3
       vite-plus:
         specifier: ^0.1.21
-        version: 0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.17)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.17))
+        version: 0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))
       vitest:
         specifier: npm:@voidzero-dev/vite-plus-test@^0.1.21
-        version: '@voidzero-dev/vite-plus-test@0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.17)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.17))'
+        version: '@voidzero-dev/vite-plus-test@0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))'
 
 packages:
 
@@ -588,8 +588,8 @@ packages:
   '@types/mime-types@2.1.4':
     resolution: {integrity: sha512-lfU4b34HOri+kAY5UheuFMWPDOI+OPceBSHZKp69gEyTL/mmJ4cnU6Y/rlme3UL3GyOn6Y42hyIEw0/q8sWx5w==}
 
-  '@types/node@22.19.17':
-    resolution: {integrity: sha512-wGdMcf+vPYM6jikpS/qhg6WiqSV/OhG+jeeHT/KlVqxYfD40iYJf9/AE1uQxVWFvU7MipKRkRv8NSHiCGgPr8Q==}
+  '@types/node@22.19.19':
+    resolution: {integrity: sha512-dyh/xO2Fh5bYrfWaaqGrRQQGkNdmYw6AmaAUvYeUMNTWQtvb796ikLdmTchRmOlOiIJ1TDXfWgVx1QkUlQ6Hew==}
 
   '@types/proxy@1.0.4':
     resolution: {integrity: sha512-KnYy7hpp3wXQ2U0ExvCMF9BvWZ6h2aI0XWb8g705mn26Zmn2HO/eLRi6UuhHELA6MNJtYtiZYWv38gobJN0xXQ==}
@@ -1958,7 +1958,7 @@ snapshots:
 
   '@types/busboy@1.5.4':
     dependencies:
-      '@types/node': 22.19.17
+      '@types/node': 22.19.19
 
   '@types/chai@5.2.3':
     dependencies:
@@ -1971,13 +1971,13 @@ snapshots:
 
   '@types/mime-types@2.1.4': {}
 
-  '@types/node@22.19.17':
+  '@types/node@22.19.19':
     dependencies:
       undici-types: 6.21.0
 
   '@types/proxy@1.0.4':
     dependencies:
-      '@types/node': 22.19.17
+      '@types/node': 22.19.19
 
   '@types/qs@6.15.0': {}
 
@@ -1987,7 +1987,7 @@ snapshots:
 
   '@types/tar-stream@2.2.3':
     dependencies:
-      '@types/node': 22.19.17
+      '@types/node': 22.19.19
 
   '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260421.2':
     optional: true
@@ -2032,7 +2032,7 @@ snapshots:
       obug: 2.1.1
       std-env: 4.1.0
       tinyrainbow: 3.1.0
-      vitest: '@voidzero-dev/vite-plus-test@0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.17)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.17))'
+      vitest: '@voidzero-dev/vite-plus-test@0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))'
 
   '@vitest/pretty-format@4.1.6':
     dependencies:
@@ -2044,7 +2044,7 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.0
 
-  '@voidzero-dev/vite-plus-core@0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.17)(typescript@6.0.3)':
+  '@voidzero-dev/vite-plus-core@0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(typescript@6.0.3)':
     dependencies:
       '@oxc-project/runtime': 0.129.0
       '@oxc-project/types': 0.129.0
@@ -2052,7 +2052,7 @@ snapshots:
       postcss: 8.5.14
     optionalDependencies:
       '@arethetypeswrong/core': 0.18.2
-      '@types/node': 22.19.17
+      '@types/node': 22.19.19
       fsevents: 2.3.3
       typescript: 6.0.3
 
@@ -2074,11 +2074,11 @@ snapshots:
   '@voidzero-dev/vite-plus-linux-x64-musl@0.1.21':
     optional: true
 
-  '@voidzero-dev/vite-plus-test@0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.17)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.17))':
+  '@voidzero-dev/vite-plus-test@0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))':
     dependencies:
       '@standard-schema/spec': 1.1.0
       '@types/chai': 5.2.3
-      '@voidzero-dev/vite-plus-core': 0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.17)(typescript@6.0.3)
+      '@voidzero-dev/vite-plus-core': 0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(typescript@6.0.3)
       es-module-lexer: 1.7.0
       obug: 2.1.1
       pixelmatch: 7.2.0
@@ -2088,10 +2088,10 @@ snapshots:
       tinybench: 2.9.0
       tinyexec: 1.1.2
       tinyglobby: 0.2.16
-      vite: 8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.17)
+      vite: 8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19)
       ws: 8.20.0
     optionalDependencies:
-      '@types/node': 22.19.17
+      '@types/node': 22.19.19
       '@vitest/coverage-v8': 4.1.6(@voidzero-dev/vite-plus-test@0.1.21)
     transitivePeerDependencies:
       - '@arethetypeswrong/core'
@@ -2874,11 +2874,11 @@ snapshots:
 
   validate-npm-package-name@5.0.1: {}
 
-  vite-plus@0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.17)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.17)):
+  vite-plus@0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19)):
     dependencies:
       '@oxc-project/types': 0.129.0
-      '@voidzero-dev/vite-plus-core': 0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.17)(typescript@6.0.3)
-      '@voidzero-dev/vite-plus-test': 0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.17)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.17))
+      '@voidzero-dev/vite-plus-core': 0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(typescript@6.0.3)
+      '@voidzero-dev/vite-plus-test': 0.1.21(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))
       oxfmt: 0.48.0
       oxlint: 1.63.0(oxlint-tsgolint@0.22.1)
       oxlint-tsgolint: 0.22.1
@@ -2922,7 +2922,7 @@ snapshots:
       - vite
       - yaml
 
-  vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.17):
+  vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19):
     dependencies:
       '@oxc-project/runtime': 0.115.0
       lightningcss: 1.32.0
@@ -2931,7 +2931,7 @@ snapshots:
       rolldown: 1.0.0-rc.9(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
       tinyglobby: 0.2.16
     optionalDependencies:
-      '@types/node': 22.19.17
+      '@types/node': 22.19.19
       fsevents: 2.3.3
     transitivePeerDependencies:
       - '@emnapi/core'
