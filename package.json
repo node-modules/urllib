@@ -89,7 +89,7 @@
     "@types/selfsigned": "^2.1.0",
     "@types/tar-stream": "^2.2.3",
     "@typescript/native-preview": "beta",
-    "@vitest/coverage-v8": "^4.1.0",
+    "@vitest/coverage-v8": "^4.1.5",
     "busboy": "^1.6.0",
     "cross-env": "^10.1.0",
     "iconv-lite": "^0.7.0",
