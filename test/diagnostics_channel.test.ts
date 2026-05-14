@@ -14,6 +14,8 @@ import type { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../s
 import symbols from '../src/symbols.js';
 import { startServer } from './fixtures/server.js';
 
+const { kRequestOriginalOpaque } = symbols as unknown as { kRequestOriginalOpaque: symbol };
+
 describe('diagnostics_channel.test.ts', () => {
   let close: any;
   let _url: string;
@@ -51,7 +53,7 @@ describe('diagnostics_channel.test.ts', () => {
       if (!handler) return;
       let opaque = handler.opaque || handler.opts?.opaque;
       assert(opaque);
-      opaque = opaque[symbols.kRequestOriginalOpaque];
+      opaque = opaque[kRequestOriginalOpaque];
       if (opaque && name === 'undici:client:sendHeaders' && socket) {
         socket[kRequests]++;
         opaque.tracer.socket = {
@@ -187,7 +189,7 @@ describe('diagnostics_channel.test.ts', () => {
       const handler = request[kHandler];
       let opaque = handler.opaque || handler.opts?.opaque;
       assert(opaque);
-      opaque = opaque[symbols.kRequestOriginalOpaque];
+      opaque = opaque[kRequestOriginalOpaque];
       if (opaque && name === 'undici:client:sendHeaders' && socket) {
         socket[kRequests]++;
         opaque.tracer.socket = {
