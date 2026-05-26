@@ -18,11 +18,12 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@v1
+        uses: voidzero-dev/setup-vp@f5f2b16de3f7b95fa5ce9398c03e7b55bd6a4529 # pr/72
         with:
           node-version: '24'
           cache: true
           run-install: true
+          sfw: true
 
       - name: Check
         run: vp run check
@@ -58,11 +59,12 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@v1
+        uses: voidzero-dev/setup-vp@f5f2b16de3f7b95fa5ce9398c03e7b55bd6a4529 # pr/72
         with:
           node-version: ${{ matrix.node }}
           cache: true
           run-install: true
+          sfw: true
 
       - name: Run tests
         run: vp run ci
