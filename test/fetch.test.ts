@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import diagnosticsChannel from 'node:diagnostics_channel';
+import { once } from 'node:events';
+import { createSecureServer } from 'node:http2';
+import type { AddressInfo } from 'node:net';
 import { setTimeout as sleep } from 'node:timers/promises';
 
+import selfsigned from 'selfsigned';
 import { Request } from 'undici';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
@@ -111,6 +115,51 @@ describe('fetch.test.ts', () => {
     const stats = FetchFactory.getDispatcherPoolStats();
     assert(stats);
     assert(Object.keys(stats).length > 0, `dispatcher pool stats: ${JSON.stringify(stats)}`);
+  });
+
+  it('fetch should keep HTTP/1.1 by default', async () => {
+    const pem = selfsigned.generate([], {
+      keySize: 2048,
+    });
+    const server = createSecureServer({
+      allowHTTP1: true,
+      key: pem.private,
+      cert: pem.cert,
+    });
+
+    let lastHttpVersion = '';
+    server.on('request', (req, res) => {
+      lastHttpVersion = req.httpVersion;
+      res.writeHead(200, {
+        'content-type': 'text/plain; charset=utf-8',
+      });
+      res.end(`hello http/${req.httpVersion}!`);
+    });
+
+    server.listen(0);
+    await once(server, 'listening');
+
+    const factory = new FetchFactory();
+    factory.setClientOptions({
+      connect: {
+        rejectUnauthorized: false,
+      },
+    });
+
+    const url = `https://localhost:${(server.address() as AddressInfo).port}`;
+    try {
+      const response = await factory.fetch(url);
+      assert.equal(response.status, 200);
+      assert.equal(await response.text(), 'hello http/1.1!');
+      assert.equal(lastHttpVersion, '1.1');
+    } finally {
+      await new Promise<void>((resolve, reject) => {
+        server.close((err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+    }
   });
 
   it('fetch request with post should work', async () => {

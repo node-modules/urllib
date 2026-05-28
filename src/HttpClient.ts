@@ -41,6 +41,30 @@ type PropertyShouldBe<T, K extends keyof T, V> = Omit<T, K> & { [P in K]: V };
 type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', IncomingHttpHeaders>;
 
 export const PROTO_RE: RegExp = /^https?:\/\//i;
+let initialGlobalDispatcher: Dispatcher | undefined;
+let defaultHttp1Dispatcher: Dispatcher;
+
+/**
+ * Use an explicitly overridden global undici dispatcher when present; otherwise fall back to urllib's shared
+ * HTTP/1.1-safe default agent.
+ */
+function getDefaultDispatcher(): Dispatcher {
+  const globalDispatcher = getGlobalDispatcher();
+  if (!initialGlobalDispatcher) {
+    initialGlobalDispatcher = globalDispatcher;
+  }
+
+  if (globalDispatcher !== initialGlobalDispatcher) {
+    return globalDispatcher;
+  }
+
+  if (!defaultHttp1Dispatcher) {
+    defaultHttp1Dispatcher = new Agent({
+      allowH2: false,
+    });
+  }
+  return defaultHttp1Dispatcher;
+}
 
 export interface UndiciTimingInfo {
   startTime: number;
@@ -187,29 +211,31 @@ export class HttpClient extends EventEmitter {
   constructor(clientOptions?: ClientOptions) {
     super();
     this.#defaultArgs = clientOptions?.defaultArgs;
+    const allowH2 = clientOptions?.allowH2 ?? false;
     if (clientOptions?.lookup || clientOptions?.checkAddress) {
       this.#dispatcher = new HttpAgent({
         lookup: clientOptions.lookup,
         checkAddress: clientOptions.checkAddress,
         connect: clientOptions.connect,
-        allowH2: clientOptions.allowH2,
+        allowH2,
       });
     } else if (clientOptions?.connect) {
       this.#dispatcher = new Agent({
         connect: clientOptions.connect,
-        allowH2: clientOptions.allowH2,
+        allowH2,
       });
-    } else if (clientOptions?.allowH2) {
-      // Support HTTP2
+    } else if (clientOptions?.allowH2 !== undefined) {
+      // Any explicit allowH2 value should pin protocol preference for this client
+      // instead of following later global dispatcher overrides.
       this.#dispatcher = new Agent({
-        allowH2: clientOptions.allowH2,
+        allowH2,
       });
     }
     initDiagnosticsChannel();
   }
 
   getDispatcher(): Dispatcher {
-    return this.#dispatcher ?? getGlobalDispatcher();
+    return this.#dispatcher ?? getDefaultDispatcher();
   }
 
   setDispatcher(dispatcher: Dispatcher): void {

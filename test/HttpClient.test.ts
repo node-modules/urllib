@@ -125,6 +125,49 @@ describe('HttpClient.test.ts', () => {
       assert(httpClient.getDispatcherPoolStats()[_url.substring(0, _url.length - 1)].connected > 1);
     });
 
+    it('should keep HTTP/1.1 by default', async () => {
+      const server = createSecureServer({
+        allowHTTP1: true,
+        key: pems.private,
+        cert: pems.cert,
+      });
+
+      let lastHttpVersion = '';
+      server.on('request', (req, res) => {
+        lastHttpVersion = req.httpVersion;
+        res.writeHead(200, {
+          'content-type': 'text/plain; charset=utf-8',
+        });
+        res.end(`hello http/${req.httpVersion}!`);
+      });
+
+      server.listen(0);
+      await once(server, 'listening');
+
+      const httpClient = new HttpClient({
+        connect: {
+          rejectUnauthorized: false,
+        },
+      });
+
+      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
+      try {
+        const response = await httpClient.request<string>(url, {
+          dataType: 'text',
+        });
+        assert.equal(response.status, 200);
+        assert.equal(response.data, 'hello http/1.1!');
+        assert.equal(lastHttpVersion, '1.1');
+      } finally {
+        await new Promise<void>((resolve, reject) => {
+          server.close((err) => {
+            if (err) reject(err);
+            else resolve();
+          });
+        });
+      }
+    });
+
     it('should not exit after other side closed error', async () => {
       const server = createSecureServer({
         key: pems.private,

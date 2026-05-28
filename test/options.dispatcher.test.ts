@@ -11,6 +11,7 @@ describe('options.dispatcher.test.ts', () => {
   let _url: string;
   let proxyServer: any;
   let proxyServerUrl: string;
+  const proxyAgents: ProxyAgent[] = [];
   beforeAll(async () => {
     const { closeServer, url } = await startServer();
     close = closeServer;
@@ -27,34 +28,47 @@ describe('options.dispatcher.test.ts', () => {
 
   afterAll(async () => {
     await close();
+    await Promise.all(proxyAgents.map((proxyAgent) => proxyAgent.close()));
     await new Promise((resolve) => {
       proxyServer.close(resolve);
     });
   });
 
   it('should work with proxyAgent dispatcher', async () => {
-    const proxyAgent = new ProxyAgent(proxyServerUrl);
-    const response = await request(`${_url}html`, {
-      dispatcher: proxyAgent,
-      dataType: 'text',
-      timing: true,
-    });
-    assert.equal(response.status, 200);
-    assert.equal(response.data, '<h1>hello</h1>');
+    const { closeServer: closeHttpsServer, url: httpsUrl } = await startServer({ https: true });
+    try {
+      const proxyAgent = new ProxyAgent({
+        uri: proxyServerUrl,
+        requestTls: {
+          rejectUnauthorized: false,
+        },
+      });
+      proxyAgents.push(proxyAgent);
+      const response = await request(`${_url}html`, {
+        dispatcher: proxyAgent,
+        dataType: 'text',
+        timing: true,
+      });
+      assert.equal(response.status, 200);
+      assert.equal(response.data, '<h1>hello</h1>');
 
-    const response2 = await request('https://registry.npmmirror.com/urllib/latest', {
-      dispatcher: proxyAgent,
-      dataType: 'json',
-      timing: true,
-    });
-    // console.log(response2.status, response2.headers);
-    assert.equal(response2.status, 200);
-    assert.equal(response2.data.name, 'urllib');
+      const response2 = await request(httpsUrl, {
+        dispatcher: proxyAgent,
+        dataType: 'json',
+        timing: true,
+      });
+      assert.equal(response2.status, 200);
+      assert.equal(response2.data.method, 'GET');
+      assert.equal(response2.data.headers.host, new URL(httpsUrl).host);
+    } finally {
+      await closeHttpsServer();
+    }
   });
 
   it('should work with getGlobalDispatcher() dispatcher', async () => {
     const agent = getGlobalDispatcher();
     const proxyAgent = new ProxyAgent(proxyServerUrl);
+    proxyAgents.push(proxyAgent);
     setGlobalDispatcher(proxyAgent);
     const response = await request(`${_url}html`, {
       dataType: 'text',
