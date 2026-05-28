@@ -111,17 +111,5 @@
   "engines": {
     "node": ">= 22.0.0"
   },
-  "packageManager": "pnpm@11.3.0",
-  "pnpm": {
-    "overrides": {
-      "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.22",
-      "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.22"
-    },
-    "peerDependencyRules": {
-      "allowAny": [
-        "vite",
-        "vitest"
-      ]
-    }
-  }
+  "packageManager": "pnpm@11.3.0"
 }
