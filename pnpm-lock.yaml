@@ -23,7 +23,7 @@ importers:
         version: 2.1.35
       qs:
         specifier: ^6.15.0
-        version: 6.15.1
+        version: 6.15.2
       type-fest:
         specifier: ^4.41.0
         version: 4.41.0
@@ -1380,8 +1380,8 @@ packages:
     resolution: {integrity: sha512-KNac2ueWRpjbUh77OAFPZuNdfEqNynm9DD4xHT14CccGpW8wKZwEkN0yjlb7X9G9Z9F55N0Q+1z+WfgAhwYdzQ==}
     hasBin: true
 
-  qs@6.15.1:
-    resolution: {integrity: sha512-6YHEFRL9mfgcAvql/XhwTvf5jKcOiiupt2FiJxHkiX1z4j7WL8J/jRHYLluORvc1XxB5rV20KoeK00gVJamspg==}
+  qs@6.15.2:
+    resolution: {integrity: sha512-Rzq0KEyX/w/tEybncDgdkZrJgVUsUMk3xjh3t5bv3S1HTAtg+uOYt72+ZfwiQwKdysThkTBdL/rTi6HDmX9Ddw==}
     engines: {node: '>=0.6'}
 
   readable-stream@3.6.2:
@@ -2668,7 +2668,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  qs@6.15.1:
+  qs@6.15.2:
     dependencies:
       side-channel: 1.1.0
 
