@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@b250484f0d7da679524e2f30c1330935444328f9 # fix: silence benign cache reserve-race warnings (voidzero-dev/setup-vp#75); revert to @v1 after release
+        uses: voidzero-dev/setup-vp@6cb180a2f884264930ebcd4169f924720120c4b4 # fix: silence benign cache reserve-race warnings (voidzero-dev/setup-vp#75); revert to @v1 after release
         with:
           node-version: '24'
           cache: true
@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@b250484f0d7da679524e2f30c1330935444328f9 # fix: silence benign cache reserve-race warnings (voidzero-dev/setup-vp#75); revert to @v1 after release
+        uses: voidzero-dev/setup-vp@6cb180a2f884264930ebcd4169f924720120c4b4 # fix: silence benign cache reserve-race warnings (voidzero-dev/setup-vp#75); revert to @v1 after release
         with:
           node-version: ${{ matrix.node }}
           cache: true
