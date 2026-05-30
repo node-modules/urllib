@@ -36,4 +36,27 @@ export class FormData extends _FormData {
 
     return contentDisposition;
   }
+
+  /**
+   * Convert FormData to Buffer by consuming the CombinedStream.
+   * This is needed for Bun compatibility since Bun's undici
+   * doesn't support Node.js Stream objects as request body.
+   *
+   * Note: CombinedStream (which form-data extends) requires
+   * resume() to start data flow, unlike standard Readable streams.
+   */
+  async toBuffer(): Promise<Buffer> {
+    return new Promise<Buffer>((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      this.on('data', (chunk: Buffer | string) => {
+        // CombinedStream emits boundary/header strings alongside Buffer data
+        chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+      });
+      this.on('end', () => resolve(Buffer.concat(chunks)));
+      this.on('error', reject);
+      // CombinedStream pauses by default and only starts
+      // flowing when piped or explicitly resumed
+      this.resume();
+    });
+  }
 }

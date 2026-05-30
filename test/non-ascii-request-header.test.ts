@@ -2,6 +2,7 @@ import { strict as assert } from 'node:assert';
 
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
+import { isBun } from '../src/HttpClient.js';
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -29,10 +30,15 @@ describe('non-ascii-request-header.test.ts', () => {
         console.log(response);
       },
       (err: any) => {
-        // console.error(err);
-        assert.equal(err.name, 'InvalidArgumentError');
-        assert.equal(err.message, 'invalid x-test header');
-        assert.equal(err.code, 'UND_ERR_INVALID_ARG');
+        // Bun throws TypeError instead of InvalidArgumentError
+        if (isBun) {
+          assert.equal(err.name, 'TypeError');
+          assert.match(err.message, /invalid/i);
+        } else {
+          assert.equal(err.name, 'InvalidArgumentError');
+          assert.equal(err.message, 'invalid x-test header');
+          assert.equal(err.code, 'UND_ERR_INVALID_ARG');
+        }
         assert(err.res);
         assert.equal(err.res.status, -1);
         return true;

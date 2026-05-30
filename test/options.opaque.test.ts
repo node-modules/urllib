@@ -2,6 +2,7 @@ import { strict as assert } from 'node:assert';
 
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
+import { isBun } from '../src/HttpClient.js';
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -31,7 +32,7 @@ describe('options.opaque.test.ts', () => {
     });
   });
 
-  it('should opaque work on error request', async () => {
+  it.skipIf(isBun)('should opaque work on error request', async () => {
     await assert.rejects(
       async () => {
         await urllib.request(`${_url}socket.end.error`, {

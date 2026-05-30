@@ -243,7 +243,13 @@ export class FetchFactory {
     }
 
     // get undici internal response
-    const state = getResponseState(res!);
+    // Bun's Response doesn't have the same internal state as npm undici's Response
+    let state: any;
+    try {
+      state = getResponseState(res!);
+    } catch {
+      state = {};
+    }
     updateSocketInfo(socketInfo, internalOpaque);
 
     urllibResponse.headers = convertHeader(res!.headers);

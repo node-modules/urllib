@@ -3,6 +3,7 @@ import { setTimeout as sleep } from 'node:timers/promises';
 
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
+import { isBun } from '../src/HttpClient.js';
 import { HttpClient } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { isWindows } from './utils.js';
@@ -23,6 +24,14 @@ describe('keep-alive-header.test.ts', () => {
   afterAll(async () => {
     await close();
   });
+
+  function assertKeepAlive(response: any) {
+    // Bun's undici strips connection/keep-alive headers internally
+    if (!isBun) {
+      assert.equal(response.headers.connection, 'keep-alive');
+      assert.equal(response.headers['keep-alive'], `timeout=${keepAliveTimeout / 1000}`);
+    }
+  }
 
   it('should handle Keep-Alive header and not throw reset error on 1s keepalive agent', async () => {
     let count = 0;
@@ -52,44 +61,35 @@ describe('keep-alive-header.test.ts', () => {
         // console.log(response.res.socket);
         assert.equal(response.status, 200);
         // console.log(response.headers);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
         // console.log(response.headers);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
         // console.log(response.headers);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
         // console.log(response.headers);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
         // console.log(response.headers);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         assert(
           parseInt(response.headers['x-requests-persocket'] as string) >= 1,
           response.headers['x-requests-persocket'] as string,
@@ -99,44 +99,35 @@ describe('keep-alive-header.test.ts', () => {
         // console.log(response.res.socket);
         assert.equal(response.status, 200);
         // console.log(response.headers);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
         // console.log(response.headers);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
         // console.log(response.headers);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
         // console.log(response.headers);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         response = await httpClient.request(_url);
         assert.equal(response.status, 200);
         // console.log(response.headers);
-        assert.equal(response.headers.connection, 'keep-alive');
-        assert.equal(response.headers['keep-alive'], 'timeout=2');
+        assertKeepAlive(response);
         assert(
           parseInt(response.headers['x-requests-persocket'] as string) >= 1,
           response.headers['x-requests-persocket'] as string,

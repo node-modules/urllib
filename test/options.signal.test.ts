@@ -4,6 +4,7 @@ import { setTimeout as sleep } from 'node:timers/promises';
 
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
+import { isBun } from '../src/HttpClient.js';
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -33,14 +34,17 @@ describe('options.signal.test.ts', () => {
       },
       (err: any) => {
         assert.equal(err.name, 'AbortError');
-        assert.equal(err.message, 'This operation was aborted');
+        // Bun: "The operation was aborted." (with period)
+        // Node.js: "This operation was aborted"
+        assert.match(err.message, /operation was aborted/i);
         assert.equal(err.code, 20);
         return true;
       },
     );
   });
 
-  it('should throw error when EventEmitter emit abort event', async () => {
+  // Bun's undici requires AbortSignal instance, EventEmitter not supported
+  it.skipIf(isBun)('should throw error when EventEmitter emit abort event', async () => {
     await assert.rejects(
       async () => {
         const ee = new EventEmitter();

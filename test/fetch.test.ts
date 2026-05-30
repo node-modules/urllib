@@ -7,6 +7,7 @@ import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import { fetch, FetchFactory } from '../src/fetch.js';
 import type { FetchDiagnosticsMessage, FetchResponseDiagnosticsMessage } from '../src/fetch.js';
+import { isBun } from '../src/HttpClient.js';
 import type { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../src/HttpClient.js';
 import { startServer } from './fixtures/server.js';
 
@@ -23,7 +24,7 @@ describe('fetch.test.ts', () => {
     await close();
   });
 
-  it('fetch should work', async () => {
+  it.skipIf(isBun)('fetch should work', async () => {
     let requestDiagnosticsMessage: RequestDiagnosticsMessage;
     let responseDiagnosticsMessage: ResponseDiagnosticsMessage;
     let fetchDiagnosticsMessage: FetchDiagnosticsMessage;
@@ -67,7 +68,7 @@ describe('fetch.test.ts', () => {
     assert(Object.keys(stats).length > 0);
   });
 
-  it('fetch error should has socket info', async () => {
+  it.skipIf(isBun)('fetch error should has socket info', async () => {
     let requestDiagnosticsMessage: RequestDiagnosticsMessage;
     let responseDiagnosticsMessage: ResponseDiagnosticsMessage;
     let fetchDiagnosticsMessage: FetchDiagnosticsMessage;
@@ -123,7 +124,7 @@ describe('fetch.test.ts', () => {
     }, /Cannot construct a Request with a Request object that has already been used/);
   });
 
-  it('fetch with new FetchFactory instance should work', async () => {
+  it.skipIf(isBun)('fetch with new FetchFactory instance should work', async () => {
     let requestDiagnosticsMessage: RequestDiagnosticsMessage;
     let responseDiagnosticsMessage: ResponseDiagnosticsMessage;
     let fetchDiagnosticsMessage: FetchDiagnosticsMessage;

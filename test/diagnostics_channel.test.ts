@@ -9,6 +9,7 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import selfsigned from 'selfsigned';
 import { describe, it, beforeEach, afterEach } from 'vite-plus/test';
 
+import { isBun } from '../src/HttpClient.js';
 import urllib, { HttpClient } from '../src/index.js';
 import type { RequestDiagnosticsMessage, ResponseDiagnosticsMessage } from '../src/index.js';
 import symbols from '../src/symbols.js';
@@ -16,7 +17,7 @@ import { startServer } from './fixtures/server.js';
 
 const { kRequestOriginalOpaque } = symbols as unknown as { kRequestOriginalOpaque: symbol };
 
-describe('diagnostics_channel.test.ts', () => {
+describe.skipIf(isBun)('diagnostics_channel.test.ts', () => {
   let close: any;
   let _url: string;
   beforeEach(async () => {

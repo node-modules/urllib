@@ -5,6 +5,7 @@ import { Readable } from 'node:stream';
 import qs from 'qs';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
+import { isBun } from '../src/HttpClient.js';
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -501,7 +502,7 @@ describe('options.data.test.ts', () => {
     assert.equal(response.data.headers['content-type'], 'application/json; charset=gbk');
   });
 
-  it('should keep data to readable when content-type exists', async () => {
+  it.skipIf(isBun)('should keep data to readable when content-type exists', async () => {
     const now = new Date();
     const buf = Buffer.from(
       JSON.stringify({
@@ -527,7 +528,7 @@ describe('options.data.test.ts', () => {
     assert.equal(response.data.headers['transfer-encoding'], 'chunked');
   });
 
-  it('should keep data to readable and not set content-type', async () => {
+  it.skipIf(isBun)('should keep data to readable and not set content-type', async () => {
     const now = new Date();
     const buf = Buffer.from(
       JSON.stringify({

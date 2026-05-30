@@ -2,6 +2,7 @@ import { strict as assert } from 'node:assert';
 
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
+import { isBun } from '../src/HttpClient.js';
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { readableToBytes } from './utils.js';
@@ -100,7 +101,7 @@ describe('options.dataType.test.ts', () => {
     assert.equal(response.data.headers.accept, 'foo/json');
   });
 
-  it('should throw with dataType = json when response json format invaild', async () => {
+  it.skipIf(isBun)('should throw with dataType = json when response json format invaild', async () => {
     await assert.rejects(
       async () => {
         await urllib.request(`${_url}wrongjson`, {

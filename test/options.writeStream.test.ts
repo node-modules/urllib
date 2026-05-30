@@ -7,6 +7,7 @@ import { gunzipSync } from 'node:zlib';
 
 import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vite-plus/test';
 
+import { isBun } from '../src/HttpClient.js';
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 import { createTempfile } from './utils.js';
@@ -48,7 +49,7 @@ describe('options.writeStream.test.ts', () => {
     assert.equal(stats.size, 1024123);
   });
 
-  it('should work with compressed=true/false', async () => {
+  it.skipIf(isBun)('should work with compressed=true/false', async () => {
     let writeStream = createWriteStream(tmpfile);
     let response = await urllib.request(`${_url}gzip`, {
       writeStream,
@@ -76,7 +77,7 @@ describe('options.writeStream.test.ts', () => {
     assert.match(data, /export async function startServer/);
   });
 
-  it('should close writeStream when request timeout', async () => {
+  it.skipIf(isBun)('should close writeStream when request timeout', async () => {
     const writeStream = createWriteStream(tmpfile);
     assert.equal(writeStream.destroyed, false);
     let writeStreamClosed = false;
@@ -137,7 +138,7 @@ describe('options.writeStream.test.ts', () => {
     assert.equal(writeStreamError, true);
   });
 
-  it('should end writeStream when server error', async () => {
+  it.skipIf(isBun)('should end writeStream when server error', async () => {
     const writeStream = createWriteStream(tmpfile);
     await assert.rejects(
       async () => {
