@@ -96,10 +96,10 @@ importers:
         version: 6.0.3
       vite-plus:
         specifier: ^0.1.23
-        version: 0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6(@voidzero-dev/vite-plus-test@0.1.23))(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))
+        version: 0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))
       vitest:
         specifier: npm:@voidzero-dev/vite-plus-test@^0.1.23
-        version: '@voidzero-dev/vite-plus-test@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6(@voidzero-dev/vite-plus-test@0.1.23))(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))'
+        version: '@voidzero-dev/vite-plus-test@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))'
 
 packages:
 
@@ -2053,7 +2053,7 @@ snapshots:
       obug: 2.1.1
       std-env: 4.1.0
       tinyrainbow: 3.1.0
-      vitest: '@voidzero-dev/vite-plus-test@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6(@voidzero-dev/vite-plus-test@0.1.23))(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))'
+      vitest: '@voidzero-dev/vite-plus-test@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))'
 
   '@vitest/pretty-format@4.1.6':
     dependencies:
@@ -2095,7 +2095,7 @@ snapshots:
   '@voidzero-dev/vite-plus-linux-x64-musl@0.1.23':
     optional: true
 
-  '@voidzero-dev/vite-plus-test@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6(@voidzero-dev/vite-plus-test@0.1.23))(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))':
+  '@voidzero-dev/vite-plus-test@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))':
     dependencies:
       '@standard-schema/spec': 1.1.0
       '@types/chai': 5.2.3
@@ -2576,7 +2576,7 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
-  oxfmt@0.52.0(vite-plus@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6(@voidzero-dev/vite-plus-test@0.1.23))(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))):
+  oxfmt@0.52.0(vite-plus@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))):
     dependencies:
       tinypool: 2.1.0
     optionalDependencies:
@@ -2599,7 +2599,7 @@ snapshots:
       '@oxfmt/binding-win32-arm64-msvc': 0.52.0
       '@oxfmt/binding-win32-ia32-msvc': 0.52.0
       '@oxfmt/binding-win32-x64-msvc': 0.52.0
-      vite-plus: 0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6(@voidzero-dev/vite-plus-test@0.1.23))(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))
+      vite-plus: 0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))
 
   oxlint-tsgolint@0.23.0:
     optionalDependencies:
@@ -2610,7 +2610,7 @@ snapshots:
       '@oxlint-tsgolint/win32-arm64': 0.23.0
       '@oxlint-tsgolint/win32-x64': 0.23.0
 
-  oxlint@1.67.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6(@voidzero-dev/vite-plus-test@0.1.23))(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))):
+  oxlint@1.67.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))):
     optionalDependencies:
       '@oxlint/binding-android-arm-eabi': 1.67.0
       '@oxlint/binding-android-arm64': 1.67.0
@@ -2632,7 +2632,7 @@ snapshots:
       '@oxlint/binding-win32-ia32-msvc': 1.67.0
       '@oxlint/binding-win32-x64-msvc': 1.67.0
       oxlint-tsgolint: 0.23.0
-      vite-plus: 0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6(@voidzero-dev/vite-plus-test@0.1.23))(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))
+      vite-plus: 0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))
 
   package-json-from-dist@1.0.1: {}
 
@@ -2897,14 +2897,14 @@ snapshots:
 
   validate-npm-package-name@5.0.1: {}
 
-  vite-plus@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6(@voidzero-dev/vite-plus-test@0.1.23))(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19)):
+  vite-plus@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19)):
     dependencies:
       '@oxc-project/types': 0.133.0
       '@oxlint/plugins': 1.61.0
       '@voidzero-dev/vite-plus-core': 0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(typescript@6.0.3)
-      '@voidzero-dev/vite-plus-test': 0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6(@voidzero-dev/vite-plus-test@0.1.23))(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))
-      oxfmt: 0.52.0(vite-plus@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6(@voidzero-dev/vite-plus-test@0.1.23))(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19)))
-      oxlint: 1.67.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6(@voidzero-dev/vite-plus-test@0.1.23))(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19)))
+      '@voidzero-dev/vite-plus-test': 0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19))
+      oxfmt: 0.52.0(vite-plus@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19)))
+      oxlint: 1.67.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.23(@arethetypeswrong/core@0.18.2)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.6)(typescript@6.0.3)(vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.19)))
       oxlint-tsgolint: 0.23.0
     optionalDependencies:
       '@voidzero-dev/vite-plus-darwin-arm64': 0.1.23
