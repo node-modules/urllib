@@ -47,7 +47,7 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           set -euo pipefail
-          sed -i -E "s/^(\s*\"version\":\s*)\"[^\"]+\"/\1\"$VERSION\"/" package.json
+          sed -i -E "s/^([[:space:]]*\"version\":[[:space:]]*)\"[^\"]+\"/\1\"$VERSION\"/" package.json
           grep -qF "\"version\": \"$VERSION\"" package.json || { echo "::error::Failed to update package.json"; exit 1; }
           echo "Updated package.json to $VERSION"
 
