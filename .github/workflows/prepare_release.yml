@@ -31,7 +31,7 @@ jobs:
           ref: master
           fetch-depth: 0
 
-      - name: Validate version
+      - name: Validate and bump version
         env:
           VERSION: ${{ inputs.version }}
         run: |
@@ -41,12 +41,6 @@ jobs:
             echo "::error::Invalid version '$VERSION'. Expected semver without 'v' prefix, e.g. 4.9.1 or 4.10.0-beta.0"
             exit 1
           fi
-
-      - name: Bump version
-        env:
-          VERSION: ${{ inputs.version }}
-        run: |
-          set -euo pipefail
           sed -i -E "s/^([[:space:]]*\"version\":[[:space:]]*)\"[^\"]+\"/\1\"$VERSION\"/" package.json
           grep -qF "\"version\": \"$VERSION\"" package.json || { echo "::error::Failed to update package.json"; exit 1; }
           echo "Updated package.json to $VERSION"

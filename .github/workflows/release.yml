@@ -37,14 +37,12 @@ jobs:
           # as perpetually newer than the stable `latest` and re-released.
           VERSION=$(node -p "require('./package.json').version")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          set +e
-          OUTPUT=$(npm view "urllib@$VERSION" version 2>&1)
-          STATUS=$?
-          set -e
+          STATUS=0
+          OUTPUT=$(npm view "urllib@$VERSION" version 2>&1) || STATUS=$?
           if [ "$STATUS" -eq 0 ] && [ -n "$OUTPUT" ]; then
             echo "urllib@$VERSION is already published; nothing to release."
             echo "changed=false" >> "$GITHUB_OUTPUT"
-          elif [ "$STATUS" -ne 0 ] && ! printf '%s\n' "$OUTPUT" | grep -q 'E404'; then
+          elif [ "$STATUS" -ne 0 ] && ! grep -q 'E404' <<<"$OUTPUT"; then
             # Not a "version missing" 404 -> auth/network/registry error; fail loudly.
             echo "::error::npm view failed for urllib@$VERSION (not a 404):"
             printf '%s\n' "$OUTPUT"
@@ -133,14 +131,12 @@ jobs:
         run: |
           set -euo pipefail
           # Guard against a stale run approved after a newer version was published.
-          set +e
-          OUTPUT=$(npm view "urllib@$VERSION" version 2>&1)
-          STATUS=$?
-          set -e
+          STATUS=0
+          OUTPUT=$(npm view "urllib@$VERSION" version 2>&1) || STATUS=$?
           if [ "$STATUS" -eq 0 ] && [ -n "$OUTPUT" ]; then
             echo "::error::urllib@$VERSION is already published; aborting to avoid republishing a stale version."
             exit 1
-          elif [ "$STATUS" -ne 0 ] && ! printf '%s\n' "$OUTPUT" | grep -q 'E404'; then
+          elif [ "$STATUS" -ne 0 ] && ! grep -q 'E404' <<<"$OUTPUT"; then
             echo "::error::npm view failed for urllib@$VERSION (not a 404); aborting:"
             printf '%s\n' "$OUTPUT"
             exit 1
