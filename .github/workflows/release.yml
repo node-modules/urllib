@@ -105,7 +105,8 @@ jobs:
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@v1
         with:
-          node-version: '22'
+          # Node 24 bundles npm >= 11.5.1, required for OIDC trusted publishing.
+          node-version: '24'
           cache: true
           sfw: true
 
