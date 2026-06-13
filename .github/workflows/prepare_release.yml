@@ -1,0 +1,61 @@
+name: Prepare Release
+
+permissions: {}
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (without v prefix, e.g. 4.9.1 or 4.10.0-beta.0)'
+        required: true
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    if: github.repository == 'node-modules/urllib'
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          # Always base the release branch on master, regardless of the ref the
+          # workflow was dispatched from.
+          ref: master
+          fetch-depth: 0
+
+      - name: Validate and bump version
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          # Require semver without a leading "v", e.g. 4.9.1 or 4.10.0-beta.0
+          if ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$'; then
+            echo "::error::Invalid version '$VERSION'. Expected semver without 'v' prefix, e.g. 4.9.1 or 4.10.0-beta.0"
+            exit 1
+          fi
+          sed -i -E "s/^([[:space:]]*\"version\":[[:space:]]*)\"[^\"]+\"/\1\"$VERSION\"/" package.json
+          grep -qF "\"version\": \"$VERSION\"" package.json || { echo "::error::Failed to update package.json"; exit 1; }
+          echo "Updated package.json to $VERSION"
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          commit-message: 'release: v${{ inputs.version }}'
+          title: 'release: v${{ inputs.version }}'
+          branch: release/v${{ inputs.version }}
+          base: master
+          body: |
+            Release urllib v${{ inputs.version }}.
+
+            Merging this PR updates the version on `master` and triggers the release
+            workflow, which publishes to npm and creates the GitHub Release after
+            manual approval.
+          assignees: fengmk2
