@@ -2,20 +2,79 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [master]
+    paths:
+      - 'package.json'
 
-permissions:
-  contents: write
-  id-token: write
+permissions: {}
 
 jobs:
-  release:
-    name: Publish to NPM
+  check:
+    if: github.repository == 'node-modules/urllib'
+    name: Check version
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version_changed: ${{ steps.version.outputs.changed }}
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+
+      - name: Check version changes
+        uses: EndBug/version-check@v3
+        id: version
+        with:
+          static-checking: localIsNew
+          file-url: https://unpkg.com/urllib@latest/package.json
+          file-name: package.json
+
+  request-approval:
+    name: Request approval
+    runs-on: ubuntu-latest
+    needs: check
+    if: needs.check.outputs.version_changed == 'true'
+    permissions: {}
+    env:
+      DINGTALK_WEBHOOK_URL: ${{ secrets.DINGTALK_RELEASE_WEBHOOK_URL }}
+      DINGTALK_WEBHOOK_SECRET: ${{ secrets.DINGTALK_RELEASE_WEBHOOK_SECRET }}
+      VERSION: ${{ needs.check.outputs.version }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - name: Notify DingTalk
+        run: |
+          set -euo pipefail
+          # DingTalk signed webhook (加签): sign = urlencode(base64(HMAC-SHA256(secret, "timestamp\nsecret")))
+          TIMESTAMP=$(date +%s%3N)
+          SIGN=$(printf '%s\n%s' "$TIMESTAMP" "$DINGTALK_WEBHOOK_SECRET" \
+            | openssl dgst -sha256 -hmac "$DINGTALK_WEBHOOK_SECRET" -binary \
+            | base64 | tr -d '\n')
+          SIGN_ENC=$(jq -rn --arg s "$SIGN" '$s | @uri')
+          URL="${DINGTALK_WEBHOOK_URL}&timestamp=${TIMESTAMP}&sign=${SIGN_ENC}"
+          TEXT=$(printf '### urllib release v%s\n\nAwaiting manual approval before publishing to npm.\n\n[Review and approve](%s)' "$VERSION" "$RUN_URL")
+          PAYLOAD=$(jq -n --arg text "$TEXT" \
+            '{msgtype: "markdown", markdown: {title: "urllib release approval", text: $text}}')
+          curl -fsS -X POST "$URL" \
+            -H 'Content-Type: application/json' \
+            -d "$PAYLOAD"
+
+  release:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    # Manual approval gate: configure an Environment named "release" with
+    # required reviewers in repo settings. The job pauses here until approved.
+    environment: release
+    needs: [check, request-approval]
+    if: needs.check.outputs.version_changed == 'true'
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      VERSION: ${{ needs.check.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@v1
@@ -24,22 +83,12 @@ jobs:
           cache: true
           sfw: true
 
-      - name: Verify version matches tag
-        run: |
-          TAG_VERSION="${GITHUB_REF_NAME#v}"
-          PKG_VERSION=$(node -p "require('./package.json').version")
-          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
-            echo "::error::Tag version ($TAG_VERSION) does not match package.json version ($PKG_VERSION)"
-            exit 1
-          fi
-
       - name: Determine npm dist-tag
         id: dist-tag
         run: |
-          TAG_VERSION="${GITHUB_REF_NAME#v}"
-          if echo "$TAG_VERSION" | grep -qE '-([a-zA-Z]+)'; then
-            # Extract pre-release identifier (e.g., "beta" from "5.0.0-beta.0")
-            PRE_TAG=$(echo "$TAG_VERSION" | sed -E 's/.*-([a-zA-Z]+).*/\1/')
+          if echo "$VERSION" | grep -qE '-([a-zA-Z]+)'; then
+            # Extract pre-release identifier (e.g. "beta" from "4.10.0-beta.0")
+            PRE_TAG=$(echo "$VERSION" | sed -E 's/.*-([a-zA-Z]+).*/\1/')
             echo "tag=$PRE_TAG" >> "$GITHUB_OUTPUT"
           else
             echo "tag=latest" >> "$GITHUB_OUTPUT"
@@ -52,4 +101,7 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           generate_release_notes: true
+          name: v${{ env.VERSION }}
+          tag_name: v${{ env.VERSION }}
+          target_commitish: ${{ github.sha }}
           prerelease: ${{ steps.dist-tag.outputs.tag != 'latest' }}
