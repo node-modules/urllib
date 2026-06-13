@@ -8,6 +8,12 @@ on:
 
 permissions: {}
 
+# Serialize releases and cancel an older run still pending approval when a
+# newer version lands, so an approved-late stale run cannot publish backwards.
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
   check:
     if: github.repository == 'node-modules/urllib'
@@ -22,13 +28,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
-      - name: Check version changes
-        uses: EndBug/version-check@095362f3cd50f690c8fa0e6afeea81834bd8d320 # v3.0.0
+      - name: Check whether version is already published
         id: version
-        with:
-          static-checking: localIsNew
-          file-url: https://unpkg.com/urllib@latest/package.json
-          file-name: package.json
+        run: |
+          set -euo pipefail
+          # Compare the exact version against the registry, not against `latest`,
+          # so prereleases (published under their own dist-tag) are not treated
+          # as perpetually newer than the stable `latest` and re-released.
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if npm view "urllib@$VERSION" version > /dev/null 2>&1; then
+            echo "urllib@$VERSION is already published; nothing to release."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "urllib@$VERSION is not published yet; proceeding."
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
 
   request-approval:
     name: Request approval
@@ -96,6 +111,15 @@ jobs:
             echo "tag=$PRE_TAG" >> "$GITHUB_OUTPUT"
           else
             echo "tag=latest" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Re-check version before publish
+        run: |
+          set -euo pipefail
+          # Guard against a stale run approved after a newer version was published.
+          if npm view "urllib@$VERSION" version > /dev/null 2>&1; then
+            echo "::error::urllib@$VERSION is already published; aborting to avoid republishing a stale version."
+            exit 1
           fi
 
       - name: Publish to npm
