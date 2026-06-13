@@ -43,6 +43,8 @@ jobs:
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - name: Notify DingTalk
+        # Best-effort: a webhook failure must not block the manual approval gate.
+        continue-on-error: true
         run: |
           set -euo pipefail
           # DingTalk signed webhook (加签): sign = urlencode(base64(HMAC-SHA256(secret, "timestamp\nsecret")))
