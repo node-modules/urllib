@@ -1,0 +1,157 @@
+name: Release
+
+on:
+  push:
+    branches: [2.x]
+    paths:
+      - 'package.json'
+
+permissions: {}
+
+# Serialize releases per branch and cancel an older run still pending approval
+# when a newer version lands, so an approved-late stale run cannot publish
+# backwards. Scoped by ref so other release lines (master/3.x/4.x) are independent.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    if: github.repository == 'node-modules/urllib'
+    name: Check version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version_changed: ${{ steps.version.outputs.changed }}
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+
+      - name: Check whether version is already published
+        id: version
+        run: |
+          set -euo pipefail
+          # Compare the exact version against the registry so a prerelease
+          # published under its own dist-tag is not treated as newer and re-released.
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          STATUS=0
+          OUTPUT=$(npm view "urllib@$VERSION" version 2>&1) || STATUS=$?
+          if [ "$STATUS" -eq 0 ] && [ -n "$OUTPUT" ]; then
+            echo "urllib@$VERSION is already published; nothing to release."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          elif [ "$STATUS" -ne 0 ] && ! grep -q 'E404' <<<"$OUTPUT"; then
+            # Not a "version missing" 404 -> auth/network/registry error; fail loudly.
+            echo "::error::npm view failed for urllib@$VERSION (not a 404):"
+            printf '%s\n' "$OUTPUT"
+            exit 1
+          else
+            echo "urllib@$VERSION is not published yet; proceeding."
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  request-approval:
+    name: Request approval
+    runs-on: ubuntu-latest
+    needs: check
+    if: needs.check.outputs.version_changed == 'true'
+    permissions: {}
+    env:
+      DINGTALK_WEBHOOK_URL: ${{ secrets.DINGTALK_RELEASE_WEBHOOK_URL }}
+      DINGTALK_WEBHOOK_SECRET: ${{ secrets.DINGTALK_RELEASE_WEBHOOK_SECRET }}
+      VERSION: ${{ needs.check.outputs.version }}
+      BRANCH: ${{ github.ref_name }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - name: Notify DingTalk
+        # Best-effort: a webhook failure must not block the manual approval gate.
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          # DingTalk signed webhook (加签): sign = urlencode(base64(HMAC-SHA256(secret, "timestamp\nsecret")))
+          TIMESTAMP=$(date +%s%3N)
+          SIGN=$(printf '%s\n%s' "$TIMESTAMP" "$DINGTALK_WEBHOOK_SECRET" \
+            | openssl dgst -sha256 -hmac "$DINGTALK_WEBHOOK_SECRET" -binary \
+            | base64 | tr -d '\n')
+          SIGN_ENC=$(jq -rn --arg s "$SIGN" '$s | @uri')
+          URL="${DINGTALK_WEBHOOK_URL}&timestamp=${TIMESTAMP}&sign=${SIGN_ENC}"
+          TEXT=$(printf '### urllib release v%s (%s)\n\nAwaiting manual approval before publishing to npm.\n\n[Review and approve](%s)' "$VERSION" "$BRANCH" "$RUN_URL")
+          PAYLOAD=$(jq -n --arg text "$TEXT" \
+            '{msgtype: "markdown", markdown: {title: "urllib release approval", text: $text}}')
+          curl -fsS --connect-timeout 10 --max-time 30 \
+            --retry 3 --retry-delay 2 --retry-all-errors \
+            -X POST "$URL" \
+            -H 'Content-Type: application/json' \
+            -d "$PAYLOAD"
+
+  release:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    # Manual approval gate: configure an Environment named "release" with
+    # required reviewers in repo settings. The job pauses here until approved.
+    environment: release
+    needs: [check, request-approval]
+    if: needs.check.outputs.version_changed == 'true'
+    permissions:
+      contents: write
+      id-token: write # OIDC trusted publishing to npm
+    env:
+      VERSION: ${{ needs.check.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+
+      - name: Update npm (OIDC trusted publishing needs npm >= 11.5.1)
+        run: npm install -g npm@latest
+
+      - name: Determine npm dist-tag
+        id: dist-tag
+        run: |
+          set -euo pipefail
+          # 2.x is a maintenance line: stable releases publish under `latest-2`,
+          # never `latest`. Pre-releases use their first identifier (e.g. beta).
+          CORE="${VERSION%%+*}"
+          case "$CORE" in
+            *-*)
+              PRE="${CORE#*-}"
+              echo "tag=${PRE%%.*}" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "tag=latest-2" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+      - name: Re-check version before publish
+        run: |
+          set -euo pipefail
+          # Guard against a stale run approved after a newer version was published.
+          STATUS=0
+          OUTPUT=$(npm view "urllib@$VERSION" version 2>&1) || STATUS=$?
+          if [ "$STATUS" -eq 0 ] && [ -n "$OUTPUT" ]; then
+            echo "::error::urllib@$VERSION is already published; aborting to avoid republishing a stale version."
+            exit 1
+          elif [ "$STATUS" -ne 0 ] && ! grep -q 'E404' <<<"$OUTPUT"; then
+            echo "::error::npm view failed for urllib@$VERSION (not a 404); aborting:"
+            printf '%s\n' "$OUTPUT"
+            exit 1
+          fi
+          echo "urllib@$VERSION is not yet published; proceeding to publish."
+
+      - name: Publish to npm
+        run: npm publish --access public --tag ${{ steps.dist-tag.outputs.tag }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
+        with:
+          generate_release_notes: true
+          name: v${{ env.VERSION }}
+          tag_name: v${{ env.VERSION }}
+          target_commitish: ${{ github.sha }}
+          prerelease: ${{ steps.dist-tag.outputs.tag != 'latest-2' }}
