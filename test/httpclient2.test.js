@@ -41,7 +41,8 @@ describe('test/httpclient2.test.js', function () {
   });
   afterEach(muk.restore);
 
-  it('should request()', function (done) {
+  // SKIP(network): depends on external npmjs.com, flaky/unreachable in CI
+  it.skip('should request()', function (done) {
     client.request(config.npmWeb + '/package/pedding', {
       timeout: 25000
     }).then(function (result) {

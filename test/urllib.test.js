@@ -855,7 +855,9 @@ describe('test/urllib.test.js', function () {
       ];
 
       urls.forEach(function (url, index) {
-        it('should use KeepAlive agent request ' + url, function (done) {
+        // SKIP(network): npmjs.com (config.npmWeb) is flaky/unreachable in CI; npmRegistry stays enabled
+        var maybeIt = url.indexOf(config.npmWeb) === 0 ? it.skip : it;
+        maybeIt('should use KeepAlive agent request ' + url, function (done) {
           var agent = this.agent;
           var httpsAgent = this.httpsAgent;
           urllib.request(url, {
@@ -1082,7 +1084,8 @@ describe('test/urllib.test.js', function () {
 
   describe('args.writeStream', function () {
     var tmpfile = path.join(process.env.TMPDIR || __dirname, 'urllib_writestream.tmp' + process.version);
-    it('should store data writeStream with https', function (done) {
+    // SKIP(network): depends on external npmjs.com, flaky/unreachable in CI
+    it.skip('should store data writeStream with https', function (done) {
       done = pedding(2, done);
       var writeStream = fs.createWriteStream(tmpfile);
       writeStream.on('close', done);

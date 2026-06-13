@@ -23,7 +23,8 @@ describe('test/redirect.test.js', function() {
     });
   });
 
-  it('should redirect `location: http://other-domain` with headers.Host', function(done) {
+  // SKIP(network): depends on external npmjs.com, flaky/unreachable in CI
+  it.skip('should redirect `location: http://other-domain` with headers.Host', function(done) {
     var domain = 'npmjs.com';
     dns.lookup(domain, function(err, address) {
       if (err) {
@@ -46,7 +47,8 @@ describe('test/redirect.test.js', function() {
     });
   });
 
-  it('should use formatRedirectUrl', function(done) {
+  // SKIP(network): depends on external npmjs.com, flaky/unreachable in CI
+  it.skip('should use formatRedirectUrl', function(done) {
     var url = 'https://npmjs.com/pedding';
     urllib.request(url, {
       timeout: 30000,
