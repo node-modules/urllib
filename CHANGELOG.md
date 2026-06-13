@@ -1,5 +1,38 @@
 # Changelog
 
+## <small>4.9.1 (2026-06-13)</small>
+
+* fix: do not forward credential headers on cross-origin redirect (#812) ([811a8d5](https://github.com/node-modules/urllib/commit/811a8d5)), closes [#812](https://github.com/node-modules/urllib/issues/812)
+* ci: two-stage release with manual approval (4.x) (#817) ([c704344](https://github.com/node-modules/urllib/commit/c704344)), closes [#817](https://github.com/node-modules/urllib/issues/817)
+* docs: add CLAUDE.md for Claude Code guidance ([d748999](https://github.com/node-modules/urllib/commit/d748999))
+* docs: map npm package links to npmx.dev (#661) ([9a2303b](https://github.com/node-modules/urllib/commit/9a2303b)), closes [#661](https://github.com/node-modules/urllib/issues/661)
+* test: enable CodSpeed GitHub Action for performance benchmarking (#625) ([3b0328c](https://github.com/node-modules/urllib/commit/3b0328c)), closes [#625](https://github.com/node-modules/urllib/issues/625)
+* chore(ci): trigger release workflow by git tag push (#721) ([b37563f](https://github.com/node-modules/urllib/commit/b37563f)), closes [#721](https://github.com/node-modules/urllib/issues/721)
+* chore(ci): use latest-4 npm dist-tag for 4.x branch releases ([ac826d1](https://github.com/node-modules/urllib/commit/ac826d1))
+* chore: oxfmt v0.20 (#627) ([e901311](https://github.com/node-modules/urllib/commit/e901311)), closes [#627](https://github.com/node-modules/urllib/issues/627)
+* chore: replace lint/fmt with unified vp check (#665) ([c92321a](https://github.com/node-modules/urllib/commit/c92321a)), closes [#665](https://github.com/node-modules/urllib/issues/665)
+* chore: update deps (#626) ([aa8cb7b](https://github.com/node-modules/urllib/commit/aa8cb7b)), closes [#626](https://github.com/node-modules/urllib/issues/626)
+* chore: update setup-vite-plus-action to setup-vp (#660) ([1075eb9](https://github.com/node-modules/urllib/commit/1075eb9)), closes [#660](https://github.com/node-modules/urllib/issues/660)
+* chore: use vite+ (#643) ([7a2fc90](https://github.com/node-modules/urllib/commit/7a2fc90)), closes [#643](https://github.com/node-modules/urllib/issues/643)
+* chore: use vp hooks (#680) ([45d6dbc](https://github.com/node-modules/urllib/commit/45d6dbc)), closes [#680](https://github.com/node-modules/urllib/issues/680)
+* chore(deps): bump qs from 6.14.0 to 6.14.1 (#631) ([c84699e](https://github.com/node-modules/urllib/commit/c84699e)), closes [#631](https://github.com/node-modules/urllib/issues/631)
+* chore(deps): update actions/checkout digest to de0fac2 (#653) ([375dd63](https://github.com/node-modules/urllib/commit/375dd63)), closes [#653](https://github.com/node-modules/urllib/issues/653)
+* chore(deps): update actions/setup-node digest to 53b8394 (#669) ([77bebe5](https://github.com/node-modules/urllib/commit/77bebe5)), closes [#669](https://github.com/node-modules/urllib/issues/669)
+* chore(deps): update codecov/codecov-action action to v6 (#716) ([4f730ad](https://github.com/node-modules/urllib/commit/4f730ad)), closes [#716](https://github.com/node-modules/urllib/issues/716)
+* chore(deps): update dependency @types/node to v22.19.15 (#670) ([eb679fa](https://github.com/node-modules/urllib/commit/eb679fa)), closes [#670](https://github.com/node-modules/urllib/issues/670)
+* chore(deps): update dependency @typescript/native-preview to v7.0.0-dev.20260329.1 (#720) ([46c6ac9](https://github.com/node-modules/urllib/commit/46c6ac9)), closes [#720](https://github.com/node-modules/urllib/issues/720)
+* chore(deps): update dependency @vitest/coverage-v8 to v4.1.2 (#715) ([1a30969](https://github.com/node-modules/urllib/commit/1a30969)), closes [#715](https://github.com/node-modules/urllib/issues/715)
+* chore(deps): update dependency lint-staged to v16.3.0 (#666) ([4c3ebc7](https://github.com/node-modules/urllib/commit/4c3ebc7)), closes [#666](https://github.com/node-modules/urllib/issues/666)
+* chore(deps): update dependency oxlint-tsgolint to ^0.11.0 (#636) ([fd2c1a5](https://github.com/node-modules/urllib/commit/fd2c1a5)), closes [#636](https://github.com/node-modules/urllib/issues/636)
+* chore(deps): update dependency tshy to v4 (#712) ([182fabe](https://github.com/node-modules/urllib/commit/182fabe)), closes [#712](https://github.com/node-modules/urllib/issues/712)
+* chore(deps): update dependency typescript to v6 (#707) ([fe1de6e](https://github.com/node-modules/urllib/commit/fe1de6e)), closes [#707](https://github.com/node-modules/urllib/issues/707)
+* chore(deps): update dependency undici to v7.24.6 (#711) ([020eaa3](https://github.com/node-modules/urllib/commit/020eaa3)), closes [#711](https://github.com/node-modules/urllib/issues/711)
+* chore(deps): update oxlint monorepo (#639) ([7a29d74](https://github.com/node-modules/urllib/commit/7a29d74)), closes [#639](https://github.com/node-modules/urllib/issues/639)
+* chore(deps): update pnpm to v10.33.0 (#708) ([426bb41](https://github.com/node-modules/urllib/commit/426bb41)), closes [#708](https://github.com/node-modules/urllib/issues/708)
+* chore(deps): update pnpm/action-setup action to v5 (#698) ([274bf84](https://github.com/node-modules/urllib/commit/274bf84)), closes [#698](https://github.com/node-modules/urllib/issues/698)
+* chore(deps): update vite-plus to 0.1.14 (#710) ([02024c8](https://github.com/node-modules/urllib/commit/02024c8)), closes [#710](https://github.com/node-modules/urllib/issues/710)
+* chore(deps): upgrade vitest from v3 to v4 (#642) ([8c078b5](https://github.com/node-modules/urllib/commit/8c078b5)), closes [#642](https://github.com/node-modules/urllib/issues/642)
+
 ## 4.9.0 (2025-12-13)
 
 * feat: enable isolatedDeclarations (#615) ([374402e](https://github.com/node-modules/urllib/commit/374402e)), closes [#615](https://github.com/node-modules/urllib/issues/615) [hi#level](https://github.com/hi/issues/level)
