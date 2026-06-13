@@ -117,4 +117,22 @@ describe('test/redirect-cross-origin.test.js', function() {
       done();
     });
   });
+
+  it('should not mutate the caller options object on cross-origin redirect', function(done) {
+    var headers = credentialHeaders();
+    var opts = { followRedirect: true, auth: 'user:passwd', digestAuth: 'user:passwd', headers: headers };
+    urllib.request('http://127.0.0.1:' + portA + '/start-cross', opts, function(err, data, res) {
+      assert(!err);
+      assert.equal(res.statusCode, 200);
+      // credentials were stripped on the wire
+      var received = JSON.parse(data.toString());
+      assert.equal(received.authorization, undefined);
+      // but the caller's reusable options object is untouched
+      assert.equal(opts.auth, 'user:passwd');
+      assert.equal(opts.digestAuth, 'user:passwd');
+      assert.equal(opts.headers, headers);
+      assert.equal(opts.headers.Authorization, 'Bearer LIVE-AUTH');
+      done();
+    });
+  });
 });
