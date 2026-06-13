@@ -106,10 +106,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: '22'
-
-      - name: Update npm (OIDC trusted publishing needs npm >= 11.5.1)
-        run: npm install -g npm@latest
+          # Node 24 bundles npm >= 11.5.1, required for OIDC trusted publishing.
+          node-version: '24'
 
       - name: Install dependencies
         run: npm install
