@@ -180,6 +180,12 @@ const RedirectStatusCodes = [
   308, // Permanent Redirect
 ];
 
+// Credential-bearing headers that must not be forwarded across an origin
+// boundary when following a redirect, to avoid leaking them to a third party.
+// Matches the WHATWG Fetch spec and undici's RedirectHandler.
+// https://fetch.spec.whatwg.org/#http-redirect-fetch
+const CrossOriginSensitiveHeaders = new Set(['authorization', 'cookie', 'proxy-authorization']);
+
 export class HttpClient extends EventEmitter {
   #defaultArgs?: RequestOptions;
   #dispatcher?: Dispatcher;
@@ -643,6 +649,22 @@ export class HttpClient extends EventEmitter {
           const nextUrl = new URL(res.headers.location, requestUrl.href);
           // Ensure the response is consumed
           await response.body.arrayBuffer();
+          let redirectOptions = options;
+          // Do not forward credential-bearing headers to a different origin.
+          if (nextUrl.origin !== requestUrl.origin) {
+            const cleanedHeaders: IncomingHttpHeaders = {};
+            if (options?.headers) {
+              for (const name in options.headers) {
+                if (!CrossOriginSensitiveHeaders.has(name.toLowerCase())) {
+                  cleanedHeaders[name] = options.headers[name];
+                }
+              }
+            }
+            // Clone so the caller's options object is never mutated, and drop
+            // credentials so they are not re-applied on the new origin,
+            // including Basic/digest auth inherited from the client's defaultArgs.
+            redirectOptions = { ...options, headers: cleanedHeaders, auth: undefined, digestAuth: undefined };
+          }
           debug(
             'Request#%d got response, status: %s, headers: %j, timing: %j, redirect to %s',
             requestId,
@@ -651,7 +673,7 @@ export class HttpClient extends EventEmitter {
             res.timing,
             nextUrl.href,
           );
-          return await this.#requestInternal(nextUrl.href, options, requestContext);
+          return await this.#requestInternal(nextUrl.href, redirectOptions, requestContext);
         }
       }
 
