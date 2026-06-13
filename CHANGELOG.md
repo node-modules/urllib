@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.44.1](https://github.com/node-modules/urllib/compare/v2.44.0...v2.44.1) (2026-06-13)
+
+
+### Bug Fixes
+
+* do not forward credential headers on cross-origin redirect ([#813](https://github.com/node-modules/urllib/issues/813)) ([7c86c46](https://github.com/node-modules/urllib/commit/7c86c465883ebd3dea5109c87d7bbe3b00960a16))
+
 ## [2.44.0](https://github.com/node-modules/urllib/compare/v2.43.0...v2.44.0) (2024-07-08)
 
 
