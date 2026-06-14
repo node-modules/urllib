@@ -10,7 +10,7 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import selfsigned from 'selfsigned';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
-import { HttpClient, getGlobalDispatcher } from '../src/index.js';
+import { HttpClient, getDefaultHttpClient, getGlobalDispatcher } from '../src/index.js';
 import type { RawResponseWithMeta } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -274,7 +274,7 @@ describe('HttpClient.test.ts', () => {
         assert.equal(response.status, 200);
         assert.equal(response.data, 'hello http/1.1!');
       } finally {
-        server.closeAllConnections();
+        await httpClient.getDispatcher().close();
         await new Promise<void>((resolve) => server.close(() => resolve()));
       }
     });
@@ -302,8 +302,50 @@ describe('HttpClient.test.ts', () => {
         assert.equal(response.status, 200);
         assert.equal(response.data, 'hello http/2.0!');
       } finally {
+        await httpClient.getDispatcher().close();
         await new Promise<void>((resolve) => server.close(() => resolve()));
       }
+    });
+
+    it('should force HTTP/1.1 with allowH2 = false even if the server supports HTTP/2', async () => {
+      const server = createSecureServer({
+        allowHTTP1: true,
+        key: pems.private,
+        cert: pems.cert,
+      });
+      server.on('request', (req, res) => {
+        res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
+        res.end(`hello http/${req.httpVersion}!`);
+      });
+      server.listen(0);
+      await once(server, 'listening');
+      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
+
+      const httpClient = new HttpClient({
+        allowH2: false,
+        connect: { rejectUnauthorized: false },
+      });
+      try {
+        const response = await httpClient.request<string>(url, { dataType: 'text' });
+        assert.equal(response.status, 200);
+        assert.equal(response.data, 'hello http/1.1!');
+      } finally {
+        await httpClient.getDispatcher().close();
+        await new Promise<void>((resolve) => server.close(() => resolve()));
+      }
+    });
+
+    it('should pin a dedicated dispatcher when allowH2 is set explicitly', () => {
+      // allowH2: false must not fall back to undici@8's HTTP/2-enabled global dispatcher
+      assert.notEqual(new HttpClient({ allowH2: false }).getDispatcher(), getGlobalDispatcher());
+      assert.notEqual(new HttpClient({ allowH2: true }).getDispatcher(), getGlobalDispatcher());
+    });
+
+    it('should cache distinct default clients per allowH2 value', () => {
+      assert.equal(getDefaultHttpClient(undefined, false), getDefaultHttpClient(undefined, false));
+      assert.notEqual(getDefaultHttpClient(undefined, false), getDefaultHttpClient(undefined, true));
+      assert.notEqual(getDefaultHttpClient(undefined, false), getDefaultHttpClient(undefined, undefined));
+      assert.notEqual(getDefaultHttpClient(false, false), getDefaultHttpClient(false, true));
     });
   });
 

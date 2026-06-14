@@ -6,13 +6,15 @@ import type { HttpClientResponse } from './Response.js';
 
 let httpClient: HttpClient;
 let allowH2HttpClient: HttpClient;
+let disallowH2HttpClient: HttpClient;
 let allowUnauthorizedHttpClient: HttpClient;
 let allowH2AndUnauthorizedHttpClient: HttpClient;
+let disallowH2AndUnauthorizedHttpClient: HttpClient;
 const domainSocketHttpClients = new LRU(50);
 
 export function getDefaultHttpClient(rejectUnauthorized?: boolean, allowH2?: boolean): HttpClient {
   if (rejectUnauthorized === false) {
-    if (allowH2) {
+    if (allowH2 === true) {
       if (!allowH2AndUnauthorizedHttpClient) {
         allowH2AndUnauthorizedHttpClient = new HttpClient({
           allowH2,
@@ -22,6 +24,18 @@ export function getDefaultHttpClient(rejectUnauthorized?: boolean, allowH2?: boo
         });
       }
       return allowH2AndUnauthorizedHttpClient;
+    }
+
+    if (allowH2 === false) {
+      if (!disallowH2AndUnauthorizedHttpClient) {
+        disallowH2AndUnauthorizedHttpClient = new HttpClient({
+          allowH2,
+          connect: {
+            rejectUnauthorized,
+          },
+        });
+      }
+      return disallowH2AndUnauthorizedHttpClient;
     }
 
     if (!allowUnauthorizedHttpClient) {
@@ -34,13 +48,22 @@ export function getDefaultHttpClient(rejectUnauthorized?: boolean, allowH2?: boo
     return allowUnauthorizedHttpClient;
   }
 
-  if (allowH2) {
+  if (allowH2 === true) {
     if (!allowH2HttpClient) {
       allowH2HttpClient = new HttpClient({
         allowH2,
       });
     }
     return allowH2HttpClient;
+  }
+
+  if (allowH2 === false) {
+    if (!disallowH2HttpClient) {
+      disallowH2HttpClient = new HttpClient({
+        allowH2,
+      });
+    }
+    return disallowH2HttpClient;
   }
 
   if (!httpClient) {
@@ -55,7 +78,7 @@ interface UrllibRequestOptions extends RequestOptions {
    * verification fails. Default: `true`
    */
   rejectUnauthorized?: boolean;
-  /** Allow negotiating HTTP/2 with capable servers via ALPN. Since undici@8 this is enabled by default. */
+  /** Negotiate HTTP/2 with capable servers via ALPN. Enabled by default since undici@8; set `false` to force HTTP/1.1. */
   allowH2?: boolean;
 }
 

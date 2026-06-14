@@ -74,7 +74,7 @@ const debug = debuglog('urllib:HttpClient');
 
 export type ClientOptions = {
   defaultArgs?: RequestOptions;
-  /** Allow negotiating HTTP/2 with capable servers via ALPN. Since undici@8 this is enabled by default. */
+  /** Negotiate HTTP/2 with capable servers via ALPN. Enabled by default since undici@8; set `false` to force HTTP/1.1. */
   allowH2?: boolean;
   /** Custom DNS lookup function, default is `dns.lookup`. */
   lookup?: LookupFunction;
@@ -205,8 +205,9 @@ export class HttpClient extends EventEmitter {
         connect: clientOptions.connect,
         allowH2: clientOptions.allowH2,
       });
-    } else if (clientOptions?.allowH2) {
-      // Support HTTP2
+    } else if (clientOptions?.allowH2 !== undefined) {
+      // Pin the protocol when allowH2 is set explicitly: `true` enables HTTP/2,
+      // `false` forces HTTP/1.1 instead of following undici@8's HTTP/2 default.
       this.#dispatcher = new Agent({
         allowH2: clientOptions.allowH2,
       });
