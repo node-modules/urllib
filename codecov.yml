@@ -1,0 +1,13 @@
+# https://docs.codecov.com/docs/codecovyml-reference
+coverage:
+  status:
+    project:
+      default:
+        # Tolerate small coverage fluctuations caused by flaky network/timing
+        # and OS-specific error paths across the test matrix.
+        target: auto
+        threshold: 1%
+    patch:
+      default:
+        target: auto
+        threshold: 1%
