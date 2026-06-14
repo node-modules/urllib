@@ -371,6 +371,13 @@ describe('HttpClient.test.ts', () => {
       assert.notEqual(disallowH2, getDefaultHttpClient(undefined, true));
       // ... without creating its own dispatcher (so global ProxyAgent/MockAgent is honored)
       assert.equal(disallowH2.getDispatcher(), getGlobalDispatcher());
+
+      // rejectUnauthorized: false has its own cached allowH2: false client
+      const disallowH2Unauthorized = getDefaultHttpClient(false, false);
+      assert.equal(disallowH2Unauthorized, getDefaultHttpClient(false, false));
+      assert.notEqual(disallowH2Unauthorized, disallowH2);
+      assert.notEqual(disallowH2Unauthorized, getDefaultHttpClient(false, undefined));
+      assert.notEqual(disallowH2Unauthorized, getDefaultHttpClient(false, true));
     });
 
     it('should force HTTP/1.1 per request via allowH2: false and expose pool stats by origin', async () => {
