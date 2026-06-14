@@ -18,7 +18,7 @@ import { createGunzip, createBrotliDecompress, gunzipSync, brotliDecompressSync 
 import FormStream from 'formstream';
 import mime from 'mime-types';
 import qs from 'qs';
-import { request as undiciRequest, Dispatcher, Agent, getGlobalDispatcher, Pool } from 'undici';
+import { request as undiciRequest, Dispatcher, Agent, getGlobalDispatcher, MockAgent, Pool } from 'undici';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import undiciSymbols from 'undici/lib/core/symbols.js';
@@ -177,7 +177,11 @@ export interface PoolStat {
 
 // undici@8 keys http1-only pools (allowH2: false) as `${origin}#http1-only`;
 // expose them under their plain origin so callers can look up stats by URL.
-export function normalizePoolStatsKey(key: string): string {
+// MockAgent may use RegExp/function origin matchers, so keys are not always strings.
+export function normalizePoolStatsKey(key: unknown): string {
+  if (typeof key !== 'string') {
+    return String(key);
+  }
   const index = key.indexOf('#http1-only');
   return index === -1 ? key : key.slice(0, index);
 }
@@ -480,8 +484,13 @@ export class HttpClient extends EventEmitter {
       if (typeof allowH2 === 'boolean') {
         // Apply the protocol preference per request so the active dispatcher
         // (global, proxy, ...) is honored instead of being bypassed by a
-        // dedicated HTTP/1.1-only agent.
-        requestOptions.allowH2 = allowH2;
+        // dedicated HTTP/1.1-only agent. Skip it for MockAgent: it keys clients
+        // as `${origin}#http1-only` and would miss interceptors registered on
+        // the plain origin (protocol negotiation is moot when mocking anyway).
+        const activeDispatcher = requestOptions.dispatcher ?? getGlobalDispatcher();
+        if (!(activeDispatcher instanceof MockAgent)) {
+          requestOptions.allowH2 = allowH2;
+        }
       }
       if (typeof args.highWaterMark === 'number') {
         requestOptions.highWaterMark = args.highWaterMark;

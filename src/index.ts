@@ -6,16 +6,18 @@ import type { HttpClientResponse } from './Response.js';
 
 let httpClient: HttpClient;
 let allowH2HttpClient: HttpClient;
+let disallowH2HttpClient: HttpClient;
 let allowUnauthorizedHttpClient: HttpClient;
 let allowH2AndUnauthorizedHttpClient: HttpClient;
+let disallowH2AndUnauthorizedHttpClient: HttpClient;
 const domainSocketHttpClients = new LRU(50);
 
-// Only `allowH2: true` needs a dedicated agent; `allowH2: false` is applied per
-// request (see HttpClient#request) so it forces HTTP/1.1 through the active
-// dispatcher (e.g. a global ProxyAgent) instead of bypassing it.
+// Only `allowH2: true` needs a dedicated agent. `allowH2: false` clients keep the
+// preference (so `request(url)` on them forces HTTP/1.1) but do not create their
+// own dispatcher, so they still go through the active/global dispatcher per request.
 export function getDefaultHttpClient(rejectUnauthorized?: boolean, allowH2?: boolean): HttpClient {
   if (rejectUnauthorized === false) {
-    if (allowH2) {
+    if (allowH2 === true) {
       if (!allowH2AndUnauthorizedHttpClient) {
         allowH2AndUnauthorizedHttpClient = new HttpClient({
           allowH2,
@@ -25,6 +27,18 @@ export function getDefaultHttpClient(rejectUnauthorized?: boolean, allowH2?: boo
         });
       }
       return allowH2AndUnauthorizedHttpClient;
+    }
+
+    if (allowH2 === false) {
+      if (!disallowH2AndUnauthorizedHttpClient) {
+        disallowH2AndUnauthorizedHttpClient = new HttpClient({
+          allowH2,
+          connect: {
+            rejectUnauthorized,
+          },
+        });
+      }
+      return disallowH2AndUnauthorizedHttpClient;
     }
 
     if (!allowUnauthorizedHttpClient) {
@@ -37,13 +51,22 @@ export function getDefaultHttpClient(rejectUnauthorized?: boolean, allowH2?: boo
     return allowUnauthorizedHttpClient;
   }
 
-  if (allowH2) {
+  if (allowH2 === true) {
     if (!allowH2HttpClient) {
       allowH2HttpClient = new HttpClient({
         allowH2,
       });
     }
     return allowH2HttpClient;
+  }
+
+  if (allowH2 === false) {
+    if (!disallowH2HttpClient) {
+      disallowH2HttpClient = new HttpClient({
+        allowH2,
+      });
+    }
+    return disallowH2HttpClient;
   }
 
   if (!httpClient) {

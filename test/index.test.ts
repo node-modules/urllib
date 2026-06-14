@@ -291,6 +291,29 @@ describe('index.test.ts', () => {
       mockAgent.assertNoPendingInterceptors();
     });
 
+    it('should keep using the mocked global dispatcher when allowH2 is false', async () => {
+      const mockPool = mockAgent.get(_url.substring(0, _url.length - 1));
+      mockPool
+        .intercept({
+          path: '/foo',
+          method: 'GET',
+        })
+        .reply(200, {
+          message: 'mocked http1 only',
+        });
+
+      // allowH2: false must not split the mock pool into an http1-only client,
+      // otherwise the interceptor is missed and the real server answers instead.
+      const response = await urllib.request(`${_url}foo`, {
+        method: 'GET',
+        allowH2: false,
+        dataType: 'json',
+      });
+      assert.equal(response.status, 200);
+      assert.deepEqual(response.data, { message: 'mocked http1 only' });
+      mockAgent.assertNoPendingInterceptors();
+    });
+
     it('should mocking intercept work with readable', async () => {
       const mockPool = mockAgent.get(_url.substring(0, _url.length - 1));
       // mock response stream

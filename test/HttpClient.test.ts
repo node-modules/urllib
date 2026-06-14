@@ -10,6 +10,7 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import selfsigned from 'selfsigned';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
+import { normalizePoolStatsKey } from '../src/HttpClient.js';
 import { HttpClient, getDefaultHttpClient, getGlobalDispatcher } from '../src/index.js';
 import type { RawResponseWithMeta } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
@@ -343,12 +344,22 @@ describe('HttpClient.test.ts', () => {
       assert.equal(new HttpClient({ allowH2: false }).getDispatcher(), getGlobalDispatcher());
     });
 
-    it('should not allocate a separate default client for allowH2: false', () => {
-      // allowH2: false reuses the default client (handled per request), only
-      // allowH2: true gets its own cached client
-      assert.equal(getDefaultHttpClient(undefined, false), getDefaultHttpClient(undefined, undefined));
-      assert.equal(getDefaultHttpClient(false, false), getDefaultHttpClient(false, undefined));
-      assert.notEqual(getDefaultHttpClient(undefined, true), getDefaultHttpClient(undefined, undefined));
+    it('normalizePoolStatsKey should strip the http1-only suffix and tolerate non-string keys', () => {
+      assert.equal(normalizePoolStatsKey('https://example.com'), 'https://example.com');
+      assert.equal(normalizePoolStatsKey('https://example.com#http1-only'), 'https://example.com');
+      // MockAgent may use RegExp/function origin matchers as client keys
+      assert.equal(normalizePoolStatsKey(/example/), '/example/');
+    });
+
+    it('should cache a distinct allowH2: false default client that still uses the global dispatcher', () => {
+      // a dedicated cached client carries the allowH2: false preference so that
+      // getDefaultHttpClient(undefined, false).request(url) forces HTTP/1.1 ...
+      const disallowH2 = getDefaultHttpClient(undefined, false);
+      assert.equal(disallowH2, getDefaultHttpClient(undefined, false));
+      assert.notEqual(disallowH2, getDefaultHttpClient(undefined, undefined));
+      assert.notEqual(disallowH2, getDefaultHttpClient(undefined, true));
+      // ... without creating its own dispatcher (so global ProxyAgent/MockAgent is honored)
+      assert.equal(disallowH2.getDispatcher(), getGlobalDispatcher());
     });
 
     it('should force HTTP/1.1 per request via allowH2: false and expose pool stats by origin', async () => {
