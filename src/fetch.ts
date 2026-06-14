@@ -77,8 +77,9 @@ export class FetchFactory {
         allowH2: clientOptions.allowH2,
       } as HttpAgentOptions;
       dispatcherClazz = BaseAgent;
-    } else if (clientOptions?.allowH2) {
-      // Support HTTP2
+    } else if (clientOptions?.allowH2 !== undefined) {
+      // Pin the protocol when allowH2 is set explicitly: `true` enables HTTP/2,
+      // `false` forces HTTP/1.1 instead of following undici@8's HTTP/2 default.
       dispatcherOption = {
         ...dispatcherOption,
         allowH2: clientOptions.allowH2,
