@@ -2,54 +2,156 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [master]
+    paths:
+      - 'package.json'
 
-permissions:
-  contents: write
-  id-token: write
+permissions: {}
+
+# Serialize releases and cancel an older run still pending approval when a
+# newer version lands, so an approved-late stale run cannot publish backwards.
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
 
 jobs:
-  release:
-    name: Publish to NPM
+  check:
+    if: github.repository == 'node-modules/urllib'
+    name: Check version
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version_changed: ${{ steps.version.outputs.changed }}
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+
+      - name: Check whether version is already published
+        id: version
+        run: |
+          set -euo pipefail
+          # Compare the exact version against the registry, not against `latest`,
+          # so prereleases (published under their own dist-tag) are not treated
+          # as perpetually newer than the stable `latest` and re-released.
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          STATUS=0
+          OUTPUT=$(npm view "urllib@$VERSION" version 2>&1) || STATUS=$?
+          if [ "$STATUS" -eq 0 ] && [ -n "$OUTPUT" ]; then
+            echo "urllib@$VERSION is already published; nothing to release."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          elif [ "$STATUS" -ne 0 ] && ! grep -q 'E404' <<<"$OUTPUT"; then
+            # Not a "version missing" 404 -> auth/network/registry error; fail loudly.
+            echo "::error::npm view failed for urllib@$VERSION (not a 404):"
+            printf '%s\n' "$OUTPUT"
+            exit 1
+          else
+            echo "urllib@$VERSION is not published yet; proceeding."
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  request-approval:
+    name: Request approval
+    runs-on: ubuntu-latest
+    needs: check
+    if: needs.check.outputs.version_changed == 'true'
+    permissions: {}
+    env:
+      DINGTALK_WEBHOOK_URL: ${{ secrets.DINGTALK_RELEASE_WEBHOOK_URL }}
+      DINGTALK_WEBHOOK_SECRET: ${{ secrets.DINGTALK_RELEASE_WEBHOOK_SECRET }}
+      VERSION: ${{ needs.check.outputs.version }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - name: Notify DingTalk
+        # Best-effort: a webhook failure must not block the manual approval gate.
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          # DingTalk signed webhook (加签): sign = urlencode(base64(HMAC-SHA256(secret, "timestamp\nsecret")))
+          TIMESTAMP=$(date +%s%3N)
+          SIGN=$(printf '%s\n%s' "$TIMESTAMP" "$DINGTALK_WEBHOOK_SECRET" \
+            | openssl dgst -sha256 -hmac "$DINGTALK_WEBHOOK_SECRET" -binary \
+            | base64 | tr -d '\n')
+          SIGN_ENC=$(jq -rn --arg s "$SIGN" '$s | @uri')
+          URL="${DINGTALK_WEBHOOK_URL}&timestamp=${TIMESTAMP}&sign=${SIGN_ENC}"
+          TEXT=$(printf '### urllib release v%s\n\nAwaiting manual approval before publishing to npm.\n\n[Review and approve](%s)' "$VERSION" "$RUN_URL")
+          PAYLOAD=$(jq -n --arg text "$TEXT" \
+            '{msgtype: "markdown", markdown: {title: "urllib release approval", text: $text}}')
+          curl -fsS --connect-timeout 10 --max-time 30 \
+            --retry 3 --retry-delay 2 --retry-all-errors \
+            -X POST "$URL" \
+            -H 'Content-Type: application/json' \
+            -d "$PAYLOAD"
+
+  release:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    # Manual approval gate: configure an Environment named "release" with
+    # required reviewers in repo settings. The job pauses here until approved.
+    environment: release
+    needs: [check, request-approval]
+    if: needs.check.outputs.version_changed == 'true'
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      VERSION: ${{ needs.check.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@v1
         with:
-          node-version: '22'
+          # Node 24 bundles npm >= 11.5.1, required for OIDC trusted publishing.
+          node-version: '24'
           cache: true
-          run-install: true
-
-      - name: Verify version matches tag
-        run: |
-          TAG_VERSION="${GITHUB_REF_NAME#v}"
-          PKG_VERSION=$(node -p "require('./package.json').version")
-          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
-            echo "::error::Tag version ($TAG_VERSION) does not match package.json version ($PKG_VERSION)"
-            exit 1
-          fi
+          sfw: true
 
       - name: Determine npm dist-tag
         id: dist-tag
         run: |
-          TAG_VERSION="${GITHUB_REF_NAME#v}"
-          if echo "$TAG_VERSION" | grep -qE '-([a-zA-Z]+)'; then
-            # Extract pre-release identifier (e.g., "beta" from "5.0.0-beta.0")
-            PRE_TAG=$(echo "$TAG_VERSION" | sed -E 's/.*-([a-zA-Z]+).*/\1/')
-            echo "tag=$PRE_TAG" >> "$GITHUB_OUTPUT"
-          else
-            echo "tag=latest" >> "$GITHUB_OUTPUT"
+          set -euo pipefail
+          # Any semver with a pre-release part ("X.Y.Z-<id>...") must not go to
+          # latest. Strip build metadata first, then use the first pre-release
+          # identifier as the dist-tag (e.g. 4.10.0-beta.0 -> beta, 1.2.3-0 -> 0).
+          CORE="${VERSION%%+*}"
+          case "$CORE" in
+            *-*)
+              PRE="${CORE#*-}"
+              echo "tag=${PRE%%.*}" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "tag=latest" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+      - name: Re-check version before publish
+        run: |
+          set -euo pipefail
+          # Guard against a stale run approved after a newer version was published.
+          STATUS=0
+          OUTPUT=$(npm view "urllib@$VERSION" version 2>&1) || STATUS=$?
+          if [ "$STATUS" -eq 0 ] && [ -n "$OUTPUT" ]; then
+            echo "::error::urllib@$VERSION is already published; aborting to avoid republishing a stale version."
+            exit 1
+          elif [ "$STATUS" -ne 0 ] && ! grep -q 'E404' <<<"$OUTPUT"; then
+            echo "::error::npm view failed for urllib@$VERSION (not a 404); aborting:"
+            printf '%s\n' "$OUTPUT"
+            exit 1
           fi
+          echo "urllib@$VERSION is not yet published; proceeding to publish."
 
       - name: Publish to npm
         run: npm publish --access public --tag ${{ steps.dist-tag.outputs.tag }}
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
         with:
           generate_release_notes: true
+          name: v${{ env.VERSION }}
+          tag_name: v${{ env.VERSION }}
+          target_commitish: ${{ github.sha }}
           prerelease: ${{ steps.dist-tag.outputs.tag != 'latest' }}

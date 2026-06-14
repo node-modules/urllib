@@ -15,14 +15,14 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@v1
         with:
           node-version: '24'
           cache: true
-          run-install: true
+          sfw: true
 
       - name: Check
         run: vp run check
@@ -55,19 +55,19 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@v1
         with:
           node-version: ${{ matrix.node }}
           cache: true
-          run-install: true
+          sfw: true
 
       - name: Run tests
         run: vp run ci
 
       - name: Code Coverage
-        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
         with:
           use_oidc: true

@@ -243,6 +243,13 @@ export async function startServer(options?: {
       res.setHeader('Location', 'http://localhost/');
       return res.end('Redirect to http://localhost/');
     }
+    // redirect to an arbitrary absolute url, e.g. a different origin
+    if (pathname === '/redirect-to') {
+      const target = urlObject.searchParams.get('url')!;
+      res.statusCode = parseInt(urlObject.searchParams.get('status') ?? '302');
+      res.setHeader('Location', target);
+      return res.end(`Redirect to ${target}`);
+    }
 
     if (req.url === '/304-with-gzip') {
       res.setHeader('Content-Encoding', 'gzip');

@@ -89,7 +89,7 @@
     "@types/selfsigned": "^2.1.0",
     "@types/tar-stream": "^2.2.3",
     "@typescript/native-preview": "beta",
-    "@vitest/coverage-v8": "^4.1.0",
+    "@vitest/coverage-v8": "^4.1.8",
     "busboy": "^1.6.0",
     "cross-env": "^10.1.0",
     "iconv-lite": "^0.7.0",
@@ -99,8 +99,9 @@
     "tshy": "^4.0.0",
     "tshy-after": "^1.4.1",
     "typescript": "^6.0.0",
-    "vite-plus": "^0.1.19",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.19"
+    "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.24",
+    "vite-plus": "^0.1.24",
+    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.24"
   },
   "tshy": {
     "exports": {
@@ -111,17 +112,5 @@
   "engines": {
     "node": ">= 22.0.0"
   },
-  "packageManager": "pnpm@10.33.2",
-  "pnpm": {
-    "overrides": {
-      "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.19",
-      "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.19"
-    },
-    "peerDependencyRules": {
-      "allowAny": [
-        "vite",
-        "vitest"
-      ]
-    }
-  }
+  "packageManager": "pnpm@11.6.0"
 }
