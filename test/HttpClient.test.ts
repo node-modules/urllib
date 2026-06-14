@@ -2,6 +2,7 @@ import { strict as assert } from 'node:assert';
 import dns from 'node:dns';
 import { once } from 'node:events';
 import { sensitiveHeaders, createSecureServer } from 'node:http2';
+import { createServer as createSecureHttp1Server } from 'node:https';
 import type { AddressInfo } from 'node:net';
 import { PerformanceObserver } from 'node:perf_hooks';
 import { setTimeout as sleep } from 'node:timers/promises';
@@ -246,6 +247,63 @@ describe('HttpClient.test.ts', () => {
       assert.equal(response.headers['x-custom-h2'], 'hello');
       // console.log(response.res.socket, response.res.timing);
       assert.equal(response.data, 'hello h2!');
+    });
+  });
+
+  describe('protocol negotiation', () => {
+    it('should use HTTP/1.1 when the server only supports HTTP/1.1', async () => {
+      const server = createSecureHttp1Server(
+        {
+          key: pems.private,
+          cert: pems.cert,
+        },
+        (req, res) => {
+          res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
+          res.end(`hello http/${req.httpVersion}!`);
+        },
+      );
+      server.listen(0);
+      await once(server, 'listening');
+      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
+
+      const httpClient = new HttpClient({
+        connect: { rejectUnauthorized: false },
+      });
+      try {
+        const response = await httpClient.request<string>(url, { dataType: 'text' });
+        assert.equal(response.status, 200);
+        assert.equal(response.data, 'hello http/1.1!');
+      } finally {
+        server.closeAllConnections();
+        await new Promise<void>((resolve) => server.close(() => resolve()));
+      }
+    });
+
+    it('should negotiate HTTP/2 by default when the server supports it', async () => {
+      // undici@8 enables allowH2 by default, so urllib negotiates HTTP/2 via ALPN.
+      const server = createSecureServer({
+        allowHTTP1: true,
+        key: pems.private,
+        cert: pems.cert,
+      });
+      server.on('request', (req, res) => {
+        res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
+        res.end(`hello http/${req.httpVersion}!`);
+      });
+      server.listen(0);
+      await once(server, 'listening');
+      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
+
+      const httpClient = new HttpClient({
+        connect: { rejectUnauthorized: false },
+      });
+      try {
+        const response = await httpClient.request<string>(url, { dataType: 'text' });
+        assert.equal(response.status, 200);
+        assert.equal(response.data, 'hello http/2.0!');
+      } finally {
+        await new Promise<void>((resolve) => server.close(() => resolve()));
+      }
     });
   });
 
