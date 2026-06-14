@@ -10,7 +10,7 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import selfsigned from 'selfsigned';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
-import { normalizePoolStatsKey } from '../src/HttpClient.js';
+import { mergePoolStat, normalizePoolStatsKey } from '../src/HttpClient.js';
 import { HttpClient, getDefaultHttpClient, getGlobalDispatcher } from '../src/index.js';
 import type { RawResponseWithMeta } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
@@ -351,6 +351,17 @@ describe('HttpClient.test.ts', () => {
       assert.equal(normalizePoolStatsKey(/example/), '/example/');
     });
 
+    it('mergePoolStat should treat missing ClientStats counters as zero', () => {
+      const pool = { connected: 1, free: 1, pending: 1, queued: 1, running: 1, size: 1 };
+      // undici ClientStats (Agent with connections: 1) omit free/queued
+      const clientStats = { connected: 2, pending: 1, running: 1, size: 2 } as any;
+      const merged = mergePoolStat(pool, clientStats);
+      assert.equal(merged.connected, 3);
+      assert.equal(merged.free, 1);
+      assert.equal(merged.queued, 1);
+      assert(!Number.isNaN(merged.free) && !Number.isNaN(merged.queued));
+    });
+
     it('should cache a distinct allowH2: false default client that still uses the global dispatcher', () => {
       // a dedicated cached client carries the allowH2: false preference so that
       // getDefaultHttpClient(undefined, false).request(url) forces HTTP/1.1 ...
@@ -388,6 +399,37 @@ describe('HttpClient.test.ts', () => {
         const stats = httpClient.getDispatcherPoolStats();
         assert(stats[url], `expected stats for ${url}, got ${Object.keys(stats).join(', ')}`);
         assert(!Object.keys(stats).some((k) => k.includes('#http1-only')));
+      } finally {
+        await httpClient.getDispatcher().close();
+        await new Promise<void>((resolve) => server.close(() => resolve()));
+      }
+    });
+
+    it('should honor per-request allowH2: false for HttpAgent (checkAddress) clients', async () => {
+      const server = createSecureServer({
+        allowHTTP1: true,
+        key: pems.private,
+        cert: pems.cert,
+      });
+      server.on('request', (req, res) => {
+        res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
+        res.end(`hello http/${req.httpVersion}!`);
+      });
+      server.listen(0);
+      await once(server, 'listening');
+      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
+
+      // checkAddress routes through HttpAgent; allowH2 must stay top-level so the
+      // per-request flag still reaches undici's connector (ALPN).
+      const httpClient = new HttpClient({
+        checkAddress: () => true,
+        connect: { rejectUnauthorized: false },
+      });
+      try {
+        const h1 = await httpClient.request<string>(url, { dataType: 'text', allowH2: false });
+        assert.equal(h1.data, 'hello http/1.1!');
+        const h2 = await httpClient.request<string>(url, { dataType: 'text' });
+        assert.equal(h2.data, 'hello http/2.0!');
       } finally {
         await httpClient.getDispatcher().close();
         await new Promise<void>((resolve) => server.close(() => resolve()));

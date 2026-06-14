@@ -187,25 +187,17 @@ export function normalizePoolStatsKey(key: unknown): string {
 }
 
 // When both an HTTP/2 and an http1-only pool exist for the same origin, sum
-// their stats so a single origin entry reflects every client.
-export function mergePoolStat(existing: PoolStat | undefined, stats: PoolStat): PoolStat {
-  if (!existing) {
-    return {
-      connected: stats.connected,
-      free: stats.free,
-      pending: stats.pending,
-      queued: stats.queued,
-      running: stats.running,
-      size: stats.size,
-    };
-  }
+// their stats so a single origin entry reflects every client. undici ClientStats
+// (Agent with connections: 1) omit free/queued, so treat absent counters as 0.
+export function mergePoolStat(existing: PoolStat | undefined, stats: Partial<PoolStat>): PoolStat {
+  const base = existing ?? { connected: 0, free: 0, pending: 0, queued: 0, running: 0, size: 0 };
   return {
-    connected: existing.connected + stats.connected,
-    free: existing.free + stats.free,
-    pending: existing.pending + stats.pending,
-    queued: existing.queued + stats.queued,
-    running: existing.running + stats.running,
-    size: existing.size + stats.size,
+    connected: base.connected + (stats.connected ?? 0),
+    free: base.free + (stats.free ?? 0),
+    pending: base.pending + (stats.pending ?? 0),
+    queued: base.queued + (stats.queued ?? 0),
+    running: base.running + (stats.running ?? 0),
+    size: base.size + (stats.size ?? 0),
   };
 }
 

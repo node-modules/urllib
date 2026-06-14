@@ -66,7 +66,10 @@ export class HttpAgent extends BaseAgent {
     };
     super({
       ...baseOpts,
-      connect: { ...options.connect, lookup: lookupFunction, allowH2: options.allowH2 },
+      // Keep allowH2 at the top level only. undici builds the connector as
+      // `buildConnector({ allowH2, ...connect })`, so an allowH2 inside `connect`
+      // would shadow the top-level/per-request value and defeat `allowH2: false`.
+      connect: { ...options.connect, lookup: lookupFunction },
     });
     this.#checkAddress = options.checkAddress;
   }
