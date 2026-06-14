@@ -74,7 +74,7 @@ const debug = debuglog('urllib:HttpClient');
 
 export type ClientOptions = {
   defaultArgs?: RequestOptions;
-  /** Allow to use HTTP2 first. Default is `false` */
+  /** Allow negotiating HTTP/2 with capable servers via ALPN. Since undici@8 this is enabled by default. */
   allowH2?: boolean;
   /** Custom DNS lookup function, default is `dns.lookup`. */
   lookup?: LookupFunction;

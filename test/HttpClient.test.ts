@@ -121,7 +121,9 @@ describe('HttpClient.test.ts', () => {
         httpClient.request(_url),
       ]);
       // console.log(httpClient.getDispatcherPoolStats());
-      assert.equal(httpClient.getDispatcherPoolStats()['https://registry.npmmirror.com'].connected, 4);
+      // undici@8 negotiates HTTP/2 with h2-capable servers, so all requests are
+      // multiplexed over a single connection instead of opening one per request.
+      assert.equal(httpClient.getDispatcherPoolStats()['https://registry.npmmirror.com'].connected, 1);
       assert(httpClient.getDispatcherPoolStats()[_url.substring(0, _url.length - 1)].connected > 1);
     });
 
