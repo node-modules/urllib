@@ -38,7 +38,11 @@ import { parseJSON, digestAuthHeader, globalId, performanceTime, isReadable, upd
 type Exists<T> = T extends undefined ? never : T;
 type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;
 type PropertyShouldBe<T, K extends keyof T, V> = Omit<T, K> & { [P in K]: V };
-type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', IncomingHttpHeaders>;
+// undici reads `allowH2` per dispatch (Agent picks an http1-only pool when false),
+// but it is not part of the public request options type, so add it explicitly.
+type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', IncomingHttpHeaders> & {
+  allowH2?: boolean;
+};
 
 export const PROTO_RE: RegExp = /^https?:\/\//i;
 
@@ -171,6 +175,36 @@ export interface PoolStat {
   size: number;
 }
 
+// undici@8 keys http1-only pools (allowH2: false) as `${origin}#http1-only`;
+// expose them under their plain origin so callers can look up stats by URL.
+export function normalizePoolStatsKey(key: string): string {
+  const index = key.indexOf('#http1-only');
+  return index === -1 ? key : key.slice(0, index);
+}
+
+// When both an HTTP/2 and an http1-only pool exist for the same origin, sum
+// their stats so a single origin entry reflects every client.
+export function mergePoolStat(existing: PoolStat | undefined, stats: PoolStat): PoolStat {
+  if (!existing) {
+    return {
+      connected: stats.connected,
+      free: stats.free,
+      pending: stats.pending,
+      queued: stats.queued,
+      running: stats.running,
+      size: stats.size,
+    };
+  }
+  return {
+    connected: existing.connected + stats.connected,
+    free: existing.free + stats.free,
+    pending: existing.pending + stats.pending,
+    queued: existing.queued + stats.queued,
+    running: existing.running + stats.running,
+    size: existing.size + stats.size,
+  };
+}
+
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
 const RedirectStatusCodes = [
   301, // Moved Permanently
@@ -189,10 +223,14 @@ const CrossOriginSensitiveHeaders = new Set(['authorization', 'cookie', 'proxy-a
 export class HttpClient extends EventEmitter {
   #defaultArgs?: RequestOptions;
   #dispatcher?: Dispatcher;
+  #allowH2?: boolean;
 
   constructor(clientOptions?: ClientOptions) {
     super();
     this.#defaultArgs = clientOptions?.defaultArgs;
+    // Remember the client-level protocol preference so it can be applied per
+    // request (mainly for `allowH2: false`, which has no dedicated agent).
+    this.#allowH2 = clientOptions?.allowH2;
     if (clientOptions?.lookup || clientOptions?.checkAddress) {
       this.#dispatcher = new HttpAgent({
         lookup: clientOptions.lookup,
@@ -205,9 +243,9 @@ export class HttpClient extends EventEmitter {
         connect: clientOptions.connect,
         allowH2: clientOptions.allowH2,
       });
-    } else if (clientOptions?.allowH2 !== undefined) {
-      // Pin the protocol when allowH2 is set explicitly: `true` enables HTTP/2,
-      // `false` forces HTTP/1.1 instead of following undici@8's HTTP/2 default.
+    } else if (clientOptions?.allowH2) {
+      // Support HTTP/2 with a dedicated agent. `allowH2: false` is handled
+      // per request instead, so it does not bypass the active dispatcher.
       this.#dispatcher = new Agent({
         allowH2: clientOptions.allowH2,
       });
@@ -237,14 +275,10 @@ export class HttpClient extends EventEmitter {
       const stats = pool?.stats ?? pool?.dispatcher?.stats;
       if (!stats) continue;
 
-      poolStatsMap[key] = {
-        connected: stats.connected,
-        free: stats.free,
-        pending: stats.pending,
-        queued: stats.queued,
-        running: stats.running,
-        size: stats.size,
-      } satisfies PoolStat;
+      // undici@8 keys http1-only pools (allowH2: false) as `${origin}#http1-only`,
+      // expose them by their origin so callers can look up stats by URL.
+      const origin = normalizePoolStatsKey(key);
+      poolStatsMap[origin] = mergePoolStat(poolStatsMap[origin], stats);
     }
     return poolStatsMap;
   }
@@ -442,6 +476,13 @@ export class HttpClient extends EventEmitter {
         signal: args.signal,
         reset: false,
       };
+      const allowH2 = args.allowH2 ?? this.#allowH2;
+      if (typeof allowH2 === 'boolean') {
+        // Apply the protocol preference per request so the active dispatcher
+        // (global, proxy, ...) is honored instead of being bypassed by a
+        // dedicated HTTP/1.1-only agent.
+        requestOptions.allowH2 = allowH2;
+      }
       if (typeof args.highWaterMark === 'number') {
         requestOptions.highWaterMark = args.highWaterMark;
       }

@@ -335,17 +335,52 @@ describe('HttpClient.test.ts', () => {
       }
     });
 
-    it('should pin a dedicated dispatcher when allowH2 is set explicitly', () => {
-      // allowH2: false must not fall back to undici@8's HTTP/2-enabled global dispatcher
-      assert.notEqual(new HttpClient({ allowH2: false }).getDispatcher(), getGlobalDispatcher());
+    it('should not create a dedicated dispatcher for allowH2: false', () => {
+      // allowH2: true uses an isolated agent
       assert.notEqual(new HttpClient({ allowH2: true }).getDispatcher(), getGlobalDispatcher());
+      // allowH2: false is applied per request, so it must keep using the active
+      // (global) dispatcher instead of bypassing it with its own agent
+      assert.equal(new HttpClient({ allowH2: false }).getDispatcher(), getGlobalDispatcher());
     });
 
-    it('should cache distinct default clients per allowH2 value', () => {
-      assert.equal(getDefaultHttpClient(undefined, false), getDefaultHttpClient(undefined, false));
-      assert.notEqual(getDefaultHttpClient(undefined, false), getDefaultHttpClient(undefined, true));
-      assert.notEqual(getDefaultHttpClient(undefined, false), getDefaultHttpClient(undefined, undefined));
-      assert.notEqual(getDefaultHttpClient(false, false), getDefaultHttpClient(false, true));
+    it('should not allocate a separate default client for allowH2: false', () => {
+      // allowH2: false reuses the default client (handled per request), only
+      // allowH2: true gets its own cached client
+      assert.equal(getDefaultHttpClient(undefined, false), getDefaultHttpClient(undefined, undefined));
+      assert.equal(getDefaultHttpClient(false, false), getDefaultHttpClient(false, undefined));
+      assert.notEqual(getDefaultHttpClient(undefined, true), getDefaultHttpClient(undefined, undefined));
+    });
+
+    it('should force HTTP/1.1 per request via allowH2: false and expose pool stats by origin', async () => {
+      const server = createSecureServer({
+        allowHTTP1: true,
+        key: pems.private,
+        cert: pems.cert,
+      });
+      server.on('request', (req, res) => {
+        res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
+        res.end(`hello http/${req.httpVersion}!`);
+      });
+      server.listen(0);
+      await once(server, 'listening');
+      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
+
+      // the client keeps its (HTTP/2-capable) dispatcher; allowH2: false is per request
+      const httpClient = new HttpClient({ connect: { rejectUnauthorized: false } });
+      try {
+        const response = await httpClient.request<string>(url, { dataType: 'text', allowH2: false });
+        assert.equal(response.status, 200);
+        assert.equal(response.data, 'hello http/1.1!');
+
+        // undici keys the http1-only pool as `${origin}#http1-only`; stats must be
+        // reachable by the plain origin and not leak the internal suffix
+        const stats = httpClient.getDispatcherPoolStats();
+        assert(stats[url], `expected stats for ${url}, got ${Object.keys(stats).join(', ')}`);
+        assert(!Object.keys(stats).some((k) => k.includes('#http1-only')));
+      } finally {
+        await httpClient.getDispatcher().close();
+        await new Promise<void>((resolve) => server.close(() => resolve()));
+      }
     });
   });
 

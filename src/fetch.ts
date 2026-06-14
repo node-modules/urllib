@@ -16,7 +16,7 @@ import { initDiagnosticsChannel } from './diagnosticsChannel.js';
 import type { FetchOpaque } from './FetchOpaqueInterceptor.js';
 import { HttpAgent } from './HttpAgent.js';
 import type { HttpAgentOptions } from './HttpAgent.js';
-import { channels } from './HttpClient.js';
+import { channels, mergePoolStat, normalizePoolStatsKey } from './HttpClient.js';
 import type {
   ClientOptions,
   PoolStat,
@@ -112,14 +112,10 @@ export class FetchFactory {
       const stats = pool?.stats ?? pool?.dispatcher?.stats;
       if (!stats) continue;
 
-      poolStatsMap[key] = {
-        connected: stats.connected,
-        free: stats.free,
-        pending: stats.pending,
-        queued: stats.queued,
-        running: stats.running,
-        size: stats.size,
-      } satisfies PoolStat;
+      // undici@8 keys http1-only pools (allowH2: false) as `${origin}#http1-only`,
+      // expose them by their origin so callers can look up stats by URL.
+      const origin = normalizePoolStatsKey(key);
+      poolStatsMap[origin] = mergePoolStat(poolStatsMap[origin], stats as PoolStat);
     }
     return poolStatsMap;
   }

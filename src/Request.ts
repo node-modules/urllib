@@ -141,6 +141,11 @@ export type RequestOptions = {
   ctx?: unknown;
   /** Request dispatcher, default is getGlobalDispatcher() */
   dispatcher?: Dispatcher;
+  /**
+   * Negotiate HTTP/2 with capable servers via ALPN. Enabled by default since undici@8; set `false` to force HTTP/1.1
+   * for this request without bypassing the active dispatcher.
+   */
+  allowH2?: boolean;
   /** Unix domain socket file path */
   socketPath?: string | null;
   /** Whether the request should stablish a keep-alive or not. Default `false`, try to keep alive by default */
