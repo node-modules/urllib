@@ -1,0 +1,14 @@
+# Patch coverage stays strict (new/changed lines must be covered).
+# Project coverage tolerates small fluctuations from external-network tests
+# and undici behaviour changes (e.g. an error branch reachable only on a
+# different protocol path).
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+    patch:
+      default:
+        target: auto
+        threshold: 0%
