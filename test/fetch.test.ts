@@ -23,6 +23,23 @@ describe('fetch.test.ts', () => {
     await close();
   });
 
+  it('setClientOptions should honor explicit allowH2 even without connect/lookup', () => {
+    // undici@8 enables HTTP/2 by default, so `allowH2: false` must still pin the
+    // dispatcher to HTTP/1.1 instead of being ignored as a falsy value.
+    const readAllowH2 = (dispatcher: any) => {
+      const kOptions = Object.getOwnPropertySymbols(dispatcher).find((s) => s.description === 'options');
+      return kOptions ? dispatcher[kOptions].allowH2 : undefined;
+    };
+
+    const disableH2 = new FetchFactory();
+    disableH2.setClientOptions({ allowH2: false });
+    assert.equal(readAllowH2(disableH2.getDispatcher()), false);
+
+    const enableH2 = new FetchFactory();
+    enableH2.setClientOptions({ allowH2: true });
+    assert.equal(readAllowH2(enableH2.getDispatcher()), true);
+  });
+
   it('fetch should work', async () => {
     let requestDiagnosticsMessage: RequestDiagnosticsMessage;
     let responseDiagnosticsMessage: ResponseDiagnosticsMessage;

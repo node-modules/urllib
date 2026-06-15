@@ -75,7 +75,7 @@
     "mime-types": "^2.1.35",
     "qs": "^6.15.0",
     "type-fest": "^4.41.0",
-    "undici": "^7.24.0",
+    "undici": "^8.4.1",
     "ylru": "^2.0.0"
   },
   "devDependencies": {
@@ -110,7 +110,7 @@
     }
   },
   "engines": {
-    "node": ">= 22.0.0"
+    "node": ">= 22.19.0"
   },
   "packageManager": "pnpm@11.6.0"
 }

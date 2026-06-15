@@ -18,7 +18,7 @@ import { createGunzip, createBrotliDecompress, gunzipSync, brotliDecompressSync 
 import FormStream from 'formstream';
 import mime from 'mime-types';
 import qs from 'qs';
-import { request as undiciRequest, Dispatcher, Agent, getGlobalDispatcher, Pool } from 'undici';
+import { request as undiciRequest, Dispatcher, Agent, getGlobalDispatcher, MockAgent, Pool } from 'undici';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import undiciSymbols from 'undici/lib/core/symbols.js';
@@ -38,7 +38,11 @@ import { parseJSON, digestAuthHeader, globalId, performanceTime, isReadable, upd
 type Exists<T> = T extends undefined ? never : T;
 type UndiciRequestOption = Exists<Parameters<typeof undiciRequest>[1]>;
 type PropertyShouldBe<T, K extends keyof T, V> = Omit<T, K> & { [P in K]: V };
-type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', IncomingHttpHeaders>;
+// undici reads `allowH2` per dispatch (Agent picks an http1-only pool when false),
+// but it is not part of the public request options type, so add it explicitly.
+type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', IncomingHttpHeaders> & {
+  allowH2?: boolean;
+};
 
 export const PROTO_RE: RegExp = /^https?:\/\//i;
 
@@ -74,7 +78,7 @@ const debug = debuglog('urllib:HttpClient');
 
 export type ClientOptions = {
   defaultArgs?: RequestOptions;
-  /** Allow to use HTTP2 first. Default is `false` */
+  /** Negotiate HTTP/2 with capable servers via ALPN. Enabled by default since undici@8; set `false` to force HTTP/1.1. */
   allowH2?: boolean;
   /** Custom DNS lookup function, default is `dns.lookup`. */
   lookup?: LookupFunction;
@@ -171,6 +175,58 @@ export interface PoolStat {
   size: number;
 }
 
+// undici@8 keys HTTP/1.1-only pools (dispatched with allowH2: false) by suffixing the origin.
+const HTTP1_ONLY_POOL_KEY_SUFFIX = '#http1-only';
+
+// Expose http1-only pools under their plain origin so callers can look up stats by URL.
+// MockAgent may use RegExp/function origin matchers, so keys are not always strings.
+export function normalizePoolStatsKey(key: unknown): string {
+  if (typeof key !== 'string') {
+    return String(key);
+  }
+  return key.endsWith(HTTP1_ONLY_POOL_KEY_SUFFIX) ? key.slice(0, -HTTP1_ONLY_POOL_KEY_SUFFIX.length) : key;
+}
+
+// When both an HTTP/2 and an http1-only pool exist for the same origin, sum
+// their stats so a single origin entry reflects every client. undici ClientStats
+// (Agent with connections: 1) omit free/queued, so treat absent counters as 0.
+export function mergePoolStat(existing: PoolStat | undefined, stats: Partial<PoolStat>): PoolStat {
+  return {
+    connected: (existing?.connected ?? 0) + (stats.connected ?? 0),
+    free: (existing?.free ?? 0) + (stats.free ?? 0),
+    pending: (existing?.pending ?? 0) + (stats.pending ?? 0),
+    queued: (existing?.queued ?? 0) + (stats.queued ?? 0),
+    running: (existing?.running ?? 0) + (stats.running ?? 0),
+    size: (existing?.size ?? 0) + (stats.size ?? 0),
+  };
+}
+
+// Collect undici pool stats for a dispatcher, collapsing undici@8's http1-only
+// pools back onto their origin so HttpClient and FetchFactory share one implementation.
+export function buildPoolStats(agent: Dispatcher): Record<string, PoolStat> {
+  // origin => Pool Instance
+  const clients: Map<string, WeakRef<Pool>> | undefined = Reflect.get(agent, undiciSymbols.kClients);
+  const poolStatsMap: Record<string, PoolStat> = {};
+  if (!clients) {
+    return poolStatsMap;
+  }
+  for (const [key, ref] of clients) {
+    const pool = (typeof ref.deref === 'function' ? ref.deref() : ref) as unknown as Pool & { dispatcher: Pool };
+    // NOTE: pool become to { dispatcher: Pool } in undici@v7
+    const stats = pool?.stats ?? pool?.dispatcher?.stats;
+    if (!stats) continue;
+    const origin = normalizePoolStatsKey(key);
+    poolStatsMap[origin] = mergePoolStat(poolStatsMap[origin], stats);
+  }
+  return poolStatsMap;
+}
+
+// `instanceof` misses a MockAgent from a duplicate undici install, so also match
+// by constructor name as a cheap cross-realm fallback.
+function isMockAgent(dispatcher: Dispatcher | undefined): boolean {
+  return dispatcher instanceof MockAgent || dispatcher?.constructor?.name === 'MockAgent';
+}
+
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
 const RedirectStatusCodes = [
   301, // Moved Permanently
@@ -189,10 +245,14 @@ const CrossOriginSensitiveHeaders = new Set(['authorization', 'cookie', 'proxy-a
 export class HttpClient extends EventEmitter {
   #defaultArgs?: RequestOptions;
   #dispatcher?: Dispatcher;
+  #allowH2?: boolean;
 
   constructor(clientOptions?: ClientOptions) {
     super();
     this.#defaultArgs = clientOptions?.defaultArgs;
+    // Remember the client-level protocol preference so it can be applied per
+    // request (mainly for `allowH2: false`, which has no dedicated agent).
+    this.#allowH2 = clientOptions?.allowH2;
     if (clientOptions?.lookup || clientOptions?.checkAddress) {
       this.#dispatcher = new HttpAgent({
         lookup: clientOptions.lookup,
@@ -206,7 +266,8 @@ export class HttpClient extends EventEmitter {
         allowH2: clientOptions.allowH2,
       });
     } else if (clientOptions?.allowH2) {
-      // Support HTTP2
+      // Support HTTP/2 with a dedicated agent. `allowH2: false` is handled
+      // per request instead, so it does not bypass the active dispatcher.
       this.#dispatcher = new Agent({
         allowH2: clientOptions.allowH2,
       });
@@ -223,29 +284,7 @@ export class HttpClient extends EventEmitter {
   }
 
   getDispatcherPoolStats(): Record<string, PoolStat> {
-    const agent = this.getDispatcher();
-    // origin => Pool Instance
-    const clients: Map<string, WeakRef<Pool>> | undefined = Reflect.get(agent, undiciSymbols.kClients);
-    const poolStatsMap: Record<string, PoolStat> = {};
-    if (!clients) {
-      return poolStatsMap;
-    }
-    for (const [key, ref] of clients) {
-      const pool = (typeof ref.deref === 'function' ? ref.deref() : ref) as unknown as Pool & { dispatcher: Pool };
-      // NOTE: pool become to { dispatcher: Pool } in undici@v7
-      const stats = pool?.stats ?? pool?.dispatcher?.stats;
-      if (!stats) continue;
-
-      poolStatsMap[key] = {
-        connected: stats.connected,
-        free: stats.free,
-        pending: stats.pending,
-        queued: stats.queued,
-        running: stats.running,
-        size: stats.size,
-      } satisfies PoolStat;
-    }
-    return poolStatsMap;
+    return buildPoolStats(this.getDispatcher());
   }
 
   async request<T = any>(url: RequestURL, options?: RequestOptions): Promise<HttpClientResponse<T>> {
@@ -441,6 +480,15 @@ export class HttpClient extends EventEmitter {
         signal: args.signal,
         reset: false,
       };
+      // Apply the protocol preference per request so the active dispatcher (global,
+      // proxy, ...) is honored instead of being bypassed by a dedicated HTTP/1.1-only
+      // agent. Skip it for MockAgent: it keys clients as `${origin}#http1-only` and
+      // would miss interceptors registered on the plain origin (protocol negotiation
+      // is moot when mocking anyway).
+      const allowH2 = args.allowH2 ?? this.#allowH2;
+      if (typeof allowH2 === 'boolean' && !isMockAgent(requestOptions.dispatcher ?? getGlobalDispatcher())) {
+        requestOptions.allowH2 = allowH2;
+      }
       if (typeof args.highWaterMark === 'number') {
         requestOptions.highWaterMark = args.highWaterMark;
       }

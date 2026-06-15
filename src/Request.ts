@@ -14,8 +14,6 @@ export type RequestURL = string | URL;
 export type FixJSONCtlCharsHandler = (data: string) => string;
 export type FixJSONCtlChars = boolean | FixJSONCtlCharsHandler;
 
-type AbortSignal = unknown;
-
 export type RequestOptions = {
   /** Request method, defaults to GET. Could be GET, POST, DELETE or PUT. Alias 'type'. */
   method?: HttpMethod | Lowercase<HttpMethod>;
@@ -141,13 +139,23 @@ export type RequestOptions = {
   ctx?: unknown;
   /** Request dispatcher, default is getGlobalDispatcher() */
   dispatcher?: Dispatcher;
+  /**
+   * Negotiate HTTP/2 with capable servers via ALPN. Enabled by default since undici@8; set `false` to force HTTP/1.1
+   * for this request without bypassing the active dispatcher.
+   *
+   * `allowH2: false` is applied per request and is honored by Agent-based dispatchers (the default global agent and
+   * `ProxyAgent`). It cannot downgrade a raw `Pool`/`Client` passed as `dispatcher`, which builds its connector at
+   * construction time, construct those with `allowH2: false` instead. It is also not applied to `MockAgent` (protocol
+   * negotiation is moot when mocking), so mock passthrough to the real network follows that agent's own default.
+   */
+  allowH2?: boolean;
   /** Unix domain socket file path */
   socketPath?: string | null;
   /** Whether the request should stablish a keep-alive or not. Default `false`, try to keep alive by default */
   reset?: boolean;
   /** Default: `64 KiB` */
   highWaterMark?: number;
-  signal?: AbortSignal | EventEmitter;
+  signal?: globalThis.AbortSignal | EventEmitter;
 };
 
 export type RequestMeta = {

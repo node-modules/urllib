@@ -2,20 +2,54 @@ import { strict as assert } from 'node:assert';
 import dns from 'node:dns';
 import { once } from 'node:events';
 import { sensitiveHeaders, createSecureServer } from 'node:http2';
+import type { Http2SecureServer } from 'node:http2';
+import { createServer as createSecureHttp1Server } from 'node:https';
+import type { Server as HttpsServer } from 'node:https';
 import type { AddressInfo } from 'node:net';
 import { PerformanceObserver } from 'node:perf_hooks';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 import selfsigned from 'selfsigned';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import undiciSymbols from 'undici/lib/core/symbols.js';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
-import { HttpClient, getGlobalDispatcher } from '../src/index.js';
+import { mergePoolStat, normalizePoolStatsKey } from '../src/HttpClient.js';
+import { HttpClient, getDefaultHttpClient, getGlobalDispatcher } from '../src/index.js';
 import type { RawResponseWithMeta } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
 const pems = selfsigned.generate([], {
   keySize: 2048,
 });
+
+// Wire up a TLS server that echoes the negotiated protocol and return its url +
+// teardown, shared by the protocol-negotiation / pool-stats tests.
+async function startEchoServer(
+  server: Http2SecureServer | HttpsServer,
+): Promise<{ url: string; close: () => Promise<void> }> {
+  (server as Http2SecureServer).on('request', (req, res) => {
+    res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
+    res.end(`hello http/${req.httpVersion}!`);
+  });
+  server.listen(0);
+  await once(server, 'listening');
+  return {
+    url: `https://localhost:${(server.address() as AddressInfo).port}`,
+    close: () => new Promise<void>((resolve) => server.close(() => resolve())),
+  };
+}
+
+// Speaks both HTTP/2 and HTTP/1.1 over ALPN (default negotiates HTTP/2).
+function startH2EchoServer() {
+  return startEchoServer(createSecureServer({ allowHTTP1: true, key: pems.private, cert: pems.cert }));
+}
+
+// HTTP/1.1 only (no ALPN h2 offer).
+function startH1EchoServer() {
+  return startEchoServer(createSecureHttp1Server({ key: pems.private, cert: pems.cert }));
+}
 
 if (process.env.ENABLE_PERF) {
   const obs = new PerformanceObserver((items) => {
@@ -121,7 +155,9 @@ describe('HttpClient.test.ts', () => {
         httpClient.request(_url),
       ]);
       // console.log(httpClient.getDispatcherPoolStats());
-      assert.equal(httpClient.getDispatcherPoolStats()['https://registry.npmmirror.com'].connected, 4);
+      // undici@8 negotiates HTTP/2 with h2-capable servers, so all requests are
+      // multiplexed over a single connection instead of opening one per request.
+      assert.equal(httpClient.getDispatcherPoolStats()['https://registry.npmmirror.com'].connected, 1);
       assert(httpClient.getDispatcherPoolStats()[_url.substring(0, _url.length - 1)].connected > 1);
     });
 
@@ -244,6 +280,212 @@ describe('HttpClient.test.ts', () => {
       assert.equal(response.headers['x-custom-h2'], 'hello');
       // console.log(response.res.socket, response.res.timing);
       assert.equal(response.data, 'hello h2!');
+    });
+  });
+
+  describe('protocol negotiation', () => {
+    it('should use HTTP/1.1 when the server only supports HTTP/1.1', async () => {
+      const { url, close } = await startH1EchoServer();
+
+      const httpClient = new HttpClient({
+        connect: { rejectUnauthorized: false },
+      });
+      try {
+        const response = await httpClient.request<string>(url, { dataType: 'text' });
+        assert.equal(response.status, 200);
+        assert.equal(response.data, 'hello http/1.1!');
+      } finally {
+        await httpClient.getDispatcher().close();
+        await close();
+      }
+    });
+
+    it('should negotiate HTTP/2 by default when the server supports it', async () => {
+      // undici@8 enables allowH2 by default, so urllib negotiates HTTP/2 via ALPN.
+      const { url, close } = await startH2EchoServer();
+
+      const httpClient = new HttpClient({
+        connect: { rejectUnauthorized: false },
+      });
+      try {
+        const response = await httpClient.request<string>(url, { dataType: 'text' });
+        assert.equal(response.status, 200);
+        assert.equal(response.data, 'hello http/2.0!');
+      } finally {
+        await httpClient.getDispatcher().close();
+        await close();
+      }
+    });
+
+    it('should force HTTP/1.1 with allowH2 = false even if the server supports HTTP/2', async () => {
+      const { url, close } = await startH2EchoServer();
+
+      const httpClient = new HttpClient({
+        allowH2: false,
+        connect: { rejectUnauthorized: false },
+      });
+      try {
+        const response = await httpClient.request<string>(url, { dataType: 'text' });
+        assert.equal(response.status, 200);
+        assert.equal(response.data, 'hello http/1.1!');
+      } finally {
+        await httpClient.getDispatcher().close();
+        await close();
+      }
+    });
+
+    it('should not create a dedicated dispatcher for allowH2: false', () => {
+      // allowH2: true uses an isolated agent
+      assert.notEqual(new HttpClient({ allowH2: true }).getDispatcher(), getGlobalDispatcher());
+      // allowH2: false is applied per request, so it must keep using the active
+      // (global) dispatcher instead of bypassing it with its own agent
+      assert.equal(new HttpClient({ allowH2: false }).getDispatcher(), getGlobalDispatcher());
+    });
+
+    it('normalizePoolStatsKey should strip the http1-only suffix and tolerate non-string keys', () => {
+      assert.equal(normalizePoolStatsKey('https://example.com'), 'https://example.com');
+      assert.equal(normalizePoolStatsKey('https://example.com#http1-only'), 'https://example.com');
+      // MockAgent may use RegExp/function origin matchers as client keys
+      assert.equal(normalizePoolStatsKey(/example/), '/example/');
+    });
+
+    it('mergePoolStat should treat missing ClientStats counters as zero', () => {
+      const pool = { connected: 1, free: 1, pending: 1, queued: 1, running: 1, size: 1 };
+      // undici ClientStats (Agent with connections: 1) omit free/queued
+      const clientStats = { connected: 2, pending: 1, running: 1, size: 2 } as any;
+      const merged = mergePoolStat(pool, clientStats);
+      assert.equal(merged.connected, 3);
+      // missing free/queued count as 0 (a missing `?? 0` would make these NaN)
+      assert.equal(merged.free, 1);
+      assert.equal(merged.queued, 1);
+    });
+
+    it('mergePoolStat should sum every counter across H2 and HTTP/1.1 pools', () => {
+      // no existing entry yet: returns the first pool's counters as-is
+      const h2 = { connected: 1, free: 2, pending: 3, queued: 4, running: 5, size: 6 };
+      assert.deepEqual(mergePoolStat(undefined, h2), h2);
+      // second pool for the same origin: every counter must be summed, not overwritten
+      const h1 = { connected: 10, free: 20, pending: 30, queued: 40, running: 50, size: 60 };
+      assert.deepEqual(mergePoolStat(h2, h1), {
+        connected: 11,
+        free: 22,
+        pending: 33,
+        queued: 44,
+        running: 55,
+        size: 66,
+      });
+    });
+
+    it('should cache a distinct allowH2: false default client that still uses the global dispatcher', () => {
+      // a dedicated cached client carries the allowH2: false preference so that
+      // getDefaultHttpClient(undefined, false).request(url) forces HTTP/1.1 ...
+      const disallowH2 = getDefaultHttpClient(undefined, false);
+      assert.equal(disallowH2, getDefaultHttpClient(undefined, false));
+      assert.notEqual(disallowH2, getDefaultHttpClient(undefined, undefined));
+      assert.notEqual(disallowH2, getDefaultHttpClient(undefined, true));
+      // ... without creating its own dispatcher (so global ProxyAgent/MockAgent is honored)
+      assert.equal(disallowH2.getDispatcher(), getGlobalDispatcher());
+
+      // rejectUnauthorized: false has its own cached allowH2: false client
+      const disallowH2Unauthorized = getDefaultHttpClient(false, false);
+      assert.equal(disallowH2Unauthorized, getDefaultHttpClient(false, false));
+      assert.notEqual(disallowH2Unauthorized, disallowH2);
+      assert.notEqual(disallowH2Unauthorized, getDefaultHttpClient(false, undefined));
+      assert.notEqual(disallowH2Unauthorized, getDefaultHttpClient(false, true));
+    });
+
+    it('should force HTTP/1.1 per request via allowH2: false and expose pool stats by origin', async () => {
+      const { url, close } = await startH2EchoServer();
+
+      // the client keeps its (HTTP/2-capable) dispatcher; allowH2: false is per request
+      const httpClient = new HttpClient({ connect: { rejectUnauthorized: false } });
+      try {
+        const response = await httpClient.request<string>(url, { dataType: 'text', allowH2: false });
+        assert.equal(response.status, 200);
+        assert.equal(response.data, 'hello http/1.1!');
+
+        // undici keys the http1-only pool as `${origin}#http1-only`; stats must be
+        // reachable by the plain origin and not leak the internal suffix
+        const stats = httpClient.getDispatcherPoolStats();
+        assert(stats[url], `expected stats for ${url}, got ${Object.keys(stats).join(', ')}`);
+        assert(!Object.keys(stats).some((k) => k.includes('#http1-only')));
+      } finally {
+        await httpClient.getDispatcher().close();
+        await close();
+      }
+    });
+
+    it('getDispatcherPoolStats should merge HTTP/2 and HTTP/1.1 pools for the same origin', async () => {
+      const { url, close } = await startH2EchoServer();
+
+      // same dispatcher, same origin: one HTTP/2 pool (key `${origin}`) and one
+      // http1-only pool (key `${origin}#http1-only`) must collapse into one entry.
+      const httpClient = new HttpClient({ connect: { rejectUnauthorized: false } });
+      try {
+        // concurrent requests on both protocols open several connections per pool
+        // (HTTP/2 opens a new connection per in-flight request when none is free),
+        // so the merged stats are non-trivial sums rather than 1 + 1.
+        const h2Responses = await Promise.all(
+          Array.from({ length: 5 }, () => httpClient.request<string>(url, { dataType: 'text' })),
+        );
+        for (const r of h2Responses) assert.equal(r.data, 'hello http/2.0!');
+        const h1Responses = await Promise.all(
+          Array.from({ length: 8 }, () => httpClient.request<string>(url, { dataType: 'text', allowH2: false })),
+        );
+        for (const r of h1Responses) assert.equal(r.data, 'hello http/1.1!');
+
+        // read the two raw undici pools for this origin to compute the expected sum
+        const clients = Reflect.get(httpClient.getDispatcher(), undiciSymbols.kClients) as Map<string, any>;
+        const readStats = (key: string) => {
+          const ref = clients.get(key);
+          const pool = typeof ref?.deref === 'function' ? ref.deref() : ref;
+          return pool?.stats ?? pool?.dispatcher?.stats;
+        };
+        const h2Stats = readStats(url);
+        const h1Stats = readStats(`${url}#http1-only`);
+        assert(h2Stats, 'expected a separate HTTP/2 pool');
+        assert(h1Stats, 'expected a separate http1-only pool');
+        // the concurrent HTTP/1.1 requests really did open more than one connection,
+        // so the merge sums multiple connections rather than a trivial single pool
+        assert(h1Stats.connected > 1, `expected >1 http1-only connections, got ${h1Stats.connected}`);
+
+        const stats = httpClient.getDispatcherPoolStats();
+        // both pools collapse to a single origin entry, no leaked `#http1-only` suffix
+        assert(!Object.keys(stats).some((k) => k.includes('#http1-only')));
+        assert(stats[url], `expected merged stats for ${url}, got ${Object.keys(stats).join(', ')}`);
+        // the merged entry must equal the field-by-field sum of both pools (not an overwrite)
+        const counters = ['connected', 'free', 'pending', 'queued', 'running', 'size'] as const;
+        for (const counter of counters) {
+          assert.equal(
+            stats[url][counter],
+            (h2Stats[counter] ?? 0) + (h1Stats[counter] ?? 0),
+            `merged ${counter} should be the sum of both pools`,
+          );
+        }
+      } finally {
+        await httpClient.getDispatcher().close();
+        await close();
+      }
+    });
+
+    it('should honor per-request allowH2: false for HttpAgent (checkAddress) clients', async () => {
+      const { url, close } = await startH2EchoServer();
+
+      // checkAddress routes through HttpAgent; allowH2 must stay top-level so the
+      // per-request flag still reaches undici's connector (ALPN).
+      const httpClient = new HttpClient({
+        checkAddress: () => true,
+        connect: { rejectUnauthorized: false },
+      });
+      try {
+        const h1 = await httpClient.request<string>(url, { dataType: 'text', allowH2: false });
+        assert.equal(h1.data, 'hello http/1.1!');
+        const h2 = await httpClient.request<string>(url, { dataType: 'text' });
+        assert.equal(h2.data, 'hello http/2.0!');
+      } finally {
+        await httpClient.getDispatcher().close();
+        await close();
+      }
     });
   });
 

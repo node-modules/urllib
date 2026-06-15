@@ -11,6 +11,7 @@ describe('options.dispatcher.test.ts', () => {
   let _url: string;
   let proxyServer: any;
   let proxyServerUrl: string;
+  const proxyAgents: ProxyAgent[] = [];
   beforeAll(async () => {
     const { closeServer, url } = await startServer();
     close = closeServer;
@@ -27,6 +28,8 @@ describe('options.dispatcher.test.ts', () => {
 
   afterAll(async () => {
     await close();
+    // close keep-alive proxy connections so the proxy server can shut down
+    await Promise.all(proxyAgents.map((proxyAgent) => proxyAgent.close()));
     await new Promise((resolve) => {
       proxyServer.close(resolve);
     });
@@ -34,6 +37,7 @@ describe('options.dispatcher.test.ts', () => {
 
   it('should work with proxyAgent dispatcher', async () => {
     const proxyAgent = new ProxyAgent(proxyServerUrl);
+    proxyAgents.push(proxyAgent);
     const response = await request(`${_url}html`, {
       dispatcher: proxyAgent,
       dataType: 'text',
@@ -55,6 +59,7 @@ describe('options.dispatcher.test.ts', () => {
   it('should work with getGlobalDispatcher() dispatcher', async () => {
     const agent = getGlobalDispatcher();
     const proxyAgent = new ProxyAgent(proxyServerUrl);
+    proxyAgents.push(proxyAgent);
     setGlobalDispatcher(proxyAgent);
     const response = await request(`${_url}html`, {
       dataType: 'text',
