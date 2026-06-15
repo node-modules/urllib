@@ -8,6 +8,9 @@ import { PerformanceObserver } from 'node:perf_hooks';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 import selfsigned from 'selfsigned';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import undiciSymbols from 'undici/lib/core/symbols.js';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import { mergePoolStat, normalizePoolStatsKey } from '../src/HttpClient.js';
@@ -446,18 +449,45 @@ describe('HttpClient.test.ts', () => {
       // http1-only pool (key `${origin}#http1-only`) must collapse into one entry.
       const httpClient = new HttpClient({ connect: { rejectUnauthorized: false } });
       try {
-        const h2 = await httpClient.request<string>(url, { dataType: 'text' });
-        assert.equal(h2.data, 'hello http/2.0!');
-        const h1 = await httpClient.request<string>(url, { dataType: 'text', allowH2: false });
-        assert.equal(h1.data, 'hello http/1.1!');
+        // many concurrent HTTP/1.1 requests open several http1-only connections,
+        // while concurrent HTTP/2 requests multiplex over a single connection.
+        const h2Responses = await Promise.all(
+          Array.from({ length: 5 }, () => httpClient.request<string>(url, { dataType: 'text' })),
+        );
+        for (const r of h2Responses) assert.equal(r.data, 'hello http/2.0!');
+        const h1Responses = await Promise.all(
+          Array.from({ length: 8 }, () => httpClient.request<string>(url, { dataType: 'text', allowH2: false })),
+        );
+        for (const r of h1Responses) assert.equal(r.data, 'hello http/1.1!');
+
+        // read the two raw undici pools for this origin to compute the expected sum
+        const clients = Reflect.get(httpClient.getDispatcher(), undiciSymbols.kClients) as Map<string, any>;
+        const readStats = (key: string) => {
+          const ref = clients.get(key);
+          const pool = typeof ref?.deref === 'function' ? ref.deref() : ref;
+          return pool?.stats ?? pool?.dispatcher?.stats;
+        };
+        const h2Stats = readStats(url);
+        const h1Stats = readStats(`${url}#http1-only`);
+        assert(h2Stats, 'expected a separate HTTP/2 pool');
+        assert(h1Stats, 'expected a separate http1-only pool');
+        // the concurrent HTTP/1.1 requests really did open more than one connection,
+        // so the merge is non-trivial (otherwise this would just be 1 + 1)
+        assert(h1Stats.connected > 1, `expected >1 http1-only connections, got ${h1Stats.connected}`);
 
         const stats = httpClient.getDispatcherPoolStats();
         // both pools collapse to a single origin entry, no leaked `#http1-only` suffix
         assert(!Object.keys(stats).some((k) => k.includes('#http1-only')));
         assert(stats[url], `expected merged stats for ${url}, got ${Object.keys(stats).join(', ')}`);
-        // each keep-alive pool holds one connection; the merged entry sums them (2),
-        // proving the http1-only pool is added to the HTTP/2 one instead of overwriting it
-        assert.equal(stats[url].connected, 2);
+        // the merged entry must equal the field-by-field sum of both pools (not an overwrite)
+        const counters = ['connected', 'free', 'pending', 'queued', 'running', 'size'] as const;
+        for (const counter of counters) {
+          assert.equal(
+            stats[url][counter],
+            (h2Stats[counter] ?? 0) + (h1Stats[counter] ?? 0),
+            `merged ${counter} should be the sum of both pools`,
+          );
+        }
       } finally {
         await httpClient.getDispatcher().close();
         await new Promise<void>((resolve) => server.close(() => resolve()));
