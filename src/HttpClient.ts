@@ -184,8 +184,7 @@ export function normalizePoolStatsKey(key: unknown): string {
   if (typeof key !== 'string') {
     return String(key);
   }
-  const index = key.indexOf(HTTP1_ONLY_POOL_KEY_SUFFIX);
-  return index === -1 ? key : key.slice(0, index);
+  return key.endsWith(HTTP1_ONLY_POOL_KEY_SUFFIX) ? key.slice(0, -HTTP1_ONLY_POOL_KEY_SUFFIX.length) : key;
 }
 
 // When both an HTTP/2 and an http1-only pool exist for the same origin, sum

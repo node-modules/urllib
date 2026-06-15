@@ -15,7 +15,7 @@ const domainSocketHttpClients = new LRU(50);
 // request. The `rejectUnauthorized: false` variants are the exception: they must own
 // an agent to carry the TLS option, so those bypass the global dispatcher (as before).
 export function getDefaultHttpClient(rejectUnauthorized?: boolean, allowH2?: boolean): HttpClient {
-  const key = `${rejectUnauthorized === false ? 0 : 1}:${allowH2 === true ? 1 : allowH2 === false ? 0 : -1}`;
+  const key = `rejectUnauthorized=${rejectUnauthorized === false}:allowH2=${allowH2 ?? 'default'}`;
   let client = httpClients.get(key);
   if (!client) {
     const clientOptions: ClientOptions = {};

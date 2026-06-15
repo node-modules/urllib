@@ -94,27 +94,32 @@ describe('options.timeout.test.ts', () => {
     await once(server, 'listening');
 
     const url = `https://localhost:${(server.address() as AddressInfo).port}`;
-    await assert.rejects(
-      async () => {
-        await httpClient.request(url, {
-          timeout: 10,
-        });
-      },
-      (err: any) => {
-        // console.error(err);
-        assert.equal(err.name, 'HttpClientRequestTimeoutError');
-        assert.equal(err.message, 'Request timeout for 10 ms');
-        // undici@8 reports HTTP/2 headers timeout as a standard HeadersTimeoutError
-        assert.equal(err.cause.name, 'HeadersTimeoutError');
-        assert.equal(err.cause.message, 'HTTP/2: "headers timeout after 10"');
-        assert.equal(err.cause.code, 'UND_ERR_HEADERS_TIMEOUT');
+    try {
+      await assert.rejects(
+        async () => {
+          await httpClient.request(url, {
+            timeout: 10,
+          });
+        },
+        (err: any) => {
+          // console.error(err);
+          assert.equal(err.name, 'HttpClientRequestTimeoutError');
+          assert.equal(err.message, 'Request timeout for 10 ms');
+          // undici@8 reports HTTP/2 headers timeout as a standard HeadersTimeoutError
+          assert.equal(err.cause.name, 'HeadersTimeoutError');
+          assert.equal(err.cause.message, 'HTTP/2: "headers timeout after 10"');
+          assert.equal(err.cause.code, 'UND_ERR_HEADERS_TIMEOUT');
 
-        assert.equal(err.res.status, -1);
-        assert(err.res.rt > 10, `actual ${err.res.rt}`);
-        assert.equal(typeof err.res.rt, 'number');
-        return true;
-      },
-    );
+          assert.equal(err.res.status, -1);
+          assert(err.res.rt > 10, `actual ${err.res.rt}`);
+          assert.equal(typeof err.res.rt, 'number');
+          return true;
+        },
+      );
+    } finally {
+      await httpClient.getDispatcher().close();
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    }
   });
 
   it('should BodyTimeout throw error', async () => {
