@@ -1,15 +1,12 @@
 import { LRU } from 'ylru';
 
 import { HttpClient, HEADER_USER_AGENT } from './HttpClient.js';
+import type { ClientOptions } from './HttpClient.js';
 import type { RequestOptions, RequestURL } from './Request.js';
 import type { HttpClientResponse } from './Response.js';
 
-let httpClient: HttpClient;
-let allowH2HttpClient: HttpClient;
-let disallowH2HttpClient: HttpClient;
-let allowUnauthorizedHttpClient: HttpClient;
-let allowH2AndUnauthorizedHttpClient: HttpClient;
-let disallowH2AndUnauthorizedHttpClient: HttpClient;
+// Cache one client per (rejectUnauthorized, allowH2) combination.
+const httpClients = new Map<string, HttpClient>();
 const domainSocketHttpClients = new LRU(50);
 
 // `allowH2: false` clients keep the preference (so `request(url)` on them forces
@@ -18,63 +15,20 @@ const domainSocketHttpClients = new LRU(50);
 // request. The `rejectUnauthorized: false` variants are the exception: they must own
 // an agent to carry the TLS option, so those bypass the global dispatcher (as before).
 export function getDefaultHttpClient(rejectUnauthorized?: boolean, allowH2?: boolean): HttpClient {
-  if (rejectUnauthorized === false) {
-    if (allowH2 === true) {
-      if (!allowH2AndUnauthorizedHttpClient) {
-        allowH2AndUnauthorizedHttpClient = new HttpClient({
-          allowH2,
-          connect: {
-            rejectUnauthorized,
-          },
-        });
-      }
-      return allowH2AndUnauthorizedHttpClient;
+  const key = `${rejectUnauthorized === false ? 0 : 1}:${allowH2 === true ? 1 : allowH2 === false ? 0 : -1}`;
+  let client = httpClients.get(key);
+  if (!client) {
+    const clientOptions: ClientOptions = {};
+    if (typeof allowH2 === 'boolean') {
+      clientOptions.allowH2 = allowH2;
     }
-
-    if (allowH2 === false) {
-      if (!disallowH2AndUnauthorizedHttpClient) {
-        disallowH2AndUnauthorizedHttpClient = new HttpClient({
-          allowH2,
-          connect: {
-            rejectUnauthorized,
-          },
-        });
-      }
-      return disallowH2AndUnauthorizedHttpClient;
+    if (rejectUnauthorized === false) {
+      clientOptions.connect = { rejectUnauthorized };
     }
-
-    if (!allowUnauthorizedHttpClient) {
-      allowUnauthorizedHttpClient = new HttpClient({
-        connect: {
-          rejectUnauthorized,
-        },
-      });
-    }
-    return allowUnauthorizedHttpClient;
+    client = new HttpClient(clientOptions);
+    httpClients.set(key, client);
   }
-
-  if (allowH2 === true) {
-    if (!allowH2HttpClient) {
-      allowH2HttpClient = new HttpClient({
-        allowH2,
-      });
-    }
-    return allowH2HttpClient;
-  }
-
-  if (allowH2 === false) {
-    if (!disallowH2HttpClient) {
-      disallowH2HttpClient = new HttpClient({
-        allowH2,
-      });
-    }
-    return disallowH2HttpClient;
-  }
-
-  if (!httpClient) {
-    httpClient = new HttpClient();
-  }
-  return httpClient;
+  return client;
 }
 
 interface UrllibRequestOptions extends RequestOptions {
@@ -83,8 +37,7 @@ interface UrllibRequestOptions extends RequestOptions {
    * verification fails. Default: `true`
    */
   rejectUnauthorized?: boolean;
-  /** Negotiate HTTP/2 with capable servers via ALPN. Enabled by default since undici@8; set `false` to force HTTP/1.1. */
-  allowH2?: boolean;
+  // `allowH2` is inherited from RequestOptions.
 }
 
 export async function request<T = any>(

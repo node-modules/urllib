@@ -14,8 +14,6 @@ export type RequestURL = string | URL;
 export type FixJSONCtlCharsHandler = (data: string) => string;
 export type FixJSONCtlChars = boolean | FixJSONCtlCharsHandler;
 
-type AbortSignal = globalThis.AbortSignal;
-
 export type RequestOptions = {
   /** Request method, defaults to GET. Could be GET, POST, DELETE or PUT. Alias 'type'. */
   method?: HttpMethod | Lowercase<HttpMethod>;
@@ -157,7 +155,7 @@ export type RequestOptions = {
   reset?: boolean;
   /** Default: `64 KiB` */
   highWaterMark?: number;
-  signal?: AbortSignal | EventEmitter;
+  signal?: globalThis.AbortSignal | EventEmitter;
 };
 
 export type RequestMeta = {

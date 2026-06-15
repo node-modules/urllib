@@ -2,6 +2,7 @@ import { strict as assert } from 'node:assert';
 import dns from 'node:dns';
 import { once } from 'node:events';
 import { sensitiveHeaders, createSecureServer } from 'node:http2';
+import type { Http2SecureServer } from 'node:http2';
 import { createServer as createSecureHttp1Server } from 'node:https';
 import type { AddressInfo } from 'node:net';
 import { PerformanceObserver } from 'node:perf_hooks';
@@ -21,6 +22,19 @@ import { startServer } from './fixtures/server.js';
 const pems = selfsigned.generate([], {
   keySize: 2048,
 });
+
+// Start a TLS server that speaks both HTTP/2 and HTTP/1.1 (ALPN) and echoes the
+// negotiated protocol, shared by the protocol-negotiation / pool-stats tests.
+async function startH2EchoServer(): Promise<{ url: string; server: Http2SecureServer }> {
+  const server = createSecureServer({ allowHTTP1: true, key: pems.private, cert: pems.cert });
+  server.on('request', (req, res) => {
+    res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
+    res.end(`hello http/${req.httpVersion}!`);
+  });
+  server.listen(0);
+  await once(server, 'listening');
+  return { url: `https://localhost:${(server.address() as AddressInfo).port}`, server };
+}
 
 if (process.env.ENABLE_PERF) {
   const obs = new PerformanceObserver((items) => {
@@ -285,18 +299,7 @@ describe('HttpClient.test.ts', () => {
 
     it('should negotiate HTTP/2 by default when the server supports it', async () => {
       // undici@8 enables allowH2 by default, so urllib negotiates HTTP/2 via ALPN.
-      const server = createSecureServer({
-        allowHTTP1: true,
-        key: pems.private,
-        cert: pems.cert,
-      });
-      server.on('request', (req, res) => {
-        res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
-        res.end(`hello http/${req.httpVersion}!`);
-      });
-      server.listen(0);
-      await once(server, 'listening');
-      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
+      const { url, server } = await startH2EchoServer();
 
       const httpClient = new HttpClient({
         connect: { rejectUnauthorized: false },
@@ -312,18 +315,7 @@ describe('HttpClient.test.ts', () => {
     });
 
     it('should force HTTP/1.1 with allowH2 = false even if the server supports HTTP/2', async () => {
-      const server = createSecureServer({
-        allowHTTP1: true,
-        key: pems.private,
-        cert: pems.cert,
-      });
-      server.on('request', (req, res) => {
-        res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
-        res.end(`hello http/${req.httpVersion}!`);
-      });
-      server.listen(0);
-      await once(server, 'listening');
-      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
+      const { url, server } = await startH2EchoServer();
 
       const httpClient = new HttpClient({
         allowH2: false,
@@ -400,18 +392,7 @@ describe('HttpClient.test.ts', () => {
     });
 
     it('should force HTTP/1.1 per request via allowH2: false and expose pool stats by origin', async () => {
-      const server = createSecureServer({
-        allowHTTP1: true,
-        key: pems.private,
-        cert: pems.cert,
-      });
-      server.on('request', (req, res) => {
-        res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
-        res.end(`hello http/${req.httpVersion}!`);
-      });
-      server.listen(0);
-      await once(server, 'listening');
-      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
+      const { url, server } = await startH2EchoServer();
 
       // the client keeps its (HTTP/2-capable) dispatcher; allowH2: false is per request
       const httpClient = new HttpClient({ connect: { rejectUnauthorized: false } });
@@ -432,18 +413,7 @@ describe('HttpClient.test.ts', () => {
     });
 
     it('getDispatcherPoolStats should merge HTTP/2 and HTTP/1.1 pools for the same origin', async () => {
-      const server = createSecureServer({
-        allowHTTP1: true,
-        key: pems.private,
-        cert: pems.cert,
-      });
-      server.on('request', (req, res) => {
-        res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
-        res.end(`hello http/${req.httpVersion}!`);
-      });
-      server.listen(0);
-      await once(server, 'listening');
-      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
+      const { url, server } = await startH2EchoServer();
 
       // same dispatcher, same origin: one HTTP/2 pool (key `${origin}`) and one
       // http1-only pool (key `${origin}#http1-only`) must collapse into one entry.
@@ -495,18 +465,7 @@ describe('HttpClient.test.ts', () => {
     });
 
     it('should honor per-request allowH2: false for HttpAgent (checkAddress) clients', async () => {
-      const server = createSecureServer({
-        allowHTTP1: true,
-        key: pems.private,
-        cert: pems.cert,
-      });
-      server.on('request', (req, res) => {
-        res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
-        res.end(`hello http/${req.httpVersion}!`);
-      });
-      server.listen(0);
-      await once(server, 'listening');
-      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
+      const { url, server } = await startH2EchoServer();
 
       // checkAddress routes through HttpAgent; allowH2 must stay top-level so the
       // per-request flag still reaches undici's connector (ALPN).

@@ -222,6 +222,12 @@ export function buildPoolStats(agent: Dispatcher): Record<string, PoolStat> {
   return poolStatsMap;
 }
 
+// `instanceof` misses a MockAgent from a duplicate undici install, so also match
+// by constructor name as a cheap cross-realm fallback.
+function isMockAgent(dispatcher: Dispatcher | undefined): boolean {
+  return dispatcher instanceof MockAgent || dispatcher?.constructor?.name === 'MockAgent';
+}
+
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
 const RedirectStatusCodes = [
   301, // Moved Permanently
@@ -475,21 +481,14 @@ export class HttpClient extends EventEmitter {
         signal: args.signal,
         reset: false,
       };
+      // Apply the protocol preference per request so the active dispatcher (global,
+      // proxy, ...) is honored instead of being bypassed by a dedicated HTTP/1.1-only
+      // agent. Skip it for MockAgent: it keys clients as `${origin}#http1-only` and
+      // would miss interceptors registered on the plain origin (protocol negotiation
+      // is moot when mocking anyway).
       const allowH2 = args.allowH2 ?? this.#allowH2;
-      if (typeof allowH2 === 'boolean') {
-        // Apply the protocol preference per request so the active dispatcher
-        // (global, proxy, ...) is honored instead of being bypassed by a
-        // dedicated HTTP/1.1-only agent. Skip it for MockAgent: it keys clients
-        // as `${origin}#http1-only` and would miss interceptors registered on
-        // the plain origin (protocol negotiation is moot when mocking anyway).
-        const activeDispatcher = requestOptions.dispatcher ?? getGlobalDispatcher();
-        // `instanceof` misses a MockAgent from a duplicate undici install, so also
-        // match by constructor name as a cheap cross-realm fallback.
-        const isMockAgent =
-          activeDispatcher instanceof MockAgent || activeDispatcher?.constructor?.name === 'MockAgent';
-        if (!isMockAgent) {
-          requestOptions.allowH2 = allowH2;
-        }
+      if (typeof allowH2 === 'boolean' && !isMockAgent(requestOptions.dispatcher ?? getGlobalDispatcher())) {
+        requestOptions.allowH2 = allowH2;
       }
       if (typeof args.highWaterMark === 'number') {
         requestOptions.highWaterMark = args.highWaterMark;
