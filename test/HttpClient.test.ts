@@ -362,6 +362,22 @@ describe('HttpClient.test.ts', () => {
       assert(!Number.isNaN(merged.free) && !Number.isNaN(merged.queued));
     });
 
+    it('mergePoolStat should sum every counter across H2 and HTTP/1.1 pools', () => {
+      // no existing entry yet: returns the first pool's counters as-is
+      const h2 = { connected: 1, free: 2, pending: 3, queued: 4, running: 5, size: 6 };
+      assert.deepEqual(mergePoolStat(undefined, h2), h2);
+      // second pool for the same origin: every counter must be summed, not overwritten
+      const h1 = { connected: 10, free: 20, pending: 30, queued: 40, running: 50, size: 60 };
+      assert.deepEqual(mergePoolStat(h2, h1), {
+        connected: 11,
+        free: 22,
+        pending: 33,
+        queued: 44,
+        running: 55,
+        size: 66,
+      });
+    });
+
     it('should cache a distinct allowH2: false default client that still uses the global dispatcher', () => {
       // a dedicated cached client carries the allowH2: false preference so that
       // getDefaultHttpClient(undefined, false).request(url) forces HTTP/1.1 ...
@@ -406,6 +422,42 @@ describe('HttpClient.test.ts', () => {
         const stats = httpClient.getDispatcherPoolStats();
         assert(stats[url], `expected stats for ${url}, got ${Object.keys(stats).join(', ')}`);
         assert(!Object.keys(stats).some((k) => k.includes('#http1-only')));
+      } finally {
+        await httpClient.getDispatcher().close();
+        await new Promise<void>((resolve) => server.close(() => resolve()));
+      }
+    });
+
+    it('getDispatcherPoolStats should merge HTTP/2 and HTTP/1.1 pools for the same origin', async () => {
+      const server = createSecureServer({
+        allowHTTP1: true,
+        key: pems.private,
+        cert: pems.cert,
+      });
+      server.on('request', (req, res) => {
+        res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
+        res.end(`hello http/${req.httpVersion}!`);
+      });
+      server.listen(0);
+      await once(server, 'listening');
+      const url = `https://localhost:${(server.address() as AddressInfo).port}`;
+
+      // same dispatcher, same origin: one HTTP/2 pool (key `${origin}`) and one
+      // http1-only pool (key `${origin}#http1-only`) must collapse into one entry.
+      const httpClient = new HttpClient({ connect: { rejectUnauthorized: false } });
+      try {
+        const h2 = await httpClient.request<string>(url, { dataType: 'text' });
+        assert.equal(h2.data, 'hello http/2.0!');
+        const h1 = await httpClient.request<string>(url, { dataType: 'text', allowH2: false });
+        assert.equal(h1.data, 'hello http/1.1!');
+
+        const stats = httpClient.getDispatcherPoolStats();
+        // both pools collapse to a single origin entry, no leaked `#http1-only` suffix
+        assert(!Object.keys(stats).some((k) => k.includes('#http1-only')));
+        assert(stats[url], `expected merged stats for ${url}, got ${Object.keys(stats).join(', ')}`);
+        // each keep-alive pool holds one connection; the merged entry sums them (2),
+        // proving the http1-only pool is added to the HTTP/2 one instead of overwriting it
+        assert.equal(stats[url].connected, 2);
       } finally {
         await httpClient.getDispatcher().close();
         await new Promise<void>((resolve) => server.close(() => resolve()));
