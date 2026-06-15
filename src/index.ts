@@ -12,9 +12,11 @@ let allowH2AndUnauthorizedHttpClient: HttpClient;
 let disallowH2AndUnauthorizedHttpClient: HttpClient;
 const domainSocketHttpClients = new LRU(50);
 
-// Only `allowH2: true` needs a dedicated agent. `allowH2: false` clients keep the
-// preference (so `request(url)` on them forces HTTP/1.1) but do not create their
-// own dispatcher, so they still go through the active/global dispatcher per request.
+// `allowH2: false` clients keep the preference (so `request(url)` on them forces
+// HTTP/1.1) and, unless they need a dedicated agent for other reasons, do not create
+// their own dispatcher, so they still go through the active/global dispatcher per
+// request. The `rejectUnauthorized: false` variants are the exception: they must own
+// an agent to carry the TLS option, so those bypass the global dispatcher (as before).
 export function getDefaultHttpClient(rejectUnauthorized?: boolean, allowH2?: boolean): HttpClient {
   if (rejectUnauthorized === false) {
     if (allowH2 === true) {

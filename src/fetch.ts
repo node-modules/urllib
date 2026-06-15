@@ -1,11 +1,8 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { debuglog } from 'node:util';
 
-import { fetch as UndiciFetch, Request, Response, Agent, getGlobalDispatcher, Pool, Dispatcher } from 'undici';
+import { fetch as UndiciFetch, Request, Response, Agent, getGlobalDispatcher, Dispatcher } from 'undici';
 import type { RequestInfo, RequestInit } from 'undici';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import undiciSymbols from 'undici/lib/core/symbols.js';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { getResponseState } from 'undici/lib/web/fetch/response.js';
@@ -16,7 +13,7 @@ import { initDiagnosticsChannel } from './diagnosticsChannel.js';
 import type { FetchOpaque } from './FetchOpaqueInterceptor.js';
 import { HttpAgent } from './HttpAgent.js';
 import type { HttpAgentOptions } from './HttpAgent.js';
-import { channels, mergePoolStat, normalizePoolStatsKey } from './HttpClient.js';
+import { buildPoolStats, channels } from './HttpClient.js';
 import type {
   ClientOptions,
   PoolStat,
@@ -99,25 +96,7 @@ export class FetchFactory {
   }
 
   getDispatcherPoolStats(): Record<string, PoolStat> {
-    const agent = this.getDispatcher();
-    // origin => Pool Instance
-    const clients: Map<string, WeakRef<Pool>> | undefined = Reflect.get(agent, undiciSymbols.kClients);
-    const poolStatsMap: Record<string, PoolStat> = {};
-    if (!clients) {
-      return poolStatsMap;
-    }
-    for (const [key, ref] of clients) {
-      const pool = (typeof ref.deref === 'function' ? ref.deref() : ref) as unknown as Pool & { dispatcher: Pool };
-      // NOTE: pool become to { dispatcher: Pool } in undici@v7
-      const stats = pool?.stats ?? pool?.dispatcher?.stats;
-      if (!stats) continue;
-
-      // undici@8 keys http1-only pools (allowH2: false) as `${origin}#http1-only`,
-      // expose them by their origin so callers can look up stats by URL.
-      const origin = normalizePoolStatsKey(key);
-      poolStatsMap[origin] = mergePoolStat(poolStatsMap[origin], stats as PoolStat);
-    }
-    return poolStatsMap;
+    return buildPoolStats(this.getDispatcher());
   }
 
   static setClientOptions(clientOptions: ClientOptions): void {

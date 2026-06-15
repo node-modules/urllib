@@ -175,14 +175,16 @@ export interface PoolStat {
   size: number;
 }
 
-// undici@8 keys http1-only pools (allowH2: false) as `${origin}#http1-only`;
-// expose them under their plain origin so callers can look up stats by URL.
+// undici@8 keys HTTP/1.1-only pools (dispatched with allowH2: false) by suffixing the origin.
+const HTTP1_ONLY_POOL_KEY_SUFFIX = '#http1-only';
+
+// Expose http1-only pools under their plain origin so callers can look up stats by URL.
 // MockAgent may use RegExp/function origin matchers, so keys are not always strings.
 export function normalizePoolStatsKey(key: unknown): string {
   if (typeof key !== 'string') {
     return String(key);
   }
-  const index = key.indexOf('#http1-only');
+  const index = key.indexOf(HTTP1_ONLY_POOL_KEY_SUFFIX);
   return index === -1 ? key : key.slice(0, index);
 }
 
@@ -190,15 +192,34 @@ export function normalizePoolStatsKey(key: unknown): string {
 // their stats so a single origin entry reflects every client. undici ClientStats
 // (Agent with connections: 1) omit free/queued, so treat absent counters as 0.
 export function mergePoolStat(existing: PoolStat | undefined, stats: Partial<PoolStat>): PoolStat {
-  const base = existing ?? { connected: 0, free: 0, pending: 0, queued: 0, running: 0, size: 0 };
   return {
-    connected: base.connected + (stats.connected ?? 0),
-    free: base.free + (stats.free ?? 0),
-    pending: base.pending + (stats.pending ?? 0),
-    queued: base.queued + (stats.queued ?? 0),
-    running: base.running + (stats.running ?? 0),
-    size: base.size + (stats.size ?? 0),
+    connected: (existing?.connected ?? 0) + (stats.connected ?? 0),
+    free: (existing?.free ?? 0) + (stats.free ?? 0),
+    pending: (existing?.pending ?? 0) + (stats.pending ?? 0),
+    queued: (existing?.queued ?? 0) + (stats.queued ?? 0),
+    running: (existing?.running ?? 0) + (stats.running ?? 0),
+    size: (existing?.size ?? 0) + (stats.size ?? 0),
   };
+}
+
+// Collect undici pool stats for a dispatcher, collapsing undici@8's http1-only
+// pools back onto their origin so HttpClient and FetchFactory share one implementation.
+export function buildPoolStats(agent: Dispatcher): Record<string, PoolStat> {
+  // origin => Pool Instance
+  const clients: Map<string, WeakRef<Pool>> | undefined = Reflect.get(agent, undiciSymbols.kClients);
+  const poolStatsMap: Record<string, PoolStat> = {};
+  if (!clients) {
+    return poolStatsMap;
+  }
+  for (const [key, ref] of clients) {
+    const pool = (typeof ref.deref === 'function' ? ref.deref() : ref) as unknown as Pool & { dispatcher: Pool };
+    // NOTE: pool become to { dispatcher: Pool } in undici@v7
+    const stats = pool?.stats ?? pool?.dispatcher?.stats;
+    if (!stats) continue;
+    const origin = normalizePoolStatsKey(key);
+    poolStatsMap[origin] = mergePoolStat(poolStatsMap[origin], stats);
+  }
+  return poolStatsMap;
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
@@ -258,25 +279,7 @@ export class HttpClient extends EventEmitter {
   }
 
   getDispatcherPoolStats(): Record<string, PoolStat> {
-    const agent = this.getDispatcher();
-    // origin => Pool Instance
-    const clients: Map<string, WeakRef<Pool>> | undefined = Reflect.get(agent, undiciSymbols.kClients);
-    const poolStatsMap: Record<string, PoolStat> = {};
-    if (!clients) {
-      return poolStatsMap;
-    }
-    for (const [key, ref] of clients) {
-      const pool = (typeof ref.deref === 'function' ? ref.deref() : ref) as unknown as Pool & { dispatcher: Pool };
-      // NOTE: pool become to { dispatcher: Pool } in undici@v7
-      const stats = pool?.stats ?? pool?.dispatcher?.stats;
-      if (!stats) continue;
-
-      // undici@8 keys http1-only pools (allowH2: false) as `${origin}#http1-only`,
-      // expose them by their origin so callers can look up stats by URL.
-      const origin = normalizePoolStatsKey(key);
-      poolStatsMap[origin] = mergePoolStat(poolStatsMap[origin], stats);
-    }
-    return poolStatsMap;
+    return buildPoolStats(this.getDispatcher());
   }
 
   async request<T = any>(url: RequestURL, options?: RequestOptions): Promise<HttpClientResponse<T>> {
@@ -480,7 +483,11 @@ export class HttpClient extends EventEmitter {
         // as `${origin}#http1-only` and would miss interceptors registered on
         // the plain origin (protocol negotiation is moot when mocking anyway).
         const activeDispatcher = requestOptions.dispatcher ?? getGlobalDispatcher();
-        if (!(activeDispatcher instanceof MockAgent)) {
+        // `instanceof` misses a MockAgent from a duplicate undici install, so also
+        // match by constructor name as a cheap cross-realm fallback.
+        const isMockAgent =
+          activeDispatcher instanceof MockAgent || activeDispatcher?.constructor?.name === 'MockAgent';
+        if (!isMockAgent) {
           requestOptions.allowH2 = allowH2;
         }
       }
