@@ -8,12 +8,7 @@
     },
     {
       "groupName": "vite-plus",
-      "matchPackageNames": [
-        "vite-plus",
-        "@voidzero-dev/vite-plus-core",
-        "@voidzero-dev/vite-plus-test",
-        "@vitest/coverage-v8"
-      ],
+      "matchPackageNames": ["vite-plus", "@voidzero-dev/*", "@vitest/*"],
       "minimumReleaseAge": "0 days"
     }
   ]
