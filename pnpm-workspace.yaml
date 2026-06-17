@@ -2,17 +2,14 @@ minimumReleaseAgeExclude:
   - '@voidzero-dev/*'
   - vite-plus
   - '@vitest/*'
+  - vitest
 overrides:
   vite: 'catalog:'
-  vitest: 'catalog:'
 peerDependencyRules:
   allowAny:
     - vite
-    - vitest
   allowedVersions:
     vite: '*'
-    vitest: '*'
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@latest
-  vitest: 4.1.9
-  vite-plus: latest
+  vite: npm:@voidzero-dev/vite-plus-core@0.2.0
+  vite-plus: 0.2.0
