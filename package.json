@@ -89,7 +89,7 @@
     "@types/selfsigned": "^2.1.0",
     "@types/tar-stream": "^2.2.3",
     "@typescript/native-preview": "beta",
-    "@vitest/coverage-v8": "^4.1.8",
+    "@vitest/coverage-v8": "4.1.9",
     "busboy": "^1.6.0",
     "cross-env": "^10.1.0",
     "iconv-lite": "^0.7.0",
@@ -99,9 +99,9 @@
     "tshy": "^4.0.0",
     "tshy-after": "^1.4.1",
     "typescript": "^6.0.0",
-    "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.24",
-    "vite-plus": "^0.1.24",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.24"
+    "vite": "npm:@voidzero-dev/vite-plus-core@^0.2.0",
+    "vite-plus": "^0.2.0",
+    "vitest": "4.1.9"
   },
   "tshy": {
     "exports": {
@@ -110,7 +110,7 @@
     }
   },
   "engines": {
-    "node": ">= 22.19.0"
+    "node": "^22.18.0 || >=24.11.0"
   },
   "packageManager": "pnpm@11.7.0"
 }
