@@ -17,5 +17,14 @@
   "typescript.preferences.importModuleSpecifierEnding": "js",
   "typescript.reportStyleChecksAsWarnings": false,
   "typescript.updateImportsOnFileMove.enabled": "always",
-  "typescript.experimental.useTsgo": true
+  "typescript.experimental.useTsgo": true,
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "oxc.fmt.configPath": "./vite.config.ts",
+  "editor.formatOnSaveMode": "file",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "explicit"
+  }
 }
