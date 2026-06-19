@@ -1,9 +1,0 @@
-minimumReleaseAgeExclude:
-  - '@voidzero-dev/*'
-  - vite-plus
-  - '@vitest/*'
-overrides:
-  vite: 'npm:@voidzero-dev/vite-plus-core@0.2.1'
-peerDependencyRules:
-  allowAny:
-    - vite

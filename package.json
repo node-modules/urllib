@@ -100,8 +100,10 @@
     "tshy-after": "^1.4.1",
     "typescript": "^6.0.0",
     "vite": "npm:@voidzero-dev/vite-plus-core@0.2.1",
-    "vite-plus": "0.2.1",
-    "vitest": "4.1.9"
+    "vite-plus": "0.2.1"
+  },
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@0.2.1"
   },
   "tshy": {
     "exports": {
@@ -112,5 +114,5 @@
   "engines": {
     "node": ">= 22.19.0"
   },
-  "packageManager": "pnpm@11.7.0"
+  "packageManager": "npm@11.17.0"
 }
