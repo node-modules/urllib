@@ -99,9 +99,6 @@ importers:
       vite-plus:
         specifier: 0.2.1
         version: 0.2.1(@arethetypeswrong/core@0.18.3)(@types/node@22.19.21)(@vitest/coverage-v8@4.1.9)(@voidzero-dev/vite-plus-core@0.2.1(@arethetypeswrong/core@0.18.3)(@types/node@22.19.21)(typescript@6.0.3))(typescript@6.0.3)
-      vitest:
-        specifier: 4.1.9
-        version: 4.1.9(@types/node@22.19.21)(@vitest/browser-preview@4.1.9)(@vitest/coverage-v8@4.1.9)(@voidzero-dev/vite-plus-core@0.2.1(@arethetypeswrong/core@0.18.3)(@types/node@22.19.21)(typescript@6.0.3))
 
 packages:
 
