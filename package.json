@@ -102,6 +102,9 @@
     "vite": "npm:@voidzero-dev/vite-plus-core@0.2.1",
     "vite-plus": "0.2.1"
   },
+  "resolutions": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@0.2.1"
+  },
   "tshy": {
     "exports": {
       ".": "./src/index.ts",
@@ -111,5 +114,5 @@
   "engines": {
     "node": ">= 22.19.0"
   },
-  "packageManager": "pnpm@11.7.0"
+  "packageManager": "yarn@4.17.0"
 }
