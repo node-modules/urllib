@@ -3,7 +3,6 @@
 node_modules/
 coverage/
 test/.tmp*
-package-lock.json
 dist/
 *.tsbuildinfo
 src/**/*.js
