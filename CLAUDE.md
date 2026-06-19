@@ -9,38 +9,38 @@ urllib is a Node.js HTTP client library built on top of [undici](https://undici.
 ## Common Commands
 
 ```bash
-# Install dependencies (uses pnpm)
-pnpm install
+# Install dependencies (uses yarn under the hood)
+vp install
 
 # Run all tests
-pnpm test
+vp test run
 
 # Run a single test file
-pnpm test test/options.timeout.test.ts
+vp test run test/options.timeout.test.ts
 
 # Run tests matching a pattern
-pnpm test -t "should timeout"
+vp test run -t "should timeout"
 
 # Run tests with debug output
-NODE_DEBUG=urllib:* pnpm test
+NODE_DEBUG=urllib:* vp test run
 
 # Lint code
-pnpm run lint
+vp lint
 
 # Format code
-pnpm run fmt
+vp fmt
 
 # Type check
-pnpm run typecheck
+vp run typecheck
 
 # Build the project (outputs to dist/)
-pnpm run build
+vp run build
 
 # Run benchmarks
-pnpm run bench
+vp run bench
 
 # Run coverage
-pnpm run cov
+vp run cov
 ```
 
 ## Architecture
