@@ -49,8 +49,8 @@ importers:
         specifier: ^22.19.15
         version: 22.19.21
       '@types/proxy':
-        specifier: ^1.0.4
-        version: 1.0.4
+        specifier: ^2.0.0
+        version: 2.0.0
       '@types/qs':
         specifier: ^6.15.0
         version: 6.15.1
@@ -502,8 +502,9 @@ packages:
   '@types/node@22.19.21':
     resolution: {integrity: sha512-VMeFBSCKQKmm2swI2kW51SFusDqekC6q9trBCvJ/JliDchFSuoYYKN7yVNjPthP1HKZcx3U1gI/wTcEBjEFKTA==}
 
-  '@types/proxy@1.0.4':
-    resolution: {integrity: sha512-KnYy7hpp3wXQ2U0ExvCMF9BvWZ6h2aI0XWb8g705mn26Zmn2HO/eLRi6UuhHELA6MNJtYtiZYWv38gobJN0xXQ==}
+  '@types/proxy@2.0.0':
+    resolution: {integrity: sha512-U7xGAwyuQ1eU0PDI/FAFeV5rBq2JwnSCiZuqPJHtVLizx2/3kKbTVjU+t+pJE9sLiLl0XelSiWiYIWUSocVU9Q==}
+    deprecated: This is a stub types definition. proxy provides its own type definitions, so you do not need this installed.
 
   '@types/qs@6.15.1':
     resolution: {integrity: sha512-GZHUBZR9hckSUhrxmp1nG6NwdpM9fCunJwyThLW1X3AyHgd9IlHb6VANpQQqDr2o/qQp6McZ3y/IA2rVzKzSbw==}
@@ -1891,9 +1892,11 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/proxy@1.0.4':
+  '@types/proxy@2.0.0':
     dependencies:
-      '@types/node': 22.19.21
+      proxy: 1.0.2
+    transitivePeerDependencies:
+      - supports-color
 
   '@types/qs@6.15.1': {}
 
