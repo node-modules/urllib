@@ -3,7 +3,18 @@ minimumReleaseAgeExclude:
   - vite-plus
   - '@vitest/*'
 overrides:
-  vite: 'npm:@voidzero-dev/vite-plus-core@0.2.1'
+  vite: 'catalog:'
+  vitest: 'catalog:'
+  vite-plus: https://pkg.pr.new/voidzero-dev/vite-plus@670c987e4097d4e5d53bb4c0521c8bf643a33cf5
 peerDependencyRules:
   allowAny:
     - vite
+    - vitest
+  allowedVersions:
+    vite: '*'
+    vitest: '*'
+catalog:
+  vite: https://pkg.pr.new/voidzero-dev/vite-plus/@voidzero-dev/vite-plus-core@670c987e4097d4e5d53bb4c0521c8bf643a33cf5
+  vitest: 4.1.9
+  vite-plus: https://pkg.pr.new/voidzero-dev/vite-plus@670c987e4097d4e5d53bb4c0521c8bf643a33cf5
+blockExoticSubdeps: false
