@@ -89,7 +89,7 @@
     "@types/selfsigned": "^2.1.0",
     "@types/tar-stream": "^2.2.3",
     "@typescript/native-preview": "beta",
-    "@vitest/coverage-v8": "4.1.9",
+    "@vitest/coverage-v8": "catalog:",
     "busboy": "^1.6.0",
     "cross-env": "^10.1.0",
     "iconv-lite": "^0.7.0",
@@ -99,9 +99,9 @@
     "tshy": "^4.0.0",
     "tshy-after": "^1.4.1",
     "typescript": "^6.0.0",
-    "vite": "npm:@voidzero-dev/vite-plus-core@0.2.1",
-    "vite-plus": "0.2.2",
-    "vitest": "4.1.9"
+    "vite": "catalog:",
+    "vite-plus": "catalog:",
+    "vitest": "catalog:"
   },
   "tshy": {
     "exports": {
