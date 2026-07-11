@@ -98,7 +98,7 @@
     "tar-stream": "^2.2.0",
     "tshy": "^4.0.0",
     "tshy-after": "^1.4.1",
-    "typescript": "^6.0.0",
+    "typescript": "^7.0.0",
     "vite": "catalog:",
     "vite-plus": "catalog:",
     "vitest": "catalog:"
