@@ -2,6 +2,7 @@ minimumReleaseAgeExclude:
   - '@voidzero-dev/*'
   - vite-plus
   - '@vitest/*'
+  - undici
 overrides:
   vite: 'catalog:'
   vitest: 'catalog:'
