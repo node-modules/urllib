@@ -103,7 +103,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@57f1fa9c64a20db97b53cacfc555fe41f8ad6371 # main
+        uses: voidzero-dev/setup-vp@c9c4510a7d35d8bb0afdbe4092bae2676c893c8f # main
         with:
           # Node 24 bundles npm >= 11.5.1, required for OIDC trusted publishing.
           node-version: '24'
