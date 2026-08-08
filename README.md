@@ -81,6 +81,7 @@ console.log('status: %s, body size: %d, headers: %j', res.status, data.length, r
   - **_timing_** Boolean - Enable timing or not, default is `true`.
   - **_socketPath_** String | null - request a unix socket service, default is `null`.
   - **_highWaterMark_** Number - default is `67108864`, 64 KiB.
+  - **_rejectUnauthorized_** Boolean - If `true`, the server certificate is verified against the list of supplied CAs and the request is rejected on failure. Set `false` to allow self-signed certificates. Default is `true`. Only effective on the top-level `request`/`curl` wrapper with its default dispatcher; it is ignored when calling `HttpClient.request()` directly or when a custom `dispatcher` is provided.
 
 #### Options: `options.data`
 
