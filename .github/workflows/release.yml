@@ -108,7 +108,7 @@ jobs:
           # Node 24 bundles npm >= 11.5.1, required for OIDC trusted publishing.
           node-version: '24'
           cache: true
-          sfw: true
+          sfw: false
 
       - name: Determine npm dist-tag
         id: dist-tag
