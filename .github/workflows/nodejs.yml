@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@06b723b0552f4f3202ed82f8d15c8e3b56e7c2da # main
+        uses: voidzero-dev/setup-vp@a8f9aba07c5d294a209256cc6426a5b3d431ee94 # main
         with:
           node-version: '24'
           cache: true
@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@06b723b0552f4f3202ed82f8d15c8e3b56e7c2da # main
+        uses: voidzero-dev/setup-vp@a8f9aba07c5d294a209256cc6426a5b3d431ee94 # main
         with:
           node-version: ${{ matrix.node }}
           cache: true
