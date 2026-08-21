@@ -111,17 +111,17 @@ catalogs:
       specifier: 4.1.11
       version: 4.1.11
     vite:
-      specifier: npm:@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      version: 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
+      specifier: npm:@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      version: 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
     vite-plus:
-      specifier: 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      version: 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
+      specifier: 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      version: 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
     vitest:
       specifier: 4.1.11
       version: 4.1.11
 
 overrides:
-  vite@*: npm:@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
+  vite@*: npm:@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
   vitest@*: 4.1.11
 
 importers:
@@ -212,13 +212,13 @@ importers:
         version: 7.0.2
       vite:
         specifier: 'catalog:'
-        version: '@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2)'
+        version: '@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2)'
       vite-plus:
         specifier: 'catalog:'
-        version: 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)
+        version: 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 4.1.11(@types/node@24.13.3)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
+        version: 4.1.11(@types/node@24.13.3)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
 
 packages:
 
@@ -839,13 +839,13 @@ packages:
   '@vitest/utils@4.1.11':
     resolution: {integrity: sha512-zTCVGpyFsGWBhllOyKlTw/vnr6D9qxsfSDyfbyZmTyjHw5N/VuvzHpHoQjm2ZJzn4RJgx5w4r7V0er69CmLgPQ==, tarball: https://registry.npmjs.org/@vitest/utils/-/utils-4.1.11.tgz}
 
-  '@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
-    resolution: {integrity: sha512-P9//VAulBwm4nMzRycvpROE+mbz8Mt4WqrQZmTxtEL4TNmvw6cErjZuR1Rgg6zYnLvpUdDiDj889CRp1U0KUlQ==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-core/0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737/9bf14a47f38f0e9f97ab74d36f928c13d0314f7f.tgz}
+  '@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
+    resolution: {integrity: sha512-DhvAyHJVSmAfeySjnerH3056T6gOyQx/koURq4z2XCCKrqR8zVyGBtm5s+KnbgD5EikbtnaQkWOoR+geAlkUYg==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-core/0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b/b80214958415af94b351351f4796e96e3169c078.tgz}
     engines: {node: ^20.19.0 || ^22.18.0 || >=24.11.0}
     peerDependencies:
       '@arethetypeswrong/core': ^0.18.1
       '@types/node': ^20.19.0 || >=22.12.0
-      '@vitejs/devtools': ^0.4.0
+      '@vitejs/devtools': ^0.4.0 || ^0.5.0
       esbuild: ^0.27.0 || ^0.28.0
       jiti: '>=1.21.0'
       less: ^4.0.0
@@ -896,54 +896,54 @@ packages:
       yaml:
         optional: true
 
-  '@voidzero-dev/vite-plus-darwin-arm64@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
-    resolution: {integrity: sha512-gBirtiHNqlOsCa88guykOq49PGjpE8nZZhIlE4BNleFVRMjYXlMzRMVDcrWRjv3hQjgCwUkMDKGm/ivxu/faDw==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-darwin-arm64/0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737/c7d81958aaa6a3cde61510e955df4469ab7df4ed.tgz}
+  '@voidzero-dev/vite-plus-darwin-arm64@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
+    resolution: {integrity: sha512-A2WgipzqPJtuBtg4JcO0/W4KnNHl2jJe8s4oTZ19oXyaXGDIuGuzK1bmVgnczbFLEpRyY+e6SiTYnEIZmb+WYA==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-darwin-arm64/0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b/7525944ad7522404f9f4325098aec4e3670c4234.tgz}
     engines: {node: '>=20.0.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@voidzero-dev/vite-plus-darwin-x64@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
-    resolution: {integrity: sha512-MsYI6XqII54mnWqWrmqBU0Nve2OXUqXArnxcR8ikGjv3LDRYeQMf4D/5J+F/ePg5LjxQgVAq9xICaOVCmOQOSw==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-darwin-x64/0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737/85d37de48622bcf3ef9d0d0dfa735610dcee7eee.tgz}
+  '@voidzero-dev/vite-plus-darwin-x64@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
+    resolution: {integrity: sha512-WAl/oAZpY2TzAAASe04vRAWjDr3BhbUJY/+5rccRRtgcmH/7Kf80wXCBJFJYnSZFiM2GPHWjl/oeDkQRRoOsyw==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-darwin-x64/0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b/9df0ca5f11f39dbb32a6795d95b37b0c65312e30.tgz}
     engines: {node: '>=20.0.0'}
     cpu: [x64]
     os: [darwin]
 
-  '@voidzero-dev/vite-plus-linux-arm64-gnu@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
-    resolution: {integrity: sha512-0dwQWsSaWj3ES35GPqbsfgBV+xF+LEdzy+CaNoDYbOyk/GVLEppQ0KZQBepmS7oJdrxJvLscqyFyxka2evnxDg==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-linux-arm64-gnu/0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737/fb8391f9b2fa950dc9171b75dad2d69e48684795.tgz}
+  '@voidzero-dev/vite-plus-linux-arm64-gnu@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
+    resolution: {integrity: sha512-oZvbHGX37WEdyh3CHoA0cwUvGwliQgr27uWHCaYkGjyGXnfW5CZaERy4sRXRGU3Ze9uMXnnAmpFElJVJIQRQPQ==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-linux-arm64-gnu/0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b/970f82b7af4e7d2a7775bb641328827f302fee12.tgz}
     engines: {node: '>=20.0.0'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@voidzero-dev/vite-plus-linux-arm64-musl@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
-    resolution: {integrity: sha512-UMDI/b2fIAsm6QEIrPrJKRkQJ3N6/3c7prcvpaedYYrugcpBp1xaDJe1eXdKzCNznF1IaXKDJ6ebI9s/GkXbsA==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-linux-arm64-musl/0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737/6eb03009843c113899682f88c179b29554bd34db.tgz}
+  '@voidzero-dev/vite-plus-linux-arm64-musl@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
+    resolution: {integrity: sha512-HZmj4IhoSkh4iuL4L0VwVz0xRkqOESez1bJIj9rZYtVp3kd5+W44P066PuOMvl05Ezrh8Y1vCOIK2tsdGhVzbQ==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-linux-arm64-musl/0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b/469fb0af75d97e95affb4e641fcbb24799415997.tgz}
     engines: {node: '>=20.0.0'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@voidzero-dev/vite-plus-linux-x64-gnu@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
-    resolution: {integrity: sha512-OzKF7XoeWyYoVI3Z/HgQuYgJ6NwBCqXE2vV6MNoPaHsA4RJheXy2B9Vh2AbW2cu5ab351wITSG0vO92VAjPrPQ==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-linux-x64-gnu/0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737/2ad58b896308a09cd95cb1bc4c9e6705634437f5.tgz}
+  '@voidzero-dev/vite-plus-linux-x64-gnu@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
+    resolution: {integrity: sha512-oRmxT1p0trseZQp/qYbcMqjLHEBdPkUsKyLsWwaVS1jQaO0Bsx+SpaE57v6AVGJfA0oZ8eGf3SfiPNiMi1uuOQ==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-linux-x64-gnu/0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b/55e473f2d504aadeeedb5a6f547c9d38f4bf95f0.tgz}
     engines: {node: '>=20.0.0'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@voidzero-dev/vite-plus-linux-x64-musl@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
-    resolution: {integrity: sha512-rZCWJ0pFp3GctmKU50QOKLPd2kJG1/V8x4ndWGHW3uk1w7P9CPaPR4FozJUH44p1Jv54mMb4lxOAo28PcxIyAA==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-linux-x64-musl/0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737/a0efc0f6e3876a43c9cbef6c023a485a8f9a6291.tgz}
+  '@voidzero-dev/vite-plus-linux-x64-musl@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
+    resolution: {integrity: sha512-Fd2PSfpIRW+3ceRglbxQriokFDPjVY7uIpAX/blCEM2Y5TNHE01cwgIxDrKDICvQKdmjKj8AYKTfbiRXg/BNAA==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-linux-x64-musl/0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b/3b2fe8026fbebfa14e8fed51bd62567ed5503be3.tgz}
     engines: {node: '>=20.0.0'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@voidzero-dev/vite-plus-win32-arm64-msvc@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
-    resolution: {integrity: sha512-qtIr/WQy9VMZYKtS5bNUE58NIdiMU4yAqVuFbd+qXI5F4vUve4OVFdPqeZE1p+82Zv+lO0c09MSruxSqadMG3A==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-win32-arm64-msvc/0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737/827105f0d1ef5501fe76caa91f6bba9cb350ea88.tgz}
+  '@voidzero-dev/vite-plus-win32-arm64-msvc@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
+    resolution: {integrity: sha512-9yzZFG8EUGQG70w49ZjU595t/jljNwh/jjtLcJcuFTpG6u7hHj9WwacD0qibhHme79D60QqvsyS3aksmBY8kOA==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-win32-arm64-msvc/0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b/451863cf22fe1de84d860fe3ed94fb136bc128c4.tgz}
     engines: {node: '>=20.0.0'}
     cpu: [arm64]
     os: [win32]
 
-  '@voidzero-dev/vite-plus-win32-x64-msvc@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
-    resolution: {integrity: sha512-sJVfsmhDpmgDQ4J9Qv4fTlJgqOhBEWvwMw6KBbxg9KDgrV6MvHiY3zun4Y88igmqhZLFiA0PGXjTJZ8U4EszaA==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-win32-x64-msvc/0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737/25cb6781824666627a38718468606d09ef9004b6.tgz}
+  '@voidzero-dev/vite-plus-win32-x64-msvc@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
+    resolution: {integrity: sha512-0PwDeG1ysFlDxkAfaDXOhT9yUDbdG3Nymb5kywDUnusCYp7hH4/Db5BKlgE9gHOw2YiIRqHQPVGIy69J6BIDuA==, tarball: https://registry-bridge.viteplus.dev/tarballs/@voidzero-dev/vite-plus-win32-x64-msvc/0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b/ae1e2db2c694b8712e78480b6e31ef35e56bfc57.tgz}
     engines: {node: '>=20.0.0'}
     cpu: [x64]
     os: [win32]
@@ -1897,8 +1897,8 @@ packages:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==, tarball: https://registry.npmjs.org/validate-npm-package-name/-/validate-npm-package-name-5.0.1.tgz}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  vite-plus@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737:
-    resolution: {integrity: sha512-bi3CjOrphogSgcPvOmx14kj5YgkmHbmSn5NGnC8zA8VMbNNL4A+rCOWiyk5Ors1C/fTa3XXn1N5WtJgcZIQzLQ==, tarball: https://registry-bridge.viteplus.dev/tarballs/vite-plus/0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737/63a1651e7d3b295177e3e40c8ab888101e61469e.tgz}
+  vite-plus@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b:
+    resolution: {integrity: sha512-JyfBc1kVZR/iN6FxWTTYgYIEZfu8whuStAHGlzPW6YFX1aXNTB8Mz8O4+lNEQFpL5u3dzoJRMpyLWKDiyUOkiA==, tarball: https://registry-bridge.viteplus.dev/tarballs/vite-plus/0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b/000b42a6aed7ec891399c2644f26ceb744202a44.tgz}
     engines: {node: ^20.19.0 || ^22.18.0 || >=24.11.0}
     hasBin: true
     peerDependencies:
@@ -2363,28 +2363,28 @@ snapshots:
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
 
-  '@vitest/browser-preview@4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(vitest@4.1.11)':
+  '@vitest/browser-preview@4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(vitest@4.1.11)':
     dependencies:
       '@testing-library/dom': 10.4.1
       '@testing-library/user-event': 14.6.1(@testing-library/dom@10.4.1)
-      '@vitest/browser': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(vitest@4.1.11)
-      vitest: 4.1.11(@types/node@24.13.3)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
+      '@vitest/browser': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(vitest@4.1.11)
+      vitest: 4.1.11(@types/node@24.13.3)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
     transitivePeerDependencies:
       - bufferutil
       - msw
       - utf-8-validate
       - vite
 
-  '@vitest/browser@4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(vitest@4.1.11)':
+  '@vitest/browser@4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(vitest@4.1.11)':
     dependencies:
       '@blazediff/core': 1.9.1
-      '@vitest/mocker': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
+      '@vitest/mocker': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
       '@vitest/utils': 4.1.11
       magic-string: 0.30.21
       pngjs: 7.0.0
       sirv: 3.0.2
       tinyrainbow: 3.1.1
-      vitest: 4.1.11(@types/node@24.13.3)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
+      vitest: 4.1.11(@types/node@24.13.3)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
       ws: 8.21.1
     transitivePeerDependencies:
       - bufferutil
@@ -2404,9 +2404,9 @@ snapshots:
       obug: 2.1.1
       std-env: 4.1.0
       tinyrainbow: 3.1.1
-      vitest: 4.1.11(@types/node@24.13.3)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
+      vitest: 4.1.11(@types/node@24.13.3)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
     optionalDependencies:
-      '@vitest/browser': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(vitest@4.1.11)
+      '@vitest/browser': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(vitest@4.1.11)
 
   '@vitest/expect@4.1.11':
     dependencies:
@@ -2417,13 +2417,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.1
 
-  '@vitest/mocker@4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))':
+  '@vitest/mocker@4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))':
     dependencies:
       '@vitest/spy': 4.1.11
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: '@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2)'
+      vite: '@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2)'
 
   '@vitest/pretty-format@4.1.11':
     dependencies:
@@ -2449,7 +2449,7 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.1
 
-  '@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2)':
+  '@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2)':
     dependencies:
       '@oxc-project/runtime': 0.146.0
       '@oxc-project/types': 0.146.0
@@ -2460,39 +2460,39 @@ snapshots:
     optionalDependencies:
       '@arethetypeswrong/core': 0.18.5
       '@types/node': 24.13.3
-      '@voidzero-dev/vite-plus-darwin-arm64': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      '@voidzero-dev/vite-plus-darwin-x64': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      '@voidzero-dev/vite-plus-linux-arm64-gnu': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      '@voidzero-dev/vite-plus-linux-arm64-musl': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      '@voidzero-dev/vite-plus-linux-x64-gnu': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      '@voidzero-dev/vite-plus-linux-x64-musl': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      '@voidzero-dev/vite-plus-win32-arm64-msvc': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      '@voidzero-dev/vite-plus-win32-x64-msvc': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
+      '@voidzero-dev/vite-plus-darwin-arm64': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      '@voidzero-dev/vite-plus-darwin-x64': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      '@voidzero-dev/vite-plus-linux-arm64-gnu': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      '@voidzero-dev/vite-plus-linux-arm64-musl': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      '@voidzero-dev/vite-plus-linux-x64-gnu': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      '@voidzero-dev/vite-plus-linux-x64-musl': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      '@voidzero-dev/vite-plus-win32-arm64-msvc': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      '@voidzero-dev/vite-plus-win32-x64-msvc': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
       fsevents: 2.3.3
       typescript: 7.0.2
 
-  '@voidzero-dev/vite-plus-darwin-arm64@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
+  '@voidzero-dev/vite-plus-darwin-arm64@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
     optional: true
 
-  '@voidzero-dev/vite-plus-darwin-x64@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
+  '@voidzero-dev/vite-plus-darwin-x64@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
     optional: true
 
-  '@voidzero-dev/vite-plus-linux-arm64-gnu@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
+  '@voidzero-dev/vite-plus-linux-arm64-gnu@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
     optional: true
 
-  '@voidzero-dev/vite-plus-linux-arm64-musl@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
+  '@voidzero-dev/vite-plus-linux-arm64-musl@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
     optional: true
 
-  '@voidzero-dev/vite-plus-linux-x64-gnu@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
+  '@voidzero-dev/vite-plus-linux-x64-gnu@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
     optional: true
 
-  '@voidzero-dev/vite-plus-linux-x64-musl@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
+  '@voidzero-dev/vite-plus-linux-x64-musl@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
     optional: true
 
-  '@voidzero-dev/vite-plus-win32-arm64-msvc@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
+  '@voidzero-dev/vite-plus-win32-arm64-msvc@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
     optional: true
 
-  '@voidzero-dev/vite-plus-win32-x64-msvc@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737':
+  '@voidzero-dev/vite-plus-win32-x64-msvc@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b':
     optional: true
 
   '@yuku-codegen/binding-darwin-arm64@0.5.48':
@@ -3021,7 +3021,7 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
-  oxfmt@0.64.0(vite-plus@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)):
+  oxfmt@0.64.0(vite-plus@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)):
     dependencies:
       tinypool: 2.1.0
     optionalDependencies:
@@ -3044,7 +3044,7 @@ snapshots:
       '@oxfmt/binding-win32-arm64-msvc': 0.64.0
       '@oxfmt/binding-win32-ia32-msvc': 0.64.0
       '@oxfmt/binding-win32-x64-msvc': 0.64.0
-      vite-plus: 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)
+      vite-plus: 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)
 
   oxlint-tsgolint@7.0.2001:
     optionalDependencies:
@@ -3055,7 +3055,7 @@ snapshots:
       '@oxlint-tsgolint/win32-arm64': 7.0.2001
       '@oxlint-tsgolint/win32-x64': 7.0.2001
 
-  oxlint@1.79.0(oxlint-tsgolint@7.0.2001)(vite-plus@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)):
+  oxlint@1.79.0(oxlint-tsgolint@7.0.2001)(vite-plus@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)):
     optionalDependencies:
       '@oxlint/binding-android-arm-eabi': 1.79.0
       '@oxlint/binding-android-arm64': 1.79.0
@@ -3077,7 +3077,7 @@ snapshots:
       '@oxlint/binding-win32-ia32-msvc': 1.79.0
       '@oxlint/binding-win32-x64-msvc': 1.79.0
       oxlint-tsgolint: 7.0.2001
-      vite-plus: 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)
+      vite-plus: 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2)
 
   package-json-from-dist@1.0.1: {}
 
@@ -3349,33 +3349,33 @@ snapshots:
 
   validate-npm-package-name@5.0.1: {}
 
-  vite-plus@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2):
+  vite-plus@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2):
     dependencies:
       '@oxc-project/types': 0.146.0
       '@oxlint/plugins': 1.79.0
-      '@vitest/browser': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(vitest@4.1.11)
-      '@vitest/browser-preview': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(vitest@4.1.11)
+      '@vitest/browser': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(vitest@4.1.11)
+      '@vitest/browser-preview': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(vitest@4.1.11)
       '@vitest/expect': 4.1.11
-      '@vitest/mocker': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
+      '@vitest/mocker': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
       '@vitest/pretty-format': 4.1.11
       '@vitest/runner': 4.1.11
       '@vitest/snapshot': 4.1.11
       '@vitest/spy': 4.1.11
       '@vitest/utils': 4.1.11
-      '@voidzero-dev/vite-plus-core': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2)
-      oxfmt: 0.64.0(vite-plus@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2))
-      oxlint: 1.79.0(oxlint-tsgolint@7.0.2001)(vite-plus@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2))
+      '@voidzero-dev/vite-plus-core': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2)
+      oxfmt: 0.64.0(vite-plus@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2))
+      oxlint: 1.79.0(oxlint-tsgolint@7.0.2001)(vite-plus@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(typescript@7.0.2))
       oxlint-tsgolint: 7.0.2001
-      vitest: 4.1.11(@types/node@24.13.3)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
+      vitest: 4.1.11(@types/node@24.13.3)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
     optionalDependencies:
-      '@voidzero-dev/vite-plus-darwin-arm64': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      '@voidzero-dev/vite-plus-darwin-x64': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      '@voidzero-dev/vite-plus-linux-arm64-gnu': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      '@voidzero-dev/vite-plus-linux-arm64-musl': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      '@voidzero-dev/vite-plus-linux-x64-gnu': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      '@voidzero-dev/vite-plus-linux-x64-musl': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      '@voidzero-dev/vite-plus-win32-arm64-msvc': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
-      '@voidzero-dev/vite-plus-win32-x64-msvc': 0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737
+      '@voidzero-dev/vite-plus-darwin-arm64': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      '@voidzero-dev/vite-plus-darwin-x64': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      '@voidzero-dev/vite-plus-linux-arm64-gnu': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      '@voidzero-dev/vite-plus-linux-arm64-musl': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      '@voidzero-dev/vite-plus-linux-x64-gnu': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      '@voidzero-dev/vite-plus-linux-x64-musl': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      '@voidzero-dev/vite-plus-win32-arm64-msvc': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
+      '@voidzero-dev/vite-plus-win32-x64-msvc': 0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b
     transitivePeerDependencies:
       - '@arethetypeswrong/core'
       - '@edge-runtime/vm'
@@ -3407,10 +3407,10 @@ snapshots:
       - vite
       - yaml
 
-  vitest@4.1.11(@types/node@24.13.3)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2)):
+  vitest@4.1.11(@types/node@24.13.3)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@4.1.11)(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2)):
     dependencies:
       '@vitest/expect': 4.1.11
-      '@vitest/mocker': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
+      '@vitest/mocker': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))
       '@vitest/pretty-format': 4.1.11
       '@vitest/runner': 4.1.11
       '@vitest/snapshot': 4.1.11
@@ -3427,11 +3427,11 @@ snapshots:
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: '@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2)'
+      vite: '@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2)'
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.13.3
-      '@vitest/browser-preview': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.9726a197fb80371c6bb44d9482a4e556303bb737(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(vitest@4.1.11)
+      '@vitest/browser-preview': 4.1.11(@voidzero-dev/vite-plus-core@0.0.0-commit.8b5f2064803292e4338ba6ac3b72e57a6585097b(@arethetypeswrong/core@0.18.5)(@types/node@24.13.3)(typescript@7.0.2))(vitest@4.1.11)
       '@vitest/coverage-v8': 4.1.11(@vitest/browser@4.1.11)(vitest@4.1.11)
     transitivePeerDependencies:
       - msw
