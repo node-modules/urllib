@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@1b32467adbe183473499fd9d5d372c3ed9641754 # main
+        uses: voidzero-dev/setup-vp@5af416ede120848958d85c9720e61b921ac7bca6 # main
         with:
           node-version: 22
           cache: true
