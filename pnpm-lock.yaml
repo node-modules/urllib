@@ -139,7 +139,7 @@ importers:
         version: 2.1.35
       qs:
         specifier: ^6.15.0
-        version: 6.15.3
+        version: 6.16.0
       type-fest:
         specifier: ^4.41.0
         version: 4.41.0
@@ -1688,8 +1688,8 @@ packages:
     resolution: {integrity: sha512-KNac2ueWRpjbUh77OAFPZuNdfEqNynm9DD4xHT14CccGpW8wKZwEkN0yjlb7X9G9Z9F55N0Q+1z+WfgAhwYdzQ==}
     hasBin: true
 
-  qs@6.15.3:
-    resolution: {integrity: sha512-O9gl3zCl5h5blw1KGUzQKhA5oUXSl8rwUIM5o0S3nCXMliSvy5Dzx7/DJcI+SwgICv+IneSZwhBh1oSyEHA71A==}
+  qs@6.16.0:
+    resolution: {integrity: sha512-h6fhOIaRrID2CbEY2fqs+7t+UXZo+MLAnU5gRIq85uFtdiUPCdsApMlHhXogKVM4HM2DVbIjGNTTYH2OcmP1vA==}
     engines: {node: '>=0.6'}
 
   react-is@17.0.2:
@@ -3131,7 +3131,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  qs@6.15.3:
+  qs@6.16.0:
     dependencies:
       es-define-property: 1.0.1
       side-channel: 1.1.1
