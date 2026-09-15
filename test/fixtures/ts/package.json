@@ -1,6 +1,0 @@
-{
-  "name": "ts-cjs-demo",
-  "scripts": {
-    "build": "tsc && node hello.js"
-  }
-}

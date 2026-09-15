@@ -23,7 +23,7 @@ describe('options.files.test.ts', () => {
   });
 
   it('should upload a file with filepath success with default POST method', async () => {
-    const file = path.join(__dirname, 'cjs', 'index.js');
+    const file = path.join(__dirname, 'esm', 'index.js');
     const stat = await fs.stat(file);
     const response = await urllib.request(`${_url}multipart`, {
       files: file,
@@ -39,7 +39,7 @@ describe('options.files.test.ts', () => {
   });
 
   it('should upload not exists file throw error', async () => {
-    const file = path.join(__dirname, 'cjs', 'index.js-not-exists');
+    const file = path.join(__dirname, 'esm', 'index.js-not-exists');
     await assert.rejects(
       async () => {
         await urllib.request(`${_url}multipart`, {
@@ -57,7 +57,7 @@ describe('options.files.test.ts', () => {
   });
 
   it('should upload files = [filepath] success with default POST method', async () => {
-    const file = path.join(__dirname, 'cjs', 'index.js');
+    const file = path.join(__dirname, 'esm', 'index.js');
     const stat = await fs.stat(file);
     const response = await urllib.request(`${_url}multipart`, {
       files: [file],
@@ -73,7 +73,7 @@ describe('options.files.test.ts', () => {
   });
 
   it('should upload multi files: Array<string> success with default POST method', async () => {
-    const file = path.join(__dirname, 'cjs', 'index.js');
+    const file = path.join(__dirname, 'esm', 'index.js');
     const json = path.join(__dirname, '..', 'package.json');
     const stat = await fs.stat(file);
     const jsonStat = await fs.stat(json);
@@ -94,7 +94,7 @@ describe('options.files.test.ts', () => {
   });
 
   it('should upload multi files: Record<field, string> success with default POST method', async () => {
-    const file = path.join(__dirname, 'cjs', 'index.js');
+    const file = path.join(__dirname, 'esm', 'index.js');
     // const txt = path.join(__dirname, 'fixtures', '😄foo😭.txt');
     const txt = path.join(__dirname, 'fixtures', 'foo.txt');
     const json = path.join(__dirname, '..', 'package.json');
@@ -147,7 +147,7 @@ describe('options.files.test.ts', () => {
   });
 
   it('should upload a file with stream success', async () => {
-    const file = path.join(__dirname, 'cjs', 'index.js');
+    const file = path.join(__dirname, 'esm', 'index.js');
     const stat = await fs.stat(file);
     const response = await urllib.request(`${_url}multipart`, {
       files: createReadStream(file),

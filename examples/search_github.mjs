@@ -1,6 +1,6 @@
 // curl https://api.github.com/legacy/user/search/location:china
 
-var urllib = require('../');
+import urllib from 'urllib';
 
 urllib
   .request('https://api.github.com/legacy/user/search/location:china', {

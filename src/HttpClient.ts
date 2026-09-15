@@ -23,6 +23,7 @@ import { request as undiciRequest, Dispatcher, Agent, getGlobalDispatcher, MockA
 // @ts-ignore
 import undiciSymbols from 'undici/lib/core/symbols.js';
 
+import pkg from '../package.json' with { type: 'json' };
 import { initDiagnosticsChannel } from './diagnosticsChannel.js';
 import type { FetchOpaque } from './FetchOpaqueInterceptor.js';
 import { FormData } from './FormData.js';
@@ -110,7 +111,7 @@ export type ClientOptions = {
   };
 };
 
-export const VERSION: string = 'VERSION';
+export const VERSION: string = pkg.version;
 // 'node-urllib/4.0.0 Node.js/18.19.0 (darwin; x64)'
 export const HEADER_USER_AGENT: string = `node-urllib/${VERSION} Node.js/${process.version.substring(1)} (${process.platform}; ${process.arch})`;
 

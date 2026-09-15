@@ -2,6 +2,7 @@ import { strict as assert } from 'node:assert';
 
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
+import pkg from '../package.json' with { type: 'json' };
 import urllib from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
@@ -24,7 +25,10 @@ describe('keep-alive-header.test.ts', () => {
     });
     assert.equal(response.status, 200);
     // console.log(response.data.headers);
-    assert.match(response.data.headers['user-agent'], /^node-urllib\/VERSION Node\.js\/\d+\.\d+\.\d+ \(/);
+    assert.equal(
+      response.data.headers['user-agent'],
+      `node-urllib/${pkg.version} Node.js/${process.version.substring(1)} (${process.platform}; ${process.arch})`,
+    );
   });
 
   it('should return no user agent if user-agent header is set to empty string', async () => {

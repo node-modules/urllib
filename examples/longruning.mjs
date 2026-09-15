@@ -1,4 +1,4 @@
-const { HttpClient } = require('..');
+import { HttpClient } from 'urllib';
 
 const httpClient = new HttpClient({
   allowH2: true,

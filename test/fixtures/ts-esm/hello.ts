@@ -1,5 +1,5 @@
-import { RequestURL, RequestOptions2, RequestOptions } from 'urllib';
-import { HttpClientResponse } from 'urllib';
+import type { RequestURL, RequestOptions2, RequestOptions } from 'urllib';
+import type { HttpClientResponse } from 'urllib';
 import urllib from 'urllib';
 import * as urllib2 from 'urllib';
 

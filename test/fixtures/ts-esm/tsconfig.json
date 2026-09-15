@@ -4,9 +4,6 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "baseUrl": "./",
-    "paths": {
-      "urllib": ["../../.."]
-    }
+    "verbatimModuleSyntax": true
   }
 }

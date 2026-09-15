@@ -2,6 +2,12 @@
 import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
+  pack: {
+    entry: ['src/index.ts'],
+    format: 'esm',
+    dts: true,
+    sourcemap: true,
+  },
   staged: {
     '*': 'vp check --fix',
   },
@@ -152,7 +158,7 @@ export default defineConfig({
       'arrow-body-style': 'allow',
       'prefer-destructuring': 'allow',
     },
-    ignorePatterns: ['test/fixtures/ts*'],
+    ignorePatterns: ['test/fixtures/ts*', 'test/mts'],
   },
   // plugins: [codspeedPlugin()],
   test: {
