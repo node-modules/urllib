@@ -152,7 +152,7 @@ export default defineConfig({
       'arrow-body-style': 'allow',
       'prefer-destructuring': 'allow',
     },
-    ignorePatterns: ['test/fixtures/ts*'],
+    ignorePatterns: ['test/fixtures/ts*', 'test/mts'],
   },
   // plugins: [codspeedPlugin()],
   test: {

@@ -34,7 +34,7 @@ jobs:
         run: vp run typecheck
 
       - name: Run build check
-        run: vp run build
+        run: vp run build:test
 
   test:
     strategy:
