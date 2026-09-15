@@ -1,10 +1,11 @@
-// @ts-expect-error ignore type error
-import { request, IncomingHttpHeaders } from 'urllib';
-const responseObj = await request('test');
+import { request, type IncomingHttpHeaders } from 'urllib';
 
 type IsAny<T, Y, N> = 0 extends 1 & T ? Y : N;
-(x: IsAny<number, true, never>) => x; // never
-(x: IsAny<any, true, never>) => x; // true
 
-(x: IsAny<typeof responseObj, true, never>) => x; // true
-console.log(responseObj.headers as IncomingHttpHeaders);
+const responseObj = await request<{ ok: boolean }>('http://localhost');
+const responseIsTyped: IsAny<typeof responseObj, never, true> = true;
+const dataIsTyped: IsAny<typeof responseObj.data, never, true> = true;
+const headers: IncomingHttpHeaders = responseObj.headers;
+const ok: boolean = responseObj.data.ok;
+
+console.log(responseIsTyped, dataIsTyped, headers, ok);

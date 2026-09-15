@@ -1,7 +1,0 @@
-{
-  "name": "ts-esm-demo",
-  "type": "module",
-  "scripts": {
-    "build": "tsc && node hello.js"
-  }
-}

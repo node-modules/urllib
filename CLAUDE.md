@@ -59,12 +59,9 @@ pnpm run cov
 
 ### Build System
 
-Uses [tshy](https://github.com/isaacs/tshy) to build dual ESM/CommonJS output:
+Uses `vp pack`, configured in `vite.config.ts`, to build ESM JavaScript and TypeScript declarations in `dist/`.
 
-- ESM output: `dist/esm/`
-- CommonJS output: `dist/commonjs/`
-
-The package exports both formats via conditional exports in package.json.
+The package exports a single ESM entry point via `package.json`. The build bundles the version from `package.json` into the User-Agent header.
 
 ### Testing
 

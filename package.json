@@ -25,19 +25,12 @@
     "src"
   ],
   "type": "module",
-  "main": "./dist/commonjs/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/commonjs/index.d.ts",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
-      },
-      "require": {
-        "types": "./dist/commonjs/index.d.ts",
-        "default": "./dist/commonjs/index.js"
-      }
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
     },
     "./package.json": "./package.json"
   },
@@ -46,23 +39,17 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit && tsgo --noEmit",
-    "prebuild": "vp run clean",
-    "build": "vp run build:ts && vp run build:version",
-    "build:ts": "tsc --version && tshy && tshy-after",
-    "build:version": "node ./scripts/replace_urllib_version.js",
-    "build:cjs:test": "cd test/cjs && rm -rf node_modules && npm link ../.. && node index.js",
-    "build:esm:test": "cd test/esm && rm -rf node_modules && npm link ../.. && node index.js",
-    "build:mts:test": "cd test/mts && rm -rf node_modules && npm link ../.. && tsc",
-    "build:test": "vp run build && vp run build:cjs:test && vp run build:esm:test && vp run build:mts:test && vp run test-tsc",
-    "test-tsc": "vp run test-tsc:cjs:es2021 && vp run test-tsc:cjs && vp run test-tsc:esm",
-    "test-tsc:cjs": "cd test/fixtures/ts && rm -rf node_modules && npm link ../../.. && vp run build",
-    "test-tsc:cjs:es2021": "cd test/fixtures/ts-cjs-es2021 && rm -rf node_modules && npm link ../../.. && vp run build",
-    "test-tsc:esm": "cd test/fixtures/ts-esm && rm -rf node_modules && npm link ../../.. && vp run build",
+    "build": "vp pack",
+    "build:esm:test": "node test/esm/index.js",
+    "build:mts:test": "tsc -p test/mts",
+    "build:test": "vp run build && vp run build:esm:test && vp run build:mts:test && vp run test-tsc",
+    "test-tsc": "vp run test-tsc:esm",
+    "test-tsc:esm": "tsc -p test/fixtures/ts-esm && node test/fixtures/ts-esm/hello.js",
     "test": "vp run check && vp test run --reporter=dot",
     "bench": "vp test bench",
     "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vp test run --reporter=dot --test-timeout 180000 keep-alive-header.test.ts",
     "cov": "vp test run --reporter=dot --coverage",
-    "ci": "vp run cov && vp run prepublishOnly && npm pack && attw --pack",
+    "ci": "vp run cov && vp run build:test && npm pack && attw --pack --profile esm-only",
     "clean": "rm -rf dist && tsc -b --clean",
     "prepublishOnly": "vp run build",
     "prepare": "vp config",
@@ -96,18 +83,10 @@
     "proxy": "^1.0.2",
     "selfsigned": "^3.0.1",
     "tar-stream": "^2.2.0",
-    "tshy": "^4.0.0",
-    "tshy-after": "^1.4.1",
     "typescript": "^7.0.0",
     "vite": "catalog:",
     "vite-plus": "catalog:",
     "vitest": "catalog:"
-  },
-  "tshy": {
-    "exports": {
-      ".": "./src/index.ts",
-      "./package.json": "./package.json"
-    }
   },
   "engines": {
     "node": ">= 22.19.0"

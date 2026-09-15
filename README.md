@@ -30,20 +30,12 @@ npm install urllib
 
 ## Usage
 
+urllib is ESM-only and requires Node.js 22.19.0 or later. Use `import` in an ES module (`.mjs`, or `.js` with `"type": "module"` in `package.json`).
+
 ### TypeScript and ESM
 
 ```ts
 import { request } from 'urllib';
-
-const { data, res } = await request('http://cnodejs.org/');
-// result: { data: Buffer, res: Response }
-console.log('status: %s, body size: %d, headers: %j', res.status, data.length, res.headers);
-```
-
-### CommonJS
-
-```js
-const { request } = require('urllib');
 
 const { data, res } = await request('http://cnodejs.org/');
 // result: { data: Buffer, res: Response }
@@ -159,7 +151,7 @@ Upload a file with a `hello` field.
 ```js
 await request('https://example.com/upload', {
   method: 'POST',
-  files: __filename,
+  files: import.meta.filename,
   data: {
     hello: 'hello urllib',
   },
@@ -171,7 +163,7 @@ Upload multi files with a `hello` field.
 ```js
 await request('https://example.com/upload', {
   method: 'POST',
-  files: [__filename, fs.createReadStream(__filename), Buffer.from('mock file content')],
+  files: [import.meta.filename, fs.createReadStream(import.meta.filename), Buffer.from('mock file content')],
   data: {
     hello: 'hello urllib with multi files',
   },
@@ -184,7 +176,7 @@ Custom file field name with `uploadfile`.
 await request('https://example.com/upload', {
   method: 'POST',
   files: {
-    uploadfile: __filename,
+    uploadfile: import.meta.filename,
   },
 });
 ```

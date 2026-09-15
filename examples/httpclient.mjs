@@ -1,4 +1,4 @@
-const HttpClient = require('..').HttpClient;
+import { HttpClient } from 'urllib';
 
 tryHttpclient(HttpClient, 'urllib');
 

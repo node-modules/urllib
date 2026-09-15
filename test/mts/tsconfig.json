@@ -4,6 +4,8 @@
     "rootDir": "src",
     "outDir": "dist",
     "skipLibCheck": false,
+    "strict": true,
+    "verbatimModuleSyntax": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext"
   },

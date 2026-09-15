@@ -1,4 +1,4 @@
-const { request, Agent, setGlobalDispatcher } = require('undici');
+import { fetch, setGlobalDispatcher, Agent } from 'urllib';
 
 setGlobalDispatcher(
   new Agent({
@@ -9,8 +9,8 @@ setGlobalDispatcher(
 async function main() {
   for (let i = 0; i < 100; i++) {
     try {
-      const r = await request('https://edgeupdates.microsoft.com/api/products');
-      console.log(r.statusCode, r.headers, (await r.body.blob()).size);
+      const r = await fetch('https://edgeupdates.microsoft.com/api/products');
+      console.log(r.status, r.headers, (await r.text()).length);
     } catch (err) {
       // console.error(err);
       // throw err;
