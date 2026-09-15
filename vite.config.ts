@@ -1,7 +1,60 @@
-// import codspeedPlugin from '@codspeed/vitest-plugin';
+import { readFile, rm, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
 import { defineConfig } from 'vite-plus';
+import { build as packLibrary, type PackUserConfig } from 'vite-plus/pack';
+
+import pkg from './package.json' with { type: 'json' };
+
+const pack = (['esm', 'cjs'] as const).map((format): PackUserConfig => {
+  const outDir = join(import.meta.dirname, 'dist', format === 'cjs' ? 'commonjs' : 'esm');
+  return {
+    entry: ['src/index.ts'],
+    format,
+    outDir,
+    platform: 'node',
+    target: 'node22.19',
+    unbundle: true,
+    dts: true,
+    sourcemap: true,
+    outExtensions: () => ({ js: '.js', dts: '.d.ts' }),
+    // Keep the published CommonJS entry for existing consumers.
+    checks: { legacyCjs: false },
+    // Limit cleanup to the explicitly selected output directory.
+    clean: false,
+    hooks: {
+      'build:prepare': async () => {
+        await rm(outDir, { recursive: true, force: true });
+      },
+      'build:done': async () => {
+        await writeFile(
+          join(outDir, 'package.json'),
+          `${JSON.stringify({ type: format === 'cjs' ? 'commonjs' : 'module' })}\n`,
+        );
+        const file = join(outDir, 'HttpClient.js');
+        const code = await readFile(file, 'utf8');
+        const versioned = code.replace(/(['"])VERSION\1/g, JSON.stringify(pkg.version));
+        if (versioned === code) {
+          throw new Error(`Missing version placeholder in ${file}`);
+        }
+        await writeFile(file, versioned);
+      },
+    },
+  };
+});
 
 export default defineConfig({
+  pack,
+  builder: {
+    // Make `vp build` use the same library outputs as `vp pack`.
+    async buildApp(builder) {
+      for (const options of pack) {
+        await packLibrary({ ...options, config: false });
+      }
+      // Packaging completes this environment without an HTML entry.
+      builder.environments.client.isBuilt = true;
+    },
+  },
   staged: {
     '*': 'vp check --fix',
   },
@@ -152,13 +205,17 @@ export default defineConfig({
       'arrow-body-style': 'allow',
       'prefer-destructuring': 'allow',
     },
-    ignorePatterns: ['test/fixtures/ts*'],
+    ignorePatterns: ['test/fixtures/ts*', 'test/mts'],
   },
-  // plugins: [codspeedPlugin()],
   test: {
+    clearMocks: false,
     include: ['test/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     setupFiles: ['./test/setup.ts'],
     testTimeout: 60000,
+    benchmark: {
+      enabled: process.env.URLLIB_BENCHMARK === '1',
+      include: ['test/**/*.bench.ts'],
+    },
     coverage: {
       include: ['src'],
     },

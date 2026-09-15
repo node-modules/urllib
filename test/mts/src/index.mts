@@ -1,4 +1,3 @@
-// @ts-expect-error ignore type error
 import { request, IncomingHttpHeaders } from 'urllib';
 const responseObj = await request('test');
 

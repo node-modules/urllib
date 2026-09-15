@@ -245,7 +245,7 @@ Example:
 ## Run test with debug log
 
 ```bash
-NODE_DEBUG=urllib:* npm test
+NODE_DEBUG=urllib:* vp test run
 ```
 
 ## Request with HTTP2
@@ -381,6 +381,20 @@ Node.js v22.3.0
 │ 14      │ 'undici - stream'     │ 45      │ '21599.12 req/sec' │ '± 2.81 %' │ '+ 7161.30 %'           │
 └─────────┴───────────────────────┴─────────┴────────────────────┴────────────┴─────────────────────────┘
 ```
+
+## Development
+
+Install [Vite+](https://viteplus.dev/guide/) and use `vp` to manage the development runtime in `.node-version` and the pnpm version in `package.json`.
+
+```bash
+vp install
+vp check
+vp test
+vp build
+vp run bench
+```
+
+`vp build` and `vp pack` produce ESM and CommonJS files with TypeScript declarations in `dist/esm` and `dist/commonjs`. Packaging, tests, linting, formatting, and staged checks are configured in `vite.config.ts`. Use `vp run build:test` to check the built package in the consumer fixtures.
 
 ## Release
 

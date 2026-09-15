@@ -25,16 +25,13 @@ jobs:
           sfw: true
 
       - name: Check
-        run: vp run check
+        run: vp check
 
       - name: Check dedupe
         run: vp dedupe --check
 
-      - name: Run typecheck
-        run: vp run typecheck
-
       - name: Run build check
-        run: vp run build
+        run: vp build
 
   test:
     strategy:

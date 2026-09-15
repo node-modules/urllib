@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "vitest5": {
+    ".": {
+      "sourceVersion": "4.1.11",
+      "configless": false
+    }
+  }
+}

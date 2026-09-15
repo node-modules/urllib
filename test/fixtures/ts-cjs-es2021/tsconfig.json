@@ -2,11 +2,7 @@
   "compilerOptions": {
     "strict": true,
     "target": "ES2021",
-    "module": "CommonJS",
-    "moduleResolution": "Node",
-    "baseUrl": "./",
-    "paths": {
-      "urllib": ["../../.."]
-    }
+    "module": "Node16",
+    "moduleResolution": "Node16"
   }
 }
