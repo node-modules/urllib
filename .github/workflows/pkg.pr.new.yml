@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 22
           cache: true
-          sfw: true
+          sfw: false
 
       - name: Build
         run: vp run build
