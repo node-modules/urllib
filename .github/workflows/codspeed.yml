@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: '^24.11.0'
           cache: true
-          sfw: true
+          sfw: false
 
       - name: Run benchmarks
         uses: CodSpeedHQ/action@v5
