@@ -3,6 +3,7 @@ minimumReleaseAgeExclude:
   - vite-plus
   - '@vitest/*'
   - undici
+  - vitest@5.0.1
 overrides:
   vite@*: 'catalog:'
   vitest@*: 'catalog:'
@@ -14,7 +15,7 @@ peerDependencyRules:
     vite: '*'
     vitest: '*'
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@0.3.2
-  vitest: 4.1.11
-  vite-plus: 0.3.2
-  '@vitest/coverage-v8': 4.1.11
+  vite: npm:@voidzero-dev/vite-plus-core@0.0.0-commit.26a6dfe55eadd10931a3f7c38d30a900292ffeed
+  vitest: 5.0.1
+  vite-plus: 0.0.0-commit.26a6dfe55eadd10931a3f7c38d30a900292ffeed
+  '@vitest/coverage-v8': 5.0.1

@@ -20,7 +20,7 @@ jobs:
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@9fd26ff49f9b5e6276c2b493da4454ad4527f7f4 # main
         with:
-          node-version: '24'
+          node-version: '^24.11.0'
           cache: true
           sfw: true
 
@@ -41,7 +41,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
-        node: ['22', '24', '26']
+        node: ['^22.19.0', '^24.11.0', '^26.0.0']
 
     name: Test (${{ matrix.os }}, ${{ matrix.node }})
     runs-on: ${{ matrix.os }}

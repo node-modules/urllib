@@ -3,10 +3,6 @@
     "strict": true,
     "target": "ES2022",
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "baseUrl": "./",
-    "paths": {
-      "urllib": ["../../.."]
-    }
+    "moduleResolution": "NodeNext"
   }
 }

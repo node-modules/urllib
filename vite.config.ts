@@ -156,9 +156,13 @@ export default defineConfig({
   },
   // plugins: [codspeedPlugin()],
   test: {
+    clearMocks: false,
     include: ['test/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     setupFiles: ['./test/setup.ts'],
     testTimeout: 60000,
+    benchmark: {
+      enabled: process.env.TEST_BENCHMARK === '1',
+    },
     coverage: {
       include: ['src'],
     },
