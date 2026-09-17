@@ -14,3 +14,4 @@ src/**/*.d.ts
 test/fixtures/ts-esm/*.js
 .eslintcache
 .idea/
+.vitest/
