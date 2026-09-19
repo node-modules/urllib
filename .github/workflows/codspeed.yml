@@ -34,4 +34,4 @@ jobs:
         uses: CodSpeedHQ/action@v5
         with:
           mode: simulation
-          run: pnpm vitest bench --run
+          run: pnpm exec vp test bench --run

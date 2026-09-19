@@ -7,6 +7,9 @@ export default defineConfig({
     format: 'esm',
     dts: true,
     sourcemap: true,
+    deps: {
+      resolveDepSubpath: true,
+    },
   },
   staged: {
     '*': 'vp check --fix',
@@ -162,6 +165,10 @@ export default defineConfig({
   },
   // plugins: [codspeedPlugin()],
   test: {
+    // Vitest v4 compatibility: preserve mock call history.
+    // Remove after tests no longer rely on calls from setup or earlier tests.
+    // https://vitest.dev/guide/migration/#clearmocks-is-enabled-by-default
+    clearMocks: false,
     include: ['test/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     setupFiles: ['./test/setup.ts'],
     testTimeout: 60000,
