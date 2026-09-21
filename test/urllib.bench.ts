@@ -1,31 +1,37 @@
-import { bench, describe } from 'vite-plus/test';
+import { test, describe } from 'vite-plus/test';
 
 import { HttpClient } from '../src/index.js';
 import { parseJSON, digestAuthHeader, globalId, performanceTime } from '../src/utils.js';
 
 describe('HttpClient Benchmarks', () => {
-  bench('create HttpClient instance', () => {
-    new HttpClient();
+  test('create HttpClient instance', async ({ bench }) => {
+    await bench('create HttpClient instance', () => {
+      new HttpClient();
+    }).run();
   });
 
-  bench('create HttpClient with defaultArgs', () => {
-    new HttpClient({
-      defaultArgs: {
-        timeout: 30000,
-        headers: {
-          'x-custom-header': 'benchmark',
+  test('create HttpClient with defaultArgs', async ({ bench }) => {
+    await bench('create HttpClient with defaultArgs', () => {
+      new HttpClient({
+        defaultArgs: {
+          timeout: 30000,
+          headers: {
+            'x-custom-header': 'benchmark',
+          },
         },
-      },
-    });
+      });
+    }).run();
   });
 
-  bench('create HttpClient with connect options', () => {
-    new HttpClient({
-      connect: {
-        timeout: 10000,
-        rejectUnauthorized: true,
-      },
-    });
+  test('create HttpClient with connect options', async ({ bench }) => {
+    await bench('create HttpClient with connect options', () => {
+      new HttpClient({
+        connect: {
+          timeout: 10000,
+          rejectUnauthorized: true,
+        },
+      });
+    }).run();
   });
 });
 
@@ -35,30 +41,42 @@ describe('Utility Functions Benchmarks', () => {
     items: Array.from({ length: 100 }, (_, i) => ({ id: i, name: `item-${i}` })),
   });
 
-  bench('parseJSON - small object', () => {
-    parseJSON(jsonString);
+  test('parseJSON - small object', async ({ bench }) => {
+    await bench('parseJSON - small object', () => {
+      parseJSON(jsonString);
+    }).run();
   });
 
-  bench('parseJSON - large array', () => {
-    parseJSON(largeJsonString);
+  test('parseJSON - large array', async ({ bench }) => {
+    await bench('parseJSON - large array', () => {
+      parseJSON(largeJsonString);
+    }).run();
   });
 
-  bench('parseJSON with fixJSONCtlChars', () => {
-    parseJSON(jsonString, true);
+  test('parseJSON with fixJSONCtlChars', async ({ bench }) => {
+    await bench('parseJSON with fixJSONCtlChars', () => {
+      parseJSON(jsonString, true);
+    }).run();
   });
 
   const wwwAuthenticate =
     'Digest realm="testrealm@host.com", qop="auth,auth-int", nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093", opaque="5ccc069c403ebaf9f0171e9517f40e41"';
 
-  bench('digestAuthHeader', () => {
-    digestAuthHeader('GET', '/api/resource', wwwAuthenticate, 'user:password');
+  test('digestAuthHeader', async ({ bench }) => {
+    await bench('digestAuthHeader', () => {
+      digestAuthHeader('GET', '/api/resource', wwwAuthenticate, 'user:password');
+    }).run();
   });
 
-  bench('globalId', () => {
-    globalId('benchmark');
+  test('globalId', async ({ bench }) => {
+    await bench('globalId', () => {
+      globalId('benchmark');
+    }).run();
   });
 
-  bench('performanceTime', () => {
-    performanceTime(performance.now() - 100);
+  test('performanceTime', async ({ bench }) => {
+    await bench('performanceTime', () => {
+      performanceTime(performance.now() - 100);
+    }).run();
   });
 });

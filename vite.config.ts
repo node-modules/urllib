@@ -2,12 +2,7 @@
 import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
-  pack: {
-    entry: ['src/index.ts'],
-    format: 'esm',
-    dts: true,
-    sourcemap: true,
-  },
+  pack: { deps: { resolveDepSubpath: true }, entry: ['src/index.ts'], format: 'esm', dts: true, sourcemap: true },
   staged: {
     '*': 'vp check --fix',
   },
