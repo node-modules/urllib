@@ -3,6 +3,46 @@ minimumReleaseAgeExclude:
   - vite-plus
   - '@vitest/*'
   - undici
+  - '@oxfmt/binding-android-arm-eabi@0.70.0'
+  - '@oxfmt/binding-android-arm64@0.70.0'
+  - '@oxfmt/binding-darwin-arm64@0.70.0'
+  - '@oxfmt/binding-darwin-x64@0.70.0'
+  - '@oxfmt/binding-freebsd-x64@0.70.0'
+  - '@oxfmt/binding-linux-arm-gnueabihf@0.70.0'
+  - '@oxfmt/binding-linux-arm-musleabihf@0.70.0'
+  - '@oxfmt/binding-linux-arm64-gnu@0.70.0'
+  - '@oxfmt/binding-linux-arm64-musl@0.70.0'
+  - '@oxfmt/binding-linux-ppc64-gnu@0.70.0'
+  - '@oxfmt/binding-linux-riscv64-gnu@0.70.0'
+  - '@oxfmt/binding-linux-riscv64-musl@0.70.0'
+  - '@oxfmt/binding-linux-s390x-gnu@0.70.0'
+  - '@oxfmt/binding-linux-x64-gnu@0.70.0'
+  - '@oxfmt/binding-linux-x64-musl@0.70.0'
+  - '@oxfmt/binding-openharmony-arm64@0.70.0'
+  - '@oxfmt/binding-win32-arm64-msvc@0.70.0'
+  - '@oxfmt/binding-win32-ia32-msvc@0.70.0'
+  - '@oxfmt/binding-win32-x64-msvc@0.70.0'
+  - '@oxlint/binding-android-arm-eabi@1.85.0'
+  - '@oxlint/binding-android-arm64@1.85.0'
+  - '@oxlint/binding-darwin-arm64@1.85.0'
+  - '@oxlint/binding-darwin-x64@1.85.0'
+  - '@oxlint/binding-freebsd-x64@1.85.0'
+  - '@oxlint/binding-linux-arm-gnueabihf@1.85.0'
+  - '@oxlint/binding-linux-arm-musleabihf@1.85.0'
+  - '@oxlint/binding-linux-arm64-gnu@1.85.0'
+  - '@oxlint/binding-linux-arm64-musl@1.85.0'
+  - '@oxlint/binding-linux-ppc64-gnu@1.85.0'
+  - '@oxlint/binding-linux-riscv64-gnu@1.85.0'
+  - '@oxlint/binding-linux-riscv64-musl@1.85.0'
+  - '@oxlint/binding-linux-s390x-gnu@1.85.0'
+  - '@oxlint/binding-linux-x64-gnu@1.85.0'
+  - '@oxlint/binding-linux-x64-musl@1.85.0'
+  - '@oxlint/binding-openharmony-arm64@1.85.0'
+  - '@oxlint/binding-win32-arm64-msvc@1.85.0'
+  - '@oxlint/binding-win32-ia32-msvc@1.85.0'
+  - '@oxlint/binding-win32-x64-msvc@1.85.0'
+  - oxfmt@0.70.0
+  - oxlint@1.85.0
 overrides:
   vite@*: 'catalog:'
   vitest@*: 'catalog:'
@@ -14,7 +54,7 @@ peerDependencyRules:
     vite: '*'
     vitest: '*'
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@0.3.3
-  vitest: 4.1.11
-  vite-plus: 0.3.3
-  '@vitest/coverage-v8': 4.1.11
+  vite: npm:@voidzero-dev/vite-plus-core@1.0.0-rc.0
+  vitest: 5.0.1
+  vite-plus: 1.0.0-rc.0
+  '@vitest/coverage-v8': 5.0.1
