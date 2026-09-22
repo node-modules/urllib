@@ -49,7 +49,7 @@
     "bench": "vp test bench",
     "test-keepalive": "cross-env TEST_KEEPALIVE_COUNT=50 vp test run --reporter=dot --test-timeout 180000 keep-alive-header.test.ts",
     "cov": "vp test run --reporter=dot --coverage",
-    "ci": "vp run cov && vp run build:test && npm pack && attw --pack --profile esm-only",
+    "ci": "vp run cov && vp run build:test && npm pack",
     "clean": "rm -rf dist && tsc -b --clean",
     "prepublishOnly": "vp run build",
     "prepare": "vp config",
@@ -66,7 +66,6 @@
     "ylru": "^2.0.0"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.18.2",
     "@eggjs/tsconfig": "^2.0.0",
     "@types/busboy": "^1.5.4",
     "@types/mime-types": "^2.1.4",

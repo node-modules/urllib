@@ -3,6 +3,10 @@ minimumReleaseAgeExclude:
   - vite-plus
   - '@vitest/*'
   - undici
+  - '@oxfmt/*'
+  - '@oxlint/*'
+  - oxfmt@0.70.0
+  - oxlint@1.85.0
 overrides:
   vite@*: 'catalog:'
   vitest@*: 'catalog:'
@@ -14,7 +18,7 @@ peerDependencyRules:
     vite: '*'
     vitest: '*'
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@0.3.3
-  vitest: 4.1.11
-  vite-plus: 0.3.3
-  '@vitest/coverage-v8': 4.1.11
+  vite: npm:@voidzero-dev/vite-plus-core@1.0.0-rc.0
+  vitest: 5.0.1
+  vite-plus: 1.0.0-rc.0
+  '@vitest/coverage-v8': 5.0.1
