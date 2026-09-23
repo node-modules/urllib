@@ -140,6 +140,14 @@ export type RequestOptions = {
   /** Request dispatcher, default is getGlobalDispatcher() */
   dispatcher?: Dispatcher;
   /**
+   * Verify the server certificate for top-level `request()` and `curl()`. Default: `true`. Set `false` to allow
+   * self-signed certificates.
+   *
+   * Applies when neither `dispatcher` nor `socketPath` is set. For `HttpClient` instances, configure
+   * `connect.rejectUnauthorized` instead. Custom dispatchers control their own TLS settings.
+   */
+  rejectUnauthorized?: boolean;
+  /**
    * Negotiate HTTP/2 with capable servers via ALPN. Enabled by default since undici@8; set `false` to force HTTP/1.1
    * for this request without bypassing the active dispatcher.
    *

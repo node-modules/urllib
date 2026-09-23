@@ -71,6 +71,7 @@ console.log('status: %s, body size: %d, headers: %j', res.status, data.length, r
   - **_streaming_** Boolean - lets you get the `res` object when request connected, default `false`. alias `customResponse`
   - **_compressed_** Boolean - Accept `gzip, br` response content and auto decode it, default is `false`.
   - **_timing_** Boolean - Enable timing or not, default is `true`.
+  - **_rejectUnauthorized_** Boolean - Verify the server certificate. Default is `true`. Set `false` to allow self-signed certificates. Applies to top-level `request()` and `curl()` when neither `dispatcher` nor `socketPath` is set. For `HttpClient` instances, use `connect.rejectUnauthorized`; custom dispatchers control their own TLS settings.
   - **_socketPath_** String | null - request a unix socket service, default is `null`.
   - **_highWaterMark_** Number - default is `67108864`, 64 KiB.
 
