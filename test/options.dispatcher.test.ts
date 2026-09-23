@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 
-import setup from 'proxy';
+import { createProxy } from 'proxy';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import { request, ProxyAgent, getGlobalDispatcher, setGlobalDispatcher, Agent } from '../src/index.js';
@@ -16,7 +16,7 @@ describe('options.dispatcher.test.ts', () => {
     const { closeServer, url } = await startServer();
     close = closeServer;
     _url = url;
-    proxyServer = setup();
+    proxyServer = createProxy();
     await new Promise<void>((resolve) => {
       proxyServer.listen(0, () => {
         // console.log('HTTP proxy server listening on port %d', proxyServer.address().port);

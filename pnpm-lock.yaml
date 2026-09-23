@@ -219,9 +219,6 @@ importers:
       '@types/node':
         specifier: ^24.13.3
         version: 24.13.6
-      '@types/proxy':
-        specifier: ^1.0.4
-        version: 1.0.4
       '@types/qs':
         specifier: ^6.15.0
         version: 6.15.1
@@ -650,9 +647,6 @@ packages:
 
   '@types/node@24.13.6':
     resolution: {integrity: sha512-SGrw/h3KPFshy3OE6ZL53LMBG5vGQQ8/gIpiqz/kRZhPJ7HgwCEs8LBuNtWLa8dvGZVpSF7+Bf+c11HUrCb/yg==}
-
-  '@types/proxy@1.0.4':
-    resolution: {integrity: sha512-KnYy7hpp3wXQ2U0ExvCMF9BvWZ6h2aI0XWb8g705mn26Zmn2HO/eLRi6UuhHELA6MNJtYtiZYWv38gobJN0xXQ==}
 
   '@types/qs@6.15.1':
     resolution: {integrity: sha512-GZHUBZR9hckSUhrxmp1nG6NwdpM9fCunJwyThLW1X3AyHgd9IlHb6VANpQQqDr2o/qQp6McZ3y/IA2rVzKzSbw==}
@@ -2037,10 +2031,6 @@ snapshots:
   '@types/node@24.13.6':
     dependencies:
       undici-types: 7.18.2
-
-  '@types/proxy@1.0.4':
-    dependencies:
-      '@types/node': 24.13.6
 
   '@types/qs@6.15.1': {}
 
