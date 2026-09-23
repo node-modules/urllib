@@ -7,6 +7,7 @@ import selfsigned from 'selfsigned';
 import { describe, it, beforeAll, afterAll } from 'vite-plus/test';
 
 import urllib, { HttpClient } from '../src/index.js';
+import type { RequestOptions } from '../src/index.js';
 import { startServer } from './fixtures/server.js';
 
 describe('urllib.options.rejectUnauthorized-false.test.ts', () => {
@@ -22,13 +23,22 @@ describe('urllib.options.rejectUnauthorized-false.test.ts', () => {
     await close();
   });
 
-  it('should 200 on options.rejectUnauthorized = false', async () => {
-    const response = await urllib.request(_url, {
+  it.each(['request', 'curl'] as const)('should honor typed rejectUnauthorized on urllib.%s', async (method) => {
+    const options: RequestOptions = {
       rejectUnauthorized: false,
       dataType: 'json',
-    });
+    };
+    const response = await urllib[method](_url, options);
     assert.equal(response.status, 200);
     assert.equal(response.data.method, 'GET');
+
+    // An unverified connection must not be reused by requests that verify certificates.
+    for (const rejectUnauthorized of [true, undefined]) {
+      const secureOptions: RequestOptions = { rejectUnauthorized };
+      await assert.rejects(urllib[method](_url, secureOptions), {
+        code: 'DEPTH_ZERO_SELF_SIGNED_CERT',
+      });
+    }
   });
 
   it('should 200 with H2 on options.rejectUnauthorized = false', async () => {

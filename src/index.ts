@@ -31,19 +31,7 @@ export function getDefaultHttpClient(rejectUnauthorized?: boolean, allowH2?: boo
   return client;
 }
 
-interface UrllibRequestOptions extends RequestOptions {
-  /**
-   * If `true`, the server certificate is verified against the list of supplied CAs. An 'error' event is emitted if
-   * verification fails. Default: `true`
-   */
-  rejectUnauthorized?: boolean;
-  // `allowH2` is inherited from RequestOptions.
-}
-
-export async function request<T = any>(
-  url: RequestURL,
-  options?: UrllibRequestOptions,
-): Promise<HttpClientResponse<T>> {
+export async function request<T = any>(url: RequestURL, options?: RequestOptions): Promise<HttpClientResponse<T>> {
   if (options?.socketPath) {
     let domainSocketHttpclient = domainSocketHttpClients.get<HttpClient>(options.socketPath);
     if (!domainSocketHttpclient) {
@@ -63,7 +51,7 @@ export async function request<T = any>(
 // import * as urllib from 'urllib';
 // urllib.curl(url);
 // ```
-export async function curl<T = any>(url: RequestURL, options?: UrllibRequestOptions): Promise<HttpClientResponse<T>> {
+export async function curl<T = any>(url: RequestURL, options?: RequestOptions): Promise<HttpClientResponse<T>> {
   return await request<T>(url, options);
 }
 
