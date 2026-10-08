@@ -263,6 +263,7 @@ export from [undici](https://undici.nodejs.org/#/docs/best-practices/mocking-req
 
 ```ts
 import { strict as assert } from 'assert';
+
 import { MockAgent, setGlobalDispatcher, request } from 'urllib';
 
 const mockAgent = new MockAgent();
