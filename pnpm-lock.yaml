@@ -212,7 +212,7 @@ importers:
         version: 2.0.0
       '@types/busboy':
         specifier: ^1.5.4
-        version: 1.5.4
+        version: 1.5.5
       '@types/mime-types':
         specifier: ^2.1.4
         version: 2.1.4
@@ -630,8 +630,8 @@ packages:
   '@types/aria-query@5.0.4':
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
 
-  '@types/busboy@1.5.4':
-    resolution: {integrity: sha512-kG7WrUuAKK0NoyxfQHsVE6j1m01s6kMma64E+OZenQABMQyTJop1DumUWcLwAQ2JzpefU7PDYoRDKl8uZosFjw==}
+  '@types/busboy@1.5.5':
+    resolution: {integrity: sha512-IwqrfVFxWa23c4WeE7uZswssCqGfvnl5Q7b1pdshbT3HaQDa3UIbJx5BAxtcj9nZYX9tVDArM9TUv9SpvORbpQ==}
 
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
@@ -2038,7 +2038,7 @@ snapshots:
 
   '@types/aria-query@5.0.4': {}
 
-  '@types/busboy@1.5.4':
+  '@types/busboy@1.5.5':
     dependencies:
       '@types/node': 24.19.1
 
