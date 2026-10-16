@@ -38,6 +38,9 @@ jobs:
       - name: Check
         run: vp run check
 
+      - name: Check unused code and dependencies
+        run: vp run fallow
+
       - name: Check dedupe
         run: vp dedupe --check
 
