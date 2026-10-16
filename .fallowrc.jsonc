@@ -1,0 +1,6 @@
+{
+  "$schema": "./node_modules/fallow/schema.json",
+  "entry": ["src/index.ts", "examples/*.mjs", "test/{mts/src,fixtures/ts-esm}/**/*.{ts,mts}", "test/**/*.bench.ts"],
+  // scripts/tsrs.js selects and imports the compiler dynamically for each platform.
+  "ignoreDependencies": ["@ts-rs/wasm", "tsrs"],
+}
