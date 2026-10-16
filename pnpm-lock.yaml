@@ -210,6 +210,9 @@ importers:
       '@eggjs/tsconfig':
         specifier: ^2.0.0
         version: 2.0.0
+      '@ts-rs/wasm':
+        specifier: 0.15.0-ts7.1.0-dev.20260929
+        version: 0.15.0-ts7.1.0-dev.20260929
       '@types/busboy':
         specifier: ^1.5.4
         version: 1.5.5
@@ -252,9 +255,6 @@ importers:
       tsrs:
         specifier: 0.15.0-ts7.1.0-dev.20260929
         version: 0.15.0-ts7.1.0-dev.20260929
-      typescript:
-        specifier: ^7.0.0
-        version: 7.0.2
       vite:
         specifier: 'catalog:'
         version: '@voidzero-dev/vite-plus-core@1.2.0(@arethetypeswrong/core@0.18.5)(@types/node@24.19.2)(typescript@7.0.2)'
@@ -660,6 +660,11 @@ packages:
     cpu: [x64]
     os: [linux]
     libc: [musl]
+
+  '@ts-rs/wasm@0.15.0-ts7.1.0-dev.20260929':
+    resolution: {integrity: sha512-OzjW8AFuSSNFY+yu8pu5eDHdaBi9B3gHe4XgmBJ/9bc/tCwIyG/99c0F8ZywqOVn7c5946xi8FBowc+45rN/yA==}
+    engines: {node: '>=22'}
+    hasBin: true
 
   '@types/aria-query@5.0.4':
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
@@ -1963,6 +1968,8 @@ snapshots:
   '@ts-rs/linux-x64-musl@0.15.0-ts7.1.0-dev.20260929':
     optional: true
 
+  '@ts-rs/wasm@0.15.0-ts7.1.0-dev.20260929': {}
+
   '@types/aria-query@5.0.4': {}
 
   '@types/busboy@1.5.5':
@@ -2769,6 +2776,7 @@ snapshots:
       '@typescript/typescript-sunos-x64': 7.0.2
       '@typescript/typescript-win32-arm64': 7.0.2
       '@typescript/typescript-win32-x64': 7.0.2
+    optional: true
 
   undici-types@7.24.6: {}
 
