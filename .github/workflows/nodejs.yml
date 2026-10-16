@@ -7,6 +7,9 @@ on:
     branches: [master]
   merge_group:
 
+permissions:
+  contents: read
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -16,6 +19,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Audit GitHub Actions
+        uses: zizmorcore/zizmor-action@85b2b9fb8e3325e7a23d7d0a9d7ba5ae0f999e3e # v0.7.1
+        with:
+          advanced-security: false
+          annotations: true
 
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@ad00cb8c5ec49bb6a15056affa78108a3f3c4854 # main
@@ -51,11 +62,14 @@ jobs:
       cancel-in-progress: true
 
     permissions:
+      contents: read
       id-token: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@ad00cb8c5ec49bb6a15056affa78108a3f3c4854 # main

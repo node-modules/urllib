@@ -1,6 +1,9 @@
 name: Publish Any Commit
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     concurrency:
@@ -10,7 +13,9 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@ad00cb8c5ec49bb6a15056affa78108a3f3c4854 # main
