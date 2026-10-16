@@ -45,7 +45,7 @@ type IUndiciRequestOption = PropertyShouldBe<UndiciRequestOption, 'headers', Inc
   allowH2?: boolean;
 };
 
-export const PROTO_RE: RegExp = /^https?:\/\//i;
+const PROTO_RE: RegExp = /^https?:\/\//i;
 
 export interface UndiciTimingInfo {
   startTime: number;
@@ -68,7 +68,7 @@ export interface UndiciTimingInfo {
   };
 }
 
-// keep typo compatibility
+/** @public Retained for compatibility with the original misspelled type name. */
 export interface UnidiciTimingInfo extends UndiciTimingInfo {}
 
 function noop(): void {
@@ -111,7 +111,7 @@ export type ClientOptions = {
   };
 };
 
-export const VERSION: string = pkg.version;
+const VERSION: string = pkg.version;
 // 'node-urllib/4.0.0 Node.js/18.19.0 (darwin; x64)'
 export const HEADER_USER_AGENT: string = `node-urllib/${VERSION} Node.js/${process.version.substring(1)} (${process.platform}; ${process.arch})`;
 
