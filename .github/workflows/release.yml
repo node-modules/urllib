@@ -27,6 +27,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
       - name: Check whether version is already published
         id: version
@@ -101,9 +103,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
       - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@6a60d12bdb8382f7ce636a9a846dc61e69855b2b # main
+        uses: voidzero-dev/setup-vp@ad00cb8c5ec49bb6a15056affa78108a3f3c4854 # main
         with:
           # Node 24 bundles npm >= 11.5.1, required for OIDC trusted publishing.
           node-version: '24'
@@ -145,10 +149,13 @@ jobs:
           echo "urllib@$VERSION is not yet published; proceeding to publish."
 
       - name: Publish to npm
-        run: npm publish --access public --tag ${{ steps.dist-tag.outputs.tag }}
+        env:
+          NPM_DIST_TAG: ${{ steps.dist-tag.outputs.tag }}
+        run: npm publish --access public --tag "$NPM_DIST_TAG"
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        # Keep create-or-update behavior when the release step runs again.
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3 # zizmor: ignore[superfluous-actions]
         with:
           generate_release_notes: true
           name: v${{ env.VERSION }}
