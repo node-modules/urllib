@@ -20,7 +20,7 @@ export class FormData extends _FormData {
       // formidable and the browser add a name property
       // fs- and request- streams have path property
       filename = path.basename(options.filename || value.name || value.path);
-    } else if (value.readable && value.hasOwnProperty('httpVersion')) {
+    } else if (value.readable && Object.hasOwn(value, 'httpVersion')) {
       // or try http response
       filename = path.basename(value.client._httpMessage.path || '');
     }

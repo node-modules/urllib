@@ -207,6 +207,9 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
     devDependencies:
+      '@e18e/eslint-plugin':
+        specifier: ^0.8.1
+        version: 0.8.1(oxlint@1.88.0(oxlint-tsgolint@7.0.2004)(vite-plus@1.3.0(@arethetypeswrong/core@0.18.5)(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(typescript@7.0.2)))
       '@eggjs/tsconfig':
         specifier: ^2.0.0
         version: 2.0.0
@@ -308,6 +311,17 @@ packages:
 
   '@braidai/lang@1.1.2':
     resolution: {integrity: sha512-qBcknbBufNHlui137Hft8xauQMTZDKdophmLFv05r2eNmdIv/MlPuP4TdUknHG68UdWLgVZwgxVe735HzJNIwA==}
+
+  '@e18e/eslint-plugin@0.8.1':
+    resolution: {integrity: sha512-OV3T7l0r52/IglskdAuoO+BJyzsCs7AcIHpwpBMlIMO0+3RHskM2h5MuHdLuesIhSRhwCURGMKtp/XwnfXrfxg==}
+    peerDependencies:
+      eslint: ^9.0.0 || ^10.0.0
+      oxlint: ^1.72.0
+    peerDependenciesMeta:
+      eslint:
+        optional: true
+      oxlint:
+        optional: true
 
   '@eggjs/tsconfig@2.0.0':
     resolution: {integrity: sha512-Isxjjkjyoo2EM2iO2oT60fXEyhSQFkGlFZ05FuNjR+6LVHmhs3fbul8y3zW7ymiZWyzGClN11R0nGEFgB1pSgg==}
@@ -1217,6 +1231,10 @@ packages:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
     engines: {node: '>= 0.4'}
 
+  empathic@2.1.0:
+    resolution: {integrity: sha512-AnfC1ATldl49/cvZdLPDjBfrRNwbDO05aibiOtzQu3qtlbJtomNLhF30HEtn/7iBz50dlMECqATo3fG0LrdEgw==}
+    engines: {node: '>=14'}
+
   end-of-stream@1.4.5:
     resolution: {integrity: sha512-ooEGc6HP26xXq/N+GCGOT0JKCLDGrq2bQUZrQ7gyrJiZANJ/8YDTxTpQBXGMn+WbIQXNVpyWymm7KYVICQnyOg==}
 
@@ -1448,6 +1466,9 @@ packages:
     resolution: {integrity: sha512-USPkMeET31rOMiarsBNIHZKLGgvKc/LrjofAnBlOttf5ajRvqiRA8QsenbcooctK6d6Ts6aqZXBA+XbkKthiQg==}
     engines: {node: '>=4.0.0'}
     hasBin: true
+
+  module-replacements@3.4.0:
+    resolution: {integrity: sha512-NKBNFM/uAUvSs+LOYfSly4EwrC9bgMoFuEnqNNjcDb910W+5IgS2KMB2ERLm5YZZm7R187jx1dMA9pOPvqbSbw==}
 
   mri@1.1.4:
     resolution: {integrity: sha512-6y7IjGPm8AzlvoUrwAaw1tLnUBudaS3752vcd8JtrpGGQn+rXIe63LFVHm/YMwtqAuh+LJPCFdlLYPWM1nYn6w==}
@@ -1687,6 +1708,10 @@ packages:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
+  verkit@0.4.1:
+    resolution: {integrity: sha512-mMVzj0TXExtVdlDEq+Mzp0eyOuyznNpFobNM3uAqe3HVm/Ps2c+u17BligMkZjZCA6EiXpoon8iRTer3iu40SQ==}
+    engines: {node: '>=18.12.0'}
+
   vite-plus@1.3.0:
     resolution: {integrity: sha512-wZGsDeYfPcrCegqgY68pJJHGTpEZdsZvIMH2/mWXkGkBD72UY3M7z24Sv3ZeOL/FrqbbtyqBOfkKO6BvoQ8wMw==}
     engines: {node: ^22.18.0 || ^24.11.0 || >=26.0.0}
@@ -1825,6 +1850,14 @@ snapshots:
 
   '@braidai/lang@1.1.2':
     optional: true
+
+  '@e18e/eslint-plugin@0.8.1(oxlint@1.88.0(oxlint-tsgolint@7.0.2004)(vite-plus@1.3.0(@arethetypeswrong/core@0.18.5)(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(typescript@7.0.2)))':
+    dependencies:
+      empathic: 2.1.0
+      module-replacements: 3.4.0
+      verkit: 0.4.1
+    optionalDependencies:
+      oxlint: 1.88.0(oxlint-tsgolint@7.0.2004)(vite-plus@1.3.0(@arethetypeswrong/core@0.18.5)(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(typescript@7.0.2))
 
   '@eggjs/tsconfig@2.0.0': {}
 
@@ -2412,6 +2445,8 @@ snapshots:
       es-errors: 1.3.0
       gopd: 1.2.0
 
+  empathic@2.1.0: {}
+
   end-of-stream@1.4.5:
     dependencies:
       once: 1.4.0
@@ -2611,6 +2646,8 @@ snapshots:
       mime-db: 1.52.0
 
   mime@2.6.0: {}
+
+  module-replacements@3.4.0: {}
 
   mri@1.1.4: {}
 
@@ -2871,6 +2908,8 @@ snapshots:
 
   validate-npm-package-name@5.0.1:
     optional: true
+
+  verkit@0.4.1: {}
 
   vite-plus@1.3.0(@arethetypeswrong/core@0.18.5)(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(typescript@7.0.2):
     dependencies:
