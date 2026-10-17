@@ -31,6 +31,7 @@ export default defineConfig({
     },
   },
   lint: {
+    jsPlugins: ['@e18e/eslint-plugin'],
     options: {
       typeAware: true,
       typeCheck: true,
@@ -48,6 +49,20 @@ export default defineConfig({
       perf: 'allow',
     },
     rules: {
+      // Keep e18e rules compatible with ES2022 and Oxlint's JavaScript plugin support.
+      'e18e/prefer-array-at': 'error',
+      'e18e/prefer-array-fill': 'error',
+      'e18e/prefer-includes': 'error',
+      'e18e/prefer-nullish-coalescing': 'error',
+      'e18e/prefer-object-has-own': 'error',
+      'e18e/prefer-url-canparse': 'error',
+      'e18e/prefer-array-from-map': 'error',
+      'e18e/prefer-timer-args': 'error',
+      'e18e/prefer-date-now': 'error',
+      'e18e/prefer-regex-test': 'error',
+      'e18e/prefer-array-some': 'error',
+      'e18e/prefer-static-regex': 'error',
+      'e18e/prefer-string-fromcharcode': 'error',
       'no-extend-native': 'warn',
       // Disable TypeScript rules
       'typescript/explicit-function-return-type': 'allow',
@@ -158,6 +173,14 @@ export default defineConfig({
       'arrow-body-style': 'allow',
       'prefer-destructuring': 'allow',
     },
+    overrides: [
+      {
+        files: ['test/**'],
+        rules: {
+          'e18e/prefer-static-regex': 'off',
+        },
+      },
+    ],
     ignorePatterns: ['test/fixtures/ts*', 'test/mts'],
   },
   // plugins: [codspeedPlugin()],

@@ -66,6 +66,7 @@
     "ylru": "^2.0.0"
   },
   "devDependencies": {
+    "@e18e/eslint-plugin": "^0.8.1",
     "@eggjs/tsconfig": "^2.0.0",
     "@ts-rs/wasm": "0.15.0-ts7.1.0-dev.20260929",
     "@types/busboy": "^1.5.4",
