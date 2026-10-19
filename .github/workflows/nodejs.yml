@@ -34,6 +34,7 @@ jobs:
           node-version: '24.22.0'
           cache: true
           cache-toolchain: true
+          cache-save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
           sfw: true
 
       - name: Check
@@ -81,6 +82,7 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: true
           cache-toolchain: true
+          cache-save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
           sfw: true
 
       - name: Run tests
