@@ -3,7 +3,7 @@ name: Package manager cache benchmark
 on:
   push:
     branches: [codex/benchmark-package-manager-cache]
-    paths: ['.github/workflows/setup-package-manager-benchmark.yml']
+    paths: [".github/workflows/setup-package-manager-benchmark.yml"]
   workflow_dispatch:
 
 permissions:
@@ -24,20 +24,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          ref: 8d14d55acb8886a2de1102f09abd008c38560c55
           persist-credentials: false
 
       - name: Isolate benchmark caches
         shell: bash
         run: |
-          echo "VP_HOME=$RUNNER_TEMP/urllib-pm-cache-$BENCHMARK_ID/toolchain" >> "$GITHUB_ENV"
-          echo "pnpm_config_store_dir=$RUNNER_TEMP/urllib-pm-cache-$BENCHMARK_ID/pnpm-store" >> "$GITHUB_ENV"
+          test ! -e "$RUNNER_TEMP/urllib-optimized-pm-cache-$BENCHMARK_ID/toolchain"
+          test ! -e node_modules
+          echo "VP_HOME=$RUNNER_TEMP/urllib-optimized-pm-cache-$BENCHMARK_ID/toolchain" >> "$GITHUB_ENV"
+          echo "pnpm_config_store_dir=$RUNNER_TEMP/urllib-optimized-pm-cache-$BENCHMARK_ID/pnpm-store" >> "$GITHUB_ENV"
 
-      - name: Setup Vite+ preview
+      - name: Setup Vite+ seed
         id: setup
-        uses: voidzero-dev/setup-vp@85cf606c7348256a70a82b783b3cb2ff1e2b703b
+        uses: voidzero-dev/setup-vp@06fe7ecfda756e5871867245052c17baa9b4e974
         with:
           version: 0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8
-          node-version: '24.22.0'
+          node-version: "24.22.0"
           cache: true
           cache-toolchain: true
           cache-save: true
@@ -47,7 +50,7 @@ jobs:
         shell: bash
         env:
           BENCHMARK_MODE: seed
-          BENCHMARK_SAMPLE: '0'
+          BENCHMARK_SAMPLE: "0"
           TOOLCHAIN_CACHE_HIT: ${{ steps.setup.outputs.toolchain-cache-hit }}
           DEPENDENCY_CACHE_HIT: ${{ steps.setup.outputs.cache-hit }}
           PM_CACHE_HIT: ${{ steps.setup.outputs.package-manager-cache-hit }}
@@ -59,25 +62,31 @@ jobs:
           import assert from 'node:assert/strict';
           import { execFileSync } from 'node:child_process';
           import { createHash } from 'node:crypto';
-          import { readFileSync, writeFileSync } from 'node:fs';
+          import { existsSync, readFileSync, writeFileSync } from 'node:fs';
           import path from 'node:path';
           const env = process.env;
-          const preview = '0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8';
+          const version = '0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8';
           const local = JSON.parse(readFileSync('node_modules/vite-plus/package.json', 'utf8'));
           const vite = JSON.parse(readFileSync('node_modules/vite/package.json', 'utf8'));
-          assert.equal(local.version, preview);
+          assert.equal(local.version, version);
           assert.equal(vite.name, '@voidzero-dev/vite-plus-core');
-          assert.equal(vite.version, preview);
-          assert.equal(env.INSTALLED_VERSION, preview);
+          assert.equal(vite.version, version);
+          assert.equal(env.INSTALLED_VERSION, version);
           assert.equal(env.INSTALLED_NODE, '24.22.0');
           assert.equal(env.INSTALLED_PM, '12.14.0');
           assert.equal(env.TOOLCHAIN_CACHE_HIT === 'true', env.BENCHMARK_MODE !== 'seed');
           assert.equal(env.DEPENDENCY_CACHE_HIT === 'true', env.BENCHMARK_MODE !== 'seed');
-          assert.equal(env.PM_CACHE_HIT === 'true', env.BENCHMARK_MODE === 'hit');
+          assert.equal(env.PM_CACHE_HIT === 'true', ['before', 'hit'].includes(env.BENCHMARK_MODE));
           const vp = path.join(env.VP_HOME, 'bin', process.platform === 'win32' ? 'vp.exe' : 'vp');
           const store = execFileSync(vp, ['pm', 'cache', 'dir'], { encoding: 'utf8' }).trim();
           assert.equal(path.resolve(store), path.resolve(env.pnpm_config_store_dir, 'v11'));
+          const managerBin = path.join(env.VP_HOME, 'package_manager/pnpm/12.14.0/pnpm/bin');
+          const binary = ['pnpm.native.exe', 'pnpm.native', 'pnpm.cjs'].map(name => path.join(managerBin, name)).find(file => existsSync(file));
+          assert.ok(binary, 'Expected a managed pnpm executable');
+          const checkout = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+          assert.equal(checkout, '8d14d55acb8886a2de1102f09abd008c38560c55');
           const result = {
+            checkout,
             mode: env.BENCHMARK_MODE,
             sample: Number(env.BENCHMARK_SAMPLE),
             os: env.RUNNER_OS,
@@ -91,7 +100,7 @@ jobs:
             packageManager: env.INSTALLED_PM,
             packageManagerInfo: JSON.parse(execFileSync(vp, ['env', 'current', '--json'], { encoding: 'utf8' })).package_manager,
             packageManagerCacheHit: env.PM_CACHE_HIT === 'true',
-            packageManagerBinaryHash: createHash('sha256').update(readFileSync(path.join(env.VP_HOME, 'package_manager/pnpm/12.14.0/pnpm/bin', process.platform === 'win32' ? 'pnpm.native.exe' : 'pnpm.native'))).digest('hex'),
+            packageManagerBinaryHash: createHash('sha256').update(readFileSync(binary)).digest('hex'),
             toolchainCacheHit: env.TOOLCHAIN_CACHE_HIT === 'true',
             dependencyCacheHit: env.DEPENDENCY_CACHE_HIT === 'true',
             dependencyStore: store,
@@ -119,7 +128,7 @@ jobs:
       matrix:
         sample: [1, 2, 3, 4, 5, 6]
         os: [ubuntu-latest, macos-latest, windows-latest]
-        mode: [before, hit]
+        mode: [base, before, hit]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     env:
@@ -128,21 +137,36 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          ref: 8d14d55acb8886a2de1102f09abd008c38560c55
           persist-credentials: false
 
       - name: Isolate benchmark caches
         shell: bash
         run: |
-          echo "VP_HOME=$RUNNER_TEMP/urllib-pm-cache-$BENCHMARK_ID/toolchain" >> "$GITHUB_ENV"
-          echo "pnpm_config_store_dir=$RUNNER_TEMP/urllib-pm-cache-$BENCHMARK_ID/pnpm-store" >> "$GITHUB_ENV"
+          test ! -e "$RUNNER_TEMP/urllib-optimized-pm-cache-$BENCHMARK_ID/toolchain"
+          test ! -e node_modules
+          echo "VP_HOME=$RUNNER_TEMP/urllib-optimized-pm-cache-$BENCHMARK_ID/toolchain" >> "$GITHUB_ENV"
+          echo "pnpm_config_store_dir=$RUNNER_TEMP/urllib-optimized-pm-cache-$BENCHMARK_ID/pnpm-store" >> "$GITHUB_ENV"
 
-      - name: Setup Vite+ before
+      - name: Setup Vite+ base
         id: baseline
-        if: matrix.mode == 'before'
+        if: matrix.mode == 'base'
         uses: voidzero-dev/setup-vp@c025a93923d2f9c524652d786386d11065fc3e8f
         with:
           version: 0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8
-          node-version: '24.22.0'
+          node-version: "24.22.0"
+          cache: true
+          cache-toolchain: true
+          cache-save: false
+          sfw: true
+
+      - name: Setup Vite+ before
+        id: previous
+        if: matrix.mode == 'before'
+        uses: voidzero-dev/setup-vp@85cf606c7348256a70a82b783b3cb2ff1e2b703b
+        with:
+          version: 0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8
+          node-version: "24.22.0"
           cache: true
           cache-toolchain: true
           cache-save: false
@@ -151,10 +175,10 @@ jobs:
       - name: Setup Vite+ after
         id: setup
         if: matrix.mode == 'hit'
-        uses: voidzero-dev/setup-vp@85cf606c7348256a70a82b783b3cb2ff1e2b703b
+        uses: voidzero-dev/setup-vp@06fe7ecfda756e5871867245052c17baa9b4e974
         with:
           version: 0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8
-          node-version: '24.22.0'
+          node-version: "24.22.0"
           cache: true
           cache-toolchain: true
           cache-save: false
@@ -165,36 +189,42 @@ jobs:
         env:
           BENCHMARK_MODE: ${{ matrix.mode }}
           BENCHMARK_SAMPLE: ${{ matrix.sample }}
-          TOOLCHAIN_CACHE_HIT: ${{ steps.setup.outputs.toolchain-cache-hit || steps.baseline.outputs.toolchain-cache-hit }}
-          DEPENDENCY_CACHE_HIT: ${{ steps.setup.outputs.cache-hit || steps.baseline.outputs.cache-hit }}
-          PM_CACHE_HIT: ${{ steps.setup.outputs.package-manager-cache-hit || steps.baseline.outputs.package-manager-cache-hit }}
-          INSTALLED_VERSION: ${{ steps.setup.outputs.version || steps.baseline.outputs.version }}
-          INSTALLED_NODE: ${{ steps.setup.outputs.node-version || steps.baseline.outputs.node-version }}
-          INSTALLED_PM: ${{ steps.setup.outputs.package-manager-version || steps.baseline.outputs.package-manager-version }}
+          TOOLCHAIN_CACHE_HIT: ${{ steps.setup.outputs.toolchain-cache-hit || steps.previous.outputs.toolchain-cache-hit || steps.baseline.outputs.toolchain-cache-hit }}
+          DEPENDENCY_CACHE_HIT: ${{ steps.setup.outputs.cache-hit || steps.previous.outputs.cache-hit || steps.baseline.outputs.cache-hit }}
+          PM_CACHE_HIT: ${{ steps.setup.outputs.package-manager-cache-hit || steps.previous.outputs.package-manager-cache-hit || steps.baseline.outputs.package-manager-cache-hit }}
+          INSTALLED_VERSION: ${{ steps.setup.outputs.version || steps.previous.outputs.version || steps.baseline.outputs.version }}
+          INSTALLED_NODE: ${{ steps.setup.outputs.node-version || steps.previous.outputs.node-version || steps.baseline.outputs.node-version }}
+          INSTALLED_PM: ${{ steps.setup.outputs.package-manager-version || steps.previous.outputs.package-manager-version || steps.baseline.outputs.package-manager-version }}
         run: |
           node --input-type=module <<'JS'
           import assert from 'node:assert/strict';
           import { execFileSync } from 'node:child_process';
           import { createHash } from 'node:crypto';
-          import { readFileSync, writeFileSync } from 'node:fs';
+          import { existsSync, readFileSync, writeFileSync } from 'node:fs';
           import path from 'node:path';
           const env = process.env;
-          const preview = '0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8';
+          const version = '0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8';
           const local = JSON.parse(readFileSync('node_modules/vite-plus/package.json', 'utf8'));
           const vite = JSON.parse(readFileSync('node_modules/vite/package.json', 'utf8'));
-          assert.equal(local.version, preview);
+          assert.equal(local.version, version);
           assert.equal(vite.name, '@voidzero-dev/vite-plus-core');
-          assert.equal(vite.version, preview);
-          assert.equal(env.INSTALLED_VERSION, preview);
+          assert.equal(vite.version, version);
+          assert.equal(env.INSTALLED_VERSION, version);
           assert.equal(env.INSTALLED_NODE, '24.22.0');
           assert.equal(env.INSTALLED_PM, '12.14.0');
           assert.equal(env.TOOLCHAIN_CACHE_HIT === 'true', env.BENCHMARK_MODE !== 'seed');
           assert.equal(env.DEPENDENCY_CACHE_HIT === 'true', env.BENCHMARK_MODE !== 'seed');
-          assert.equal(env.PM_CACHE_HIT === 'true', env.BENCHMARK_MODE === 'hit');
+          assert.equal(env.PM_CACHE_HIT === 'true', ['before', 'hit'].includes(env.BENCHMARK_MODE));
           const vp = path.join(env.VP_HOME, 'bin', process.platform === 'win32' ? 'vp.exe' : 'vp');
           const store = execFileSync(vp, ['pm', 'cache', 'dir'], { encoding: 'utf8' }).trim();
           assert.equal(path.resolve(store), path.resolve(env.pnpm_config_store_dir, 'v11'));
+          const managerBin = path.join(env.VP_HOME, 'package_manager/pnpm/12.14.0/pnpm/bin');
+          const binary = ['pnpm.native.exe', 'pnpm.native', 'pnpm.cjs'].map(name => path.join(managerBin, name)).find(file => existsSync(file));
+          assert.ok(binary, 'Expected a managed pnpm executable');
+          const checkout = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+          assert.equal(checkout, '8d14d55acb8886a2de1102f09abd008c38560c55');
           const result = {
+            checkout,
             mode: env.BENCHMARK_MODE,
             sample: Number(env.BENCHMARK_SAMPLE),
             os: env.RUNNER_OS,
@@ -208,7 +238,7 @@ jobs:
             packageManager: env.INSTALLED_PM,
             packageManagerInfo: JSON.parse(execFileSync(vp, ['env', 'current', '--json'], { encoding: 'utf8' })).package_manager,
             packageManagerCacheHit: env.PM_CACHE_HIT === 'true',
-            packageManagerBinaryHash: createHash('sha256').update(readFileSync(path.join(env.VP_HOME, 'package_manager/pnpm/12.14.0/pnpm/bin', process.platform === 'win32' ? 'pnpm.native.exe' : 'pnpm.native'))).digest('hex'),
+            packageManagerBinaryHash: createHash('sha256').update(readFileSync(binary)).digest('hex'),
             toolchainCacheHit: env.TOOLCHAIN_CACHE_HIT === 'true',
             dependencyCacheHit: env.DEPENDENCY_CACHE_HIT === 'true',
             dependencyStore: store,
