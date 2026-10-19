@@ -1,0 +1,205 @@
+name: Aligned preview setup benchmark
+
+on:
+  push:
+    branches: [codex/benchmark-aligned-preview]
+    paths: ['.github/workflows/setup-aligned-preview-benchmark.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  warm:
+    name: Warm preview caches (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      BENCHMARK_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Isolate benchmark caches
+        shell: bash
+        run: |
+          echo "VP_HOME=$RUNNER_TEMP/urllib-aligned-$BENCHMARK_ID/toolchain" >> "$GITHUB_ENV"
+          echo "pnpm_config_store_dir=$RUNNER_TEMP/urllib-aligned-$BENCHMARK_ID/pnpm-store" >> "$GITHUB_ENV"
+
+      - name: Setup Vite+ preview
+        id: setup
+        uses: voidzero-dev/setup-vp@03bf4282fc8999a514519bca0a760ff650f2906a
+        with:
+          version: 0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8
+          node-version: '24.22.0'
+          cache: true
+          cache-toolchain: true
+          cache-save: true
+          sfw: true
+
+      - name: Check versions and cache state
+        shell: bash
+        env:
+          BENCHMARK_MODE: seed
+          BENCHMARK_SAMPLE: '0'
+          TOOLCHAIN_CACHE_HIT: ${{ steps.setup.outputs.toolchain-cache-hit }}
+          DEPENDENCY_CACHE_HIT: ${{ steps.setup.outputs.cache-hit }}
+          INSTALLED_VERSION: ${{ steps.setup.outputs.version }}
+          INSTALLED_NODE: ${{ steps.setup.outputs.node-version }}
+          INSTALLED_PM: ${{ steps.setup.outputs.package-manager-version }}
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { execFileSync } from 'node:child_process';
+          import { createHash } from 'node:crypto';
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import path from 'node:path';
+          const env = process.env;
+          const preview = '0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8';
+          const local = JSON.parse(readFileSync('node_modules/vite-plus/package.json', 'utf8'));
+          const vite = JSON.parse(readFileSync('node_modules/vite/package.json', 'utf8'));
+          assert.equal(local.version, preview);
+          assert.equal(vite.name, '@voidzero-dev/vite-plus-core');
+          assert.equal(vite.version, preview);
+          assert.equal(env.INSTALLED_VERSION, preview);
+          assert.equal(env.INSTALLED_NODE, '24.22.0');
+          assert.equal(env.INSTALLED_PM, '12.14.0');
+          assert.equal(env.TOOLCHAIN_CACHE_HIT === 'true', env.BENCHMARK_MODE === 'hit');
+          assert.equal(env.DEPENDENCY_CACHE_HIT === 'true', env.BENCHMARK_MODE !== 'seed');
+          const vp = path.join(env.VP_HOME, 'bin', process.platform === 'win32' ? 'vp.exe' : 'vp');
+          const store = execFileSync(vp, ['pm', 'cache', 'dir'], { encoding: 'utf8' }).trim();
+          assert.equal(path.resolve(store), path.resolve(env.pnpm_config_store_dir, 'v11'));
+          const result = {
+            mode: env.BENCHMARK_MODE,
+            sample: Number(env.BENCHMARK_SAMPLE),
+            os: env.RUNNER_OS,
+            arch: env.RUNNER_ARCH,
+            image: env.ImageVersion,
+            commit: env.GITHUB_SHA,
+            globalVersion: env.INSTALLED_VERSION,
+            localVersion: local.version,
+            viteAliasVersion: vite.version,
+            node: env.INSTALLED_NODE,
+            packageManager: env.INSTALLED_PM,
+            toolchainCacheHit: env.TOOLCHAIN_CACHE_HIT === 'true',
+            dependencyCacheHit: env.DEPENDENCY_CACHE_HIT === 'true',
+            dependencyStore: store,
+            lockfileSha256: createHash('sha256').update(readFileSync('pnpm-lock.yaml')).digest('hex'),
+          };
+          writeFileSync('setup-benchmark.json', JSON.stringify(result, null, 2));
+          console.log(JSON.stringify(result));
+          JS
+
+      - name: Build urllib with the preview toolchain
+        run: vp run build
+
+      - name: Upload benchmark metadata
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: aligned-${{ matrix.os }}-seed
+          path: setup-benchmark.json
+
+  compare:
+    needs: warm
+    name: Compare preview (${{ matrix.os }}, ${{ matrix.sample }}, ${{ matrix.mode }})
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        sample: [1, 2, 3, 4, 5, 6]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        mode: [before, hit]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      BENCHMARK_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Isolate benchmark caches
+        shell: bash
+        run: |
+          echo "VP_HOME=$RUNNER_TEMP/urllib-aligned-$BENCHMARK_ID/toolchain" >> "$GITHUB_ENV"
+          echo "pnpm_config_store_dir=$RUNNER_TEMP/urllib-aligned-$BENCHMARK_ID/pnpm-store" >> "$GITHUB_ENV"
+
+      - name: Setup Vite+ preview
+        id: setup
+        uses: voidzero-dev/setup-vp@03bf4282fc8999a514519bca0a760ff650f2906a
+        with:
+          version: 0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8
+          node-version: '24.22.0'
+          cache: true
+          cache-toolchain: ${{ matrix.mode == 'hit' }}
+          cache-save: false
+          sfw: true
+
+      - name: Check versions and cache state
+        shell: bash
+        env:
+          BENCHMARK_MODE: ${{ matrix.mode }}
+          BENCHMARK_SAMPLE: ${{ matrix.sample }}
+          TOOLCHAIN_CACHE_HIT: ${{ steps.setup.outputs.toolchain-cache-hit }}
+          DEPENDENCY_CACHE_HIT: ${{ steps.setup.outputs.cache-hit }}
+          INSTALLED_VERSION: ${{ steps.setup.outputs.version }}
+          INSTALLED_NODE: ${{ steps.setup.outputs.node-version }}
+          INSTALLED_PM: ${{ steps.setup.outputs.package-manager-version }}
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { execFileSync } from 'node:child_process';
+          import { createHash } from 'node:crypto';
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import path from 'node:path';
+          const env = process.env;
+          const preview = '0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8';
+          const local = JSON.parse(readFileSync('node_modules/vite-plus/package.json', 'utf8'));
+          const vite = JSON.parse(readFileSync('node_modules/vite/package.json', 'utf8'));
+          assert.equal(local.version, preview);
+          assert.equal(vite.name, '@voidzero-dev/vite-plus-core');
+          assert.equal(vite.version, preview);
+          assert.equal(env.INSTALLED_VERSION, preview);
+          assert.equal(env.INSTALLED_NODE, '24.22.0');
+          assert.equal(env.INSTALLED_PM, '12.14.0');
+          assert.equal(env.TOOLCHAIN_CACHE_HIT === 'true', env.BENCHMARK_MODE === 'hit');
+          assert.equal(env.DEPENDENCY_CACHE_HIT === 'true', env.BENCHMARK_MODE !== 'seed');
+          const vp = path.join(env.VP_HOME, 'bin', process.platform === 'win32' ? 'vp.exe' : 'vp');
+          const store = execFileSync(vp, ['pm', 'cache', 'dir'], { encoding: 'utf8' }).trim();
+          assert.equal(path.resolve(store), path.resolve(env.pnpm_config_store_dir, 'v11'));
+          const result = {
+            mode: env.BENCHMARK_MODE,
+            sample: Number(env.BENCHMARK_SAMPLE),
+            os: env.RUNNER_OS,
+            arch: env.RUNNER_ARCH,
+            image: env.ImageVersion,
+            commit: env.GITHUB_SHA,
+            globalVersion: env.INSTALLED_VERSION,
+            localVersion: local.version,
+            viteAliasVersion: vite.version,
+            node: env.INSTALLED_NODE,
+            packageManager: env.INSTALLED_PM,
+            toolchainCacheHit: env.TOOLCHAIN_CACHE_HIT === 'true',
+            dependencyCacheHit: env.DEPENDENCY_CACHE_HIT === 'true',
+            dependencyStore: store,
+            lockfileSha256: createHash('sha256').update(readFileSync('pnpm-lock.yaml')).digest('hex'),
+          };
+          writeFileSync('setup-benchmark.json', JSON.stringify(result, null, 2));
+          console.log(JSON.stringify(result));
+          JS
+
+      - name: Build urllib with the preview toolchain
+        run: vp run build
+
+      - name: Upload benchmark metadata
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: aligned-${{ matrix.os }}-${{ matrix.sample }}-${{ matrix.mode }}
+          path: setup-benchmark.json
