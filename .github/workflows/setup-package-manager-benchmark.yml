@@ -34,7 +34,7 @@ jobs:
 
       - name: Setup Vite+ preview
         id: setup
-        uses: voidzero-dev/setup-vp@936fd93f486b4c803b69e90a339020a32a023bfb
+        uses: voidzero-dev/setup-vp@85cf606c7348256a70a82b783b3cb2ff1e2b703b
         with:
           version: 0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8
           node-version: '24.22.0'
@@ -89,6 +89,7 @@ jobs:
             viteAliasVersion: vite.version,
             node: env.INSTALLED_NODE,
             packageManager: env.INSTALLED_PM,
+            packageManagerInfo: JSON.parse(execFileSync(vp, ['env', 'current', '--json'], { encoding: 'utf8' })).package_manager,
             packageManagerCacheHit: env.PM_CACHE_HIT === 'true',
             packageManagerBinaryHash: createHash('sha256').update(readFileSync(path.join(env.VP_HOME, 'package_manager/pnpm/12.14.0/pnpm/bin', process.platform === 'win32' ? 'pnpm.native.exe' : 'pnpm.native'))).digest('hex'),
             toolchainCacheHit: env.TOOLCHAIN_CACHE_HIT === 'true',
@@ -150,7 +151,7 @@ jobs:
       - name: Setup Vite+ after
         id: setup
         if: matrix.mode == 'hit'
-        uses: voidzero-dev/setup-vp@936fd93f486b4c803b69e90a339020a32a023bfb
+        uses: voidzero-dev/setup-vp@85cf606c7348256a70a82b783b3cb2ff1e2b703b
         with:
           version: 0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8
           node-version: '24.22.0'
@@ -205,6 +206,7 @@ jobs:
             viteAliasVersion: vite.version,
             node: env.INSTALLED_NODE,
             packageManager: env.INSTALLED_PM,
+            packageManagerInfo: JSON.parse(execFileSync(vp, ['env', 'current', '--json'], { encoding: 'utf8' })).package_manager,
             packageManagerCacheHit: env.PM_CACHE_HIT === 'true',
             packageManagerBinaryHash: createHash('sha256').update(readFileSync(path.join(env.VP_HOME, 'package_manager/pnpm/12.14.0/pnpm/bin', process.platform === 'win32' ? 'pnpm.native.exe' : 'pnpm.native'))).digest('hex'),
             toolchainCacheHit: env.TOOLCHAIN_CACHE_HIT === 'true',
