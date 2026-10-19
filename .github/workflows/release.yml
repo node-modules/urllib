@@ -107,7 +107,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@d5055d96d24594e62443e22e827a484c6af2fbe7 # main
+        uses: voidzero-dev/setup-vp@03bf4282fc8999a514519bca0a760ff650f2906a # main
         with:
           # Node 24 bundles npm >= 11.5.1, required for OIDC trusted publishing.
           node-version: '24'
