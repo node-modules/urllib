@@ -29,7 +29,7 @@ jobs:
           annotations: true
 
       - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@03bf4282fc8999a514519bca0a760ff650f2906a
+        uses: voidzero-dev/setup-vp@bbe1ce24f73712493f3aed8ced645957c79e42a0
         with:
           version: 0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8
           node-version: '24.22.0'
@@ -78,7 +78,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@03bf4282fc8999a514519bca0a760ff650f2906a
+        uses: voidzero-dev/setup-vp@bbe1ce24f73712493f3aed8ced645957c79e42a0
         with:
           version: 0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8
           node-version: ${{ matrix.node }}
