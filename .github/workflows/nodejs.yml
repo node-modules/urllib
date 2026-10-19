@@ -31,6 +31,7 @@ jobs:
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@03bf4282fc8999a514519bca0a760ff650f2906a # main
         with:
+          version: 0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8
           node-version: '24.22.0'
           cache: true
           cache-toolchain: true
@@ -79,6 +80,7 @@ jobs:
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@03bf4282fc8999a514519bca0a760ff650f2906a # main
         with:
+          version: 0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8
           node-version: ${{ matrix.node }}
           cache: true
           cache-toolchain: true

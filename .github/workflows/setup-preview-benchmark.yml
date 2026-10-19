@@ -1,0 +1,171 @@
+name: Setup preview benchmark
+
+on:
+  push:
+    branches: [codex/preview-toolchain-cache]
+    paths: ['.github/workflows/setup-preview-benchmark.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  before-and-miss:
+    name: Setup preview (${{ matrix.os }}, ${{ matrix.sample }}, ${{ matrix.mode }})
+    strategy:
+      fail-fast: false
+      max-parallel: 9
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        sample: [1, 2, 3]
+        mode: [before, miss]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      BENCHMARK_ID: ${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.sample }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Isolate the toolchain cache for this sample
+        shell: bash
+        run: echo "VP_HOME=$RUNNER_TEMP/urllib-preview-$BENCHMARK_ID" >> "$GITHUB_ENV"
+
+      - name: Setup Vite+ preview
+        id: setup
+        uses: voidzero-dev/setup-vp@03bf4282fc8999a514519bca0a760ff650f2906a # main
+        with:
+          version: 0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8
+          node-version: '24.22.0'
+          cache: true
+          cache-toolchain: ${{ matrix.mode == 'miss' }}
+          cache-save: ${{ matrix.mode == 'miss' }}
+          sfw: true
+
+      - name: Check cache state and record inputs
+        shell: bash
+        env:
+          BENCHMARK_MODE: ${{ matrix.mode }}
+          BENCHMARK_SAMPLE: ${{ matrix.sample }}
+          TOOLCHAIN_CACHE_HIT: ${{ steps.setup.outputs.toolchain-cache-hit }}
+          DEPENDENCY_CACHE_HIT: ${{ steps.setup.outputs.cache-hit }}
+          INSTALLED_VERSION: ${{ steps.setup.outputs.version }}
+          INSTALLED_NODE: ${{ steps.setup.outputs.node-version }}
+          INSTALLED_PM: ${{ steps.setup.outputs.package-manager-version }}
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { writeFileSync } from 'node:fs';
+          const env = process.env;
+          const hit = env.TOOLCHAIN_CACHE_HIT === 'true';
+          assert.equal(hit, env.BENCHMARK_MODE === 'hit');
+          assert.equal(env.DEPENDENCY_CACHE_HIT, 'true');
+          assert.equal(env.INSTALLED_NODE, '24.22.0');
+          assert.equal(env.INSTALLED_VERSION, '0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8');
+          const result = {
+            mode: env.BENCHMARK_MODE,
+            sample: Number(env.BENCHMARK_SAMPLE),
+            os: env.RUNNER_OS,
+            arch: env.RUNNER_ARCH,
+            image: env.ImageVersion,
+            commit: env.GITHUB_SHA,
+            version: env.INSTALLED_VERSION,
+            node: env.INSTALLED_NODE,
+            packageManager: env.INSTALLED_PM,
+            toolchainCacheHit: hit,
+            dependencyCacheHit: env.DEPENDENCY_CACHE_HIT === 'true',
+          };
+          writeFileSync('setup-benchmark.json', JSON.stringify(result, null, 2));
+          console.log(JSON.stringify(result));
+          JS
+
+      - name: Build urllib with the installed toolchain
+        run: vp run build
+
+      - name: Upload benchmark metadata
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: setup-${{ matrix.os }}-${{ matrix.sample }}-${{ matrix.mode }}
+          path: setup-benchmark.json
+
+  hit:
+    needs: before-and-miss
+    name: Setup preview (${{ matrix.os }}, ${{ matrix.sample }}, hit)
+    strategy:
+      fail-fast: false
+      max-parallel: 9
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        sample: [1, 2, 3]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      BENCHMARK_ID: ${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.sample }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Isolate the toolchain cache for this sample
+        shell: bash
+        run: echo "VP_HOME=$RUNNER_TEMP/urllib-preview-$BENCHMARK_ID" >> "$GITHUB_ENV"
+
+      - name: Setup Vite+ preview
+        id: setup
+        uses: voidzero-dev/setup-vp@03bf4282fc8999a514519bca0a760ff650f2906a # main
+        with:
+          version: 0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8
+          node-version: '24.22.0'
+          cache: true
+          cache-toolchain: true
+          cache-save: false
+          sfw: true
+
+      - name: Check cache state and record inputs
+        shell: bash
+        env:
+          BENCHMARK_MODE: hit
+          BENCHMARK_SAMPLE: ${{ matrix.sample }}
+          TOOLCHAIN_CACHE_HIT: ${{ steps.setup.outputs.toolchain-cache-hit }}
+          DEPENDENCY_CACHE_HIT: ${{ steps.setup.outputs.cache-hit }}
+          INSTALLED_VERSION: ${{ steps.setup.outputs.version }}
+          INSTALLED_NODE: ${{ steps.setup.outputs.node-version }}
+          INSTALLED_PM: ${{ steps.setup.outputs.package-manager-version }}
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { writeFileSync } from 'node:fs';
+          const env = process.env;
+          const hit = env.TOOLCHAIN_CACHE_HIT === 'true';
+          assert.equal(hit, env.BENCHMARK_MODE === 'hit');
+          assert.equal(env.DEPENDENCY_CACHE_HIT, 'true');
+          assert.equal(env.INSTALLED_NODE, '24.22.0');
+          assert.equal(env.INSTALLED_VERSION, '0.0.0-commit.65f9bc56f1f2d87e138013c5bcde9e7306d8eeb8');
+          const result = {
+            mode: env.BENCHMARK_MODE,
+            sample: Number(env.BENCHMARK_SAMPLE),
+            os: env.RUNNER_OS,
+            arch: env.RUNNER_ARCH,
+            image: env.ImageVersion,
+            commit: env.GITHUB_SHA,
+            version: env.INSTALLED_VERSION,
+            node: env.INSTALLED_NODE,
+            packageManager: env.INSTALLED_PM,
+            toolchainCacheHit: hit,
+            dependencyCacheHit: env.DEPENDENCY_CACHE_HIT === 'true',
+          };
+          writeFileSync('setup-benchmark.json', JSON.stringify(result, null, 2));
+          console.log(JSON.stringify(result));
+          JS
+
+      - name: Build urllib with the installed toolchain
+        run: vp run build
+
+      - name: Upload benchmark metadata
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: setup-${{ matrix.os }}-${{ matrix.sample }}-hit
+          path: setup-benchmark.json
