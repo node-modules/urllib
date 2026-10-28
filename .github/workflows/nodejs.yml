@@ -31,7 +31,7 @@ jobs:
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@6eb3ef76e48ad5aca2d217e4ee277786b3865699 # main
         with:
-          node-version: '24.22.0'
+          node-version: '26.13.0'
           cache: true
           cache-toolchain: true
           cache-save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}

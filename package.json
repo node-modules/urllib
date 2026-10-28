@@ -71,7 +71,7 @@
     "@ts-rs/wasm": "0.15.0-ts7.1.0-dev.20260929",
     "@types/busboy": "^1.5.4",
     "@types/mime-types": "^2.1.4",
-    "@types/node": "^24.13.3",
+    "@types/node": "^26.0.0",
     "@types/qs": "^6.15.0",
     "@types/tar-stream": "^2.2.3",
     "@vitest/coverage-v8": "catalog:",
