@@ -20,7 +20,7 @@ jobs:
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@6eb3ef76e48ad5aca2d217e4ee277786b3865699 # main
         with:
-          node-version: 24
+          node-version: 26
           cache: true
           sfw: true
 
