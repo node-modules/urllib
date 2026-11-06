@@ -86,6 +86,12 @@ describe('options.timeout.test.ts', () => {
       cert: pems.cert,
     });
 
+    server.on('sessionError', (error) => {
+      if ((error as NodeJS.ErrnoException).code !== 'ECONNRESET') {
+        throw error;
+      }
+    });
+
     server.on('stream', () => {
       // wait for timeout
     });

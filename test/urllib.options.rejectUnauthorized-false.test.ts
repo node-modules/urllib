@@ -1,6 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { once } from 'node:events';
 import { createSecureServer } from 'node:http2';
+import type { ServerHttp2Stream } from 'node:http2';
 import type { AddressInfo } from 'node:net';
 
 import selfsigned from 'selfsigned';
@@ -52,7 +53,7 @@ describe('urllib.options.rejectUnauthorized-false.test.ts', () => {
 
     server.on('stream', (stream, headers) => {
       assert.equal(headers[':method'], 'GET');
-      stream.respond({
+      (stream as ServerHttp2Stream).respond({
         'content-type': 'text/plain; charset=utf-8',
         'x-custom-h2': 'hello',
         ':status': 200,
