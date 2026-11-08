@@ -92,6 +92,12 @@ describe('options.timeout.test.ts', () => {
       }
     });
 
+    server.on('secureConnection', (socket) => {
+      socket.on('error', () => {
+        // the client may reset the connection after the timeout
+      });
+    });
+
     server.on('stream', () => {
       // wait for timeout
     });
