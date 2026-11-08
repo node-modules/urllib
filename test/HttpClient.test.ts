@@ -2,7 +2,7 @@ import { strict as assert } from 'node:assert';
 import dns from 'node:dns';
 import { once } from 'node:events';
 import { sensitiveHeaders, createSecureServer } from 'node:http2';
-import type { Http2SecureServer } from 'node:http2';
+import type { Http2SecureServer, ServerHttp2Stream } from 'node:http2';
 import { createServer as createSecureHttp1Server } from 'node:https';
 import type { Server as HttpsServer } from 'node:https';
 import type { AddressInfo } from 'node:net';
@@ -176,7 +176,7 @@ describe('HttpClient.test.ts', () => {
           return;
         }
         assert.equal(headers[':method'], 'GET');
-        stream.respond({
+        (stream as ServerHttp2Stream).respond({
           'content-type': 'text/plain; charset=utf-8',
           'x-custom-h2': 'hello',
           ':status': 200,
@@ -229,7 +229,7 @@ describe('HttpClient.test.ts', () => {
         count++;
         // console.log(count, headers);
         if (count === 2) {
-          stream.respond({
+          (stream as ServerHttp2Stream).respond({
             'content-type': 'text/plain; charset=utf-8',
             'x-custom-h2': 'hello',
             location: '/see-other',
@@ -239,7 +239,7 @@ describe('HttpClient.test.ts', () => {
           return;
         }
         assert.equal(headers[':method'], 'GET');
-        stream.respond({
+        (stream as ServerHttp2Stream).respond({
           'content-type': 'text/plain; charset=utf-8',
           'x-custom-h2': 'hello',
           ':status': 200,

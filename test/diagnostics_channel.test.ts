@@ -2,6 +2,7 @@ import { strict as assert } from 'node:assert';
 import diagnosticsChannel from 'node:diagnostics_channel';
 import { once } from 'node:events';
 import { createSecureServer } from 'node:http2';
+import type { ServerHttp2Stream } from 'node:http2';
 import type { AddressInfo } from 'node:net';
 import { Duplex } from 'node:stream';
 import { setTimeout as sleep } from 'node:timers/promises';
@@ -154,7 +155,7 @@ describe('diagnostics_channel.test.ts', () => {
       cert: pem.cert,
     });
     server.on('stream', (stream, headers) => {
-      stream.respond({
+      (stream as ServerHttp2Stream).respond({
         'content-type': 'text/plain; charset=utf-8',
         'x-custom-h2': 'hello',
         ':status': 200,
@@ -294,7 +295,7 @@ describe('diagnostics_channel.test.ts', () => {
       cert: pem.cert,
     });
     server.on('stream', (stream, headers) => {
-      stream.respond({
+      (stream as ServerHttp2Stream).respond({
         'content-type': 'text/plain; charset=utf-8',
         'x-custom-h2': 'hello',
         ':status': 200,
