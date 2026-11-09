@@ -1,4 +1,5 @@
 import { strict as assert } from 'node:assert';
+import { subscribe, unsubscribe } from 'node:diagnostics_channel';
 import { once } from 'node:events';
 import { createSecureServer } from 'node:http2';
 import type { AddressInfo } from 'node:net';
@@ -92,6 +93,13 @@ describe('options.timeout.test.ts', () => {
       }
     });
 
+    // undici@8 replaces an unresponsive h2 connection after a stream timeout, which can
+    // surface ECONNRESET on the client socket on macOS/Windows after its listeners are gone
+    const onClientConnected = (message: unknown) => {
+      (message as { socket: NodeJS.EventEmitter }).socket.on('error', () => {});
+    };
+    subscribe('undici:client:connected', onClientConnected);
+
     server.on('secureConnection', (socket) => {
       socket.on('error', () => {
         // the client may reset the connection after the timeout
@@ -129,6 +137,7 @@ describe('options.timeout.test.ts', () => {
         },
       );
     } finally {
+      unsubscribe('undici:client:connected', onClientConnected);
       await httpClient.getDispatcher().close();
       await new Promise<void>((resolve) => server.close(() => resolve()));
     }
