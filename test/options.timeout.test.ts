@@ -92,8 +92,13 @@ describe('options.timeout.test.ts', () => {
       }
     });
 
-    server.on('stream', () => {
-      // wait for timeout
+    server.on('stream', (stream) => {
+      // Leave the request unanswered and handle the reset when the client times out.
+      stream.on('error', (error: NodeJS.ErrnoException) => {
+        if (error.code !== 'ECONNRESET') {
+          throw error;
+        }
+      });
     });
 
     server.listen(0);
