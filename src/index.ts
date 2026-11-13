@@ -1,3 +1,4 @@
+// fallow-ignore-file duplicate-export-alias
 import { LRU } from 'ylru';
 
 import { HttpClient, HEADER_USER_AGENT } from './HttpClient.js';
