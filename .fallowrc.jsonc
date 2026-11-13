@@ -4,8 +4,5 @@
   "ignoreDependencies": [
     // Oxlint loads this plugin through lint.jsPlugins in vite.config.ts.
     "@e18e/eslint-plugin",
-    // scripts/tsrs.js selects and imports the compiler dynamically for each platform.
-    "@ts-rs/wasm",
-    "tsrs",
   ],
 }
