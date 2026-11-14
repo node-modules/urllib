@@ -26,12 +26,12 @@ export class FormData extends _FormData {
     }
 
     if (filename) {
-      // Escape multipart header parameters as form-data does, so filenames cannot inject headers.
+      // WHATWG multipart encoding escapes only CR, LF, and double quotes in filenames.
+      // https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#multipart-form-data
       const escapedFilename = filename.replace(/\r/g, '%0D').replace(/\n/g, '%0A').replace(/"/g, '%22');
-      // https://datatracker.ietf.org/doc/html/rfc6266#section-4.1
-      // support non-ascii filename
       contentDisposition = 'filename="' + escapedFilename + '"';
       if (NON_ASCII_RE.test(filename)) {
+        // Preserve legacy filename* support for compatibility, although RFC 7578 forbids it in multipart uploads.
         contentDisposition += "; filename*=UTF-8''" + encodeURIComponent(filename);
       }
     }

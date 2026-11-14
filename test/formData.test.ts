@@ -12,6 +12,7 @@ describe('formData.test.ts', () => {
     ['a\nb\n.txt', 'filename="a%0Ab%0A.txt"'],
     ['a\r\nb.txt', 'filename="a%0D%0Ab.txt"'],
     ['a%22.txt', 'filename="a%22.txt"'],
+    ["a b';=%.txt", 'filename="a b\';=%.txt"'],
     ['中文.txt', 'filename="中文.txt"; filename*=UTF-8\'\'%E4%B8%AD%E6%96%87.txt'],
     ['中"\r\n.txt', 'filename="中%22%0D%0A.txt"; filename*=UTF-8\'\'%E4%B8%AD%22%0D%0A.txt'],
   ])('should safely serialize filename %j', (filename, disposition) => {
