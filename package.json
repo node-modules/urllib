@@ -50,7 +50,7 @@
     "digest-header": "^1.0.0",
     "form-data-encoder": "^1.7.2",
     "formdata-node": "^4.3.3",
-    "formstream": "^1.1.1",
+    "formstream": "^1.5.3",
     "mime-types": "^2.1.35",
     "pump": "^3.0.0",
     "qs": "^6.11.2",
