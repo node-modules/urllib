@@ -72,7 +72,7 @@
   },
   "dependencies": {
     "form-data": "^4.0.6",
-    "formstream": "^1.5.2",
+    "formstream": "^1.5.3",
     "mime-types": "^2.1.35",
     "qs": "^6.15.0",
     "type-fest": "^4.41.0",
