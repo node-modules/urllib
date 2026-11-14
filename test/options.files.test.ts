@@ -353,4 +353,15 @@ describe('options.files.test.ts', () => {
     assert.equal(parsed.data.files[field].size, 4);
     assert.deepEqual(parsed.data.form, { role: 'user' });
   });
+
+  it('should escape normal multipart field names', async () => {
+    const response = await urllib.request(`${_url}raw`, {
+      files: Buffer.from('data'),
+      data: { 'field"\r\nX-Injected: value': 'unchanged\r\nvalue' },
+      dataType: 'text',
+    });
+    assert.ok(response.data.includes('name="field%22%0D%0AX-Injected: value"\r\n'));
+    assert.ok(response.data.includes('\r\n\r\nunchanged\r\nvalue\r\n'));
+    assert.doesNotMatch(response.data, /\r\nX-Injected:/);
+  });
 });

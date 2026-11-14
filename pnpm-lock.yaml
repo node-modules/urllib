@@ -186,7 +186,7 @@ importers:
   .:
     dependencies:
       form-data:
-        specifier: ^4.0.5
+        specifier: ^4.0.6
         version: 4.0.6
       formstream:
         specifier: ^1.5.2
