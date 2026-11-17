@@ -190,7 +190,7 @@ importers:
         version: 4.0.6
       formstream:
         specifier: ^1.5.2
-        version: 1.5.2
+        version: 1.5.3
       mime-types:
         specifier: ^2.1.35
         version: 2.1.35
@@ -1312,8 +1312,8 @@ packages:
     resolution: {integrity: sha512-vKatAh4SlVfgbv+YtmhiRjhEMJsYpsG1Y2rMQtR+SVSbytsSD1YGzDIcrAJmdFec88u/+VoGmxnl+80gL1tRCQ==}
     engines: {node: '>= 6'}
 
-  formstream@1.5.2:
-    resolution: {integrity: sha512-NASf0lgxC1AyKNXQIrXTEYkiX99LhCEXTkiGObXAkpBui86a4u8FjH1o2bGb3PpqI3kafC+yw4zWeK6l6VHTgg==}
+  formstream@1.5.3:
+    resolution: {integrity: sha512-dho1DOEYWII8HXtnUg3EKm9vcMxaOgF469psDkq9SIcb0KHtl16fQX5toylxnomL1K5pCJDaVrx/LIXtapEluQ==}
 
   fs-constants@1.0.0:
     resolution: {integrity: sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==}
@@ -2537,7 +2537,7 @@ snapshots:
       hasown: 2.0.4
       mime-types: 2.1.35
 
-  formstream@1.5.2:
+  formstream@1.5.3:
     dependencies:
       destroy: 1.2.0
       mime: 2.6.0
