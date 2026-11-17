@@ -151,7 +151,7 @@ export function performanceTime(startTime: number, now?: number): number {
 }
 
 export function isReadable(stream: any): boolean {
-  if (typeof Readable.isReadable === 'function') return Readable.isReadable(stream);
+  if (typeof Readable.isReadable === 'function') return Readable.isReadable(stream) === true;
   // patch from node
   // https://github.com/nodejs/node/blob/1287530385137dda1d44975063217ccf90759475/lib/internal/streams/utils.js#L119
   // simple way https://github.com/sindresorhus/is-stream/blob/main/index.js
