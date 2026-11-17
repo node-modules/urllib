@@ -30,7 +30,16 @@ jobs:
           sed --version >/dev/null 2>&1 && sed -i "s@'vite-plus'@'vite'@g" vite.config.ts || sed -i '' "s@'vite-plus'@'vite'@g" vite.config.ts
           jq 'del(.overrides)' package.json > package.json.tmp && mv package.json.tmp package.json
           npm install -D vitest@3 vite@7
-      - run: npx vitest && npm run build:ts && npm run build:version && npm pack && npx attw --pack
+      - run: npx vitest run
         env:
           NODE_OPTIONS: --require ./test/patch-for-node16-18.cjs
+      - name: Use Node.js for build tools
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - run: npm run build:ts && npm run build:version && npm pack && npx attw --pack
+      - name: Restore Node.js for package tests
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
       - run: npm run test-node16
