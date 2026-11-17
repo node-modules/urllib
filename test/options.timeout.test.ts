@@ -105,9 +105,15 @@ describe('options.timeout.test.ts', () => {
         // console.error(err);
         assert.equal(err.name, 'HttpClientRequestTimeoutError');
         assert.equal(err.message, 'Request timeout for 10 ms');
-        assert.equal(err.cause.name, 'InformationalError');
-        assert.equal(err.cause.message, 'HTTP/2: "stream timeout after 10"');
-        assert.equal(err.cause.code, 'UND_ERR_INFO');
+        // Newer Undici 7 releases use HeadersTimeoutError for HTTP/2 headers timeouts.
+        if (err.cause.name === 'HeadersTimeoutError') {
+          assert.equal(err.cause.message, 'HTTP/2: "headers timeout after 10"');
+          assert.equal(err.cause.code, 'UND_ERR_HEADERS_TIMEOUT');
+        } else {
+          assert.equal(err.cause.name, 'InformationalError');
+          assert.equal(err.cause.message, 'HTTP/2: "stream timeout after 10"');
+          assert.equal(err.cause.code, 'UND_ERR_INFO');
+        }
 
         assert.equal(err.res.status, -1);
         assert(err.res.rt > 10, `actual ${err.res.rt}`);
