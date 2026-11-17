@@ -1,5 +1,12 @@
 # Changelog
 
+## <small>4.9.2 (2026-11-17)</small>
+
+* fix: escape multipart filenames and field names to prevent header injection ([#985](https://github.com/node-modules/urllib/pull/985))
+* fix(deps): require `form-data@^4.0.6` and `formstream@^1.5.3` for multipart header escaping ([#985](https://github.com/node-modules/urllib/pull/985))
+* fix: return a boolean from `isReadable()` with newer Node.js type definitions ([#985](https://github.com/node-modules/urllib/pull/985))
+* ci: run checks on `4.x` and use Node.js 24 for build tools in Node.js 16/18 compatibility jobs ([#985](https://github.com/node-modules/urllib/pull/985))
+
 ## <small>4.9.1 (2026-06-13)</small>
 
 * fix: do not forward credential headers on cross-origin redirect (#812) ([811a8d5](https://github.com/node-modules/urllib/commit/811a8d5)), closes [#812](https://github.com/node-modules/urllib/issues/812)
