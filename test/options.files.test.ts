@@ -322,4 +322,46 @@ describe('options.files.test.ts', () => {
     assert.equal(response.data.form.hello, 'hello world，😄😓');
     assert.equal(response.data.form.foo, 'bar');
   });
+
+  it.each(['buffer', 'readable', 'stream path'])('should prevent filename header injection from %s', async (source) => {
+    const filename = 'evil.txt"\r\nX-Injected: smuggled\r\nContent-Disposition: form-data; name="ghost';
+    const escaped = 'evil.txt%22%0D%0AX-Injected: smuggled%0D%0AContent-Disposition: form-data; name=%22ghost';
+    const field = source === 'stream path' ? 'file' : escaped;
+    const makeFiles = () => {
+      if (source === 'stream path') {
+        return Object.assign(Readable.from([Buffer.from('data')]), { path: filename });
+      }
+      return {
+        [filename]: source === 'buffer' ? Buffer.from('data') : Readable.from([Buffer.from('data')]),
+      };
+    };
+
+    const raw = await urllib.request(`${_url}raw`, { files: makeFiles(), dataType: 'text' });
+    assert.equal(raw.status, 200);
+    assert.ok(raw.data.includes(`Content-Disposition: form-data; name="${field}"; filename="${escaped}"\r\n`));
+    assert.doesNotMatch(raw.data, /\r\nX-Injected:/);
+    assert.equal(raw.data.match(/\r\nContent-Disposition:/g)?.length, 1);
+
+    const parsed = await urllib.request(`${_url}multipart`, {
+      files: makeFiles(),
+      data: { role: 'user' },
+      dataType: 'json',
+    });
+    assert.equal(parsed.status, 200);
+    assert.deepEqual(Object.keys(parsed.data.files), [field]);
+    assert.equal(parsed.data.files[field].filename, escaped);
+    assert.equal(parsed.data.files[field].size, 4);
+    assert.deepEqual(parsed.data.form, { role: 'user' });
+  });
+
+  it('should escape normal multipart field names', async () => {
+    const response = await urllib.request(`${_url}raw`, {
+      files: Buffer.from('data'),
+      data: { 'field"\r\nX-Injected: value': 'unchanged\r\nvalue' },
+      dataType: 'text',
+    });
+    assert.ok(response.data.includes('name="field%22%0D%0AX-Injected: value"\r\n'));
+    assert.ok(response.data.includes('\r\n\r\nunchanged\r\nvalue\r\n'));
+    assert.doesNotMatch(response.data, /\r\nX-Injected:/);
+  });
 });
