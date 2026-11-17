@@ -8,6 +8,7 @@
     },
     {
       "groupName": "vite-plus",
+      "separateMajorMinor": false,
       "matchPackageNames": ["vite-plus", "vitest", "@voidzero-dev/*", "@vitest/*"],
       "minimumReleaseAge": "0 days"
     }
