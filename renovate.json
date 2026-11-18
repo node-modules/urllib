@@ -1,15 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": ["config:recommended", "group:vitePlus"],
   "packageRules": [
     {
       "matchDatasources": ["npm"],
       "minimumReleaseAge": "3 days"
     },
     {
-      "groupName": "vite-plus",
+      "extends": ["packages:vitePlus"],
       "separateMajorMinor": false,
-      "matchPackageNames": ["vite-plus", "vitest", "@voidzero-dev/*", "@vitest/*"],
       "minimumReleaseAge": "0 days"
     }
   ]
