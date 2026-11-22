@@ -205,7 +205,7 @@ importers:
         version: 6.17.1
       type-fest:
         specifier: ^6.0.0
-        version: 6.0.1
+        version: 6.0.3
       undici:
         specifier: ^8.10.0
         version: 8.12.4
@@ -1699,8 +1699,8 @@ packages:
     engines: {node: '>=16.20.0'}
     hasBin: true
 
-  type-fest@6.0.1:
-    resolution: {integrity: sha512-nnRRKEpyNxX4XkeR6dpMy27ZNT5/nE3D73fs5FcKW/+OtqwSmdshWUw5azvpsMzjst5rAUe61ZxilQ70YFS9yA==}
+  type-fest@6.0.3:
+    resolution: {integrity: sha512-MOJXegkac3h+sWdVb6VY/ACclsa71z3BprNpedGV8ljIzYCo+LRWgyIkWhidKNoiNJOb6kUds1pNCyzQ2p6hJQ==}
     engines: {node: '>=22'}
 
   typescript@5.6.1-rc:
@@ -2896,7 +2896,7 @@ snapshots:
       '@tsrs/win32-arm64': 0.25.0-ts7.1.0-beta
       '@tsrs/win32-x64': 0.25.0-ts7.1.0-beta
 
-  type-fest@6.0.1:
+  type-fest@6.0.3:
     dependencies:
       tagged-tag: 1.0.0
 
