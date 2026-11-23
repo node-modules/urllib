@@ -51,13 +51,15 @@ describe('options.data.test.ts', () => {
     assert.equal(url.searchParams.get('data'), '哈哈');
   });
 
-  it('should not mutate a passed URL object when setting query string', async () => {
-    const url = new URL(_url);
-    assert.equal(url.searchParams.get('param1'), null);
-    await urllib.request(url, {
+  it('should send GET data before the fragment and preserve the original URL', async () => {
+    const href = `${_url}ok#fragment?ignored`;
+    const url = new URL(href);
+    const response = await urllib.request(url, {
       data: { param1: 'val1' },
+      dataType: 'json',
     });
-    assert.equal(url.searchParams.get('param1'), null);
+    assert.equal(response.data.url, '/ok?param1=val1');
+    assert.equal(url.href, href);
   });
 
   it('should GET with data work on nestedQuerystring=true', async () => {
@@ -142,8 +144,8 @@ describe('options.data.test.ts', () => {
     assert.deepEqual(query.foo, { bar: 'bar value', array: ['1', '2', '3'] });
   });
 
-  it('should HEAD with data and auto convert to query string', async () => {
-    const response = await urllib.request(_url, {
+  it('should append HEAD data to the existing query before the fragment', async () => {
+    const response = await urllib.request(`${_url}?existing=1#frag`, {
       method: 'HEAD',
       data: {
         sql: 'SELECT * from table',
@@ -157,6 +159,7 @@ describe('options.data.test.ts', () => {
     assert(response.url.startsWith(_url));
     assert(!response.redirected);
     const url = new URL(response.headers['x-href'] as string);
+    assert.equal(url.searchParams.get('existing'), '1');
     assert.equal(url.searchParams.get('sql'), 'SELECT * from table');
     assert.equal(url.searchParams.get('data'), '哈哈');
   });

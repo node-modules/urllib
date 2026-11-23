@@ -41,6 +41,52 @@ describe('options.followRedirect.test.ts', () => {
     assert.equal(response.requestUrls.length, 2);
   });
 
+  it('should follow a 303 after POST with a GET without form data or body headers', async () => {
+    const httpClient = new HttpClient({ defaultArgs: { data: { a: 1 } } });
+    const { data } = await httpClient.request(`${_url}redirect-to?status=303&url=/result?from=303`, {
+      type: 'post',
+      dataType: 'json',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': '3',
+        'X-Trace': 'redirect',
+      },
+    });
+    assert.equal(data.method, 'GET');
+    assert.equal(data.url, '/result?from=303');
+    assert.equal(data.requestBody, '');
+    assert.equal(data.headers['content-type'], undefined);
+    assert.equal(data.headers['content-length'], undefined);
+    assert.equal(data.headers['x-trace'], 'redirect');
+  });
+
+  it('should follow a 303 after a file upload with a GET', async () => {
+    const { data } = await urllib.request(`${_url}redirect-to?status=303&url=/result`, {
+      files: Buffer.from('file contents'),
+      dataType: 'json',
+    });
+    assert.equal(data.method, 'GET');
+    assert.equal(data.requestBody, '');
+  });
+
+  it('should keep HEAD when following a 303', async () => {
+    const { headers } = await urllib.request(`${_url}redirect-to?status=303&url=/result`, { method: 'HEAD' });
+    assert.equal(headers['x-method'], 'HEAD');
+  });
+
+  it('should retry only the GET if the 303 target closes the socket', async () => {
+    const httpClient = new HttpClient();
+    const methods: string[] = [];
+    httpClient.on('request', ({ args }) => methods.push(args.method));
+    await assert.rejects(
+      httpClient.request(`${_url}redirect-to?status=303&url=/error`, {
+        method: 'POST',
+        data: { a: 1 },
+      }),
+    );
+    assert.deepEqual(methods, ['POST', 'GET', 'GET']);
+  });
+
   it('should follow redirect on writeStream ', async () => {
     const requestURL = `${_url}redirect`;
     const httpClient = new HttpClient({
