@@ -244,6 +244,16 @@ const RedirectStatusCodes = [
 // https://fetch.spec.whatwg.org/#http-redirect-fetch
 const CrossOriginSensitiveHeaders = new Set(['authorization', 'cookie', 'proxy-authorization']);
 
+function omitHeaders(headers: IncomingHttpHeaders | undefined, omit: (name: string) => boolean): IncomingHttpHeaders {
+  const retained: IncomingHttpHeaders = {};
+  for (const name in headers) {
+    if (!omit(name.toLowerCase())) {
+      retained[name] = headers[name];
+    }
+  }
+  return retained;
+}
+
 export class HttpClient extends EventEmitter {
   #defaultArgs?: RequestOptions;
   #dispatcher?: Dispatcher;
@@ -592,9 +602,7 @@ export class HttpClient extends EventEmitter {
             } else {
               query = querystring.stringify(args.data);
             }
-            // reset the requestUrl
-            const href = requestUrl.href;
-            requestUrl = new URL(href + (href.includes('?') ? '&' : '?') + query);
+            requestUrl.search += (requestUrl.search ? '&' : '?') + query;
           }
         } else {
           if (isStringOrBufferOrReadable) {
@@ -702,18 +710,26 @@ export class HttpClient extends EventEmitter {
           let redirectOptions = options;
           // Do not forward credential-bearing headers to a different origin.
           if (nextUrl.origin !== requestUrl.origin) {
-            const cleanedHeaders: IncomingHttpHeaders = {};
-            if (options?.headers) {
-              for (const name in options.headers) {
-                if (!CrossOriginSensitiveHeaders.has(name.toLowerCase())) {
-                  cleanedHeaders[name] = options.headers[name];
-                }
-              }
-            }
-            // Clone so the caller's options object is never mutated, and drop
-            // credentials so they are not re-applied on the new origin,
-            // including Basic/digest auth inherited from the client's defaultArgs.
-            redirectOptions = { ...options, headers: cleanedHeaders, auth: undefined, digestAuth: undefined };
+            redirectOptions = {
+              ...options,
+              headers: omitHeaders(originalHeaders, (name) => CrossOriginSensitiveHeaders.has(name)),
+              auth: undefined,
+              digestAuth: undefined,
+            };
+          }
+          if (res.statusCode === 303 && requestOptions.method !== 'GET' && requestOptions.method !== 'HEAD') {
+            // Explicitly override body options so client defaults cannot restore the payload.
+            redirectOptions = {
+              ...redirectOptions,
+              method: 'GET',
+              type: undefined,
+              headers: omitHeaders(redirectOptions?.headers, (name) => name.startsWith('content-')),
+              data: undefined,
+              content: undefined,
+              contentType: undefined,
+              files: undefined,
+              stream: undefined,
+            };
           }
           debug(
             'Request#%d got response, status: %s, headers: %j, timing: %j, redirect to %s',
@@ -723,7 +739,8 @@ export class HttpClient extends EventEmitter {
             res.timing,
             nextUrl.href,
           );
-          return await this.#requestInternal(nextUrl.href, redirectOptions, requestContext);
+          // The target handles its own retries. A target error must not replay the original request.
+          return this.#requestInternal(nextUrl.href, redirectOptions, requestContext);
         }
       }
 
