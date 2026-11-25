@@ -378,19 +378,15 @@ Node.js v22.3.0
 
 ## Release
 
-Use `npm version` to bump the version, create a git tag, and push to trigger the release workflow.
+Follow these steps to release from `master`.
 
-```bash
-# Stable release
-npm version patch  # or minor, major
-git push origin master --tags
+1. Open [Prepare Release](https://github.com/node-modules/urllib/actions/workflows/prepare_release.yml) and select **Run workflow**. Choose `master` and enter the version without a `v` prefix, such as `5.0.0` or `5.1.0-beta.1`.
+2. Review and merge the generated pull request. It updates the version in `package.json`. The merge starts the [Release workflow](https://github.com/node-modules/urllib/actions/workflows/release.yml).
+3. If the version is new to npm, the workflow waits for approval. A reviewer for the `release` environment other than the person who merged the PR must approve the deployment in GitHub Actions.
 
-# Pre-release (beta, alpha, rc, etc.)
-npm version 5.0.0-beta.0
-git push origin master --tags
-```
+After approval, the workflow publishes to npm and creates a GitHub release with a `v<version>` tag and generated release notes. Stable versions use the `latest` npm dist-tag. Prereleases use the first prerelease identifier, such as `beta` for `5.1.0-beta.1`.
 
-The [release workflow](.github/workflows/release.yml) will automatically publish to npm and create a GitHub Release when a `v*` tag is pushed. Pre-release tags (e.g., `v5.0.0-beta.0`) are published with the corresponding dist-tag (`beta`, `alpha`, `rc`, etc.).
+For a maintenance release, select the maintenance branch in **Prepare Release**. For example, selecting `4.x` opens the pull request against `4.x` and publishes stable versions under `latest-4`.
 
 ## License
 
